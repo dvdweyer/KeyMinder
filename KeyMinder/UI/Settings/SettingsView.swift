@@ -1,5 +1,6 @@
 import SwiftUI
 import AppKit
+import os
 
 // MARK: - SettingsWindowController
 
@@ -18,7 +19,7 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
 
     private init() {
         let window = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 420, height: 160),
+            contentRect: NSRect(x: 0, y: 0, width: 420, height: 210),
             styleMask:   [.titled, .closable],
             backing:     .buffered,
             defer:       false
@@ -41,12 +42,26 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
 // MARK: - SettingsModel
 
 /// Observable model backing the settings UI. Manages hotkey recording state,
-/// UserDefaults persistence, and HotkeyManager registration.
+/// UserDefaults persistence, HotkeyManager registration, and the login-item toggle.
 @MainActor
 final class SettingsModel: ObservableObject {
 
     @Published private(set) var hotkey:      GlobalHotkey? = UserDefaults.standard.globalHotkey
     @Published private(set) var isRecording: Bool = false
+
+    /// Whether KeyMinder is registered as a login item.
+    @Published var launchAtLogin: Bool = LoginItemManager.shared.isEnabled {
+        didSet {
+            guard launchAtLogin != LoginItemManager.shared.isEnabled else { return }
+            do {
+                try LoginItemManager.shared.setEnabled(launchAtLogin)
+            } catch {
+                // Roll back the toggle if the system call fails.
+                launchAtLogin = LoginItemManager.shared.isEnabled
+                Logger.settings.error("Login item toggle failed: \(error.localizedDescription)")
+            }
+        }
+    }
 
     private var eventMonitor: Any?
 
@@ -121,9 +136,13 @@ struct SettingsView: View {
                 HotkeyBadge(model: model)
                 recordingButtons
             }
+
+            Divider()
+
+            Toggle("Launch at Login", isOn: $model.launchAtLogin)
         }
         .padding(20)
-        .frame(width: 420, height: 160, alignment: .topLeading)
+        .frame(width: 420, height: 210, alignment: .topLeading)
         .onDisappear { model.stopRecording() }
     }
 
