@@ -29,13 +29,20 @@ final class PopupController {
         panel.setContentSize(size)
         panel.contentView = hosting
 
-        let screen = NSScreen.main?.visibleFrame ?? CGRect(x: 0, y: 0, width: 1440, height: 900)
+        let screen = Self.activeScreen.visibleFrame
         let origin = CGPoint(x: screen.midX - size.width / 2,
                              y: screen.midY - size.height / 2)
         panel.setFrame(CGRect(origin: origin, size: size), display: true)
         panel.makeKeyAndOrderFront(nil)
 
         installDismissalMonitors()
+    }
+
+    /// The screen the user is most likely working on: whichever display contains
+    /// the current mouse cursor, falling back to the main screen.
+    private static var activeScreen: NSScreen {
+        let mouse = NSEvent.mouseLocation
+        return NSScreen.screens.first { $0.frame.contains(mouse) } ?? NSScreen.main ?? NSScreen.screens[0]
     }
 
     func hide() {
@@ -94,7 +101,7 @@ final class PopupController {
     /// content (no ScrollView), then clamped so the panel never exceeds the
     /// screen — overflow falls to the grid's own ScrollView.
     private func measuredContent(_ content: PopupContent, app: AppShortcuts) -> (NSView, CGSize) {
-        let screen = NSScreen.main?.visibleFrame ?? CGRect(x: 0, y: 0, width: 1440, height: 900)
+        let screen = Self.activeScreen.visibleFrame
         let maxPanelHeight = screen.height * 0.86
 
         // --- Column count + width (analytic, unchanged). ---

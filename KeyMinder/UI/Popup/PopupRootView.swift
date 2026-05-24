@@ -159,6 +159,7 @@ struct ShortcutRow: View {
                 .font(.system(size: 12))
                 .lineLimit(1)
                 .truncationMode(.tail)
+                .help(shortcut.title)
             Spacer(minLength: 0)
         }
         .frame(height: MenuLayout.rowHeight)
