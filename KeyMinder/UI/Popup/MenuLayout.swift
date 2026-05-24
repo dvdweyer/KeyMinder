@@ -1,6 +1,6 @@
 import CoreGraphics
 
-/// Distributes menu sections into balanced columns (a simple masonry layout) and
+/// Lays out menu sections into columns, preserving their menu-bar order, and
 /// estimates sizes so the panel can be sized before SwiftUI lays anything out.
 enum MenuLayout {
     static let columnWidth: CGFloat = 264
@@ -24,17 +24,38 @@ enum MenuLayout {
         return h
     }
 
-    /// Greedy bin-packing: each section goes into the currently shortest column.
+    /// Partitions sections into `columns` contiguous slices, preserving the
+    /// original (menu-bar) order. Sections spill into the next column once the
+    /// running height exceeds an even share of the total; columns are never
+    /// left empty (an oversized single section just fills its column).
     static func distribute(_ sections: [MenuSection], columns: Int) -> [[MenuSection]] {
         let count = max(1, columns)
-        var result = Array(repeating: [MenuSection](), count: count)
-        var heights = Array(repeating: CGFloat(0), count: count)
+        guard count > 1, !sections.isEmpty else { return sections.isEmpty ? [] : [sections] }
+
+        let total  = sections.reduce(CGFloat(0)) { $0 + height(of: $1) + sectionSpacing }
+        let target = total / CGFloat(count)   // aim for equal-height slices
+
+        var result:        [[MenuSection]] = []
+        var currentColumn: [MenuSection]   = []
+        var currentHeight: CGFloat         = 0
+        var columnsLeft = count
+
         for section in sections {
-            let target = heights.indices.min(by: { heights[$0] < heights[$1] }) ?? 0
-            result[target].append(section)
-            heights[target] += height(of: section) + sectionSpacing
+            let h = height(of: section) + sectionSpacing
+            // Spill when we've hit the target AND a column slot remains AND
+            // the current column already has at least one section (so we
+            // never push an oversized section into a new, otherwise empty column).
+            if currentHeight + h > target, columnsLeft > 1, !currentColumn.isEmpty {
+                result.append(currentColumn)
+                currentColumn = []
+                currentHeight = 0
+                columnsLeft  -= 1
+            }
+            currentColumn.append(section)
+            currentHeight += h
         }
-        return result.filter { !$0.isEmpty }
+        if !currentColumn.isEmpty { result.append(currentColumn) }
+        return result
     }
 
     /// Chooses a column count that keeps each column under `maxColumnHeight`
