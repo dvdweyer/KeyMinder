@@ -50,25 +50,13 @@ enum MenuLayout {
         let k = max(1, columns)
         guard !sections.isEmpty else { return [] }
         guard k > 1 else { return [sections] }
+        // Enough columns for one menu each: spread them out (preserving menu-bar
+        // order) instead of letting the balancer merge short menus together.
+        if k >= sections.count { return sections.map { [$0] } }
 
         let weights = sections.map { height(of: $0) + sectionSpacing }
         let capacity = minimalCapacity(weights, maxColumns: k)
         return pack(sections, weights: weights, capacity: capacity)
-    }
-
-    /// Chooses the fewest columns in `1...maxColumns` whose optimal partition
-    /// keeps every column within `maxColumnHeight`. Falls back to `maxColumns`
-    /// when no count fits — e.g. a single section taller than the screen, which
-    /// must scroll regardless of how many columns are used.
-    static func columnCount(for sections: [MenuSection],
-                            maxColumns: Int,
-                            maxColumnHeight: CGFloat) -> Int {
-        guard !sections.isEmpty else { return 1 }
-        let cap = max(1, maxColumns)
-        for k in 1...cap where tallestColumnHeight(distribute(sections, columns: k)) <= maxColumnHeight {
-            return k
-        }
-        return cap
     }
 
     // MARK: - Contiguous partitioning
@@ -128,16 +116,5 @@ enum MenuLayout {
             }
         }
         return hi
-    }
-
-    /// The tallest column's estimated height, used to size the panel.
-    ///
-    /// A column of K sections has K−1 inter-section gaps, not K.
-    static func tallestColumnHeight(_ columns: [[MenuSection]]) -> CGFloat {
-        columns.map { column in
-            let sectionsHeight = column.reduce(CGFloat(0)) { $0 + height(of: $1) }
-            let gaps = max(0, column.count - 1)
-            return sectionsHeight + CGFloat(gaps) * sectionSpacing
-        }.max() ?? 0
     }
 }

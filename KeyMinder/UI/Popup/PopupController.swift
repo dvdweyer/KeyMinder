@@ -104,16 +104,13 @@ final class PopupController {
         let screen = Self.activeScreen.visibleFrame
         let maxPanelHeight = screen.height * 0.86
 
-        // --- Column count + width (analytic, unchanged). ---
-        let verticalChrome = 2 * Theme.contentPadding + 40
-        let maxColumnHeight = maxPanelHeight - verticalChrome
+        // --- Column count + width. Spread menus across the available width:
+        // as many columns as the screen fits, capped at one per menu. ---
         let horizontalBudget = screen.width * 0.96 - 2 * Theme.contentPadding
         let perColumn = MenuLayout.columnWidth + MenuLayout.columnSpacing
         let maxColumns = max(1, Int((horizontalBudget + MenuLayout.columnSpacing) / perColumn))
 
-        let count = MenuLayout.columnCount(for: app.sections,
-                                           maxColumns: maxColumns,
-                                           maxColumnHeight: maxColumnHeight)
+        let count = min(app.sections.count, maxColumns)
         let columns = MenuLayout.distribute(app.sections, columns: count)
         let actual = max(1, columns.count)
 
