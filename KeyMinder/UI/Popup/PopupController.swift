@@ -21,19 +21,10 @@ final class PopupController {
     // MARK: - Show / hide
 
     func show(_ content: PopupContent) {
-        let (columns, size) = layout(for: content)
-        let root = PopupRootView(
-            content: content,
-            columns: columns,
-            size: size,
-            onGrant: { [weak self] in self?.onGrant() },
-            onOpenSettings: { [weak self] in self?.onOpenSettings() }
-        )
-
         let panel = panel ?? makePanel()
         self.panel = panel
 
-        let hosting = NSHostingView(rootView: root)
+        let (hosting, size) = makeContent(for: content)
         hosting.frame = CGRect(origin: .zero, size: size)
         panel.setContentSize(size)
         panel.contentView = hosting
@@ -75,39 +66,82 @@ final class PopupController {
 
     // MARK: - Layout
 
-    private func layout(for content: PopupContent) -> (columns: [[MenuSection]], size: CGSize) {
+    /// Builds the hosting view for `content` and the panel size to present it at.
+    /// Non-shortcut states use fixed sizes; the shortcut grid keeps the analytic
+    /// column/width math but *measures* its height from the real SwiftUI layout.
+    private func makeContent(for content: PopupContent) -> (NSView, CGSize) {
         switch content {
         case .needsPermission:
-            return ([], CGSize(width: 420, height: 300))
+            return fixedContent(content, size: CGSize(width: 420, height: 300))
         case .noApp:
-            return ([], CGSize(width: 360, height: 200))
+            return fixedContent(content, size: CGSize(width: 360, height: 200))
         case .shortcuts(let app):
             guard !app.isEmpty else {
-                return ([], CGSize(width: 380, height: 200))
+                return fixedContent(content, size: CGSize(width: 380, height: 200))
             }
-            let screen = NSScreen.main?.visibleFrame ?? CGRect(x: 0, y: 0, width: 1440, height: 900)
-            let verticalChrome = 2 * Theme.contentPadding + 40
-            let maxPanelHeight = screen.height * 0.86
-            let maxColumnHeight = maxPanelHeight - verticalChrome
-
-            let horizontalBudget = screen.width * 0.96 - 2 * Theme.contentPadding
-            let perColumn = MenuLayout.columnWidth + MenuLayout.columnSpacing
-            let maxColumns = max(1, Int((horizontalBudget + MenuLayout.columnSpacing) / perColumn))
-
-            let count = MenuLayout.columnCount(for: app.sections,
-                                               maxColumns: maxColumns,
-                                               maxColumnHeight: maxColumnHeight)
-            let columns = MenuLayout.distribute(app.sections, columns: count)
-            let actual = max(1, columns.count)
-
-            let contentWidth = CGFloat(actual) * MenuLayout.columnWidth
-                + CGFloat(actual - 1) * MenuLayout.columnSpacing
-            let width = contentWidth + 2 * Theme.contentPadding
-            let tallest = MenuLayout.tallestColumnHeight(columns)
-            let height = min(tallest + verticalChrome, maxPanelHeight)
-
-            return (columns, CGSize(width: width, height: height))
+            return measuredContent(content, app: app)
         }
+    }
+
+    /// Hosting view for the fixed-size states (onboarding, no app, empty app).
+    private func fixedContent(_ content: PopupContent, size: CGSize) -> (NSView, CGSize) {
+        let root = rootView(content, columns: [], width: size.width, height: size.height)
+        return (NSHostingView(rootView: root), size)
+    }
+
+    /// Hosting view for the shortcut grid: column count and width come from the
+    /// analytic layout, but the height is measured from the actual rendered
+    /// content (no ScrollView), then clamped so the panel never exceeds the
+    /// screen — overflow falls to the grid's own ScrollView.
+    private func measuredContent(_ content: PopupContent, app: AppShortcuts) -> (NSView, CGSize) {
+        let screen = NSScreen.main?.visibleFrame ?? CGRect(x: 0, y: 0, width: 1440, height: 900)
+        let maxPanelHeight = screen.height * 0.86
+
+        // --- Column count + width (analytic, unchanged). ---
+        let verticalChrome = 2 * Theme.contentPadding + 40
+        let maxColumnHeight = maxPanelHeight - verticalChrome
+        let horizontalBudget = screen.width * 0.96 - 2 * Theme.contentPadding
+        let perColumn = MenuLayout.columnWidth + MenuLayout.columnSpacing
+        let maxColumns = max(1, Int((horizontalBudget + MenuLayout.columnSpacing) / perColumn))
+
+        let count = MenuLayout.columnCount(for: app.sections,
+                                           maxColumns: maxColumns,
+                                           maxColumnHeight: maxColumnHeight)
+        let columns = MenuLayout.distribute(app.sections, columns: count)
+        let actual = max(1, columns.count)
+
+        let contentWidth = CGFloat(actual) * MenuLayout.columnWidth
+            + CGFloat(actual - 1) * MenuLayout.columnSpacing
+        let width = contentWidth + 2 * Theme.contentPadding
+
+        // --- Height (measured from the real layout, no scroll wrapper). ---
+        let measureView = rootView(content, columns: columns, width: width,
+                                   height: nil, scrolls: false)
+        let measurer = NSHostingView(rootView: measureView)
+        measurer.frame = CGRect(x: 0, y: 0, width: width, height: 0)
+        measurer.layoutSubtreeIfNeeded()
+        let naturalHeight = measurer.fittingSize.height
+        let height = min(naturalHeight, maxPanelHeight)
+
+        let root = rootView(content, columns: columns, width: width,
+                            height: height, scrolls: true)
+        return (NSHostingView(rootView: root), CGSize(width: width, height: height))
+    }
+
+    private func rootView(_ content: PopupContent,
+                          columns: [[MenuSection]],
+                          width: CGFloat,
+                          height: CGFloat? = nil,
+                          scrolls: Bool = true) -> PopupRootView {
+        PopupRootView(
+            content: content,
+            columns: columns,
+            width: width,
+            height: height,
+            scrolls: scrolls,
+            onGrant: { [weak self] in self?.onGrant() },
+            onOpenSettings: { [weak self] in self?.onOpenSettings() }
+        )
     }
 
     // MARK: - Dismissal

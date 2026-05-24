@@ -6,7 +6,15 @@ struct PopupRootView: View {
     let content: PopupContent
     /// Precomputed column distribution (only used for `.shortcuts`).
     let columns: [[MenuSection]]
-    let size: CGSize
+    /// Fixed panel width (content columns + horizontal padding).
+    let width: CGFloat
+    /// Fixed panel height. `nil` lets the content size itself — used when the
+    /// controller measures the natural height before presenting.
+    var height: CGFloat? = nil
+    /// Whether to wrap the shortcut grid in a `ScrollView`. Disabled during
+    /// measurement so the grid reports its true intrinsic height (a ScrollView
+    /// has none, so it would collapse).
+    var scrolls: Bool = true
     var onGrant: () -> Void = {}
     var onOpenSettings: () -> Void = {}
 
@@ -22,7 +30,7 @@ struct PopupRootView: View {
             }
         }
         .padding(Theme.contentPadding)
-        .frame(width: size.width, height: size.height, alignment: .top)
+        .frame(width: width, height: height, alignment: .top)
         .background(.regularMaterial, in: RoundedRectangle(cornerRadius: Theme.cornerRadius))
         .overlay(
             RoundedRectangle(cornerRadius: Theme.cornerRadius)
@@ -38,23 +46,28 @@ struct PopupRootView: View {
             if app.isEmpty {
                 messageView("No keyboard shortcuts found for \(app.appName)",
                             systemImage: "keyboard")
+            } else if scrolls {
+                ScrollView(.vertical) { grid }
+                    .scrollBounceBehavior(.basedOnSize)
             } else {
-                ScrollView(.vertical) {
-                    HStack(alignment: .top, spacing: MenuLayout.columnSpacing) {
-                        ForEach(Array(columns.enumerated()), id: \.offset) { _, column in
-                            VStack(alignment: .leading, spacing: MenuLayout.sectionSpacing) {
-                                ForEach(column) { section in
-                                    MenuSectionView(section: section)
-                                }
-                            }
-                            .frame(width: MenuLayout.columnWidth, alignment: .top)
-                        }
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                }
-                .scrollBounceBehavior(.basedOnSize)
+                grid
             }
         }
+    }
+
+    /// The multi-column grid of section cards, without any scroll container.
+    private var grid: some View {
+        HStack(alignment: .top, spacing: MenuLayout.columnSpacing) {
+            ForEach(Array(columns.enumerated()), id: \.offset) { _, column in
+                VStack(alignment: .leading, spacing: MenuLayout.sectionSpacing) {
+                    ForEach(column) { section in
+                        MenuSectionView(section: section)
+                    }
+                }
+                .frame(width: MenuLayout.columnWidth, alignment: .top)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     private func header(_ app: AppShortcuts) -> some View {
