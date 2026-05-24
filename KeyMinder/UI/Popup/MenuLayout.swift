@@ -14,14 +14,28 @@ enum MenuLayout {
     static let subGroupHeaderHeight: CGFloat = 22
 
     /// Estimated rendered height of one section card.
+    ///
+    /// `MenuSectionView` is a `VStack(spacing: rowSpacing)` whose children are:
+    /// the section header, then for each group an optional sub-group header
+    /// followed by one row per shortcut.  The VStack inserts `rowSpacing` between
+    /// *every* adjacent pair, so the gap count is (total elements − 1), not
+    /// (rows − 1) per group.
     static func height(of section: MenuSection) -> CGFloat {
-        var h = headerHeight
+        var namedGroupCount = 0
+        var totalShortcuts  = 0
         for group in section.groups {
-            if group.title != nil { h += subGroupHeaderHeight }
-            let rows = CGFloat(group.shortcuts.count)
-            h += rows * rowHeight + max(0, rows - 1) * rowSpacing
+            if group.title != nil { namedGroupCount += 1 }
+            totalShortcuts += group.shortcuts.count
         }
-        return h
+        // Elements inside the VStack:
+        //   1 section header + namedGroupCount sub-headers + totalShortcuts rows
+        let elementCount = 1 + namedGroupCount + totalShortcuts
+        let gaps = max(0, elementCount - 1)
+
+        return headerHeight
+            + CGFloat(namedGroupCount) * subGroupHeaderHeight
+            + CGFloat(totalShortcuts)  * rowHeight
+            + CGFloat(gaps)            * rowSpacing
     }
 
     /// Partitions sections into at most `columns` contiguous slices (preserving
@@ -117,9 +131,13 @@ enum MenuLayout {
     }
 
     /// The tallest column's estimated height, used to size the panel.
+    ///
+    /// A column of K sections has K−1 inter-section gaps, not K.
     static func tallestColumnHeight(_ columns: [[MenuSection]]) -> CGFloat {
         columns.map { column in
-            column.reduce(CGFloat(0)) { $0 + height(of: $1) + sectionSpacing }
+            let sectionsHeight = column.reduce(CGFloat(0)) { $0 + height(of: $1) }
+            let gaps = max(0, column.count - 1)
+            return sectionsHeight + CGFloat(gaps) * sectionSpacing
         }.max() ?? 0
     }
 }
