@@ -24,48 +24,96 @@ enum MenuLayout {
         return h
     }
 
-    /// Partitions sections into `columns` contiguous slices, preserving the
-    /// original (menu-bar) order. Sections spill into the next column once the
-    /// running height exceeds an even share of the total; columns are never
-    /// left empty (an oversized single section just fills its column).
+    /// Partitions sections into at most `columns` contiguous slices (preserving
+    /// menu-bar order) so the tallest column is as short as possible — the
+    /// classic "split an ordered array into k parts minimising the largest part
+    /// sum", solved by binary-searching the per-column capacity.
+    ///
+    /// May return *fewer* than `columns` slices when that already minimises the
+    /// max (e.g. an oversized section that can't usefully share a column); never
+    /// returns empty slices.
     static func distribute(_ sections: [MenuSection], columns: Int) -> [[MenuSection]] {
-        let count = max(1, columns)
-        guard count > 1, !sections.isEmpty else { return sections.isEmpty ? [] : [sections] }
+        let k = max(1, columns)
+        guard !sections.isEmpty else { return [] }
+        guard k > 1 else { return [sections] }
 
-        let total  = sections.reduce(CGFloat(0)) { $0 + height(of: $1) + sectionSpacing }
-        let target = total / CGFloat(count)   // aim for equal-height slices
-
-        var result:        [[MenuSection]] = []
-        var currentColumn: [MenuSection]   = []
-        var currentHeight: CGFloat         = 0
-        var columnsLeft = count
-
-        for section in sections {
-            let h = height(of: section) + sectionSpacing
-            // Spill when we've hit the target AND a column slot remains AND
-            // the current column already has at least one section (so we
-            // never push an oversized section into a new, otherwise empty column).
-            if currentHeight + h > target, columnsLeft > 1, !currentColumn.isEmpty {
-                result.append(currentColumn)
-                currentColumn = []
-                currentHeight = 0
-                columnsLeft  -= 1
-            }
-            currentColumn.append(section)
-            currentHeight += h
-        }
-        if !currentColumn.isEmpty { result.append(currentColumn) }
-        return result
+        let weights = sections.map { height(of: $0) + sectionSpacing }
+        let capacity = minimalCapacity(weights, maxColumns: k)
+        return pack(sections, weights: weights, capacity: capacity)
     }
 
-    /// Chooses a column count that keeps each column under `maxColumnHeight`
-    /// while never exceeding `maxColumns`.
+    /// Chooses the fewest columns in `1...maxColumns` whose optimal partition
+    /// keeps every column within `maxColumnHeight`. Falls back to `maxColumns`
+    /// when no count fits — e.g. a single section taller than the screen, which
+    /// must scroll regardless of how many columns are used.
     static func columnCount(for sections: [MenuSection],
                             maxColumns: Int,
                             maxColumnHeight: CGFloat) -> Int {
-        let total = sections.reduce(CGFloat(0)) { $0 + height(of: $1) + sectionSpacing }
-        let needed = Int((total / max(1, maxColumnHeight)).rounded(.up))
-        return min(max(maxColumns, 1), max(1, needed))
+        guard !sections.isEmpty else { return 1 }
+        let cap = max(1, maxColumns)
+        for k in 1...cap where tallestColumnHeight(distribute(sections, columns: k)) <= maxColumnHeight {
+            return k
+        }
+        return cap
+    }
+
+    // MARK: - Contiguous partitioning
+
+    /// Greedy left-to-right fill at a fixed `capacity`: starts a new column when
+    /// adding the next section would exceed it, except a single section larger
+    /// than `capacity` simply occupies its own column. Order preserved; no empty
+    /// columns.
+    private static func pack(_ sections: [MenuSection],
+                             weights: [CGFloat],
+                             capacity: CGFloat) -> [[MenuSection]] {
+        var result:  [[MenuSection]] = []
+        var current: [MenuSection]   = []
+        var currentHeight: CGFloat   = 0
+        for (i, section) in sections.enumerated() {
+            let w = weights[i]
+            if !current.isEmpty, currentHeight + w > capacity {
+                result.append(current)
+                current = []
+                currentHeight = 0
+            }
+            current.append(section)
+            currentHeight += w
+        }
+        if !current.isEmpty { result.append(current) }
+        return result
+    }
+
+    /// Number of columns the greedy packer needs at `capacity` (allocation-free,
+    /// for use inside the binary search).
+    private static func columnsNeeded(_ weights: [CGFloat], capacity: CGFloat) -> Int {
+        var columns = 1
+        var currentHeight: CGFloat = 0
+        for w in weights {
+            if currentHeight > 0, currentHeight + w > capacity {
+                columns += 1
+                currentHeight = w
+            } else {
+                currentHeight += w
+            }
+        }
+        return columns
+    }
+
+    /// Smallest per-column capacity for which the greedy packer needs `≤ k`
+    /// columns. Binary-searched in `[largest single weight, total weight]`;
+    /// feasibility is monotonic in capacity, so this finds the optimal max.
+    private static func minimalCapacity(_ weights: [CGFloat], maxColumns k: Int) -> CGFloat {
+        var lo = weights.max() ?? 0
+        var hi = max(lo, weights.reduce(0, +))
+        while hi - lo > 0.5 {
+            let mid = (lo + hi) / 2
+            if columnsNeeded(weights, capacity: mid) <= k {
+                hi = mid
+            } else {
+                lo = mid
+            }
+        }
+        return hi
     }
 
     /// The tallest column's estimated height, used to size the panel.
