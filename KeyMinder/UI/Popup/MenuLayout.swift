@@ -9,11 +9,19 @@ enum MenuLayout {
     static let rowHeight: CGFloat = 21
     static let rowSpacing: CGFloat = 2
     static let headerHeight: CGFloat = 26
+    /// Estimated height of a sub-group label (submenu title, smaller than the
+    /// section header). Includes its built-in top padding (~6 pt) + text row.
+    static let subGroupHeaderHeight: CGFloat = 22
 
     /// Estimated rendered height of one section card.
     static func height(of section: MenuSection) -> CGFloat {
-        let rows = CGFloat(section.shortcuts.count)
-        return headerHeight + rows * rowHeight + max(0, rows - 1) * rowSpacing
+        var h = headerHeight
+        for group in section.groups {
+            if group.title != nil { h += subGroupHeaderHeight }
+            let rows = CGFloat(group.shortcuts.count)
+            h += rows * rowHeight + max(0, rows - 1) * rowSpacing
+        }
+        return h
     }
 
     /// Greedy bin-packing: each section goes into the currently shortest column.

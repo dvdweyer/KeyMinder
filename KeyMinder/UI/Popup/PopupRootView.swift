@@ -86,12 +86,14 @@ struct PopupRootView: View {
     }
 }
 
-/// One menu's section card: a header bar plus its shortcut rows.
+/// One menu's section card: a header bar, then shortcut rows optionally broken
+/// up by sub-group labels for items that came from a submenu.
 struct MenuSectionView: View {
     let section: MenuSection
 
     var body: some View {
         VStack(alignment: .leading, spacing: MenuLayout.rowSpacing) {
+            // Top-level section header (e.g. "Window")
             Text(section.title)
                 .font(.system(size: 12, weight: .semibold))
                 .foregroundStyle(.secondary)
@@ -101,10 +103,32 @@ struct MenuSectionView: View {
                 .background(Theme.sectionHeaderFill, in: RoundedRectangle(cornerRadius: 6))
                 .padding(.bottom, 2)
 
-            ForEach(section.shortcuts) { shortcut in
-                ShortcutRow(shortcut: shortcut)
+            ForEach(section.groups) { group in
+                // Named groups get a lightweight sub-header above their rows.
+                if let groupTitle = group.title {
+                    SubGroupHeader(title: groupTitle)
+                }
+                ForEach(group.shortcuts) { shortcut in
+                    ShortcutRow(shortcut: shortcut)
+                }
             }
         }
+    }
+}
+
+/// A compact label shown above a submenu's shortcuts inside a section card.
+/// Visually subordinate to the section header: smaller, tertiary colour, no fill.
+private struct SubGroupHeader: View {
+    let title: String
+
+    var body: some View {
+        Text(title)
+            .font(.system(size: 11, weight: .medium))
+            .foregroundStyle(.tertiary)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.leading, 8)
+            .padding(.top, 6)
+            .padding(.bottom, 1)
     }
 }
 

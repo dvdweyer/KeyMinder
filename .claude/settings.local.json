@@ -10,7 +10,8 @@
       "Bash(xattr -lr build/Build/Products/Debug/KeyMinder.app)",
       "Bash(xattr -lr KeyMinder)",
       "Bash(xattr -l build/Build/Products/Debug/KeyMinder.app)",
-      "Bash(sleep 2; echo \"--- still running? ---\"; pgrep -lf \"KeyMinder.app/Contents/MacOS\" || echo \"NOT RUNNING\"; echo \"--- recent crash reports \\(should be none\\) ---\"; ls -t ~/Library/Logs/DiagnosticReports/KeyMinder* 2>/dev/null | head -3 || echo \"none\")"
+      "Bash(sleep 2; echo \"--- still running? ---\"; pgrep -lf \"KeyMinder.app/Contents/MacOS\" || echo \"NOT RUNNING\"; echo \"--- recent crash reports \\(should be none\\) ---\"; ls -t ~/Library/Logs/DiagnosticReports/KeyMinder* 2>/dev/null | head -3 || echo \"none\")",
+      "Bash(DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcodebuild -project /Users/donald/Documents/Development/KeyMinder/KeyMinder.xcodeproj -scheme KeyMinder -configuration Debug -derivedDataPath /tmp/KeyMinder-build -allowProvisioningUpdates build)"
     ]
   }
 }
