@@ -12,6 +12,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         popup.onGrant = { AccessibilityPermission.requestAccess() }
         popup.onOpenSettings = { AccessibilityPermission.openSettings() }
         setupStatusItem()
+        setupHotkey()
+    }
+
+    // MARK: - Global hotkey
+
+    private func setupHotkey() {
+        HotkeyManager.shared.onActivate = { [weak self] in self?.togglePopup() }
+        if let saved = UserDefaults.standard.globalHotkey {
+            HotkeyManager.shared.register(saved)
+        }
     }
 
     // MARK: - Status item
@@ -71,6 +81,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             grant.target = self
             menu.addItem(.separator())
         }
+        let settings = menu.addItem(withTitle: "Settings…",
+                                    action: #selector(openSettings), keyEquivalent: ",")
+        settings.target = self
+        settings.keyEquivalentModifierMask = .command
+
+        menu.addItem(.separator())
+
         let quit = menu.addItem(withTitle: "Quit KeyMinder",
                                 action: #selector(quit), keyEquivalent: "q")
         quit.target = self
@@ -82,5 +99,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @objc private func grantAccess() { AccessibilityPermission.requestAccess() }
+    @objc private func openSettings() { SettingsWindowController.show() }
     @objc private func quit() { NSApp.terminate(nil) }
 }
