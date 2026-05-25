@@ -22,17 +22,63 @@ final class PopupController {
 
     var isVisible: Bool { panel?.isVisible ?? false }
 
+    // MARK: - Animation state
+
+    /// Monotonically-increasing generation token. Incremented on every show/hide
+    /// call so that completion blocks from superseded animations are no-ops.
+    private var animationGeneration = 0
+
     // MARK: - Show / hide
 
-    /// Presents the panel with `content`.
+    /// Presents the panel with `content`, fading in over ~0.12 s.
     func show(_ content: PopupContent) {
         let panel = panel ?? makePanel()
         self.panel = panel
 
         apply(content, to: panel)
-        panel.makeKeyAndOrderFront(nil)
 
+        // Invalidate any in-flight hide-fade completion so it won't orderOut.
+        animationGeneration += 1
+
+        // Start from invisible so the fade-in is perceptible.
+        panel.alphaValue = 0
+
+        // Prime a very subtle scale-up on the content layer (0.98 → 1.0).
+        // NSHostingView is always layer-backed; we set the model value
+        // immediately (no implicit animation) so it's in place before the
+        // window appears, then animate it to identity alongside the fade.
+        if let layer = panel.contentView?.layer {
+            CATransaction.begin()
+            CATransaction.setDisableActions(true)
+            layer.transform = CATransform3DMakeScale(0.98, 0.98, 1.0)
+            CATransaction.commit()
+        }
+
+        panel.makeKeyAndOrderFront(nil)
         installDismissalMonitors()
+
+        // Fade in.
+        NSAnimationContext.runAnimationGroup { ctx in
+            ctx.duration = 0.12
+            ctx.timingFunction = CAMediaTimingFunction(name: .easeOut)
+            panel.animator().alphaValue = 1
+        }
+
+        // Scale to identity in parallel with the fade.
+        if let layer = panel.contentView?.layer {
+            let anim = CABasicAnimation(keyPath: "transform.scale")
+            anim.fromValue = 0.98
+            anim.toValue   = 1.0
+            anim.duration  = 0.12
+            anim.timingFunction = CAMediaTimingFunction(name: .easeOut)
+            layer.add(anim, forKey: "showScale")
+            // Commit the model to identity with actions disabled so Core
+            // Animation doesn't implicitly tween back to the from-value.
+            CATransaction.begin()
+            CATransaction.setDisableActions(true)
+            layer.transform = CATransform3DIdentity
+            CATransaction.commit()
+        }
     }
 
     /// Builds, sizes, and centers the hosting view for `content` on `panel`.
@@ -56,9 +102,27 @@ final class PopupController {
         return NSScreen.screens.first { $0.frame.contains(mouse) } ?? NSScreen.main ?? NSScreen.screens[0]
     }
 
+    /// Fades the panel out over ~0.10 s and orders it out on completion.
     func hide() {
+        // Remove monitors at the very start so a click-outside during the
+        // fade doesn't re-trigger a second hide().
         removeDismissalMonitors()
-        panel?.orderOut(nil)
+
+        guard let panel else { return }
+
+        animationGeneration += 1
+        let generation = animationGeneration
+
+        NSAnimationContext.runAnimationGroup { ctx in
+            ctx.duration = 0.10
+            ctx.timingFunction = CAMediaTimingFunction(name: .easeIn)
+            panel.animator().alphaValue = 0
+        } completionHandler: { [weak self] in
+            // Guard against a show() that was called while we were fading out.
+            guard let self, generation == self.animationGeneration else { return }
+            panel.orderOut(nil)
+            panel.alphaValue = 1   // Reset so the next show() fade starts clean.
+        }
     }
 
     // MARK: - Panel
