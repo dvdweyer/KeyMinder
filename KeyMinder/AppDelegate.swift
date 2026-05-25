@@ -14,6 +14,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         setupStatusItem()
         setupHotkey()
         setupDoubleTap()
+        showWelcomePopupIfNeeded()
     }
 
     // MARK: - Global hotkey
@@ -166,4 +167,32 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     @objc private func grantAccess() { AccessibilityPermission.requestAccess() }
     @objc private func openSettings() { SettingsWindowController.show() }
     @objc private func quit() { NSApp.terminate(nil) }
+
+    // MARK: - First-launch welcome
+
+    /// On the very first launch, auto-presents the popup once so the user
+    /// discovers what KeyMinder does without having to find the status-bar icon
+    /// themselves. Subsequent launches are unaffected.
+    private func showWelcomePopupIfNeeded() {
+        guard !UserDefaults.standard.didShowWelcome else { return }
+        UserDefaults.standard.didShowWelcome = true
+        // Defer slightly so the status-bar item is visible before the popup
+        // appears (the run loop needs one pass to render the menu-bar icon).
+        Task { @MainActor in
+            try? await Task.sleep(for: .milliseconds(500))
+            presentPopup()
+        }
+    }
+}
+
+// MARK: - UserDefaults: first-launch flag
+
+private extension UserDefaults {
+    private static let didShowWelcomeKey = "didShowWelcome"
+
+    /// `true` after the welcome popup has been shown at least once.
+    var didShowWelcome: Bool {
+        get { bool(forKey: Self.didShowWelcomeKey) }
+        set { set(newValue, forKey: Self.didShowWelcomeKey) }
+    }
 }
