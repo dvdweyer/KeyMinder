@@ -1,5 +1,6 @@
 import ApplicationServices
 import AppKit
+import os
 
 /// Reads the menu bar of a running application via the Accessibility API and
 /// extracts its keyboard shortcuts, grouped by top-level menu.
@@ -10,8 +11,16 @@ enum MenuScraper {
 
     /// Scrapes the menu bar of the application with the given process id.
     static func scrape(pid: pid_t) -> [MenuSection] {
+        let start = Date()
         let app = AXUIElementCreateApplication(pid)
-        guard let menuBar = element(app, kAXMenuBarAttribute) else { return [] }
+        // Cap per-request AX round-trips so an unresponsive target never blocks
+        // KeyMinder's main thread for more than ~1 second.
+        AXUIElementSetMessagingTimeout(app, 1.0)
+
+        guard let menuBar = element(app, kAXMenuBarAttribute) else {
+            Logger.scraper.error("Could not read menu bar (pid \(pid, privacy: .public))")
+            return []
+        }
 
         var sections: [MenuSection] = []
         for menuBarItem in children(menuBar) {
@@ -23,6 +32,11 @@ enum MenuScraper {
                 sections.append(MenuSection(title: title, groups: groups))
             }
         }
+
+        let totalShortcuts = sections.reduce(0) { $0 + $1.shortcuts.count }
+        let elapsed = Date().timeIntervalSince(start)
+        Logger.scraper.info("pid \(pid, privacy: .public): \(sections.count, privacy: .public) menus, \(totalShortcuts, privacy: .public) shortcuts in \(elapsed, format: .fixed(precision: 3), privacy: .public)s")
+
         return sections
     }
 
