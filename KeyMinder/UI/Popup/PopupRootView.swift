@@ -1,11 +1,43 @@
 import SwiftUI
+import Combine
+
+/// Holds the live filter state for one presentation of the shortcuts popup.
+/// Owned by `PopupController` so the controller can read/clear the query (for
+/// Esc handling) while the SwiftUI view observes it for live updates.
+///
+/// Filtering never changes the layout: the column distribution is computed once
+/// and fixed for the lifetime of the popup. Typing only dims the rows that don't
+/// match, so every shortcut stays put in exactly the same place.
+@MainActor
+final class PopupFilterModel: ObservableObject {
+    /// The full, unfiltered set of shortcuts.
+    let app: AppShortcuts
+    /// Fixed column distribution — never recomputed while the popup is open.
+    let columns: [[MenuSection]]
+
+    @Published var query: String = ""
+
+    init(app: AppShortcuts, columns: [[MenuSection]]) {
+        self.app = app
+        self.columns = columns
+    }
+
+    /// The trimmed query, or empty when no filter is active.
+    var activeQuery: String { query.trimmingCharacters(in: .whitespaces) }
+
+    /// Whether a non-empty filter is active.
+    var hasQuery: Bool { !activeQuery.isEmpty }
+
+    /// Number of shortcuts currently matching the filter.
+    var matchCount: Int { app.matchCount(activeQuery) }
+}
 
 /// Root SwiftUI view hosted inside the floating panel. Renders the scraped
 /// shortcuts as a multi-column, menu-grouped grid, or an onboarding/empty state.
 struct PopupRootView: View {
     let content: PopupContent
-    /// Precomputed column distribution (only used for `.shortcuts`).
-    let columns: [[MenuSection]]
+    /// Filter/layout model — present only for the non-empty `.shortcuts` state.
+    var model: PopupFilterModel? = nil
     /// Fixed panel width (content columns + horizontal padding).
     let width: CGFloat
     /// Fixed panel height. `nil` lets the content size itself — used when the
@@ -26,7 +58,7 @@ struct PopupRootView: View {
             case .needsPermission:
                 PopupOnboardingView(onGrant: onGrant, onOpenSettings: onOpenSettings)
             case .noApp:
-                messageView("No active application", systemImage: "app.dashed")
+                PopupMessageView(text: "No active application", systemImage: "app.dashed")
             }
         }
         .padding(Theme.contentPadding)
@@ -40,28 +72,62 @@ struct PopupRootView: View {
 
     // MARK: - Shortcuts
 
+    @ViewBuilder
     private func shortcutsView(_ app: AppShortcuts) -> some View {
-        VStack(alignment: .leading, spacing: 10) {
-            header(app)
-            if app.isEmpty {
-                messageView("No keyboard shortcuts found for \(app.appName)",
-                            systemImage: "keyboard")
-            } else if scrolls {
-                ScrollView(.vertical) { grid }
-                    .scrollBounceBehavior(.basedOnSize)
-            } else {
-                grid
+        if let model, !app.isEmpty {
+            FilterableShortcutsView(model: model, scrolls: scrolls)
+        } else {
+            VStack(alignment: .leading, spacing: 10) {
+                HStack(spacing: 8) {
+                    if let icon = app.icon {
+                        Image(nsImage: icon).resizable().frame(width: 20, height: 20)
+                    }
+                    Text(app.appName).font(.headline)
+                    Spacer()
+                }
+                PopupMessageView(text: "No keyboard shortcuts found for \(app.appName)",
+                                 systemImage: "keyboard")
             }
         }
     }
+}
 
-    /// The multi-column grid of section cards, without any scroll container.
+/// The shortcuts grid with a live, auto-focused type-to-filter field in its
+/// header. The layout is fixed: every shortcut stays on screen in the same spot
+/// while typing, and rows that don't match the filter fade to a low-contrast
+/// grey so the matching ones stand out.
+private struct FilterableShortcutsView: View {
+    @ObservedObject var model: PopupFilterModel
+    let scrolls: Bool
+    @FocusState private var searchFocused: Bool
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            header
+            contentView
+        }
+        // Auto-focus the field so the user can type immediately. Deferred to the
+        // next runloop tick so the panel is key before focus is requested.
+        .onAppear { DispatchQueue.main.async { searchFocused = true } }
+    }
+
+    @ViewBuilder
+    private var contentView: some View {
+        if scrolls {
+            ScrollView(.vertical) { grid }
+                .scrollBounceBehavior(.basedOnSize)
+        } else {
+            grid
+        }
+    }
+
+    /// The full multi-column grid of section cards, dimming non-matching rows.
     private var grid: some View {
         HStack(alignment: .top, spacing: MenuLayout.columnSpacing) {
-            ForEach(Array(columns.enumerated()), id: \.offset) { _, column in
+            ForEach(Array(model.columns.enumerated()), id: \.offset) { _, column in
                 VStack(alignment: .leading, spacing: MenuLayout.sectionSpacing) {
                     ForEach(column) { section in
-                        MenuSectionView(section: section)
+                        MenuSectionView(section: section, query: model.activeQuery)
                     }
                 }
                 .frame(width: MenuLayout.columnWidth, alignment: .top)
@@ -70,23 +136,63 @@ struct PopupRootView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    private func header(_ app: AppShortcuts) -> some View {
+    private var header: some View {
         HStack(spacing: 8) {
-            if let icon = app.icon {
+            if let icon = model.app.icon {
                 Image(nsImage: icon)
                     .resizable()
                     .frame(width: 20, height: 20)
             }
-            Text(app.appName)
+            Text(model.app.appName)
                 .font(.headline)
-            Text("\(app.totalCount) shortcuts")
+            countText
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
-            Spacer()
+            Spacer(minLength: 12)
+            searchField
         }
     }
 
-    private func messageView(_ text: String, systemImage: String) -> some View {
+    private var countText: Text {
+        model.hasQuery
+            ? Text("\(model.matchCount) of \(model.app.totalCount)")
+            : Text("\(model.app.totalCount) shortcuts")
+    }
+
+    private var searchField: some View {
+        HStack(spacing: 5) {
+            Image(systemName: "magnifyingglass")
+                .font(.system(size: 11))
+                .foregroundStyle(.secondary)
+            TextField("Filter", text: $model.query)
+                .textFieldStyle(.plain)
+                .font(.system(size: 12))
+                .focused($searchFocused)
+                .frame(width: 150)
+            if model.hasQuery {
+                Button {
+                    model.query = ""
+                    searchFocused = true
+                } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.system(size: 11))
+                        .foregroundStyle(.secondary)
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .padding(.horizontal, 8)
+        .padding(.vertical, 4)
+        .background(Theme.sectionHeaderFill, in: RoundedRectangle(cornerRadius: 6))
+    }
+}
+
+/// Centered icon-over-text placeholder used for empty / no-match / no-app states.
+struct PopupMessageView: View {
+    let text: String
+    let systemImage: String
+
+    var body: some View {
         VStack(spacing: 10) {
             Image(systemName: systemImage)
                 .font(.system(size: 28))
@@ -103,13 +209,21 @@ struct PopupRootView: View {
 /// up by sub-group labels for items that came from a submenu.
 struct MenuSectionView: View {
     let section: MenuSection
+    /// Active filter query; empty means no filter (nothing dims).
+    var query: String = ""
+
+    /// Whether the whole section is dimmed: a filter is active and nothing in it
+    /// matches, so its headers recede along with its rows.
+    private var sectionDimmed: Bool {
+        !query.isEmpty && !section.hasMatch(query)
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: MenuLayout.rowSpacing) {
             // Top-level section header (e.g. "Window")
             Text(section.title)
                 .font(.system(size: 12, weight: .semibold))
-                .foregroundStyle(.secondary)
+                .foregroundStyle(sectionDimmed ? AnyShapeStyle(Theme.fadedText) : AnyShapeStyle(.secondary))
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal, 8)
                 .padding(.vertical, 4)
@@ -119,10 +233,11 @@ struct MenuSectionView: View {
             ForEach(section.groups) { group in
                 // Named groups get a lightweight sub-header above their rows.
                 if let groupTitle = group.title {
-                    SubGroupHeader(title: groupTitle)
+                    SubGroupHeader(title: groupTitle,
+                                   dimmed: !query.isEmpty && !group.hasMatch(query))
                 }
                 ForEach(group.shortcuts) { shortcut in
-                    ShortcutRow(shortcut: shortcut)
+                    ShortcutRow(shortcut: shortcut, query: query)
                 }
             }
         }
@@ -133,11 +248,12 @@ struct MenuSectionView: View {
 /// Visually subordinate to the section header: smaller, tertiary colour, no fill.
 private struct SubGroupHeader: View {
     let title: String
+    var dimmed: Bool = false
 
     var body: some View {
         Text(title)
             .font(.system(size: 11, weight: .medium))
-            .foregroundStyle(.tertiary)
+            .foregroundStyle(dimmed ? AnyShapeStyle(Theme.fadedText) : AnyShapeStyle(.tertiary))
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.leading, 8)
             .padding(.top, 6)
@@ -145,18 +261,27 @@ private struct SubGroupHeader: View {
     }
 }
 
-/// A single row: right-aligned key glyphs followed by the command name.
+/// A single row: right-aligned key glyphs followed by the command name. When a
+/// filter is active and this shortcut doesn't match, both the keys and title
+/// fade to a low-contrast grey so matching rows stand out.
 struct ShortcutRow: View {
     let shortcut: Shortcut
+    /// Active filter query; empty means no filter (nothing dims).
+    var query: String = ""
+
+    private var dimmed: Bool {
+        !query.isEmpty && !shortcut.matches(query)
+    }
 
     var body: some View {
         HStack(spacing: 8) {
             Text(shortcut.keys)
                 .font(.system(size: 12, weight: .medium, design: .rounded))
-                .foregroundStyle(Theme.keyAccent)
+                .foregroundStyle(dimmed ? Theme.fadedText : Theme.keyAccent)
                 .frame(width: Theme.keyColumnWidth, alignment: .trailing)
             Text(shortcut.title)
                 .font(.system(size: 12))
+                .foregroundStyle(dimmed ? AnyShapeStyle(Theme.fadedText) : AnyShapeStyle(.primary))
                 .lineLimit(1)
                 .truncationMode(.tail)
                 .help(shortcut.title)

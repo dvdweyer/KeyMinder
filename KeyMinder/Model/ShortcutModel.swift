@@ -55,3 +55,31 @@ enum PopupContent {
     case needsPermission
     case noApp
 }
+
+// MARK: - Matching
+
+/// A shortcut matches a query if the query appears in either the command title
+/// or the formatted key string (e.g. "⌘N"). Matching is case- and
+/// diacritic-insensitive and locale-aware (`localizedStandardContains`).
+/// The popup keeps every shortcut on screen and only *dims* the non-matches, so
+/// these helpers report match state rather than filtering the data.
+extension Shortcut {
+    func matches(_ query: String) -> Bool {
+        title.localizedStandardContains(query) || keys.localizedStandardContains(query)
+    }
+}
+
+extension ShortcutGroup {
+    func hasMatch(_ query: String) -> Bool { shortcuts.contains { $0.matches(query) } }
+}
+
+extension MenuSection {
+    func hasMatch(_ query: String) -> Bool { groups.contains { $0.hasMatch(query) } }
+}
+
+extension AppShortcuts {
+    /// Number of shortcuts matching `query`.
+    func matchCount(_ query: String) -> Int {
+        sections.reduce(0) { $0 + $1.shortcuts.filter { $0.matches(query) }.count }
+    }
+}

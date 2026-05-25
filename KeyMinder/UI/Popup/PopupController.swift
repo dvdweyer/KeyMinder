@@ -16,6 +16,10 @@ final class PopupController {
     private var workspaceObserver: NSObjectProtocol?
     private let ownPID = NSRunningApplication.current.processIdentifier
 
+    /// Live filter state for the current shortcuts presentation, if any. Read by
+    /// the Esc handlers so Esc clears a non-empty filter before dismissing.
+    private var filterModel: PopupFilterModel?
+
     var isVisible: Bool { panel?.isVisible ?? false }
 
     // MARK: - Show / hide
@@ -33,6 +37,7 @@ final class PopupController {
 
     /// Builds, sizes, and centers the hosting view for `content` on `panel`.
     private func apply(_ content: PopupContent, to panel: PopupPanel) {
+        filterModel = nil
         let (hosting, size) = makeContent(for: content)
         hosting.frame = CGRect(origin: .zero, size: size)
         panel.setContentSize(size)
@@ -98,7 +103,7 @@ final class PopupController {
 
     /// Hosting view for the fixed-size states (onboarding, no app, empty app).
     private func fixedContent(_ content: PopupContent, size: CGSize) -> (NSView, CGSize) {
-        let root = rootView(content, columns: [], width: size.width, height: size.height)
+        let root = rootView(content, model: nil, width: size.width, height: size.height)
         return (NSHostingView(rootView: root), size)
     }
 
@@ -106,6 +111,10 @@ final class PopupController {
     /// analytic layout, but the height is measured from the actual rendered
     /// content (no ScrollView), then clamped so the panel never exceeds the
     /// screen — overflow falls to the grid's own ScrollView.
+    ///
+    /// The panel is sized once here and the column distribution is fixed for the
+    /// life of the popup. Live type-to-filter never changes the layout: every
+    /// shortcut stays on screen in the same place; non-matching rows just dim.
     private func measuredContent(_ content: PopupContent, app: AppShortcuts) -> (NSView, CGSize) {
         let screen = Self.activeScreen.visibleFrame
         let maxPanelHeight = screen.height * 0.86
@@ -124,8 +133,12 @@ final class PopupController {
             + CGFloat(actual - 1) * MenuLayout.columnSpacing
         let width = contentWidth + 2 * Theme.contentPadding
 
-        // --- Height (measured from the real layout, no scroll wrapper). ---
-        let measureView = rootView(content, columns: columns, width: width,
+        let model = PopupFilterModel(app: app, columns: columns)
+        filterModel = model
+
+        // --- Height (measured from the real layout, no scroll wrapper). The
+        // grid always renders the full content, so this measures it directly. ---
+        let measureView = rootView(content, model: model, width: width,
                                    height: nil, scrolls: false)
         let measurer = NSHostingView(rootView: measureView)
         measurer.frame = CGRect(x: 0, y: 0, width: width, height: 0)
@@ -133,19 +146,19 @@ final class PopupController {
         let naturalHeight = measurer.fittingSize.height
         let height = min(naturalHeight, maxPanelHeight)
 
-        let root = rootView(content, columns: columns, width: width,
+        let root = rootView(content, model: model, width: width,
                             height: height, scrolls: true)
         return (NSHostingView(rootView: root), CGSize(width: width, height: height))
     }
 
     private func rootView(_ content: PopupContent,
-                          columns: [[MenuSection]],
+                          model: PopupFilterModel?,
                           width: CGFloat,
                           height: CGFloat? = nil,
                           scrolls: Bool = true) -> PopupRootView {
         PopupRootView(
             content: content,
-            columns: columns,
+            model: model,
             width: width,
             height: height,
             scrolls: scrolls,
@@ -168,19 +181,23 @@ final class PopupController {
         }
 
         // Esc while frontmost (works because we have Accessibility permission).
+        // Used when the panel isn't key; same clear-then-dismiss semantics.
         if let globalKey = NSEvent.addGlobalMonitorForEvents(
             matching: [.keyDown],
-            handler: { [weak self] event in if event.keyCode == 53 { self?.hide() } }
+            handler: { [weak self] event in if event.keyCode == 53 { _ = self?.handleEscape() } }
         ) {
             eventMonitors.append(globalKey)
         }
 
-        // Esc when the panel itself is key — swallow the event.
+        // Esc when the panel itself is key (e.g. the filter field has focus):
+        // clear a non-empty filter first, otherwise dismiss. Either way the
+        // keystroke is swallowed so it doesn't reach the filter field.
         if let localKey = NSEvent.addLocalMonitorForEvents(
             matching: [.keyDown],
             handler: { [weak self] event in
+                guard let self else { return event }
                 if event.keyCode == 53 {
-                    self?.hide()
+                    _ = self.handleEscape()
                     return nil
                 }
                 return event
@@ -199,6 +216,19 @@ final class PopupController {
             guard let self, let app, app.processIdentifier != self.ownPID else { return }
             MainActor.assumeIsolated { self.hide() }
         }
+    }
+
+    /// Esc behaviour: clear a non-empty filter (keeping the popup open), or
+    /// dismiss the popup when there's nothing to clear. Returns `true` when it
+    /// only cleared the filter.
+    @discardableResult
+    private func handleEscape() -> Bool {
+        if let filterModel, filterModel.hasQuery {
+            filterModel.query = ""
+            return true
+        }
+        hide()
+        return false
     }
 
     private func removeDismissalMonitors() {
