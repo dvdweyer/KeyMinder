@@ -12,6 +12,18 @@ struct GlobalHotkey: Codable, Equatable {
     let displayString: String
 }
 
+// MARK: - Default hotkey
+
+extension GlobalHotkey {
+    /// The factory default shortcut: ⌥⌘K.
+    /// Applied once on first launch if the user hasn't already set (or cleared) a hotkey.
+    static let defaultHotkey = GlobalHotkey(
+        keyCode: UInt32(kVK_ANSI_K),                       // 0x28
+        carbonModifiers: UInt32(cmdKey | optionKey),        // ⌘⌥
+        displayString: "⌥⌘K"
+    )
+}
+
 // MARK: - Factory
 
 extension GlobalHotkey {
@@ -94,7 +106,8 @@ extension GlobalHotkey {
 // MARK: - UserDefaults
 
 extension UserDefaults {
-    private static let hotkeyKey = "globalHotkey"
+    private static let hotkeyKey            = "globalHotkey"
+    private static let didSetDefaultHotkeyKey = "didSetDefaultHotkey"
 
     var globalHotkey: GlobalHotkey? {
         get {
@@ -109,5 +122,13 @@ extension UserDefaults {
                 removeObject(forKey: Self.hotkeyKey)
             }
         }
+    }
+
+    /// `true` once we have either applied the factory-default hotkey or confirmed
+    /// the user deliberately has no hotkey. Set to `true` on first launch so we
+    /// never overwrite a user's intentional "no hotkey" state.
+    var didSetDefaultHotkey: Bool {
+        get { bool(forKey: Self.didSetDefaultHotkeyKey) }
+        set { set(newValue, forKey: Self.didSetDefaultHotkeyKey) }
     }
 }

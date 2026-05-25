@@ -20,6 +20,21 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func setupHotkey() {
         HotkeyManager.shared.onActivate = { [weak self] in self?.togglePopup() }
+
+        // First-launch seeding: apply ⌥⌘K as the default hotkey the very first
+        // time the app runs, but only when the user has not already configured
+        // (or deliberately cleared) a hotkey.  The flag is set unconditionally so
+        // we never re-seed after the user removes their hotkey.
+        if !UserDefaults.standard.didSetDefaultHotkey {
+            UserDefaults.standard.didSetDefaultHotkey = true
+            if UserDefaults.standard.globalHotkey == nil {
+                let def = GlobalHotkey.defaultHotkey
+                UserDefaults.standard.globalHotkey = def
+                HotkeyManager.shared.register(def)
+                return
+            }
+        }
+
         if let saved = UserDefaults.standard.globalHotkey {
             HotkeyManager.shared.register(saved)
         }
@@ -115,6 +130,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             grant.target = self
             menu.addItem(.separator())
         }
+        // Discoverable hotkey row — shows the current shortcut (or "(unset)") so
+        // users learn the keyboard trigger without having to open Settings.
+        let hotkeyTitle: String
+        if let hk = UserDefaults.standard.globalHotkey {
+            hotkeyTitle = "Show Shortcuts  \(hk.displayString)"
+        } else {
+            hotkeyTitle = "Show Shortcuts  (unset)"
+        }
+        let hotkeyInfo = menu.addItem(withTitle: hotkeyTitle, action: nil, keyEquivalent: "")
+        hotkeyInfo.isEnabled = false
+
         let settings = menu.addItem(withTitle: "Settings…",
                                     action: #selector(openSettings), keyEquivalent: ",")
         settings.target = self
