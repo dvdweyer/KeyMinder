@@ -23,8 +23,6 @@ struct PopupRootView: View {
             switch content {
             case .shortcuts(let app):
                 shortcutsView(app)
-            case .loading(let appName, let icon):
-                loadingView(appName: appName, icon: icon)
             case .needsPermission:
                 PopupOnboardingView(onGrant: onGrant, onOpenSettings: onOpenSettings)
             case .noApp:
@@ -86,22 +84,6 @@ struct PopupRootView: View {
                 .foregroundStyle(.secondary)
             Spacer()
         }
-    }
-
-    /// Instant-feedback state shown while the frontmost app's menus are scraped.
-    private func loadingView(appName: String, icon: NSImage?) -> some View {
-        VStack(spacing: 12) {
-            if let icon {
-                Image(nsImage: icon)
-                    .resizable()
-                    .frame(width: 44, height: 44)
-            }
-            ProgressView()
-                .controlSize(.small)
-            Text("Reading \(appName)'s shortcuts…")
-                .foregroundStyle(.secondary)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     private func messageView(_ text: String, systemImage: String) -> some View {

@@ -82,8 +82,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    /// Presents the popup immediately with a loading state, then scrapes the
-    /// frontmost app's menus off the main thread and fills the panel in.
+    /// In-flight scrape task. Cancelled if the user triggers another open
+    /// before the previous scrape finishes.
+    private var scrapeTask: Task<Void, Never>?
+
+    /// Scrapes the frontmost app's menus off the main thread, then presents
+    /// the popup with the result. The panel does not appear until data is ready.
     private func presentPopup() {
         guard AccessibilityPermission.isTrusted else {
             popup.show(.needsPermission)
@@ -101,13 +105,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let bundleID = app.bundleIdentifier
         let icon = app.icon
 
-        // Instant feedback while the (potentially slow) AX traversal runs.
-        let token = popup.show(.loading(appName: appName, icon: icon))
-
-        Task {
+        // Cancel any stale in-flight scrape before starting a new one.
+        scrapeTask?.cancel()
+        scrapeTask = Task {
             let sections = await Task.detached(priority: .userInitiated) {
                 MenuScraper.scrape(pid: pid)
             }.value
+
+            guard !Task.isCancelled else { return }
 
             let shortcuts = AppShortcuts(
                 appName: appName,
@@ -115,7 +120,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 icon: icon,
                 sections: sections
             )
-            popup.update(.shortcuts(shortcuts), token: token)
+            popup.show(.shortcuts(shortcuts))
         }
     }
 

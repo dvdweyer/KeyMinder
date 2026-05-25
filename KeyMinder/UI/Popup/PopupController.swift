@@ -16,21 +16,12 @@ final class PopupController {
     private var workspaceObserver: NSObjectProtocol?
     private let ownPID = NSRunningApplication.current.processIdentifier
 
-    /// Bumped on every `show`. A pending async `update` carries the generation it
-    /// was issued for and is dropped if it no longer matches (the popup was
-    /// re-opened for another app in the meantime).
-    private var generation = 0
-
     var isVisible: Bool { panel?.isVisible ?? false }
 
     // MARK: - Show / hide
 
-    /// Presents the panel with `content` and returns a token identifying this
-    /// presentation. Pass the token to `update(_:token:)` to fill in content
-    /// scraped asynchronously, so stale results can be discarded.
-    @discardableResult
-    func show(_ content: PopupContent) -> Int {
-        generation += 1
+    /// Presents the panel with `content`.
+    func show(_ content: PopupContent) {
         let panel = panel ?? makePanel()
         self.panel = panel
 
@@ -38,15 +29,6 @@ final class PopupController {
         panel.makeKeyAndOrderFront(nil)
 
         installDismissalMonitors()
-        return generation
-    }
-
-    /// Replaces the visible panel's content with an asynchronously produced
-    /// result, re-measuring and re-centering. No-op if the popup was dismissed,
-    /// or re-opened for a different request, since `token` was issued.
-    func update(_ content: PopupContent, token: Int) {
-        guard isVisible, token == generation, let panel else { return }
-        apply(content, to: panel)
     }
 
     /// Builds, sizes, and centers the hosting view for `content` on `panel`.
@@ -102,8 +84,6 @@ final class PopupController {
     /// column/width math but *measures* its height from the real SwiftUI layout.
     private func makeContent(for content: PopupContent) -> (NSView, CGSize) {
         switch content {
-        case .loading:
-            return fixedContent(content, size: CGSize(width: 360, height: 200))
         case .needsPermission:
             return fixedContent(content, size: CGSize(width: 420, height: 300))
         case .noApp:
