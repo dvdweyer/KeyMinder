@@ -68,6 +68,14 @@ enum MenuScraper {
                 let submenuShortcuts = collectShortcutsFlat(in: submenu)
                 if !submenuShortcuts.isEmpty {
                     named.append(ShortcutGroup(title: title, shortcuts: submenuShortcuts))
+                } else {
+                    // Log empty submenus so we can quantify how often lazy population
+                    // hides shortcuts.  itemCount == 0 strongly suggests the submenu
+                    // is populated lazily (NSMenu's menuNeedsUpdate: fires only when
+                    // the menu is actually displayed, not when AX reads it).
+                    let itemCount = children(submenu).count
+                    let hint = itemCount == 0 ? "; likely lazy-populated" : ""
+                    Logger.scraper.info("Submenu '\(title, privacy: .public)' yielded 0 shortcuts (\(itemCount, privacy: .public) child items\(hint, privacy: .public))")
                 }
             }
         }
@@ -96,7 +104,13 @@ enum MenuScraper {
             }
             // Flatten sub-submenus.
             if let submenu = children(item).first {
-                result.append(contentsOf: collectShortcutsFlat(in: submenu))
+                let sub = collectShortcutsFlat(in: submenu)
+                if sub.isEmpty {
+                    let itemCount = children(submenu).count
+                    let hint = itemCount == 0 ? "; likely lazy-populated" : ""
+                    Logger.scraper.info("Nested submenu '\(title, privacy: .public)' yielded 0 shortcuts (\(itemCount, privacy: .public) child items\(hint, privacy: .public))")
+                }
+                result.append(contentsOf: sub)
             }
         }
         return result

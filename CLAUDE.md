@@ -103,3 +103,20 @@ edit `project.pbxproj`.
 - Submenu sub-group headers (e.g. "Move & Resize") not shown yet — scraper flattens submenus.
 - AX scraping runs on the main thread; a busy target app could briefly block.
 - System-wide shortcuts (Spotlight, Screenshots, …) not implemented yet — planned phase.
+- **Lazy-populated submenus are invisible to the scraper.** Apps that use
+  `NSMenuDelegate`'s `menuNeedsUpdate:` or `menu:updateItem:atIndex:shouldCancel:`
+  only fill submenu items when the menu is about to be *displayed*.  The AX
+  bridge reads items as-is from the in-memory `NSMenu`; no AX attribute read,
+  no re-query of `kAXChildrenAttribute`, and no delay triggers that delegate
+  callback.  Known affected cases:
+    - **Finder → "Open With"** (fully lazy — 0 AX children until the menu opens).
+    - **Any app** whose dynamic submenus (e.g. window lists, recent items) are
+      populated on-demand.
+  Intrusive workarounds (`kAXPressAction`, `kAXShowMenuAction`, synthetic
+  `CGEvent` clicks) would flash menus on screen and are intentionally excluded.
+  The scraper now logs these at `.info` as
+  `"Submenu '<name>' yielded 0 shortcuts (0 child items; likely lazy-populated)"`
+  so occurrences can be quantified with:
+  ```
+  /usr/bin/log stream --level info --predicate "subsystem == 'org.afaik.KeyMinder'"
+  ```
