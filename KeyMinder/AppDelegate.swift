@@ -63,21 +63,45 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         if popup.isVisible {
             popup.hide()
         } else {
-            popup.show(currentContent())
+            presentPopup()
         }
     }
 
-    /// Builds the popup content for the current state, scraping the frontmost app.
-    private func currentContent() -> PopupContent {
-        guard AccessibilityPermission.isTrusted else { return .needsPermission }
-        guard let app = frontmostMonitor.frontmostApp else { return .noApp }
-        let sections = MenuScraper.scrape(pid: app.processIdentifier)
-        return .shortcuts(AppShortcuts(
-            appName: app.localizedName ?? "App",
-            bundleIdentifier: app.bundleIdentifier,
-            icon: app.icon,
-            sections: sections
-        ))
+    /// Presents the popup immediately with a loading state, then scrapes the
+    /// frontmost app's menus off the main thread and fills the panel in.
+    private func presentPopup() {
+        guard AccessibilityPermission.isTrusted else {
+            popup.show(.needsPermission)
+            return
+        }
+        guard let app = frontmostMonitor.frontmostApp else {
+            popup.show(.noApp)
+            return
+        }
+
+        // Capture everything the scrape needs from the main actor up front; only
+        // the pid crosses to the background task.
+        let pid = app.processIdentifier
+        let appName = app.localizedName ?? "App"
+        let bundleID = app.bundleIdentifier
+        let icon = app.icon
+
+        // Instant feedback while the (potentially slow) AX traversal runs.
+        let token = popup.show(.loading(appName: appName, icon: icon))
+
+        Task {
+            let sections = await Task.detached(priority: .userInitiated) {
+                MenuScraper.scrape(pid: pid)
+            }.value
+
+            let shortcuts = AppShortcuts(
+                appName: appName,
+                bundleIdentifier: bundleID,
+                icon: icon,
+                sections: sections
+            )
+            popup.update(.shortcuts(shortcuts), token: token)
+        }
     }
 
     // MARK: - Context menu (right-click)

@@ -52,6 +52,9 @@ struct AppShortcuts {
 /// What the popup should display.
 enum PopupContent {
     case shortcuts(AppShortcuts)
+    /// Shown immediately on open while the frontmost app's menus are scraped on
+    /// a background queue, so the panel gives instant feedback.
+    case loading(appName: String, icon: NSImage?)
     case needsPermission
     case noApp
 }
