@@ -6,12 +6,29 @@
 	objectVersion = 70;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		F2A3B4C5D6E7F8A9BACBDCED /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A3B4C5D6E7F8A9BACBDCEDFE /* XCTest.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		E1F2A3B4C5D6E7F8A9BACBDC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 158605D6EF3D4BBD8752CEA4 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 30CCAC6BC8C148BB973D3B04;
+			remoteInfo = KeyMinder;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		12513A8A28E54BD3B5033919 /* KeyMinder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KeyMinder.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1B2C3D4E5F6A7B8C9D0E1F2 /* KeyMinderTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KeyMinderTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A3B4C5D6E7F8A9BACBDCEDFE /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		77313F4FB0F249AB8F3A5BA3 /* KeyMinder */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = KeyMinder; sourceTree = "<group>"; };
+		B2C3D4E5F6A7B8C9D0E1F2A3 /* KeyMinderTests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = KeyMinderTests; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -19,6 +36,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E5F6A7B8C9D0E1F2A3B4C5D6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F2A3B4C5D6E7F8A9BACBDCED /* XCTest.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -37,6 +62,7 @@
 			isa = PBXGroup;
 			children = (
 				12513A8A28E54BD3B5033919 /* KeyMinder.app */,
+				A1B2C3D4E5F6A7B8C9D0E1F2 /* KeyMinderTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -64,6 +90,27 @@
 			productReference = 12513A8A28E54BD3B5033919 /* KeyMinder.app */;
 			productType = "com.apple.product-type.application";
 		};
+		C3D4E5F6A7B8C9D0E1F2A3B4 /* KeyMinderTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A7B8C9D0E1F2A3B4C5D6E7F8 /* Build configuration list for PBXNativeTarget "KeyMinderTests" */;
+			buildPhases = (
+				D4E5F6A7B8C9D0E1F2A3B4C5 /* Sources */,
+				E5F6A7B8C9D0E1F2A3B4C5D6 /* Frameworks */,
+				F6A7B8C9D0E1F2A3B4C5D6E7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D0E1F2A3B4C5D6E7F8A9BACB /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				B2C3D4E5F6A7B8C9D0E1F2A3 /* KeyMinderTests */,
+			);
+			name = KeyMinderTests;
+			productName = KeyMinderTests;
+			productReference = A1B2C3D4E5F6A7B8C9D0E1F2 /* KeyMinderTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -76,6 +123,10 @@
 				TargetAttributes = {
 					30CCAC6BC8C148BB973D3B04 = {
 						CreatedOnToolsVersion = 26.0;
+					};
+					C3D4E5F6A7B8C9D0E1F2A3B4 = {
+						CreatedOnToolsVersion = 26.0;
+						TestTargetID = 30CCAC6BC8C148BB973D3B04;
 					};
 				};
 			};
@@ -94,12 +145,20 @@
 			projectRoot = "";
 			targets = (
 				30CCAC6BC8C148BB973D3B04 /* KeyMinder */,
+				C3D4E5F6A7B8C9D0E1F2A3B4 /* KeyMinderTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		6F2C1809158C444ABB89D42B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F6A7B8C9D0E1F2A3B4C5D6E7 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -116,7 +175,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D4E5F6A7B8C9D0E1F2A3B4C5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		D0E1F2A3B4C5D6E7F8A9BACB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 30CCAC6BC8C148BB973D3B04 /* KeyMinder */;
+			targetProxy = E1F2A3B4C5D6E7F8A9BACBDC /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		3E3EC5A646DA464EBE9375A9 /* Release */ = {
@@ -141,7 +215,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 0.1.13;
+				MARKETING_VERSION = 0.1.14;
 				PRODUCT_BUNDLE_IDENTIFIER = org.afaik.KeyMinder;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -288,7 +362,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 0.1.13;
+				MARKETING_VERSION = 0.1.14;
 				PRODUCT_BUNDLE_IDENTIFIER = org.afaik.KeyMinder;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -297,9 +371,56 @@
 			};
 			name = Debug;
 		};
+		B8C9D0E1F2A3B4C5D6E7F8A9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = R4J8ZNC9HF;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "org.afaik.KeyMinderTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/KeyMinder.app/Contents/MacOS/KeyMinder";
+			};
+			name = Debug;
+		};
+		C9D0E1F2A3B4C5D6E7F8A9BA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = R4J8ZNC9HF;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "org.afaik.KeyMinderTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/KeyMinder.app/Contents/MacOS/KeyMinder";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		A7B8C9D0E1F2A3B4C5D6E7F8 /* Build configuration list for PBXNativeTarget "KeyMinderTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B8C9D0E1F2A3B4C5D6E7F8A9 /* Debug */,
+				C9D0E1F2A3B4C5D6E7F8A9BA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		B7D42D5EC0904CF1BDE4E3EC /* Build configuration list for PBXNativeTarget "KeyMinder" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

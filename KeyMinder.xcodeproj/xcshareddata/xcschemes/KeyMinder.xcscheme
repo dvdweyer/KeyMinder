@@ -20,6 +20,20 @@
                ReferencedContainer = "container:KeyMinder.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "C3D4E5F6A7B8C9D0E1F2A3B4"
+               BuildableName = "KeyMinderTests.xctest"
+               BlueprintName = "KeyMinderTests"
+               ReferencedContainer = "container:KeyMinder.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -28,6 +42,17 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "C3D4E5F6A7B8C9D0E1F2A3B4"
+               BuildableName = "KeyMinderTests.xctest"
+               BlueprintName = "KeyMinderTests"
+               ReferencedContainer = "container:KeyMinder.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

@@ -1,0 +1,228 @@
+import XCTest
+@testable import KeyMinder
+
+// MARK: - Fixture factory
+
+/// Builds MenuSection values without needing real scraped data.
+private extension MenuSection {
+
+    /// Creates a MenuSection with the given title and groups.
+    /// Each element of `groups` is a (submenu-title-or-nil, shortcut-count) pair.
+    static func fixture(title: String, groups: [(String?, Int)]) -> MenuSection {
+        let shortcutGroups = groups.map { (groupTitle, count) in
+            ShortcutGroup(
+                title: groupTitle,
+                shortcuts: (0..<count).map { i in Shortcut(title: "Item \(i)", keys: "⌘\(i)") }
+            )
+        }
+        return MenuSection(title: title, groups: shortcutGroups)
+    }
+
+    /// Convenience: one unnamed group with `count` shortcuts.
+    static func fixture(title: String, count: Int) -> MenuSection {
+        .fixture(title: title, groups: [(nil, count)])
+    }
+}
+
+// MARK: - MenuLayout.height(of:) tests
+
+final class MenuLayoutHeightTests: XCTestCase {
+
+    func testHeight_noGroups_equalsHeaderOnly() {
+        // elementCount = 1, gaps = 0 → just the header height
+        let section = MenuSection.fixture(title: "Empty", groups: [])
+        XCTAssertEqual(MenuLayout.height(of: section),
+                       MenuLayout.headerHeight,
+                       accuracy: 0.001)
+    }
+
+    func testHeight_singleUnnamedGroup_threeShortcuts() {
+        // elementCount = 1 header + 0 subheaders + 3 rows = 4 → gaps = 3
+        let section = MenuSection.fixture(title: "File", count: 3)
+        let expected = MenuLayout.headerHeight
+            + 3 * MenuLayout.rowHeight
+            + 3 * MenuLayout.rowSpacing
+        XCTAssertEqual(MenuLayout.height(of: section), expected, accuracy: 0.001)
+    }
+
+    func testHeight_oneNamedGroup() {
+        // elementCount = 1 + 1 subheader + 2 rows = 4 → gaps = 3
+        let section = MenuSection.fixture(title: "Edit", groups: [("Sub", 2)])
+        let expected = MenuLayout.headerHeight
+            + 1 * MenuLayout.subGroupHeaderHeight
+            + 2 * MenuLayout.rowHeight
+            + 3 * MenuLayout.rowSpacing
+        XCTAssertEqual(MenuLayout.height(of: section), expected, accuracy: 0.001)
+    }
+
+    func testHeight_mixedGroups() {
+        // groups: unnamed with 2, named with 3
+        // namedGroupCount=1, totalShortcuts=5, elementCount=7, gaps=6
+        let section = MenuSection.fixture(title: "View", groups: [(nil, 2), ("Layout", 3)])
+        let expected = MenuLayout.headerHeight
+            + 1 * MenuLayout.subGroupHeaderHeight
+            + 5 * MenuLayout.rowHeight
+            + 6 * MenuLayout.rowSpacing
+        XCTAssertEqual(MenuLayout.height(of: section), expected, accuracy: 0.001)
+    }
+
+    func testHeight_twoNamedGroups() {
+        // namedGroupCount=2, totalShortcuts=4, elementCount=7, gaps=6
+        let section = MenuSection.fixture(title: "Window", groups: [("A", 2), ("B", 2)])
+        let expected = MenuLayout.headerHeight
+            + 2 * MenuLayout.subGroupHeaderHeight
+            + 4 * MenuLayout.rowHeight
+            + 6 * MenuLayout.rowSpacing
+        XCTAssertEqual(MenuLayout.height(of: section), expected, accuracy: 0.001)
+    }
+
+    func testHeight_singleShortcut() {
+        // elementCount = 2, gaps = 1
+        let section = MenuSection.fixture(title: "Help", count: 1)
+        let expected = MenuLayout.headerHeight
+            + 1 * MenuLayout.rowHeight
+            + 1 * MenuLayout.rowSpacing
+        XCTAssertEqual(MenuLayout.height(of: section), expected, accuracy: 0.001)
+    }
+}
+
+// MARK: - MenuLayout.distribute(_:columns:) tests
+
+final class MenuLayoutDistributeTests: XCTestCase {
+
+    // MARK: Edge cases
+
+    func testDistribute_emptyInput_returnsEmpty() {
+        XCTAssertTrue(MenuLayout.distribute([], columns: 3).isEmpty)
+    }
+
+    func testDistribute_singleSection_singleColumn_returnsSingleSlice() {
+        let sections = [MenuSection.fixture(title: "File", count: 5)]
+        let result = MenuLayout.distribute(sections, columns: 1)
+        XCTAssertEqual(result.count, 1)
+        XCTAssertEqual(result[0].count, 1)
+    }
+
+    func testDistribute_columnsEqualsSectionCount_oneEach() {
+        let sections = (0..<4).map { MenuSection.fixture(title: "M\($0)", count: 3) }
+        let result = MenuLayout.distribute(sections, columns: 4)
+        XCTAssertEqual(result.count, 4)
+        XCTAssertTrue(result.allSatisfy { $0.count == 1 })
+    }
+
+    func testDistribute_columnsExceedsSectionCount_oneEach() {
+        // k >= sections.count → one section per column
+        let sections = (0..<3).map { MenuSection.fixture(title: "M\($0)", count: 2) }
+        let result = MenuLayout.distribute(sections, columns: 10)
+        XCTAssertEqual(result.count, 3)
+        XCTAssertTrue(result.allSatisfy { $0.count == 1 })
+    }
+
+    func testDistribute_singleColumn_returnsAllInOne() {
+        let sections = (0..<5).map { MenuSection.fixture(title: "M\($0)", count: 3) }
+        let result = MenuLayout.distribute(sections, columns: 1)
+        XCTAssertEqual(result.count, 1)
+        XCTAssertEqual(result[0].count, 5)
+    }
+
+    // MARK: Order preservation
+
+    func testDistribute_preservesMenuBarOrder_withinColumns() {
+        let titles = ["Apple", "File", "Edit", "View", "Format", "Window", "Help"]
+        let sections = titles.map { MenuSection.fixture(title: $0, count: 4) }
+        let result = MenuLayout.distribute(sections, columns: 3)
+        let flatTitles = result.flatMap { $0.map(\.title) }
+        XCTAssertEqual(flatTitles, titles,
+                       "Sections must appear in original menu-bar order across all columns")
+    }
+
+    func testDistribute_preservesOrder_twoColumns() {
+        let sections = (0..<6).map { MenuSection.fixture(title: "\($0)", count: 3) }
+        let result = MenuLayout.distribute(sections, columns: 2)
+        let flatOrder = result.flatMap { $0.map(\.title) }
+        XCTAssertEqual(flatOrder, sections.map(\.title))
+    }
+
+    // MARK: No empty slices
+
+    func testDistribute_noEmptyColumns_uniformSections() {
+        let sections = (0..<8).map { MenuSection.fixture(title: "M\($0)", count: 4) }
+        let result = MenuLayout.distribute(sections, columns: 3)
+        XCTAssertTrue(result.allSatisfy { !$0.isEmpty },
+                      "distribute must never produce an empty column")
+    }
+
+    func testDistribute_noEmptyColumns_unevenSections() {
+        // Deliberately varied heights to exercise the binary search
+        let configs: [(String, Int)] = [
+            ("File", 10), ("Edit", 2), ("View", 8), ("Format", 1),
+            ("Insert", 6), ("Tools", 3), ("Window", 4), ("Help", 1)
+        ]
+        let sections = configs.map { MenuSection.fixture(title: $0, count: $1) }
+        for k in 2...4 {
+            let result = MenuLayout.distribute(sections, columns: k)
+            XCTAssertTrue(result.allSatisfy { !$0.isEmpty },
+                          "columns=\(k) produced an empty slice")
+        }
+    }
+
+    // MARK: Column count ≤ requested
+
+    func testDistribute_resultCountNeverExceedsRequest() {
+        let sections = (0..<8).map { MenuSection.fixture(title: "M\($0)", count: 3) }
+        for k in 1...6 {
+            let result = MenuLayout.distribute(sections, columns: k)
+            XCTAssertLessThanOrEqual(result.count, k,
+                                     "columns=\(k) returned \(result.count) slices")
+        }
+    }
+
+    // MARK: Balance — binary-searched capacity actually minimises tallest column
+
+    func testDistribute_balanced_equalWeightSections() {
+        // 4 equal sections into 2 columns → must split 2+2, not 3+1
+        let sections = (0..<4).map { MenuSection.fixture(title: "M\($0)", count: 5) }
+        let result = MenuLayout.distribute(sections, columns: 2)
+        XCTAssertEqual(result.count, 2)
+        XCTAssertEqual(result[0].count, 2)
+        XCTAssertEqual(result[1].count, 2)
+    }
+
+    func testDistribute_balanced_tallestColumnIsMinimal() {
+        // 6 equal sections into 3 columns → 2 each; tallest = 2 sections worth
+        let sections = (0..<6).map { MenuSection.fixture(title: "M\($0)", count: 4) }
+        let result = MenuLayout.distribute(sections, columns: 3)
+        XCTAssertEqual(result.count, 3)
+
+        let heights = result.map { col in
+            col.map { MenuLayout.height(of: $0) + MenuLayout.sectionSpacing }.reduce(0, +)
+        }
+        let maxHeight = heights.max() ?? 0
+
+        // Verify no reordering could reduce the tallest column.
+        // With 6 equal sections and 3 columns the only way to get a
+        // shorter maximum is to put 1 section in some column, which
+        // leaves 5 sections for 2 columns → at least 3 in one → taller.
+        // So 2+2+2 is provably optimal.
+        for col in result {
+            let colHeight = col.map { MenuLayout.height(of: $0) + MenuLayout.sectionSpacing }.reduce(0, +)
+            XCTAssertEqual(colHeight, maxHeight, accuracy: 0.001,
+                           "Columns are not balanced: \(heights)")
+        }
+    }
+
+    func testDistribute_singleHeavySection_isolatedInOwnColumn() {
+        // One very tall section followed by many small ones.
+        // The tall section must occupy its own column because the binary-searched
+        // capacity is at least max(single weight), so it always fits alone.
+        let heavy  = MenuSection.fixture(title: "Heavy", count: 30)
+        let smalls = (0..<4).map { MenuSection.fixture(title: "S\($0)", count: 1) }
+        let sections = [heavy] + smalls
+
+        let result = MenuLayout.distribute(sections, columns: 3)
+
+        // The heavy section must be the sole occupant of the first column.
+        XCTAssertEqual(result[0].count, 1)
+        XCTAssertEqual(result[0][0].title, "Heavy")
+    }
+}
