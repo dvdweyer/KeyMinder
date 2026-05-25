@@ -1,7 +1,7 @@
 # KeyMinder
 
 macOS menu-bar app that pops up the **active keyboard shortcuts of the frontmost
-app**, grouped by menu (like KeyCue). SwiftUI + AppKit, **macOS 26+ only**, full
+app**, grouped by menu. SwiftUI + AppKit, **macOS 26+ only**, full
 Xcode project. Reads other apps' menus via the Accessibility API.
 
 ## Build & run
@@ -39,6 +39,22 @@ Signed with an **Apple Development** cert (team `R4J8ZNC9HF`), so the grant is
 identity-based and **persists across rebuilds and run locations**. Reset with
 `tccutil reset Accessibility org.afaik.KeyMinder`.
 
+## Distribution
+
+- **TestFlight / Mac App Store are impossible for this app.** App Store Connect
+  requires the **App Sandbox**, and a sandboxed process **cannot use the
+  Accessibility API to read other apps** — no entitlement (including
+  temporary-exception ones) re-opens this. The TCC Accessibility grant does
+  **not** punch through the sandbox; they are separate layers. This is the same
+  wall that keeps KeyCue, Shortcat, Bartender, etc. off the Mac App Store.
+- **The shipping path is Developer ID + notarization:** Archive → Distribute App
+  → **Direct Distribution** → notarize → staple → zip/DMG to users.
+- Release config already has **Hardened Runtime on** (required for notarization).
+  There is **no entitlements file**, so the app is non-sandboxed — correct for
+  this path. For a distribution archive, switch the signing identity from
+  "Apple Development" to **"Developer ID Application"** (Xcode automatic signing
+  does this when you pick Direct Distribution).
+
 ## Logs
 
 ```
@@ -75,10 +91,15 @@ edit `project.pbxproj`.
 - macOS 26 only; Swift 5 language mode (`SWIFT_VERSION = 5.0`).
 - Light/dark handled automatically via `.regularMaterial` + semantic colors.
 - **Versioning: every commit bumps the patch (last) number** of
-  `MARKETING_VERSION` and is tagged `vX.Y.Z`. Current: **v0.1.1**.
+  `MARKETING_VERSION` and is tagged `vX.Y.Z`. Canonical sources of truth:
+  `MARKETING_VERSION` in `KeyMinder.xcodeproj/project.pbxproj`, or
+  `git tag --sort=-v:refname | head -1`.
 
 ## Known limitations / next up
 
+- **No app icon yet:** there is no `Assets.xcassets` in the project, though
+  `ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon` is set. A full icon set
+  (incl. 1024×1024) is needed before any release/distribution build.
 - Submenu sub-group headers (e.g. "Move & Resize") not shown yet — scraper flattens submenus.
 - AX scraping runs on the main thread; a busy target app could briefly block.
 - System-wide shortcuts (Spotlight, Screenshots, …) not implemented yet — planned phase.
