@@ -1,7 +1,7 @@
 # KeyMinder
 
 macOS menu-bar app that pops up the **active keyboard shortcuts of the frontmost
-app**, grouped by menu. SwiftUI + AppKit, **macOS 26+ only**, full
+app**, grouped by menu. SwiftUI + AppKit, **macOS 14+**, full
 Xcode project. Reads other apps' menus via the Accessibility API.
 
 ## Build & run
@@ -88,7 +88,9 @@ edit `project.pbxproj`.
 
 ## Conventions
 
-- macOS 26 only; Swift 5 language mode (`SWIFT_VERSION = 5.0`).
+- macOS 14+ (deployment target 14.0); Swift 5 language mode (`SWIFT_VERSION = 5.0`).
+  Newest APIs in use all land at 14.0: `@Observable`, `.scrollBounceBehavior`,
+  `MainActor.assumeIsolated` — so no `if #available` branching is needed.
 - Light/dark handled automatically via `.regularMaterial` + semantic colors.
 - **Versioning: every commit bumps the patch (last) number** of
   `MARKETING_VERSION` and is tagged `vX.Y.Z`. Canonical sources of truth:

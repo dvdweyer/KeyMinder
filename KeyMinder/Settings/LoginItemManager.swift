@@ -2,7 +2,7 @@ import ServiceManagement
 
 /// Wraps `SMAppService.mainApp` to register / unregister KeyMinder as a login item.
 ///
-/// `SMAppService` is available on macOS 13+; since KeyMinder targets macOS 26+ this
+/// `SMAppService` is available on macOS 13+; since KeyMinder targets macOS 14+ this
 /// is always available without any availability guard.
 @MainActor
 final class LoginItemManager {
