@@ -19,7 +19,7 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
 
     private init() {
         let window = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 420, height: 210),
+            contentRect: NSRect(x: 0, y: 0, width: 420, height: 320),
             styleMask:   [.titled, .closable],
             backing:     .buffered,
             defer:       false
@@ -60,6 +60,30 @@ final class SettingsModel: ObservableObject {
                 launchAtLogin = LoginItemManager.shared.isEnabled
                 Logger.settings.error("Login item toggle failed: \(error.localizedDescription)")
             }
+        }
+    }
+
+    // MARK: Double-tap trigger
+
+    @Published var doubleTapEnabled: Bool = UserDefaults.standard.doubleTapEnabled {
+        didSet {
+            UserDefaults.standard.doubleTapEnabled = doubleTapEnabled
+            applyDoubleTap()
+        }
+    }
+
+    @Published var doubleTapModifier: DoubleTapModifier = UserDefaults.standard.doubleTapModifier {
+        didSet {
+            UserDefaults.standard.doubleTapModifier = doubleTapModifier
+            applyDoubleTap()
+        }
+    }
+
+    private func applyDoubleTap() {
+        if doubleTapEnabled {
+            DoubleTapTrigger.shared.start(modifier: doubleTapModifier)
+        } else {
+            DoubleTapTrigger.shared.stop()
         }
     }
 
@@ -140,9 +164,34 @@ struct SettingsView: View {
             Divider()
 
             Toggle("Launch at Login", isOn: $model.launchAtLogin)
+
+            Divider()
+
+            Text("Double-tap Trigger")
+                .font(.headline)
+
+            Text("Show KeyMinder by quickly pressing and releasing one modifier key twice.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            HStack(spacing: 10) {
+                Toggle("Enable", isOn: $model.doubleTapEnabled)
+                    .toggleStyle(.switch)
+                if model.doubleTapEnabled {
+                    Picker("Modifier", selection: $model.doubleTapModifier) {
+                        ForEach(DoubleTapModifier.allCases, id: \.self) { mod in
+                            Text("\(mod.symbol) \(mod.label)").tag(mod)
+                        }
+                    }
+                    .pickerStyle(.menu)
+                    .labelsHidden()
+                    .frame(maxWidth: 130)
+                }
+            }
         }
         .padding(20)
-        .frame(width: 420, height: 210, alignment: .topLeading)
+        .frame(width: 420, height: 320, alignment: .topLeading)
         .onDisappear { model.stopRecording() }
     }
 

@@ -13,6 +13,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         popup.onOpenSettings = { AccessibilityPermission.openSettings() }
         setupStatusItem()
         setupHotkey()
+        setupDoubleTap()
     }
 
     // MARK: - Global hotkey
@@ -21,6 +22,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         HotkeyManager.shared.onActivate = { [weak self] in self?.togglePopup() }
         if let saved = UserDefaults.standard.globalHotkey {
             HotkeyManager.shared.register(saved)
+        }
+    }
+
+    // MARK: - Double-tap trigger
+
+    private func setupDoubleTap() {
+        DoubleTapTrigger.shared.onActivate = { [weak self] in self?.togglePopup() }
+        if UserDefaults.standard.doubleTapEnabled {
+            DoubleTapTrigger.shared.start(modifier: UserDefaults.standard.doubleTapModifier)
         }
     }
 
