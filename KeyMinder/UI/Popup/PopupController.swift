@@ -118,10 +118,14 @@ final class PopupController {
             ctx.timingFunction = CAMediaTimingFunction(name: .easeIn)
             panel.animator().alphaValue = 0
         } completionHandler: { [weak self] in
-            // Guard against a show() that was called while we were fading out.
-            guard let self, generation == self.animationGeneration else { return }
-            panel.orderOut(nil)
-            panel.alphaValue = 1   // Reset so the next show() fade starts clean.
+            // The completion handler always fires on the main thread, so it's safe
+            // to enter the main-actor domain to touch animationGeneration/panel.
+            MainActor.assumeIsolated {
+                // Guard against a show() that was called while we were fading out.
+                guard let self, generation == self.animationGeneration else { return }
+                panel.orderOut(nil)
+                panel.alphaValue = 1   // Reset so the next show() fade starts clean.
+            }
         }
     }
 
