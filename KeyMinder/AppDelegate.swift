@@ -11,6 +11,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         NSApp.setActivationPolicy(.accessory)
         popup.onGrant = { AccessibilityPermission.requestAccess() }
         popup.onOpenSettings = { AccessibilityPermission.openSettings() }
+        popup.onPermissionGranted = { [weak self] in self?.presentPopup() }
         setupStatusItem()
         setupHotkey()
         setupDoubleTap()

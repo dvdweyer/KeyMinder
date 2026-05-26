@@ -10,6 +10,10 @@ final class PopupController {
     var onGrant: () -> Void = {}
     /// Called when the onboarding "Open Settings" button is pressed.
     var onOpenSettings: () -> Void = {}
+    /// Called the moment `AXIsProcessTrusted()` becomes true while the
+    /// onboarding screen is visible. AppDelegate should re-run its scrape/show
+    /// path here so the popup refreshes with real shortcut content.
+    var onPermissionGranted: () -> Void = {}
 
     private var panel: PopupPanel?
     private var eventMonitors: [Any] = []
@@ -19,6 +23,13 @@ final class PopupController {
     /// Live filter state for the current shortcuts presentation, if any. Read by
     /// the Esc handlers so Esc clears a non-empty filter before dismissing.
     private var filterModel: PopupFilterModel?
+
+    // MARK: - Permission polling
+
+    /// Fires every 0.5 s while the onboarding screen is visible and checks
+    /// `AXIsProcessTrusted()`. Invalidated the moment trust is granted or the
+    /// popup is hidden.
+    private var permissionPollTimer: Timer?
 
     var isVisible: Bool { panel?.isVisible ?? false }
 
@@ -32,6 +43,14 @@ final class PopupController {
 
     /// Presents the panel with `content`, fading in over ~0.12 s.
     func show(_ content: PopupContent) {
+        // Manage the permission-poll timer: run it only while the onboarding
+        // screen is visible, and stop it the moment any other content is shown.
+        if case .needsPermission = content {
+            startPermissionPoll()
+        } else {
+            stopPermissionPoll()
+        }
+
         let panel = panel ?? makePanel()
         self.panel = panel
 
@@ -107,6 +126,8 @@ final class PopupController {
         // Remove monitors at the very start so a click-outside during the
         // fade doesn't re-trigger a second hide().
         removeDismissalMonitors()
+        // Stop permission polling whenever the popup goes away.
+        stopPermissionPoll()
 
         guard let panel else { return }
 
@@ -233,6 +254,30 @@ final class PopupController {
             onGrant: { [weak self] in self?.onGrant() },
             onOpenSettings: { [weak self] in self?.onOpenSettings() }
         )
+    }
+
+    // MARK: - Permission polling helpers
+
+    /// Begins the 0.5 s poll for `AXIsProcessTrusted()`. No-op if already running.
+    private func startPermissionPoll() {
+        guard permissionPollTimer == nil else { return }
+        permissionPollTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { [weak self] _ in
+            // The timer fires on the main run loop; use assumeIsolated so the
+            // compiler accepts main-actor property access inside the closure.
+            MainActor.assumeIsolated {
+                guard let self else { return }
+                if AccessibilityPermission.isTrusted {
+                    self.stopPermissionPoll()
+                    self.onPermissionGranted()
+                }
+            }
+        }
+    }
+
+    /// Stops and discards the permission-poll timer.
+    private func stopPermissionPoll() {
+        permissionPollTimer?.invalidate()
+        permissionPollTimer = nil
     }
 
     // MARK: - Dismissal
