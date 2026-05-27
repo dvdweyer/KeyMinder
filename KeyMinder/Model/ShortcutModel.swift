@@ -65,7 +65,13 @@ enum PopupContent {
 /// these helpers report match state rather than filtering the data.
 extension Shortcut {
     func matches(_ query: String) -> Bool {
-        title.localizedStandardContains(query) || keys.localizedStandardContains(query)
+        // Empty query matches everything — `localizedStandardContains("")` returns
+        // false (Foundation does not treat an empty needle as "found anywhere"),
+        // so we guard explicitly. The view layers already short-circuit on
+        // `!query.isEmpty` before calling this, so the guard is defence-in-depth.
+        query.isEmpty
+            || title.localizedStandardContains(query)
+            || keys.localizedStandardContains(query)
     }
 }
 
@@ -79,7 +85,13 @@ extension MenuSection {
 
 extension AppShortcuts {
     /// Number of shortcuts matching `query`.
+    ///
+    /// Uses a nested `reduce` rather than `filter { }.count` to avoid
+    /// allocating a temporary `[Shortcut]` array per section just to
+    /// discard it after counting its elements.
     func matchCount(_ query: String) -> Int {
-        sections.reduce(0) { $0 + $1.shortcuts.filter { $0.matches(query) }.count }
+        sections.reduce(0) { total, section in
+            total + section.shortcuts.reduce(0) { $0 + ($1.matches(query) ? 1 : 0) }
+        }
     }
 }
