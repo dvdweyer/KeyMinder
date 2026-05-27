@@ -165,7 +165,7 @@
     border-radius: 10px;
     box-shadow: 0 24px 80px rgba(0,0,0,0.5);
     cursor: default;
-    animation: lb-img-in 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+    display: block;
   }
 
   @keyframes lb-img-in {
@@ -173,17 +173,23 @@
     to   { transform: scale(1);    opacity: 1; }
   }
 
+  .lightbox-inner {
+    position: relative;
+    display: inline-flex;
+    animation: lb-img-in 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
   .lightbox-close {
-    position: fixed;
-    top: 1.25rem;
-    right: 1.5rem;
-    width: 36px;
-    height: 36px;
+    position: absolute;
+    top: -14px;
+    right: -14px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
-    background: rgba(255,255,255,0.12);
-    border: 0.5px solid rgba(255,255,255,0.2);
+    background: rgba(30,30,30,0.85);
+    border: 0.5px solid rgba(255,255,255,0.18);
     color: #fff;
-    font-size: 18px;
+    font-size: 13px;
     line-height: 1;
     display: flex;
     align-items: center;
@@ -191,10 +197,11 @@
     cursor: pointer;
     transition: background 0.12s;
     backdrop-filter: blur(4px);
+    z-index: 1;
   }
 
   .lightbox-close:hover {
-    background: rgba(255,255,255,0.22);
+    background: rgba(60,60,60,0.95);
   }
 
   .steps {
@@ -361,8 +368,10 @@
 
   <!-- Lightbox -->
   <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Screenshot full size">
-    <button class="lightbox-close" id="lightboxClose" aria-label="Close">&#x2715;</button>
-    <img src="Safari_Shortcuts.png" alt="KeyMinder showing Safari keyboard shortcuts grouped by menu">
+    <div class="lightbox-inner">
+      <button class="lightbox-close" id="lightboxClose" aria-label="Close">&#x2715;</button>
+      <img src="Safari_Shortcuts.png" alt="KeyMinder showing Safari keyboard shortcuts grouped by menu">
+    </div>
   </div>
 
   <div class="section">
