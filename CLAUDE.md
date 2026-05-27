@@ -65,22 +65,95 @@ level is hidden unless you pass `--level info`.
 
 ## Architecture
 
+### App entry point
+
 - `KeyMinderApp.swift` — `@main`; empty `Settings` scene. All UI is driven by `AppDelegate`.
 - `AppDelegate.swift` (`@MainActor`) — owns the `NSStatusItem` (left-click toggles
-  the popup, right-click shows Grant/Quit menu), `FrontmostAppMonitor`, and `PopupController`.
+  the popup, right-click shows context menu), `FrontmostAppMonitor`, and
+  `PopupController`. `presentPopup()` runs an async scrape via two stored tasks:
+  `scrapeTask` (outer coordinator) and `detachedScrapeTask` (background AX work);
+  both are cancelled before each new scrape to prevent concurrent traversals.
+  `onPermissionGranted` auto-refreshes the popup the moment Accessibility is granted.
+
+### Monitoring & Accessibility
+
 - `Monitoring/FrontmostAppMonitor.swift` — tracks the frontmost app via
   `NSWorkspace` notifications, ignoring KeyMinder itself.
 - `Accessibility/AccessibilityPermission.swift` — trust check / prompt / open Settings.
+
+### Scraping
+
 - `Scraping/MenuScraper.swift` — AX traversal of the menu bar → `[MenuSection]`.
   **Submenus are currently flattened** into the parent menu.
 - `Scraping/ShortcutFormatter.swift` — decodes the AX modifier mask
   (shift=1, option=2, control=4, no-command=8) plus char/glyph/virtual-key into
   display symbols (⌃⌥⇧⌘ + key).
-- `Model/ShortcutModel.swift` — `Shortcut`, `MenuSection`, `AppShortcuts`, `PopupContent`.
-- `UI/Popup/` — `PopupController` (NSPanel lifecycle, sizing, dismissal),
-  `PopupPanel` (non-activating floating panel), `PopupRootView` (the grid),
-  `MenuLayout` (greedy column balancing), `Theme` (colors/metrics),
-  `PopupOnboardingView`.
+
+### Model
+
+- `Model/ShortcutModel.swift` — `Shortcut`, `ShortcutGroup`, `MenuSection`,
+  `AppShortcuts`, `PopupContent`. Matching extensions on all types;
+  `Shortcut.matches(_:)` is case- and diacritic-insensitive via
+  `localizedStandardContains` and explicitly returns `true` for an empty query.
+
+### Settings
+
+- `Settings/HotkeyManager.swift` (`@MainActor`) — singleton; registers a global
+  hotkey via Carbon `RegisterEventHotKey`. The C event-handler callback dispatches
+  to the main actor via `DispatchQueue.main.async`.
+- `Settings/GlobalHotkey.swift` — value type encoding a key code + Carbon modifier
+  mask; `UserDefaults` persistence; `displayString` for UI.
+- `Settings/DoubleTapTrigger.swift` — CGEvent tap that detects a rapid double-press
+  of a single modifier key.
+- `Settings/LoginItemManager.swift` — wraps `SMAppService` to register/unregister
+  the app as a login item.
+
+### UI — Popup
+
+- `UI/Popup/PopupController.swift` (`@MainActor`) — NSPanel lifecycle: `show()` /
+  `hide()` with fade animations; dismissal monitors (click-outside, Esc, app-switch);
+  `activeVisibleFrame` for nil-safe screen geometry (crash-safe during display
+  reconfiguration); permission-poll timer that fires `onPermissionGranted` the moment
+  `AXIsProcessTrusted()` becomes true; panel is released (`self.panel = nil`) on hide
+  to free the SwiftUI tree while the popup is not visible.
+- `UI/Popup/PopupPanel.swift` — non-activating `NSPanel` subclass.
+- `UI/Popup/PopupRootView.swift` — root SwiftUI view; `PopupFilterModel` (`@Observable
+  @MainActor`) holds the live filter query owned by `PopupController`; `PopupRootView`
+  dispatches to `FilterableShortcutsView` (shortcuts grid with type-to-filter),
+  `PopupOnboardingView`, or `PopupMessageView`.
+- `UI/Popup/MenuLayout.swift` — greedy column-balancing algorithm (binary search on
+  capacity); `MenuSectionView` / `ShortcutRow` with full VoiceOver support
+  (`.isHeader` trait on section titles; composed spoken labels on shortcut rows via
+  `spokenKeys(_:)`; decorative images hidden).
+- `UI/Popup/Theme.swift` — colours, spacing constants.
+- `UI/Popup/PopupOnboardingView.swift` — onboarding screen shown before Accessibility
+  is granted.
+
+### UI — Settings
+
+- `UI/Settings/SettingsView.swift` — contains three types:
+  - `SettingsWindowController` (`@MainActor NSWindowController`) — singleton that
+    measures the natural content height via `NSHostingView.fittingSize` at width 420
+    before creating the `NSWindow`, so the window always fits its content (including
+    at larger accessibility text sizes).
+  - `SettingsModel` (`@MainActor @Observable`) — hotkey recording state, UserDefaults
+    persistence, `HotkeyManager` registration, login-item toggle, double-tap config.
+  - `SettingsView` / `HotkeyBadge` — SwiftUI views; `@State` owns `SettingsModel`.
+
+### Assets & support
+
+- `Assets.xcassets/` — `AppIcon.appiconset` (10 PNG slots, 16 pt → 512 pt @1×/@2×)
+  and `AccentColor.colorset` (system accent colour).
+- `Support/Logging.swift` — `os.Logger` subsystem/category constants.
+
+### Tests
+
+- `KeyMinderTests/MenuLayoutTests.swift` — `MenuLayout.height(of:)` and
+  `MenuLayout.distribute(_:columns:)`.
+- `KeyMinderTests/ShortcutFormatterTests.swift` — full coverage of
+  `ShortcutFormatter.format(cmdChar:virtualKey:glyph:modifiers:)`.
+- `KeyMinderTests/ShortcutMatchingTests.swift` — `Shortcut.matches`,
+  `ShortcutGroup.hasMatch`, `MenuSection.hasMatch`, `AppShortcuts.matchCount`.
 
 The Xcode project uses a **file-system-synchronized group** (objectVersion 70):
 new `.swift` files under `KeyMinder/` are picked up automatically — no need to
@@ -91,6 +164,13 @@ edit `project.pbxproj`.
 - macOS 14+ (deployment target 14.0); Swift 5 language mode (`SWIFT_VERSION = 5.0`).
   Newest APIs in use all land at 14.0: `@Observable`, `.scrollBounceBehavior`,
   `MainActor.assumeIsolated` — so no `if #available` branching is needed.
+- **Observable models use `@Observable`** (Swift Observation, not Combine
+  `ObservableObject`). View ownership: `@State` for the owning view, plain `var`
+  for child views (observation is automatic), `@Bindable` when `$model.property`
+  bindings are needed.
+- **Concurrency**: defer work with `Task { }` rather than
+  `DispatchQueue.main.async { }`. SwiftUI `.onAppear` closures are `@MainActor`,
+  so a plain `Task` inherits that context.
 - Light/dark handled automatically via `.regularMaterial` + semantic colors.
 - **Versioning: every commit bumps the patch (last) number** of
   `MARKETING_VERSION` and is tagged `vX.Y.Z`. Canonical sources of truth:
