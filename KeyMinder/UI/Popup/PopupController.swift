@@ -108,17 +108,32 @@ final class PopupController {
         panel.setContentSize(size)
         panel.contentView = hosting
 
-        let screen = Self.activeScreen.visibleFrame
+        let screen = Self.activeVisibleFrame
         let origin = CGPoint(x: screen.midX - size.width / 2,
                              y: screen.midY - size.height / 2)
         panel.setFrame(CGRect(origin: origin, size: size), display: true)
     }
 
-    /// The screen the user is most likely working on: whichever display contains
-    /// the current mouse cursor, falling back to the main screen.
-    private static var activeScreen: NSScreen {
+    /// The visible frame of the screen the user is most likely working on:
+    /// whichever display contains the mouse cursor, then the main screen, then
+    /// the first screen in the list.
+    ///
+    /// Returns a geometry value rather than `NSScreen` so every fallback level
+    /// is nil-safe.  `NSScreen.screens` can be momentarily empty during a
+    /// display-reconfiguration event (e.g. connecting/disconnecting a monitor);
+    /// the previous `NSScreen.screens[0]` subscript would crash in that window.
+    /// If all three lookups return nil we fall back to a 1920×1080 sentinel at
+    /// the origin, which is always large enough to safely centre the panel.
+    private static var activeVisibleFrame: CGRect {
         let mouse = NSEvent.mouseLocation
-        return NSScreen.screens.first { $0.frame.contains(mouse) } ?? NSScreen.main ?? NSScreen.screens[0]
+        if let screen = NSScreen.screens.first(where: { $0.frame.contains(mouse) })
+                     ?? NSScreen.main
+                     ?? NSScreen.screens.first {
+            return screen.visibleFrame
+        }
+        // No screen available during a display-reconfiguration race.
+        // Use a conservative sentinel so the panel is positioned rather than crashing.
+        return CGRect(x: 0, y: 0, width: 1920, height: 1080)
     }
 
     /// Fades the panel out over ~0.10 s and orders it out on completion.
@@ -205,7 +220,7 @@ final class PopupController {
     /// life of the popup. Live type-to-filter never changes the layout: every
     /// shortcut stays on screen in the same place; non-matching rows just dim.
     private func measuredContent(_ content: PopupContent, app: AppShortcuts) -> (NSView, CGSize) {
-        let screen = Self.activeScreen.visibleFrame
+        let screen = Self.activeVisibleFrame
         let maxPanelHeight = screen.height * 0.86
 
         // --- Column count + width. Spread menus across the available width:
