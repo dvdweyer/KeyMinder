@@ -171,6 +171,53 @@
     flex-shrink: 0;
   }
 
+  /* Changelog */
+
+  .changelog-entry {
+    padding: 1rem 0;
+    border-bottom: 0.5px solid #f0f0e8;
+  }
+
+  .changelog-entry:last-child { border-bottom: none; }
+
+  .changelog-version {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 0.5rem;
+  }
+
+  .changelog-version strong {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1a1a1a;
+  }
+
+  .changelog-version span {
+    font-size: 12px;
+    color: #aaa;
+  }
+
+  .changelog-entry ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .changelog-entry ul li {
+    font-size: 14px;
+    color: #444;
+    padding: 2px 0;
+    padding-left: 1.1em;
+    position: relative;
+  }
+
+  .changelog-entry ul li::before {
+    content: "·";
+    position: absolute;
+    left: 0;
+    color: #bbb;
+  }
+
   footer {
     text-align: center;
     padding: 2.5rem 1rem;
@@ -197,8 +244,8 @@
   <h1>KeyMinder</h1>
   <p>A macOS menu bar app that instantly shows the keyboard shortcuts of whichever app you're currently using.</p>
   <div class="button-row">
-    <a href="KeyMinder_0.1.23.zip" class="btn btn-primary" download>
-      ↓ Download v0.1.23
+    <a href="KeyMinder_0.1.37.zip" class="btn btn-primary" download>
+      ↓ Download v0.1.37
     </a>
     <a href="https://github.com/dvdweyer/KeyMinder" class="btn btn-secondary" target="_blank" rel="noopener">
       View on GitHub
@@ -218,7 +265,7 @@
   <div class="section">
     <h2>Requirements</h2>
     <div class="req-grid">
-      <div class="req-item"><div class="req-dot"></div>macOS 26 or later</div>
+      <div class="req-item"><div class="req-dot"></div>macOS 14 (Sonoma) or later</div>
       <div class="req-item"><div class="req-dot"></div>Accessibility permission</div>
       <div class="req-item"><div class="req-dot"></div>Apple Silicon or Intel</div>
       <div class="req-item"><div class="req-dot"></div>No App Store required</div>
@@ -228,7 +275,7 @@
   <div class="section">
     <h2>Install</h2>
     <ol class="steps">
-      <li>Download and unzip <code>KeyMinder_0.1.23.zip</code></li>
+      <li>Download and unzip <code>KeyMinder_0.1.37.zip</code></li>
       <li>Move <code>KeyMinder.app</code> to <code>/Applications</code></li>
       <li>Open KeyMinder — macOS will ask for Accessibility permission</li>
       <li>Grant permission in System Settings → Privacy &amp; Security → Accessibility</li>
@@ -239,6 +286,68 @@
     <h2>Why not on the App Store?</h2>
     <p>KeyMinder uses the Accessibility API to read other apps' menus. This is fundamentally incompatible with the App Store's mandatory App Sandbox — no entitlement exists to re-open this capability inside the sandbox.</p>
     <p>The same constraint applies to similar tools such as KeyCue and Shortcat. KeyMinder is distributed as a notarized Developer ID build and is fully open source.</p>
+  </div>
+
+  <div class="section">
+    <h2>What's new</h2>
+
+    <div class="changelog-entry">
+      <div class="changelog-version">
+        <strong>v0.1.37</strong>
+        <span>May 2026 — current</span>
+      </div>
+      <ul>
+        <li>After granting Accessibility permission, the popup refreshes automatically — no close-and-reopen needed</li>
+        <li>App now has a proper icon</li>
+        <li>Full VoiceOver / screen reader support throughout the shortcuts panel</li>
+        <li>Settings window adapts to content height — no more clipping at larger text sizes</li>
+        <li>Fixed a rare crash when connecting or disconnecting displays</li>
+        <li>Stability improvements for rapid popup toggling</li>
+      </ul>
+    </div>
+
+    <div class="changelog-entry">
+      <div class="changelog-version">
+        <strong>v0.1.23</strong>
+        <span>May 2026</span>
+      </div>
+      <ul>
+        <li>Smooth fade-in / fade-out animation with subtle scale when the popup opens</li>
+        <li>Popup shown automatically on first launch for discoverability</li>
+      </ul>
+    </div>
+
+    <div class="changelog-entry">
+      <div class="changelog-version">
+        <strong>v0.1.21</strong>
+        <span>May 2026</span>
+      </div>
+      <ul>
+        <li>Type-to-filter — start typing while the popup is open to highlight matching shortcuts</li>
+      </ul>
+    </div>
+
+    <div class="changelog-entry">
+      <div class="changelog-version">
+        <strong>v0.1.19</strong>
+        <span>May 2026</span>
+      </div>
+      <ul>
+        <li>Default shortcut ⌥⌘K set on first launch; shown in the menu bar context menu</li>
+        <li>Double-tap trigger: show KeyMinder by quickly pressing a modifier key twice</li>
+      </ul>
+    </div>
+
+    <div class="changelog-entry">
+      <div class="changelog-version">
+        <strong>v0.1.18</strong>
+        <span>May 2026</span>
+      </div>
+      <ul>
+        <li>Menu scraping now runs in the background — no UI freeze while shortcuts load</li>
+      </ul>
+    </div>
+
   </div>
 
 </main>
