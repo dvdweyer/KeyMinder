@@ -104,6 +104,17 @@
 
   .section p:last-child { margin-bottom: 0; }
 
+  .screenshot {
+    margin-top: 1.25rem;
+    text-align: center;
+  }
+
+  .screenshot img {
+    max-width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.12), 0 0 0 0.5px rgba(0,0,0,0.06);
+  }
+
   .steps {
     list-style: none;
     counter-reset: steps;
@@ -260,6 +271,9 @@
     <h2>What it does</h2>
     <p>Instead of hunting through menus to find shortcuts, KeyMinder pops up a clean overview of every keyboard shortcut available in the frontmost app — grouped by menu, triggered by a hotkey or double-tap.</p>
     <p>KeyMinder reads menu structures directly via the macOS Accessibility API, so shortcuts are always accurate and up to date for whatever app you're using.</p>
+    <div class="screenshot">
+      <img src="Safari_Shortcuts.png" alt="KeyMinder showing Safari keyboard shortcuts grouped by menu">
+    </div>
   </div>
 
   <div class="section">
@@ -294,7 +308,7 @@
     <div class="changelog-entry">
       <div class="changelog-version">
         <strong>v0.1.37</strong>
-        <span>May 2026 — current</span>
+        <span>May 27, 2026 — current</span>
       </div>
       <ul>
         <li>After granting Accessibility permission, the popup refreshes automatically — no close-and-reopen needed</li>
@@ -309,7 +323,7 @@
     <div class="changelog-entry">
       <div class="changelog-version">
         <strong>v0.1.23</strong>
-        <span>May 2026</span>
+        <span>May 25, 2026</span>
       </div>
       <ul>
         <li>Smooth fade-in / fade-out animation with subtle scale when the popup opens</li>
@@ -320,7 +334,7 @@
     <div class="changelog-entry">
       <div class="changelog-version">
         <strong>v0.1.21</strong>
-        <span>May 2026</span>
+        <span>May 25, 2026</span>
       </div>
       <ul>
         <li>Type-to-filter — start typing while the popup is open to highlight matching shortcuts</li>
@@ -330,21 +344,30 @@
     <div class="changelog-entry">
       <div class="changelog-version">
         <strong>v0.1.19</strong>
-        <span>May 2026</span>
+        <span>May 25, 2026</span>
       </div>
       <ul>
         <li>Default shortcut ⌥⌘K set on first launch; shown in the menu bar context menu</li>
-        <li>Double-tap trigger: show KeyMinder by quickly pressing a modifier key twice</li>
       </ul>
     </div>
 
     <div class="changelog-entry">
       <div class="changelog-version">
         <strong>v0.1.18</strong>
-        <span>May 2026</span>
+        <span>May 25, 2026</span>
       </div>
       <ul>
         <li>Menu scraping now runs in the background — no UI freeze while shortcuts load</li>
+      </ul>
+    </div>
+
+    <div class="changelog-entry">
+      <div class="changelog-version">
+        <strong>v0.1.12</strong>
+        <span>May 25, 2026</span>
+      </div>
+      <ul>
+        <li>Double-tap trigger — show KeyMinder by quickly pressing a modifier key twice</li>
       </ul>
     </div>
 
