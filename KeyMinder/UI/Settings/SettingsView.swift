@@ -18,16 +18,31 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
     }
 
     private init() {
+        // Measure the natural content height at the fixed 420 pt width before
+        // creating the window. This mirrors PopupController.measuredContent:
+        // constrain the width, leave height unconstrained (frame height 0),
+        // trigger layout, then read fittingSize. The window is then sized to
+        // the result so content is never clipped — including at larger
+        // accessibility text sizes.
+        let hosting = NSHostingView(rootView: SettingsView())
+        hosting.frame = CGRect(x: 0, y: 0, width: 420, height: 0)
+        hosting.layoutSubtreeIfNeeded()
+        let measured = hosting.fittingSize.height.rounded()
+        let contentHeight = min(max(measured, 280), 600)
+
         let window = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 420, height: 320),
+            contentRect: NSRect(x: 0, y: 0, width: 420, height: contentHeight),
             styleMask:   [.titled, .closable],
             backing:     .buffered,
             defer:       false
         )
         window.title = "KeyMinder Settings"
-        window.contentView = NSHostingView(rootView: SettingsView())
+        window.contentView = hosting   // reuse the already-measured hosting view
         window.center()
-        window.setFrameAutosaveName("KeyMinder.Settings")
+        // setFrameAutosaveName is intentionally omitted: the height is computed
+        // dynamically and a previously-saved fixed height (e.g. the old 320 pt)
+        // would be restored by AppKit and override the measured value. Centering
+        // on each open is conventional for a non-resizable settings window.
         super.init(window: window)
         window.delegate = self
     }
@@ -192,7 +207,7 @@ struct SettingsView: View {
             }
         }
         .padding(20)
-        .frame(width: 420, height: 320, alignment: .topLeading)
+        .frame(width: 420, alignment: .topLeading)   // height: let VStack size to content
         .onDisappear { model.stopRecording() }
     }
 
