@@ -8,7 +8,7 @@ Instead of hunting through menus to find shortcuts, KeyMinder pops up a clean ov
 
 ## Requirements
 
-- macOS 26 or later
+- macOS 14 (Sonoma) or later
 - Accessibility permission (required to read other apps' menus)
 
 ## Why not on the App Store?
@@ -19,7 +19,7 @@ KeyMinder is distributed as a notarized Developer ID build.
 
 ## Building from source
 
-Open `KeyMinder.xcodeproj` in Xcode and press ⌘R. Xcode 26 required.
+Open `KeyMinder.xcodeproj` in Xcode and press ⌘R. Xcode 15 or later required.
 
 **Important:** do not build into the project folder if it lives in iCloud Drive — build products acquire iCloud extended attributes that cause codesign to fail. Build to the default DerivedData location or `/tmp`.
 
