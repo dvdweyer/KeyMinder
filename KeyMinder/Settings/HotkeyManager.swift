@@ -9,6 +9,7 @@ import os
 /// HotkeyManager.shared.onActivate = { togglePopup() }
 /// HotkeyManager.shared.register(savedHotkey)
 /// ```
+@MainActor
 final class HotkeyManager {
 
     static let shared = HotkeyManager()
