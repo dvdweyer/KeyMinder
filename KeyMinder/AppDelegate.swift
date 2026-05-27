@@ -84,9 +84,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    /// In-flight scrape task. Cancelled if the user triggers another open
-    /// before the previous scrape finishes.
+    /// Outer coordinator task. Cancelled when a new presentPopup() fires while
+    /// a scrape is already in flight.
     private var scrapeTask: Task<Void, Never>?
+
+    /// The background AX scrape itself. Stored separately so it can be
+    /// cancelled before the next scrape starts, preventing multiple concurrent
+    /// AX traversals from accumulating on rapid toggling.
+    ///
+    /// Note: MenuScraper.scrape(pid:) is synchronous C AX IPC with no Swift
+    /// cancellation checkpoints, so the cancelled task still runs to its first
+    /// natural exit. The main benefit is that at most one scrape is in flight
+    /// at a time once any previous scrapeTask is cancelled.
+    private var detachedScrapeTask: Task<[MenuSection], Never>?
 
     /// Scrapes the frontmost app's menus off the main thread, then presents
     /// the popup with the result. The panel does not appear until data is ready.
@@ -107,14 +117,24 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let bundleID = app.bundleIdentifier
         let icon = app.icon
 
-        // Cancel any stale in-flight scrape before starting a new one.
+        // Cancel any stale in-flight scrapes before starting new ones.
         scrapeTask?.cancel()
-        scrapeTask = Task {
-            let sections = await Task.detached(priority: .userInitiated) {
-                MenuScraper.scrape(pid: pid)
-            }.value
+        detachedScrapeTask?.cancel()
 
+        let work = Task.detached(priority: .userInitiated) {
+            MenuScraper.scrape(pid: pid)
+        }
+        detachedScrapeTask = work
+
+        scrapeTask = Task {
+            let sections = await work.value
+
+            // When this outer task has been cancelled (because presentPopup()
+            // was called again), `detachedScrapeTask` already points to the
+            // newer work — don't touch it.  Only clear on the success path
+            // where we know we are still the active scrape.
             guard !Task.isCancelled else { return }
+            detachedScrapeTask = nil
 
             let shortcuts = AppShortcuts(
                 appName: appName,
