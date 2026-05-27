@@ -109,8 +109,10 @@ private struct FilterableShortcutsView: View {
             contentView
         }
         // Auto-focus the field so the user can type immediately. Deferred to the
-        // next runloop tick so the panel is key before focus is requested.
-        .onAppear { DispatchQueue.main.async { searchFocused = true } }
+        // next runloop iteration so the panel is key before focus is requested.
+        // Task inherits @MainActor from the .onAppear closure, giving identical
+        // deferral semantics to DispatchQueue.main.async without Dispatch.
+        .onAppear { Task { searchFocused = true } }
     }
 
     @ViewBuilder
