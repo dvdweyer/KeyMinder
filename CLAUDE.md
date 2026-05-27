@@ -99,9 +99,6 @@ edit `project.pbxproj`.
 
 ## Known limitations / next up
 
-- **No app icon yet:** there is no `Assets.xcassets` in the project, though
-  `ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon` is set. A full icon set
-  (incl. 1024×1024) is needed before any release/distribution build.
 - Submenu sub-group headers (e.g. "Move & Resize") not shown yet — scraper flattens submenus.
 - AX scraping runs on the main thread; a busy target app could briefly block.
 - System-wide shortcuts (Spotlight, Screenshots, …) not implemented yet — planned phase.
