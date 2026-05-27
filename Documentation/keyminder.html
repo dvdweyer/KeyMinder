@@ -110,9 +110,91 @@
   }
 
   .screenshot img {
-    max-width: 100%;
+    max-width: 480px;
+    width: 100%;
     border-radius: 10px;
     box-shadow: 0 4px 24px rgba(0,0,0,0.12), 0 0 0 0.5px rgba(0,0,0,0.06);
+    cursor: zoom-in;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    display: block;
+    margin: 0 auto;
+  }
+
+  .screenshot img:hover {
+    transform: scale(1.015);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.16), 0 0 0 0.5px rgba(0,0,0,0.08);
+  }
+
+  .screenshot-hint {
+    margin-top: 0.5rem;
+    font-size: 12px;
+    color: #bbb;
+    letter-spacing: 0.01em;
+  }
+
+  /* Lightbox */
+
+  .lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.82);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    align-items: center;
+    justify-content: center;
+    cursor: zoom-out;
+  }
+
+  .lightbox.open {
+    display: flex;
+    animation: lb-in 0.18s ease;
+  }
+
+  @keyframes lb-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  .lightbox img {
+    max-width: min(90vw, 1200px);
+    max-height: 88vh;
+    width: auto;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.5);
+    cursor: default;
+    animation: lb-img-in 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  @keyframes lb-img-in {
+    from { transform: scale(0.94); opacity: 0; }
+    to   { transform: scale(1);    opacity: 1; }
+  }
+
+  .lightbox-close {
+    position: fixed;
+    top: 1.25rem;
+    right: 1.5rem;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.12);
+    border: 0.5px solid rgba(255,255,255,0.2);
+    color: #fff;
+    font-size: 18px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.12s;
+    backdrop-filter: blur(4px);
+  }
+
+  .lightbox-close:hover {
+    background: rgba(255,255,255,0.22);
   }
 
   .steps {
@@ -272,8 +354,15 @@
     <p>Instead of hunting through menus to find shortcuts, KeyMinder pops up a clean overview of every keyboard shortcut available in the frontmost app — grouped by menu, triggered by a hotkey or double-tap.</p>
     <p>KeyMinder reads menu structures directly via the macOS Accessibility API, so shortcuts are always accurate and up to date for whatever app you're using.</p>
     <div class="screenshot">
-      <img src="Safari_Shortcuts.png" alt="KeyMinder showing Safari keyboard shortcuts grouped by menu">
+      <img src="Safari_Shortcuts.png" alt="KeyMinder showing Safari keyboard shortcuts grouped by menu" id="screenshotThumb">
+      <p class="screenshot-hint">Click to enlarge</p>
     </div>
+  </div>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Screenshot full size">
+    <button class="lightbox-close" id="lightboxClose" aria-label="Close">&#x2715;</button>
+    <img src="Safari_Shortcuts.png" alt="KeyMinder showing Safari keyboard shortcuts grouped by menu">
   </div>
 
   <div class="section">
@@ -378,6 +467,24 @@
 <footer>
   <p>MIT License &nbsp;·&nbsp; <a href="https://github.com/dvdweyer/KeyMinder" target="_blank" rel="noopener">github.com/dvdweyer/KeyMinder</a></p>
 </footer>
+
+<script>
+  const lightbox = document.getElementById('lightbox');
+  const thumb    = document.getElementById('screenshotThumb');
+  const closeBtn = document.getElementById('lightboxClose');
+
+  function open()  { lightbox.classList.add('open');    document.body.style.overflow = 'hidden'; }
+  function close() { lightbox.classList.remove('open'); document.body.style.overflow = ''; }
+
+  thumb.addEventListener('click', open);
+  closeBtn.addEventListener('click', e => { e.stopPropagation(); close(); });
+
+  // Click on backdrop (not the image) closes
+  lightbox.addEventListener('click', e => { if (e.target === lightbox) close(); });
+
+  // Esc closes
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+</script>
 
 </body>
 </html>
