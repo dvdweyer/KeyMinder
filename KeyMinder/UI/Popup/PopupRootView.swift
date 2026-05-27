@@ -164,6 +164,7 @@ private struct FilterableShortcutsView: View {
             Image(systemName: "magnifyingglass")
                 .font(.system(size: 11))
                 .foregroundStyle(.secondary)
+                .accessibilityHidden(true)
             TextField("Filter", text: $model.query)
                 .textFieldStyle(.plain)
                 .font(.system(size: 12))
@@ -179,6 +180,7 @@ private struct FilterableShortcutsView: View {
                         .foregroundStyle(.secondary)
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel("Clear filter")
             }
         }
         .padding(.horizontal, 8)
@@ -197,6 +199,7 @@ struct PopupMessageView: View {
             Image(systemName: systemImage)
                 .font(.system(size: 28))
                 .foregroundStyle(.secondary)
+                .accessibilityHidden(true)
             Text(text)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
@@ -229,6 +232,7 @@ struct MenuSectionView: View {
                 .padding(.vertical, 4)
                 .background(Theme.sectionHeaderFill, in: RoundedRectangle(cornerRadius: 6))
                 .padding(.bottom, 2)
+                .accessibilityAddTraits(.isHeader)
 
             ForEach(section.groups) { group in
                 // Named groups get a lightweight sub-header above their rows.
@@ -288,5 +292,57 @@ struct ShortcutRow: View {
             Spacer(minLength: 0)
         }
         .frame(height: MenuLayout.rowHeight)
+        // Collapse the two Text children into one VoiceOver element so the
+        // screen reader speaks "New Conversation, Shift Command N" rather than
+        // announcing the raw glyph string "⇧⌘N" and the title separately.
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(shortcut.title), \(spokenKeys(shortcut.keys))")
     }
+}
+
+// MARK: - VoiceOver key-string helper
+
+/// Converts a visual shortcut key string (e.g. "⇧⌘N") into a naturally spoken
+/// phrase (e.g. "Shift Command N") for use in VoiceOver accessibility labels.
+///
+/// Mapping rules:
+/// - Modifier glyphs: ⌘→Command  ⇧→Shift  ⌥→Option  ⌃→Control
+/// - Special keys:    ↩→Return   ⎋→Escape  ⌫→Delete  ⇥→Tab
+///                    ↑→Up Arrow ↓→Down Arrow ←→Left Arrow →→Right Arrow
+///                    (space)→Space
+/// - Fn keys (F followed by digits) are kept intact: "F5", "F12", etc.
+/// - All other characters (letters, digits) are passed through uppercased.
+private func spokenKeys(_ keys: String) -> String {
+    let map: [Character: String] = [
+        // Modifiers
+        "⌘": "Command", "⇧": "Shift", "⌥": "Option", "⌃": "Control",
+        // Special keys
+        "↩": "Return",    "⎋": "Escape", "⌫": "Delete",     "⇥": "Tab",
+        " ": "Space",
+        "↑": "Up Arrow",  "↓": "Down Arrow",
+        "←": "Left Arrow", "→": "Right Arrow",
+    ]
+
+    var tokens: [String] = []
+    var remaining = keys[...]
+
+    while let ch = remaining.first {
+        remaining = remaining.dropFirst()
+
+        if let spoken = map[ch] {
+            tokens.append(spoken)
+        } else if ch == "F", remaining.first?.isNumber == true {
+            // Fn key: "F" + one or two digit characters → keep as unit.
+            var fn = String(ch)
+            while let d = remaining.first, d.isNumber {
+                fn.append(d)
+                remaining = remaining.dropFirst()
+            }
+            tokens.append(fn)
+        } else {
+            tokens.append(String(ch).uppercased())
+        }
+    }
+
+    return tokens.joined(separator: " ")
 }
