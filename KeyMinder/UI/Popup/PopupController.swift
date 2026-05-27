@@ -158,9 +158,15 @@ final class PopupController {
             // to enter the main-actor domain to touch animationGeneration/panel.
             MainActor.assumeIsolated {
                 // Guard against a show() that was called while we were fading out.
+                // If generation differs, show() has already incremented it and
+                // reclaimed self.panel — don't touch either.
                 guard let self, generation == self.animationGeneration else { return }
                 panel.orderOut(nil)
                 panel.alphaValue = 1   // Reset so the next show() fade starts clean.
+                // Release the panel so the NSWindow, its hosting view, and all
+                // SwiftUI state trees are deallocated while the popup is idle.
+                // show() recreates it via makePanel() on the next open.
+                self.panel = nil
             }
         }
     }
