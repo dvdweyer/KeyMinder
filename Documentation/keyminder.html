@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KeyMinder</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #f5f5f0;
+    color: #1a1a1a;
+    line-height: 1.7;
+  }
+
+  header {
+    background: #fff;
+    border-bottom: 0.5px solid #e0e0d8;
+    padding: 2.5rem 2rem;
+    text-align: center;
+  }
+
+  header h1 {
+    font-size: 2.2rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+  }
+
+  header p {
+    font-size: 1.1rem;
+    color: #555;
+    max-width: 520px;
+    margin: 0 auto 1.75rem;
+  }
+
+  .button-row {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .download-note {
+    margin-top: 0.85rem;
+    font-size: 13px;
+    color: #888;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 22px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: opacity 0.15s;
+  }
+
+  .btn:hover { opacity: 0.82; }
+
+  .btn-primary {
+    background: #1a1a1a;
+    color: #fff;
+  }
+
+  .btn-secondary {
+    background: #fff;
+    color: #1a1a1a;
+    border: 0.5px solid #ccc;
+  }
+
+  main {
+    max-width: 720px;
+    margin: 3rem auto;
+    padding: 0 1.5rem;
+  }
+
+  .section {
+    background: #fff;
+    border: 0.5px solid #e0e0d8;
+    border-radius: 12px;
+    padding: 1.75rem 2rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .section h2 {
+    font-size: 1rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #888;
+    margin-bottom: 1rem;
+  }
+
+  .section p {
+    font-size: 15px;
+    color: #333;
+    margin-bottom: 0.75rem;
+  }
+
+  .section p:last-child { margin-bottom: 0; }
+
+  .steps {
+    list-style: none;
+    counter-reset: steps;
+  }
+
+  .steps li {
+    counter-increment: steps;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 0.6rem 0;
+    border-bottom: 0.5px solid #f0f0e8;
+    font-size: 15px;
+    color: #333;
+  }
+
+  .steps li:last-child { border-bottom: none; }
+
+  .steps li::before {
+    content: counter(steps);
+    min-width: 24px;
+    height: 24px;
+    background: #f0f0e8;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 500;
+    color: #555;
+    margin-top: 2px;
+  }
+
+  code {
+    font-family: "SF Mono", Menlo, monospace;
+    font-size: 13px;
+    background: #f0f0e8;
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: #333;
+  }
+
+  .req-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .req-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #f8f8f4;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 14px;
+    color: #333;
+  }
+
+  .req-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #1a1a1a;
+    flex-shrink: 0;
+  }
+
+  footer {
+    text-align: center;
+    padding: 2.5rem 1rem;
+    font-size: 13px;
+    color: #999;
+  }
+
+  footer a {
+    color: #555;
+    text-decoration: none;
+  }
+
+  footer a:hover { text-decoration: underline; }
+
+  @media (max-width: 480px) {
+    .req-grid { grid-template-columns: 1fr; }
+    header h1 { font-size: 1.7rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>KeyMinder</h1>
+  <p>A macOS menu bar app that instantly shows the keyboard shortcuts of whichever app you're currently using.</p>
+  <div class="button-row">
+    <a href="KeyMinder_0.1.23.zip" class="btn btn-primary" download>
+      ↓ Download v0.1.23
+    </a>
+    <a href="https://github.com/dvdweyer/KeyMinder" class="btn btn-secondary" target="_blank" rel="noopener">
+      View on GitHub
+    </a>
+  </div>
+  <p class="download-note">Chrome may warn about this download — the app is notarized by Apple. Click the warning → <em>Keep</em> to proceed.</p>
+</header>
+
+<main>
+
+  <div class="section">
+    <h2>What it does</h2>
+    <p>Instead of hunting through menus to find shortcuts, KeyMinder pops up a clean overview of every keyboard shortcut available in the frontmost app — grouped by menu, triggered by a hotkey or double-tap.</p>
+    <p>KeyMinder reads menu structures directly via the macOS Accessibility API, so shortcuts are always accurate and up to date for whatever app you're using.</p>
+  </div>
+
+  <div class="section">
+    <h2>Requirements</h2>
+    <div class="req-grid">
+      <div class="req-item"><div class="req-dot"></div>macOS 26 or later</div>
+      <div class="req-item"><div class="req-dot"></div>Accessibility permission</div>
+      <div class="req-item"><div class="req-dot"></div>Apple Silicon or Intel</div>
+      <div class="req-item"><div class="req-dot"></div>No App Store required</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Install</h2>
+    <ol class="steps">
+      <li>Download and unzip <code>KeyMinder_0.1.23.zip</code></li>
+      <li>Move <code>KeyMinder.app</code> to <code>/Applications</code></li>
+      <li>Open KeyMinder — macOS will ask for Accessibility permission</li>
+      <li>Grant permission in System Settings → Privacy &amp; Security → Accessibility</li>
+    </ol>
+  </div>
+
+  <div class="section">
+    <h2>Why not on the App Store?</h2>
+    <p>KeyMinder uses the Accessibility API to read other apps' menus. This is fundamentally incompatible with the App Store's mandatory App Sandbox — no entitlement exists to re-open this capability inside the sandbox.</p>
+    <p>The same constraint applies to similar tools such as KeyCue and Shortcat. KeyMinder is distributed as a notarized Developer ID build and is fully open source.</p>
+  </div>
+
+</main>
+
+<footer>
+  <p>MIT License &nbsp;·&nbsp; <a href="https://github.com/dvdweyer/KeyMinder" target="_blank" rel="noopener">github.com/dvdweyer/KeyMinder</a></p>
+</footer>
+
+</body>
+</html>
