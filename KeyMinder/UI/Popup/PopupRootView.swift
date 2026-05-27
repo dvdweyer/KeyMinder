@@ -1,5 +1,4 @@
 import SwiftUI
-import Combine
 
 /// Holds the live filter state for one presentation of the shortcuts popup.
 /// Owned by `PopupController` so the controller can read/clear the query (for
@@ -9,13 +8,14 @@ import Combine
 /// and fixed for the lifetime of the popup. Typing only dims the rows that don't
 /// match, so every shortcut stays put in exactly the same place.
 @MainActor
-final class PopupFilterModel: ObservableObject {
+@Observable
+final class PopupFilterModel {
     /// The full, unfiltered set of shortcuts.
     let app: AppShortcuts
     /// Fixed column distribution — never recomputed while the popup is open.
     let columns: [[MenuSection]]
 
-    @Published var query: String = ""
+    var query: String = ""
 
     init(app: AppShortcuts, columns: [[MenuSection]]) {
         self.app = app
@@ -97,7 +97,9 @@ struct PopupRootView: View {
 /// while typing, and rows that don't match the filter fade to a low-contrast
 /// grey so the matching ones stand out.
 private struct FilterableShortcutsView: View {
-    @ObservedObject var model: PopupFilterModel
+    // @Bindable lets us write $model.query (Binding<String>) while also
+    // participating in @Observable's fine-grained dependency tracking.
+    @Bindable var model: PopupFilterModel
     let scrolls: Bool
     @FocusState private var searchFocused: Bool
 

@@ -44,13 +44,14 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
 /// Observable model backing the settings UI. Manages hotkey recording state,
 /// UserDefaults persistence, HotkeyManager registration, and the login-item toggle.
 @MainActor
-final class SettingsModel: ObservableObject {
+@Observable
+final class SettingsModel {
 
-    @Published private(set) var hotkey:      GlobalHotkey? = UserDefaults.standard.globalHotkey
-    @Published private(set) var isRecording: Bool = false
+    private(set) var hotkey:      GlobalHotkey? = UserDefaults.standard.globalHotkey
+    private(set) var isRecording: Bool = false
 
     /// Whether KeyMinder is registered as a login item.
-    @Published var launchAtLogin: Bool = LoginItemManager.shared.isEnabled {
+    var launchAtLogin: Bool = LoginItemManager.shared.isEnabled {
         didSet {
             guard launchAtLogin != LoginItemManager.shared.isEnabled else { return }
             do {
@@ -65,14 +66,14 @@ final class SettingsModel: ObservableObject {
 
     // MARK: Double-tap trigger
 
-    @Published var doubleTapEnabled: Bool = UserDefaults.standard.doubleTapEnabled {
+    var doubleTapEnabled: Bool = UserDefaults.standard.doubleTapEnabled {
         didSet {
             UserDefaults.standard.doubleTapEnabled = doubleTapEnabled
             applyDoubleTap()
         }
     }
 
-    @Published var doubleTapModifier: DoubleTapModifier = UserDefaults.standard.doubleTapModifier {
+    var doubleTapModifier: DoubleTapModifier = UserDefaults.standard.doubleTapModifier {
         didSet {
             UserDefaults.standard.doubleTapModifier = doubleTapModifier
             applyDoubleTap()
@@ -143,7 +144,7 @@ final class SettingsModel: ObservableObject {
 // MARK: - SettingsView
 
 struct SettingsView: View {
-    @StateObject private var model = SettingsModel()
+    @State private var model = SettingsModel()
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
@@ -217,7 +218,9 @@ struct SettingsView: View {
 
 /// Pill-shaped badge that shows the current hotkey or a recording prompt.
 struct HotkeyBadge: View {
-    @ObservedObject var model: SettingsModel
+    // Plain var is sufficient: @Observable's fine-grained tracking automatically
+    // observes accesses to model.isRecording and model.hotkey in body.
+    var model: SettingsModel
 
     private var label: String {
         if model.isRecording { return "Type your shortcut…" }
