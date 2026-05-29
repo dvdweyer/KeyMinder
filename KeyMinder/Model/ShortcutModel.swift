@@ -1,5 +1,6 @@
 import Foundation
 import AppKit
+import ApplicationServices
 
 /// A single keyboard shortcut: the menu item that triggers it and the
 /// formatted key combination (e.g. "⇧⌘N").
@@ -9,6 +10,23 @@ struct Shortcut: Identifiable, Hashable {
     let title: String
     /// The display string for the key combination, e.g. "⇧⌘N".
     let keys: String
+    /// The AX element for this menu item. Used to activate the shortcut
+    /// via `AXUIElementPerformAction`. `nil` only for synthetic/test instances.
+    let axElement: AXUIElement?
+
+    // AXUIElement is a CFTypeRef (opaque class) and can't participate in
+    // automatic Hashable synthesis. Identity is fully determined by the UUID.
+    static func == (lhs: Shortcut, rhs: Shortcut) -> Bool { lhs.id == rhs.id }
+    func hash(into hasher: inout Hasher) { hasher.combine(id) }
+}
+
+extension Shortcut {
+    /// Convenience init for tests and other call sites that don't have an AX element.
+    init(title: String, keys: String) {
+        self.title = title
+        self.keys = keys
+        self.axElement = nil
+    }
 }
 
 /// A flat list of shortcuts within a `MenuSection`, optionally named after the

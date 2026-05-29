@@ -273,7 +273,14 @@ final class PopupController {
             height: height,
             scrolls: scrolls,
             onGrant: { [weak self] in self?.onGrant() },
-            onOpenSettings: { [weak self] in self?.onOpenSettings() }
+            onOpenSettings: { [weak self] in self?.onOpenSettings() },
+            onActivate: { [weak self] shortcut in
+                guard let self else { return }
+                // Capture the AX element before hide() releases the SwiftUI tree.
+                let element = shortcut.axElement
+                self.hide()
+                if element != nil { ShortcutActivator.activate(shortcut) }
+            }
         )
     }
 

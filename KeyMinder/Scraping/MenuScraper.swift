@@ -58,7 +58,7 @@ enum MenuScraper {
                 glyph:      int(item,    kAXMenuItemCmdGlyphAttribute),
                 modifiers:  int(item,    kAXMenuItemCmdModifiersAttribute) ?? 0
             ) {
-                topLevel.append(Shortcut(title: title, keys: keys))
+                topLevel.append(Shortcut(title: title, keys: keys, axElement: item))
             }
 
             // If this item opens a submenu, collect its shortcuts as a named group.
@@ -100,7 +100,7 @@ enum MenuScraper {
                 glyph:      int(item,    kAXMenuItemCmdGlyphAttribute),
                 modifiers:  int(item,    kAXMenuItemCmdModifiersAttribute) ?? 0
             ) {
-                result.append(Shortcut(title: title, keys: keys))
+                result.append(Shortcut(title: title, keys: keys, axElement: item))
             }
             // Flatten sub-submenus.
             if let submenu = children(item).first {

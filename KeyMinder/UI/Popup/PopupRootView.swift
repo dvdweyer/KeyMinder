@@ -49,6 +49,7 @@ struct PopupRootView: View {
     var scrolls: Bool = true
     var onGrant: () -> Void = {}
     var onOpenSettings: () -> Void = {}
+    var onActivate: (Shortcut) -> Void = { _ in }
 
     var body: some View {
         Group {
@@ -75,7 +76,7 @@ struct PopupRootView: View {
     @ViewBuilder
     private func shortcutsView(_ app: AppShortcuts) -> some View {
         if let model, !app.isEmpty {
-            FilterableShortcutsView(model: model, scrolls: scrolls)
+            FilterableShortcutsView(model: model, scrolls: scrolls, onActivate: onActivate)
         } else {
             VStack(alignment: .leading, spacing: 10) {
                 HStack(spacing: 8) {
@@ -101,6 +102,7 @@ private struct FilterableShortcutsView: View {
     // participating in @Observable's fine-grained dependency tracking.
     @Bindable var model: PopupFilterModel
     let scrolls: Bool
+    let onActivate: (Shortcut) -> Void
     @FocusState private var searchFocused: Bool
 
     var body: some View {
@@ -131,7 +133,8 @@ private struct FilterableShortcutsView: View {
             ForEach(Array(model.columns.enumerated()), id: \.offset) { _, column in
                 VStack(alignment: .leading, spacing: MenuLayout.sectionSpacing) {
                     ForEach(column) { section in
-                        MenuSectionView(section: section, query: model.activeQuery)
+                        MenuSectionView(section: section, query: model.activeQuery,
+                                        onActivate: onActivate)
                     }
                 }
                 .frame(width: MenuLayout.columnWidth, alignment: .top)
@@ -218,6 +221,7 @@ struct MenuSectionView: View {
     let section: MenuSection
     /// Active filter query; empty means no filter (nothing dims).
     var query: String = ""
+    var onActivate: (Shortcut) -> Void = { _ in }
 
     /// Whether the whole section is dimmed: a filter is active and nothing in it
     /// matches, so its headers recede along with its rows.
@@ -245,7 +249,7 @@ struct MenuSectionView: View {
                                    dimmed: !query.isEmpty && !group.hasMatch(query))
                 }
                 ForEach(group.shortcuts) { shortcut in
-                    ShortcutRow(shortcut: shortcut, query: query)
+                    ShortcutRow(shortcut: shortcut, query: query, onActivate: onActivate)
                 }
             }
         }
@@ -272,14 +276,22 @@ private struct SubGroupHeader: View {
 /// A single row: right-aligned key glyphs followed by the command name. When a
 /// filter is active and this shortcut doesn't match, both the keys and title
 /// fade to a low-contrast grey so matching rows stand out.
+///
+/// Rows with an AX element are clickable: tapping them fires `onActivate` so
+/// `PopupController` can dismiss the popup and execute the shortcut.
 struct ShortcutRow: View {
     let shortcut: Shortcut
     /// Active filter query; empty means no filter (nothing dims).
     var query: String = ""
+    var onActivate: (Shortcut) -> Void = { _ in }
+
+    @State private var hovered = false
 
     private var dimmed: Bool {
         !query.isEmpty && !shortcut.matches(query)
     }
+
+    private var clickable: Bool { shortcut.axElement != nil }
 
     var body: some View {
         HStack(spacing: 8) {
@@ -296,11 +308,18 @@ struct ShortcutRow: View {
             Spacer(minLength: 0)
         }
         .frame(height: MenuLayout.rowHeight)
+        .background(
+            RoundedRectangle(cornerRadius: 4)
+                .fill(Color.primary.opacity(clickable && hovered ? 0.07 : 0))
+        )
+        .onHover { if clickable { hovered = $0 } }
+        .onTapGesture { if clickable { onActivate(shortcut) } }
         // Collapse the two Text children into one VoiceOver element so the
         // screen reader speaks "New Conversation, Shift Command N" rather than
         // announcing the raw glyph string "⇧⌘N" and the title separately.
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("\(shortcut.title), \(spokenKeys(shortcut.keys))")
+        .accessibilityAddTraits(clickable ? .isButton : [])
     }
 }
 
