@@ -15,7 +15,46 @@ final class PopupFilterModel {
     /// Fixed column distribution — never recomputed while the popup is open.
     let columns: [[MenuSection]]
 
-    var query: String = ""
+    var query: String = "" {
+        didSet { if oldValue != query { selectedIndex = nil } }
+    }
+
+    var selectedIndex: Int? = nil
+
+    /// Flat list of visible shortcuts in column-layout order (left to right,
+    /// top to bottom within each column). Defines the Tab navigation sequence.
+    var visibleShortcuts: [Shortcut] {
+        var result: [Shortcut] = []
+        for column in columns {
+            for section in column {
+                for group in section.groups {
+                    for shortcut in group.shortcuts
+                        where (!shortcut.keys.isEmpty || showsAllItems) && shortcut.matches(activeQuery) {
+                        result.append(shortcut)
+                    }
+                }
+            }
+        }
+        return result
+    }
+
+    var selectedShortcut: Shortcut? {
+        guard let idx = selectedIndex else { return nil }
+        let visible = visibleShortcuts
+        return idx < visible.count ? visible[idx] : nil
+    }
+
+    func selectNext() {
+        let count = visibleShortcuts.count
+        guard count > 0 else { return }
+        selectedIndex = ((selectedIndex ?? -1) + 1) % count
+    }
+
+    func selectPrevious() {
+        let count = visibleShortcuts.count
+        guard count > 0 else { return }
+        selectedIndex = ((selectedIndex ?? count) - 1 + count) % count
+    }
 
     init(app: AppShortcuts, columns: [[MenuSection]]) {
         self.app = app
@@ -139,8 +178,17 @@ private struct FilterableShortcutsView: View {
     @ViewBuilder
     private var contentView: some View {
         if scrolls {
-            ScrollView(.vertical) { grid }
-                .scrollBounceBehavior(.basedOnSize)
+            ScrollViewReader { proxy in
+                ScrollView(.vertical) { grid }
+                    .scrollBounceBehavior(.basedOnSize)
+                    .onChange(of: model.selectedIndex) { _, _ in
+                        if let shortcut = model.selectedShortcut {
+                            withAnimation(.linear(duration: 0.1)) {
+                                proxy.scrollTo(shortcut.id, anchor: .center)
+                            }
+                        }
+                    }
+            }
         } else {
             grid
         }
@@ -153,6 +201,7 @@ private struct FilterableShortcutsView: View {
                     ForEach(column) { section in
                         MenuSectionView(section: section, query: model.activeQuery,
                                         showsAllItems: model.showsAllItems,
+                                        selectedShortcutID: model.selectedShortcut?.id,
                                         onActivate: onActivate)
                     }
                 }
@@ -245,6 +294,7 @@ struct MenuSectionView: View {
     /// When true, items without keyboard shortcuts are rendered; when false
     /// they are omitted from the layout entirely.
     var showsAllItems: Bool = false
+    var selectedShortcutID: UUID? = nil
     var onActivate: (Shortcut) -> Void = { _ in }
 
     /// A shortcut is visible when it passes the keys gate and matches the query.
@@ -277,7 +327,9 @@ struct MenuSectionView: View {
                         }
                         ForEach(group.shortcuts) { shortcut in
                             if isVisible(shortcut) {
-                                ShortcutRow(shortcut: shortcut, onActivate: onActivate)
+                                ShortcutRow(shortcut: shortcut,
+                                            selected: selectedShortcutID == shortcut.id,
+                                            onActivate: onActivate)
                             }
                         }
                     }
@@ -311,6 +363,7 @@ private struct SubGroupHeader: View {
 /// `PopupController` can dismiss the popup and execute the shortcut.
 struct ShortcutRow: View {
     let shortcut: Shortcut
+    var selected: Bool = false
     var onActivate: (Shortcut) -> Void = { _ in }
 
     @State private var hovered = false
@@ -334,7 +387,10 @@ struct ShortcutRow: View {
         .frame(height: MenuLayout.rowHeight)
         .background(
             RoundedRectangle(cornerRadius: 4)
-                .fill(Color.primary.opacity(clickable && hovered ? 0.07 : 0))
+                .fill(
+                    selected ? Color.accentColor.opacity(0.2) :
+                    Color.primary.opacity(clickable && hovered ? 0.07 : 0)
+                )
         )
         .onHover { if clickable { hovered = $0 } }
         .onTapGesture { if clickable { onActivate(shortcut) } }

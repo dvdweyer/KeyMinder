@@ -302,13 +302,7 @@ final class PopupController {
             scrolls: scrolls,
             onGrant: { [weak self] in self?.onGrant() },
             onOpenSettings: { [weak self] in self?.onOpenSettings() },
-            onActivate: { [weak self] shortcut in
-                guard let self else { return }
-                // Capture the AX element before hide() releases the SwiftUI tree.
-                let element = shortcut.axElement
-                self.hide()
-                if element != nil { ShortcutActivator.activate(shortcut) }
-            }
+            onActivate: { [weak self] shortcut in self?.activate(shortcut) }
         )
     }
 
@@ -358,18 +352,33 @@ final class PopupController {
             eventMonitors.append(globalKey)
         }
 
-        // Esc when the panel itself is key (e.g. the filter field has focus):
-        // clear a non-empty filter first, otherwise dismiss. Either way the
-        // keystroke is swallowed so it doesn't reach the filter field.
+        // Key handling when the panel itself is key (e.g. the filter field has focus).
+        // Esc clears the filter or dismisses; Tab advances/reverses the row selection;
+        // Return activates the selected shortcut.
         if let localKey = NSEvent.addLocalMonitorForEvents(
             matching: [.keyDown],
             handler: { [weak self] event in
                 guard let self else { return event }
-                if event.keyCode == 53 {
+                switch event.keyCode {
+                case 53: // Esc
                     _ = self.handleEscape()
                     return nil
+                case 48: // Tab
+                    if event.modifierFlags.contains(.shift) {
+                        self.filterModel?.selectPrevious()
+                    } else {
+                        self.filterModel?.selectNext()
+                    }
+                    return nil
+                case 36, 76: // Return / numpad Enter
+                    if let shortcut = self.filterModel?.selectedShortcut {
+                        self.activate(shortcut)
+                        return nil
+                    }
+                    return event
+                default:
+                    return event
                 }
-                return event
             }
         ) {
             eventMonitors.append(localKey)
@@ -385,6 +394,13 @@ final class PopupController {
             guard let self, let app, app.processIdentifier != self.ownPID else { return }
             MainActor.assumeIsolated { self.hide() }
         }
+    }
+
+    /// Dismisses the popup and fires the AX press action for `shortcut`.
+    private func activate(_ shortcut: Shortcut) {
+        let element = shortcut.axElement
+        hide()
+        if element != nil { ShortcutActivator.activate(shortcut) }
     }
 
     /// Esc behaviour: clear a non-empty filter (keeping the popup open), or
