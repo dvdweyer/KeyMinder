@@ -222,32 +222,47 @@ final class PopupController {
     /// content (no ScrollView), then clamped so the panel never exceeds the
     /// screen — overflow falls to the grid's own ScrollView.
     ///
-    /// The panel is sized once here and the column distribution is fixed for the
-    /// life of the popup. Live type-to-filter never changes the layout: every
-    /// shortcut stays on screen in the same place; non-matching rows just dim.
+    /// The panel is sized once here. In normal mode the layout is fixed for the
+    /// life of the popup — rows dim but never move. In all-entries mode the
+    /// panel is still sized for shortcuts only; no-shortcut items join the
+    /// ScrollView when the filter query reaches two characters.
     private func measuredContent(_ content: PopupContent, app: AppShortcuts) -> (NSView, CGSize) {
         let screen = Self.activeVisibleFrame
         let maxPanelHeight = screen.height * 0.86
 
-        // --- Column count + width. Spread menus across the available width:
-        // as many columns as the screen fits, capped at one per menu. ---
+        // --- Column count + width. ---
         let horizontalBudget = screen.width * 0.96 - 2 * Theme.contentPadding
         let perColumn = MenuLayout.columnWidth + MenuLayout.columnSpacing
         let maxColumns = max(1, Int((horizontalBudget + MenuLayout.columnSpacing) / perColumn))
 
-        let count = min(app.sections.count, maxColumns)
-        let columns = MenuLayout.distribute(app.sections, columns: count)
-        let actual = max(1, columns.count)
+        // In all-entries mode, distribute columns using shortcuts-only section
+        // heights so the panel is sized for the compact initial view. No-shortcut
+        // items appear inside the ScrollView once the query reaches 2 characters.
+        let layoutSections = app.includesItemsWithoutShortcuts
+            ? Self.shortcutsOnly(app.sections)
+            : app.sections
+
+        let count = min(layoutSections.count, maxColumns)
+        let distributedLayout = MenuLayout.distribute(layoutSections, columns: count)
+        let actual = max(1, distributedLayout.count)
 
         let contentWidth = CGFloat(actual) * MenuLayout.columnWidth
             + CGFloat(actual - 1) * MenuLayout.columnSpacing
         let width = contentWidth + 2 * Theme.contentPadding
 
-        let model = PopupFilterModel(app: app, columns: columns)
+        // Map the shortcuts-only column assignment back to full sections so that
+        // no-shortcut items are present in the model and can appear on demand.
+        let fullByTitle = Dictionary(uniqueKeysWithValues: app.sections.map { ($0.title, $0) })
+        let displayColumns: [[MenuSection]] = distributedLayout.map { col in
+            col.compactMap { fullByTitle[$0.title] }
+        }
+
+        let model = PopupFilterModel(app: app, columns: displayColumns)
         filterModel = model
 
-        // --- Height (measured from the real layout, no scroll wrapper). The
-        // grid always renders the full content, so this measures it directly. ---
+        // Height is measured with an empty query, so showsAllItems is false and
+        // no-shortcut rows are absent from the layout — giving the compact
+        // shortcuts-only height.
         let measureView = rootView(content, model: model, width: width,
                                    height: nil, scrolls: false)
         let measurer = NSHostingView(rootView: measureView)
@@ -259,6 +274,19 @@ final class PopupController {
         let root = rootView(content, model: model, width: width,
                             height: height, scrolls: true)
         return (NSHostingView(rootView: root), CGSize(width: width, height: height))
+    }
+
+    /// Returns a copy of `sections` containing only shortcuts (non-empty keys),
+    /// dropping empty groups and sections. Used for column distribution and panel
+    /// sizing in all-entries mode so the popup opens at shortcuts-only dimensions.
+    private static func shortcutsOnly(_ sections: [MenuSection]) -> [MenuSection] {
+        sections.compactMap { section in
+            let groups = section.groups.compactMap { group -> ShortcutGroup? in
+                let shortcuts = group.shortcuts.filter { !$0.keys.isEmpty }
+                return shortcuts.isEmpty ? nil : ShortcutGroup(title: group.title, shortcuts: shortcuts)
+            }
+            return groups.isEmpty ? nil : MenuSection(title: section.title, groups: groups)
+        }
     }
 
     private func rootView(_ content: PopupContent,

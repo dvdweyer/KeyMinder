@@ -28,6 +28,19 @@ final class PopupFilterModel {
     /// Whether a non-empty filter is active.
     var hasQuery: Bool { !activeQuery.isEmpty }
 
+    /// True when non-shortcut items should be visible: all-entries mode is on
+    /// and the user has typed at least two characters in the filter.
+    var showsAllItems: Bool {
+        app.includesItemsWithoutShortcuts && activeQuery.count >= 2
+    }
+
+    /// Number of items that have a key equivalent. Used for the header count
+    /// when all-entries mode is active but the 2-character threshold hasn't
+    /// been reached, so the displayed count matches what's actually visible.
+    var shortcutOnlyCount: Int {
+        app.sections.reduce(0) { $0 + $1.shortcuts.filter { !$0.keys.isEmpty }.count }
+    }
+
     /// Number of shortcuts currently matching the filter.
     var matchCount: Int { app.matchCount(activeQuery) }
 }
@@ -134,6 +147,7 @@ private struct FilterableShortcutsView: View {
                 VStack(alignment: .leading, spacing: MenuLayout.sectionSpacing) {
                     ForEach(column) { section in
                         MenuSectionView(section: section, query: model.activeQuery,
+                                        showsAllItems: model.showsAllItems,
                                         onActivate: onActivate)
                     }
                 }
@@ -161,10 +175,12 @@ private struct FilterableShortcutsView: View {
     }
 
     private var countText: Text {
-        let total = model.app.totalCount
-        if model.hasQuery { return Text("\(model.matchCount) of \(total)") }
-        let label = model.app.includesItemsWithoutShortcuts ? "menu items" : "shortcuts"
-        return Text("\(total) \(label)")
+        if model.hasQuery { return Text("\(model.matchCount) of \(model.app.totalCount)") }
+        if model.showsAllItems { return Text("\(model.app.totalCount) menu items") }
+        let n = model.app.includesItemsWithoutShortcuts
+            ? model.shortcutOnlyCount
+            : model.app.totalCount
+        return Text("\(n) shortcuts")
     }
 
     private var searchField: some View {
@@ -222,6 +238,9 @@ struct MenuSectionView: View {
     let section: MenuSection
     /// Active filter query; empty means no filter (nothing dims).
     var query: String = ""
+    /// When true, items without keyboard shortcuts are rendered; when false
+    /// they are omitted from the layout entirely.
+    var showsAllItems: Bool = false
     var onActivate: (Shortcut) -> Void = { _ in }
 
     /// Whether the whole section is dimmed: a filter is active and nothing in it
@@ -250,7 +269,9 @@ struct MenuSectionView: View {
                                    dimmed: !query.isEmpty && !group.hasMatch(query))
                 }
                 ForEach(group.shortcuts) { shortcut in
-                    ShortcutRow(shortcut: shortcut, query: query, onActivate: onActivate)
+                    if !shortcut.keys.isEmpty || showsAllItems {
+                        ShortcutRow(shortcut: shortcut, query: query, onActivate: onActivate)
+                    }
                 }
             }
         }
