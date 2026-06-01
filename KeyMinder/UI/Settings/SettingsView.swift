@@ -81,6 +81,10 @@ final class SettingsModel {
 
     // MARK: Double-tap trigger
 
+    var showAllMenuItems: Bool = UserDefaults.standard.showAllMenuItems {
+        didSet { UserDefaults.standard.showAllMenuItems = showAllMenuItems }
+    }
+
     var doubleTapEnabled: Bool = UserDefaults.standard.doubleTapEnabled {
         didSet {
             UserDefaults.standard.doubleTapEnabled = doubleTapEnabled
@@ -205,6 +209,18 @@ struct SettingsView: View {
                     .frame(maxWidth: 130)
                 }
             }
+
+            Divider()
+
+            Text("Popup Content")
+                .font(.headline)
+
+            Text("Show all menu entries, not just those with keyboard shortcuts, to help discover available actions.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            Toggle("Show all menu entries", isOn: $model.showAllMenuItems)
         }
         .padding(20)
         .frame(width: 420, alignment: .topLeading)   // height: let VStack size to content

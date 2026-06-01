@@ -10,7 +10,10 @@ import os
 enum MenuScraper {
 
     /// Scrapes the menu bar of the application with the given process id.
-    static func scrape(pid: pid_t) -> [MenuSection] {
+    /// When `includeItemsWithoutShortcuts` is true, leaf menu items that have no
+    /// key equivalent are included with an empty `keys` string so the full menu
+    /// structure is visible in the popup.
+    static func scrape(pid: pid_t, includeItemsWithoutShortcuts: Bool = false) -> [MenuSection] {
         let start = Date()
         let app = AXUIElementCreateApplication(pid)
         // Cap per-request AX round-trips so an unresponsive target never blocks
@@ -27,47 +30,56 @@ enum MenuScraper {
             let title = string(menuBarItem, kAXTitleAttribute) ?? ""
             // A menu bar item owns its drop-down menu as its single child.
             guard let menu = children(menuBarItem).first else { continue }
-            let groups = collectGroups(in: menu)
+            let groups = collectGroups(in: menu, includeAll: includeItemsWithoutShortcuts)
             if !groups.isEmpty {
                 sections.append(MenuSection(title: title, groups: groups))
             }
         }
 
-        let totalShortcuts = sections.reduce(0) { $0 + $1.shortcuts.count }
+        let totalItems = sections.reduce(0) { $0 + $1.shortcuts.count }
         let elapsed = Date().timeIntervalSince(start)
-        Logger.scraper.info("pid \(pid, privacy: .public): \(sections.count, privacy: .public) menus, \(totalShortcuts, privacy: .public) shortcuts in \(elapsed, format: .fixed(precision: 3), privacy: .public)s")
+        Logger.scraper.info("pid \(pid, privacy: .public): \(sections.count, privacy: .public) menus, \(totalItems, privacy: .public) items in \(elapsed, format: .fixed(precision: 3), privacy: .public)s")
 
         return sections
     }
 
     /// Walks the direct children of `menu` and returns shortcut groups:
-    /// one unnamed group for top-level items with key equivalents, then one
-    /// named group per submenu that contains at least one shortcut.
-    /// Sub-submenus (depth > 2) are flattened into their parent's named group.
-    private static func collectGroups(in menu: AXUIElement) -> [ShortcutGroup] {
+    /// one unnamed group for top-level items, then one named group per submenu
+    /// that has at least one item. Sub-submenus (depth > 2) are flattened into
+    /// their parent's named group.
+    /// When `includeAll` is false (default), only items with a key equivalent are
+    /// included. When true, leaf items without shortcuts are also included.
+    private static func collectGroups(in menu: AXUIElement, includeAll: Bool) -> [ShortcutGroup] {
         var topLevel: [Shortcut] = []
         var named:    [ShortcutGroup] = []
 
         for item in children(menu) {
             guard let title = string(item, kAXTitleAttribute), !title.isEmpty else { continue }
 
-            // Collect this item's own shortcut, if any.
-            if let keys = ShortcutFormatter.format(
+            let shortcutKeys = ShortcutFormatter.format(
                 cmdChar:    string(item, kAXMenuItemCmdCharAttribute),
                 virtualKey: int(item,    kAXMenuItemCmdVirtualKeyAttribute),
                 glyph:      int(item,    kAXMenuItemCmdGlyphAttribute),
                 modifiers:  int(item,    kAXMenuItemCmdModifiersAttribute) ?? 0
-            ) {
+            )
+            // Read children once: nil means a leaf item, non-nil means a submenu container.
+            let submenu = children(item).first
+
+            if let keys = shortcutKeys {
                 topLevel.append(Shortcut(title: title, keys: keys, axElement: item))
+            } else if includeAll, submenu == nil {
+                // Leaf item with no shortcut: include with empty keys so the full
+                // menu structure is discoverable.
+                topLevel.append(Shortcut(title: title, keys: "", axElement: item))
             }
 
-            // If this item opens a submenu, collect its shortcuts as a named group.
+            // If this item opens a submenu, collect its contents as a named group.
             // collectShortcutsFlat recurses further but keeps everything in one list,
             // which is the right behaviour for sub-submenus (depth > 2).
-            if let submenu = children(item).first {
-                let submenuShortcuts = collectShortcutsFlat(in: submenu)
-                if !submenuShortcuts.isEmpty {
-                    named.append(ShortcutGroup(title: title, shortcuts: submenuShortcuts))
+            if let submenu {
+                let submenuItems = collectShortcutsFlat(in: submenu, includeAll: includeAll)
+                if !submenuItems.isEmpty {
+                    named.append(ShortcutGroup(title: title, shortcuts: submenuItems))
                 } else {
                     // Log empty submenus so we can quantify how often lazy population
                     // hides shortcuts.  itemCount == 0 strongly suggests the submenu
@@ -75,7 +87,7 @@ enum MenuScraper {
                     // the menu is actually displayed, not when AX reads it).
                     let itemCount = children(submenu).count
                     let hint = itemCount == 0 ? "; likely lazy-populated" : ""
-                    Logger.scraper.info("Submenu '\(title, privacy: .public)' yielded 0 shortcuts (\(itemCount, privacy: .public) child items\(hint, privacy: .public))")
+                    Logger.scraper.info("Submenu '\(title, privacy: .public)' yielded 0 items (\(itemCount, privacy: .public) child items\(hint, privacy: .public))")
                 }
             }
         }
@@ -88,27 +100,34 @@ enum MenuScraper {
         return groups
     }
 
-    /// Recursively collects all shortcuts within `menu`, flattening any nested
-    /// submenus into a single list. Used for submenu contents (depth ≥ 2).
-    private static func collectShortcutsFlat(in menu: AXUIElement) -> [Shortcut] {
+    /// Recursively collects items within `menu`, flattening any nested submenus
+    /// into a single list. Used for submenu contents (depth ≥ 2).
+    private static func collectShortcutsFlat(in menu: AXUIElement, includeAll: Bool = false) -> [Shortcut] {
         var result: [Shortcut] = []
         for item in children(menu) {
             guard let title = string(item, kAXTitleAttribute), !title.isEmpty else { continue }
-            if let keys = ShortcutFormatter.format(
+
+            let shortcutKeys = ShortcutFormatter.format(
                 cmdChar:    string(item, kAXMenuItemCmdCharAttribute),
                 virtualKey: int(item,    kAXMenuItemCmdVirtualKeyAttribute),
                 glyph:      int(item,    kAXMenuItemCmdGlyphAttribute),
                 modifiers:  int(item,    kAXMenuItemCmdModifiersAttribute) ?? 0
-            ) {
+            )
+            let submenu = children(item).first
+
+            if let keys = shortcutKeys {
                 result.append(Shortcut(title: title, keys: keys, axElement: item))
+            } else if includeAll, submenu == nil {
+                result.append(Shortcut(title: title, keys: "", axElement: item))
             }
+
             // Flatten sub-submenus.
-            if let submenu = children(item).first {
-                let sub = collectShortcutsFlat(in: submenu)
+            if let submenu {
+                let sub = collectShortcutsFlat(in: submenu, includeAll: includeAll)
                 if sub.isEmpty {
                     let itemCount = children(submenu).count
                     let hint = itemCount == 0 ? "; likely lazy-populated" : ""
-                    Logger.scraper.info("Nested submenu '\(title, privacy: .public)' yielded 0 shortcuts (\(itemCount, privacy: .public) child items\(hint, privacy: .public))")
+                    Logger.scraper.info("Nested submenu '\(title, privacy: .public)' yielded 0 items (\(itemCount, privacy: .public) child items\(hint, privacy: .public))")
                 }
                 result.append(contentsOf: sub)
             }
@@ -142,5 +161,16 @@ enum MenuScraper {
 
     private static func int(_ element: AXUIElement, _ attribute: String) -> Int? {
         (value(element, attribute) as? NSNumber)?.intValue
+    }
+}
+
+// MARK: - UserDefaults
+
+extension UserDefaults {
+    private static let showAllMenuItemsKey = "showAllMenuItems"
+
+    var showAllMenuItems: Bool {
+        get { bool(forKey: Self.showAllMenuItemsKey) }
+        set { set(newValue, forKey: Self.showAllMenuItemsKey) }
     }
 }

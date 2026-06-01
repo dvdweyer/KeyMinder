@@ -111,18 +111,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
 
         // Capture everything the scrape needs from the main actor up front; only
-        // the pid crosses to the background task.
+        // value types cross to the background task.
         let pid = app.processIdentifier
         let appName = app.localizedName ?? "App"
         let bundleID = app.bundleIdentifier
         let icon = app.icon
+        let includeAll = UserDefaults.standard.showAllMenuItems
 
         // Cancel any stale in-flight scrapes before starting new ones.
         scrapeTask?.cancel()
         detachedScrapeTask?.cancel()
 
         let work = Task.detached(priority: .userInitiated) {
-            MenuScraper.scrape(pid: pid)
+            MenuScraper.scrape(pid: pid, includeItemsWithoutShortcuts: includeAll)
         }
         detachedScrapeTask = work
 
@@ -140,7 +141,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 appName: appName,
                 bundleIdentifier: bundleID,
                 icon: icon,
-                sections: sections
+                sections: sections,
+                includesItemsWithoutShortcuts: includeAll
             )
             popup.show(.shortcuts(shortcuts))
         }

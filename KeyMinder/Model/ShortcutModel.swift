@@ -61,6 +61,8 @@ struct AppShortcuts {
     let bundleIdentifier: String?
     let icon: NSImage?
     let sections: [MenuSection]
+    /// True when the scrape included items without key equivalents (all-entries mode).
+    let includesItemsWithoutShortcuts: Bool
 
     var isEmpty: Bool { sections.allSatisfy { $0.shortcuts.isEmpty } }
 

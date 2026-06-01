@@ -161,9 +161,10 @@ private struct FilterableShortcutsView: View {
     }
 
     private var countText: Text {
-        model.hasQuery
-            ? Text("\(model.matchCount) of \(model.app.totalCount)")
-            : Text("\(model.app.totalCount) shortcuts")
+        let total = model.app.totalCount
+        if model.hasQuery { return Text("\(model.matchCount) of \(total)") }
+        let label = model.app.includesItemsWithoutShortcuts ? "menu items" : "shortcuts"
+        return Text("\(total) \(label)")
     }
 
     private var searchField: some View {
