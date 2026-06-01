@@ -4,9 +4,9 @@ import SwiftUI
 /// Owned by `PopupController` so the controller can read/clear the query (for
 /// Esc handling) while the SwiftUI view observes it for live updates.
 ///
-/// Filtering never changes the layout: the column distribution is computed once
-/// and fixed for the lifetime of the popup. Typing only dims the rows that don't
-/// match, so every shortcut stays put in exactly the same place.
+/// Column distribution is computed once and fixed for the lifetime of the popup.
+/// Filtering hides non-matching rows and collapses empty sections/groups in place,
+/// so the horizontal layout never changes.
 @MainActor
 @Observable
 final class PopupFilterModel {
@@ -34,15 +34,21 @@ final class PopupFilterModel {
         app.includesItemsWithoutShortcuts && activeQuery.count >= 2
     }
 
-    /// Number of items that have a key equivalent. Used for the header count
-    /// when all-entries mode is active but the 2-character threshold hasn't
-    /// been reached, so the displayed count matches what's actually visible.
-    var shortcutOnlyCount: Int {
-        app.sections.reduce(0) { $0 + $1.shortcuts.filter { !$0.keys.isEmpty }.count }
+    /// Count of items currently displayable (passing the keys/showsAllItems gate).
+    /// Used as both the no-query header count and the "of N" filter denominator,
+    /// so the number always reflects what the user can actually see.
+    var displayableCount: Int {
+        app.sections.reduce(0) { $0 + $1.shortcuts.filter { !$0.keys.isEmpty || showsAllItems }.count }
     }
 
-    /// Number of shortcuts currently matching the filter.
-    var matchCount: Int { app.matchCount(activeQuery) }
+    /// Count of displayable items that match the active filter query.
+    var matchCount: Int {
+        app.sections.reduce(0) { total, section in
+            total + section.shortcuts.filter {
+                (!$0.keys.isEmpty || showsAllItems) && $0.matches(activeQuery)
+            }.count
+        }
+    }
 }
 
 /// Root SwiftUI view hosted inside the floating panel. Renders the scraped
@@ -107,9 +113,9 @@ struct PopupRootView: View {
 }
 
 /// The shortcuts grid with a live, auto-focused type-to-filter field in its
-/// header. The layout is fixed: every shortcut stays on screen in the same spot
-/// while typing, and rows that don't match the filter fade to a low-contrast
-/// grey so the matching ones stand out.
+/// header. Columns are fixed for the lifetime of the popup; filtering hides
+/// non-matching rows and collapses empty sections so only relevant content
+/// remains visible.
 private struct FilterableShortcutsView: View {
     // @Bindable lets us write $model.query (Binding<String>) while also
     // participating in @Observable's fine-grained dependency tracking.
@@ -140,7 +146,6 @@ private struct FilterableShortcutsView: View {
         }
     }
 
-    /// The full multi-column grid of section cards, dimming non-matching rows.
     private var grid: some View {
         HStack(alignment: .top, spacing: MenuLayout.columnSpacing) {
             ForEach(Array(model.columns.enumerated()), id: \.offset) { _, column in
@@ -175,12 +180,10 @@ private struct FilterableShortcutsView: View {
     }
 
     private var countText: Text {
-        if model.hasQuery { return Text("\(model.matchCount) of \(model.app.totalCount)") }
-        if model.showsAllItems { return Text("\(model.app.totalCount) menu items") }
-        let n = model.app.includesItemsWithoutShortcuts
-            ? model.shortcutOnlyCount
-            : model.app.totalCount
-        return Text("\(n) shortcuts")
+        let n = model.displayableCount
+        if model.hasQuery { return Text("\(model.matchCount) of \(n)") }
+        let label = model.showsAllItems ? "menu items" : "shortcuts"
+        return Text("\(n) \(label)")
     }
 
     private var searchField: some View {
@@ -234,69 +237,48 @@ struct PopupMessageView: View {
 
 /// One menu's section card: a header bar, then shortcut rows optionally broken
 /// up by sub-group labels for items that came from a submenu.
+/// The entire card is absent from the layout when no rows pass `isVisible`.
 struct MenuSectionView: View {
     let section: MenuSection
-    /// Active filter query; empty means no filter (nothing dims).
+    /// Active filter query; empty means no filter (all rows visible).
     var query: String = ""
     /// When true, items without keyboard shortcuts are rendered; when false
     /// they are omitted from the layout entirely.
     var showsAllItems: Bool = false
     var onActivate: (Shortcut) -> Void = { _ in }
 
-    @State private var isExpanded = true
-
-    /// Whether rows are actually visible: expanded by the user, or forced open
-    /// because the active query matches something inside this section.
-    private var effectivelyExpanded: Bool {
-        isExpanded || (!query.isEmpty && section.hasMatch(query))
+    /// A shortcut is visible when it passes the keys gate and matches the query.
+    /// `Shortcut.matches("")` returns `true`, so an empty query shows everything.
+    private func isVisible(_ shortcut: Shortcut) -> Bool {
+        (!shortcut.keys.isEmpty || showsAllItems) && shortcut.matches(query)
     }
 
-    /// Whether the whole section is dimmed: a filter is active and nothing in it
-    /// matches, so its headers recede along with its rows.
-    private var sectionDimmed: Bool {
-        !query.isEmpty && !section.hasMatch(query)
+    private var hasVisibleContent: Bool {
+        section.groups.contains { group in group.shortcuts.contains { isVisible($0) } }
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: MenuLayout.rowSpacing) {
-            // Section header — tappable when in all-entries mode to collapse/expand.
-            Button {
-                if showsAllItems {
-                    withAnimation(.easeInOut(duration: 0.15)) { isExpanded.toggle() }
-                }
-            } label: {
-                HStack(spacing: 4) {
-                    Text(section.title)
-                        .font(.system(size: 12, weight: .semibold))
-                        .foregroundStyle(sectionDimmed ? AnyShapeStyle(Theme.fadedText) : AnyShapeStyle(.secondary))
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    if showsAllItems {
-                        Image(systemName: "chevron.down")
-                            .font(.system(size: 9, weight: .semibold))
-                            .foregroundStyle(sectionDimmed ? AnyShapeStyle(Theme.fadedText) : AnyShapeStyle(.secondary))
-                            .rotationEffect(.degrees(effectivelyExpanded ? 0 : -90))
-                            .animation(.easeInOut(duration: 0.15), value: effectivelyExpanded)
-                    }
-                }
-                .padding(.horizontal, 8)
-                .padding(.vertical, 4)
-                .background(Theme.sectionHeaderFill, in: RoundedRectangle(cornerRadius: 6))
-            }
-            .buttonStyle(.plain)
-            .padding(.bottom, 2)
-            .accessibilityAddTraits(.isHeader)
-            .accessibilityHint(showsAllItems ? (effectivelyExpanded ? "Collapse" : "Expand") : "")
+        if hasVisibleContent {
+            VStack(alignment: .leading, spacing: MenuLayout.rowSpacing) {
+                Text(section.title)
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(Theme.sectionHeaderFill, in: RoundedRectangle(cornerRadius: 6))
+                    .padding(.bottom, 2)
+                    .accessibilityAddTraits(.isHeader)
 
-            if effectivelyExpanded {
                 ForEach(section.groups) { group in
-                    // Named groups get a lightweight sub-header above their rows.
-                    if let groupTitle = group.title {
-                        SubGroupHeader(title: groupTitle,
-                                       dimmed: !query.isEmpty && !group.hasMatch(query))
-                    }
-                    ForEach(group.shortcuts) { shortcut in
-                        if !shortcut.keys.isEmpty || showsAllItems {
-                            ShortcutRow(shortcut: shortcut, query: query, onActivate: onActivate)
+                    if group.shortcuts.contains(where: { isVisible($0) }) {
+                        if let groupTitle = group.title {
+                            SubGroupHeader(title: groupTitle)
+                        }
+                        ForEach(group.shortcuts) { shortcut in
+                            if isVisible(shortcut) {
+                                ShortcutRow(shortcut: shortcut, onActivate: onActivate)
+                            }
                         }
                     }
                 }
@@ -309,12 +291,11 @@ struct MenuSectionView: View {
 /// Visually subordinate to the section header: smaller, tertiary colour, no fill.
 private struct SubGroupHeader: View {
     let title: String
-    var dimmed: Bool = false
 
     var body: some View {
         Text(title)
             .font(.system(size: 11, weight: .medium))
-            .foregroundStyle(dimmed ? AnyShapeStyle(Theme.fadedText) : AnyShapeStyle(.tertiary))
+            .foregroundStyle(.tertiary)
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.leading, 8)
             .padding(.top, 6)
@@ -322,23 +303,17 @@ private struct SubGroupHeader: View {
     }
 }
 
-/// A single row: right-aligned key glyphs followed by the command name. When a
-/// filter is active and this shortcut doesn't match, both the keys and title
-/// fade to a low-contrast grey so matching rows stand out.
+/// A single row: right-aligned key glyphs followed by the command name.
+/// Only rendered for items that pass the visibility gate in `MenuSectionView`,
+/// so every visible row is already a match — no dimming needed.
 ///
 /// Rows with an AX element are clickable: tapping them fires `onActivate` so
 /// `PopupController` can dismiss the popup and execute the shortcut.
 struct ShortcutRow: View {
     let shortcut: Shortcut
-    /// Active filter query; empty means no filter (nothing dims).
-    var query: String = ""
     var onActivate: (Shortcut) -> Void = { _ in }
 
     @State private var hovered = false
-
-    private var dimmed: Bool {
-        !query.isEmpty && !shortcut.matches(query)
-    }
 
     private var clickable: Bool { shortcut.axElement != nil }
 
@@ -346,11 +321,11 @@ struct ShortcutRow: View {
         HStack(spacing: 8) {
             Text(shortcut.keys)
                 .font(.system(size: 12, weight: .medium, design: .rounded))
-                .foregroundStyle(dimmed ? Theme.fadedText : Theme.keyAccent)
+                .foregroundStyle(Theme.keyAccent)
                 .frame(width: Theme.keyColumnWidth, alignment: .trailing)
             Text(shortcut.title)
                 .font(.system(size: 12))
-                .foregroundStyle(dimmed ? AnyShapeStyle(Theme.fadedText) : AnyShapeStyle(.primary))
+                .foregroundStyle(.primary)
                 .lineLimit(1)
                 .truncationMode(.tail)
                 .help(shortcut.title)
