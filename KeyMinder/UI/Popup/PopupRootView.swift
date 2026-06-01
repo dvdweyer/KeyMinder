@@ -243,6 +243,14 @@ struct MenuSectionView: View {
     var showsAllItems: Bool = false
     var onActivate: (Shortcut) -> Void = { _ in }
 
+    @State private var isExpanded = true
+
+    /// Whether rows are actually visible: expanded by the user, or forced open
+    /// because the active query matches something inside this section.
+    private var effectivelyExpanded: Bool {
+        isExpanded || (!query.isEmpty && section.hasMatch(query))
+    }
+
     /// Whether the whole section is dimmed: a filter is active and nothing in it
     /// matches, so its headers recede along with its rows.
     private var sectionDimmed: Bool {
@@ -251,26 +259,45 @@ struct MenuSectionView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: MenuLayout.rowSpacing) {
-            // Top-level section header (e.g. "Window")
-            Text(section.title)
-                .font(.system(size: 12, weight: .semibold))
-                .foregroundStyle(sectionDimmed ? AnyShapeStyle(Theme.fadedText) : AnyShapeStyle(.secondary))
-                .frame(maxWidth: .infinity, alignment: .leading)
+            // Section header — tappable when in all-entries mode to collapse/expand.
+            Button {
+                if showsAllItems {
+                    withAnimation(.easeInOut(duration: 0.15)) { isExpanded.toggle() }
+                }
+            } label: {
+                HStack(spacing: 4) {
+                    Text(section.title)
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundStyle(sectionDimmed ? AnyShapeStyle(Theme.fadedText) : AnyShapeStyle(.secondary))
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    if showsAllItems {
+                        Image(systemName: "chevron.down")
+                            .font(.system(size: 9, weight: .semibold))
+                            .foregroundStyle(sectionDimmed ? AnyShapeStyle(Theme.fadedText) : AnyShapeStyle(.secondary))
+                            .rotationEffect(.degrees(effectivelyExpanded ? 0 : -90))
+                            .animation(.easeInOut(duration: 0.15), value: effectivelyExpanded)
+                    }
+                }
                 .padding(.horizontal, 8)
                 .padding(.vertical, 4)
                 .background(Theme.sectionHeaderFill, in: RoundedRectangle(cornerRadius: 6))
-                .padding(.bottom, 2)
-                .accessibilityAddTraits(.isHeader)
+            }
+            .buttonStyle(.plain)
+            .padding(.bottom, 2)
+            .accessibilityAddTraits(.isHeader)
+            .accessibilityHint(showsAllItems ? (effectivelyExpanded ? "Collapse" : "Expand") : "")
 
-            ForEach(section.groups) { group in
-                // Named groups get a lightweight sub-header above their rows.
-                if let groupTitle = group.title {
-                    SubGroupHeader(title: groupTitle,
-                                   dimmed: !query.isEmpty && !group.hasMatch(query))
-                }
-                ForEach(group.shortcuts) { shortcut in
-                    if !shortcut.keys.isEmpty || showsAllItems {
-                        ShortcutRow(shortcut: shortcut, query: query, onActivate: onActivate)
+            if effectivelyExpanded {
+                ForEach(section.groups) { group in
+                    // Named groups get a lightweight sub-header above their rows.
+                    if let groupTitle = group.title {
+                        SubGroupHeader(title: groupTitle,
+                                       dimmed: !query.isEmpty && !group.hasMatch(query))
+                    }
+                    ForEach(group.shortcuts) { shortcut in
+                        if !shortcut.keys.isEmpty || showsAllItems {
+                            ShortcutRow(shortcut: shortcut, query: query, onActivate: onActivate)
+                        }
                     }
                 }
             }
