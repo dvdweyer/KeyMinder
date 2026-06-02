@@ -116,6 +116,9 @@ level is hidden unless you pass `--level info`.
   `includesItemsWithoutShortcuts` flag); `PopupContent` enum. Matching extensions on
   all types; `Shortcut.matches(_:)` is case- and diacritic-insensitive via
   `localizedStandardContains` and explicitly returns `true` for an empty query.
+  `Shortcut.modifiers` extracts the set of modifier glyphs (⌃⌥⇧⌘) present in `keys`;
+  `matchesModifierFilter(_:)` returns `true` when the filter set is empty or exactly
+  equals `modifiers` (exact-match semantics — ⌘ matches only ⌘X, not ⇧⌘X).
 
 ### Settings
 
@@ -145,30 +148,50 @@ level is hidden unless you pass `--level info`.
   dismissal monitors (click-outside, Esc, app-switch). `activeVisibleFrame` selects the
   screen containing the mouse cursor (primary), then `NSScreen.main`, then the first
   screen — nil-safe to survive display-reconfiguration races. The panel is always
-  centered on that screen. Esc clears a non-empty filter before dismissing (clear-then-
-  dismiss semantics). A local key monitor handles Tab (advance row selection) /
+  centered on that screen. Esc clears a non-empty text filter, then the toggled modifier
+  filter, then dismisses. A local key monitor handles Tab (advance row selection) /
   Shift-Tab (reverse) / Return or numpad Enter (activate selected shortcut). Permission-
   poll timer fires `onPermissionGranted` the moment `AXIsProcessTrusted()` becomes true.
   Panel is released (`self.panel = nil`) on hide to free the SwiftUI tree while idle.
+  Two `flagsChanged` event monitors (global for when another app is frontmost, local for
+  when the popup panel is key) call `handleFlagsChanged(_:)` which writes the currently
+  held modifier glyphs to `filterModel.heldModifiers` via `extractModifiers(from:)`.
+  On popup open, `NSEvent.modifierFlags` seeds `heldModifiers` so the filter is
+  immediately correct if modifier keys are already held. `measuredContent` computes
+  `fitsWithoutScrolling = naturalHeight ≤ maxPanelHeight` and passes it to the model.
 - `UI/Popup/PopupPanel.swift` — non-activating `NSPanel` subclass.
 - `UI/Popup/PopupRootView.swift` — contains all popup SwiftUI types:
   - `PopupFilterModel` (`@Observable @MainActor`) — owned by `PopupController`;
     holds the live `query`, fixed `columns` layout, `selectedIndex` for Tab navigation,
-    cached `visibleShortcuts` (recomputed on each query change), `displayableCount`,
+    cached `visibleShortcuts` (recomputed on each query/modifier change), `displayableCount`,
     `matchCount`, and `showsAllItems` (true when all-entries mode is on and query ≥ 2
-    chars). `selectNext()` / `selectPrevious()` wrap around.
+    chars). `selectNext()` / `selectPrevious()` wrap around. Modifier filtering uses two
+    backing stores: `toggledModifiers` (persistent, driven by UI button clicks via
+    `toggleModifier(_:)` / `clearToggledModifiers()`) and `heldModifiers` (ephemeral,
+    driven by physical key state set by `PopupController`). The computed `modifierFilter`
+    is their union and is used for all filtering. `hasToggledModifiers` lets the Esc
+    handler clear only persistent state (held keys self-clear on release).
+    `fitsWithoutScrolling` (set once at init by the controller) switches `MenuSectionView`
+    into dim mode when true.
   - `PopupRootView` — dispatches to `FilterableShortcutsView`, `PopupOnboardingView`,
     or `PopupMessageView`; applies `.regularMaterial` background + border overlay.
-  - `FilterableShortcutsView` — header (app icon, name, count, auto-focused search
-    field) + scrollable shortcut grid; auto-focuses the filter field on appear;
-    scroll-follows the selected row.
+  - `FilterableShortcutsView` — header (app icon, name, count, modifier toggle buttons,
+    auto-focused search field) + scrollable shortcut grid; auto-focuses the filter field
+    on appear; scroll-follows the selected row. Modifier buttons (⌃ ⌥ ⇧ ⌘) are rendered
+    by `ModifierToggle` — filled with `Theme.keyAccent` when active, outlined when not.
   - `MenuSectionView` — one section card: section header (`.isHeader` VoiceOver trait)
-    + optional `SubGroupHeader` labels for named submenu groups + shortcut rows. The
-    entire card is absent from layout when no rows pass the visibility gate.
+    + optional `SubGroupHeader` labels for named submenu groups + shortcut rows. In normal
+    mode the card is absent when no rows pass the filter. In dim mode (`dimMode: true`)
+    every keyed row is always rendered; non-matching rows are passed `dimmed: true` and
+    only empty sections (no keyed shortcuts at all) are hidden. Section and sub-group
+    headers always stay at full opacity in dim mode.
   - `SubGroupHeader` — compact label above a submenu's items inside a section card.
   - `ShortcutRow` — right-aligned key glyphs + command title; hover highlight and
     tap-to-activate when the row has an `axElement`; VoiceOver label via `spokenKeys(_:)`
-    (e.g. "⇧⌘N" → "Shift Command N"); Tab-selection highlight.
+    (e.g. "⇧⌘N" → "Shift Command N"); Tab-selection highlight. When `dimmed: true` both
+    text elements use `Theme.fadedText`, `clickable` is false (no tap, no hover, no
+    `.isButton` trait), and the row is invisible to Tab navigation (it is absent from
+    `visibleShortcuts`).
   - `PopupMessageView` — centered icon-over-text placeholder for empty / no-app states.
 - `UI/Popup/MenuLayout.swift` — layout constants (`columnWidth`, `columnSpacing`,
   `sectionSpacing`, `rowHeight`, `rowSpacing`, `headerHeight`, `subGroupHeaderHeight`)
@@ -176,7 +199,8 @@ level is hidden unless you pass `--level info`.
   (accounting for sub-group headers); `distribute(_:columns:)` partitions sections
   into at most `columns` contiguous slices using binary search on per-column capacity
   to minimise the tallest column.
-- `UI/Popup/Theme.swift` — colours, spacing constants.
+- `UI/Popup/Theme.swift` — colours, spacing constants. `fadedText` is the low-contrast
+  colour used for dimmed rows in dim mode (light grey / dark grey adaptive).
 - `UI/Popup/PopupOnboardingView.swift` — onboarding screen shown before Accessibility
   is granted.
 
@@ -215,7 +239,8 @@ level is hidden unless you pass `--level info`.
   `handleFlags(_:)` (NSEvent monitors do not fire in unit tests); covers happy-path,
   chord reset, expired window, and modifier switch.
 - `KeyMinderTests/PopupFilterModelTests.swift` — filter query, `displayableCount`,
-  `matchCount`, `showsAllItems`, and Tab navigation.
+  `matchCount`, `showsAllItems`, Tab navigation, modifier filter (exact-match semantics,
+  toggled vs held layers, union, `clearToggledModifiers`, `hasToggledModifiers`).
 
 The Xcode project uses a **file-system-synchronized group** (objectVersion 70):
 new `.swift` files under `KeyMinder/` are picked up automatically — no need to

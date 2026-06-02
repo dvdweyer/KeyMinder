@@ -344,8 +344,8 @@
   <h1>KeyMinder</h1>
   <p>A macOS menu bar app that instantly shows the keyboard shortcuts of whichever app you're currently using.</p>
   <div class="button-row">
-    <a href="KeyMinder_0.1.57.zip" class="btn btn-primary" download>
-      ↓ Download v0.1.57
+    <a href="KeyMinder_0.1.60.zip" class="btn btn-primary" download>
+      ↓ Download v0.1.60
     </a>
     <a href="https://github.com/dvdweyer/KeyMinder" class="btn btn-secondary" target="_blank" rel="noopener">
       View on GitHub
@@ -360,7 +360,7 @@
     <h2>What it does</h2>
     <p>Instead of hunting through menus to find shortcuts, KeyMinder pops up a clean overview of every keyboard shortcut available in the frontmost app — grouped by menu, triggered by a user-defined hotkey or double-tap on the command, option or control key.</p>
     <p>Click any shortcut in the popup to run it immediately. KeyMinder reads menu structures directly via the macOS Accessibility API, so shortcuts are always accurate and up to date for whatever app you're using.</p>
-    <p>You can search for a keyboard shortcut by starting to type its name and then tab there to execute the command directly. There is even an option to show menu items without keyboard shortcuts - these show only when at least two letters of the command are matched.</p>
+    <p>You can search for a keyboard shortcut by starting to type its name and then tab there to execute the command directly. Toggle or hold modifier keys (⌃ ⌥ ⇧ ⌘) to filter by exact modifier combination — hold ⌘ to see only Command shortcuts, add ⇧ to narrow to Command-Shift. When all shortcuts fit on screen, non-matching rows dim in place so the layout stays stable. There is even an option to show menu items without keyboard shortcuts — these show only when at least two letters of the command are matched.</p>
     <div class="screenshot">
       <img src="Safari_Shortcuts.png" alt="KeyMinder showing Safari keyboard shortcuts grouped by menu" id="screenshotThumb">
       <p class="screenshot-hint">Click to enlarge</p>
@@ -388,7 +388,7 @@
   <div class="section">
     <h2>Install</h2>
     <ol class="steps">
-      <li>Download and unzip <code>KeyMinder_0.1.57.zip</code></li>
+      <li>Download and unzip <code>KeyMinder_0.1.60.zip</code></li>
       <li>Move <code>KeyMinder.app</code> to <code>/Applications</code></li>
       <li>Open KeyMinder — macOS will ask for Accessibility permission</li>
       <li>Grant permission in System Settings → Privacy &amp; Security → Accessibility</li>
@@ -406,8 +406,41 @@
 
     <div class="changelog-entry">
       <div class="changelog-version">
-        <strong>v0.1.57</strong>
+        <strong>v0.1.60</strong>
         <span>Jun 2, 2026 — current</span>
+      </div>
+      <ul>
+        <li>When all shortcuts fit on screen without scrolling, non-matching rows now dim in place instead of collapsing — the layout stays stable while filtering</li>
+        <li>Dimmed rows are non-clickable and skipped by Tab navigation</li>
+      </ul>
+    </div>
+
+    <div class="changelog-entry">
+      <div class="changelog-version">
+        <strong>v0.1.59</strong>
+        <span>Jun 2, 2026</span>
+      </div>
+      <ul>
+        <li>Holding a modifier key (⌃ ⌥ ⇧ ⌘) while the popup is open now activates the modifier filter in real time — release to clear</li>
+        <li>Toggle buttons and physical key presses work independently and compose: toggling ⌘ and holding ⇧ filters to exactly ⌘⇧</li>
+      </ul>
+    </div>
+
+    <div class="changelog-entry">
+      <div class="changelog-version">
+        <strong>v0.1.58</strong>
+        <span>Jun 2, 2026</span>
+      </div>
+      <ul>
+        <li>New modifier key filter: toggle ⌃ ⌥ ⇧ ⌘ buttons in the popup header to show only shortcuts that use exactly those modifiers</li>
+        <li>Esc clears the modifier filter before dismissing, same as the text filter</li>
+      </ul>
+    </div>
+
+    <div class="changelog-entry">
+      <div class="changelog-version">
+        <strong>v0.1.57</strong>
+        <span>Jun 2, 2026</span>
       </div>
       <ul>
         <li>Internal stability improvements and expanded test coverage</li>

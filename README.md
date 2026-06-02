@@ -4,7 +4,7 @@ A macOS menu bar app that instantly shows the keyboard shortcuts of whichever ap
 
 ## Why KeyMinder?
 
-Instead of hunting through menus to find shortcuts, KeyMinder pops up a clean overview of every keyboard shortcut in the frontmost app — triggered by a global hotkey (default ⌥⌘K) or a double-tap of a modifier key, dismissed the same way. Type to filter the list instantly.
+Instead of hunting through menus to find shortcuts, KeyMinder pops up a clean overview of every keyboard shortcut in the frontmost app — triggered by a global hotkey (default ⌥⌘K) or a double-tap of a modifier key, dismissed the same way. Type to filter the list instantly, or hold/toggle modifier keys (⌃ ⌥ ⇧ ⌘) to filter by exact modifier combination. When all shortcuts fit on screen without scrolling, non-matching rows dim in place instead of collapsing, keeping the layout stable.
 
 ## Requirements
 

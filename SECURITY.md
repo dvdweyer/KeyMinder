@@ -82,9 +82,11 @@ and no remote backend. Its attack surface is:
 1. **The Accessibility API grant** — KeyMinder reads menu-bar structure from
    the frontmost app. It does not inject input, does not read window contents,
    and does not access files outside its own container.
-2. **A global NSEvent monitor** (`NSEvent.addGlobalMonitorForEvents`) registered for
-   double-tap trigger detection. The monitor is passive-only; it cannot suppress or
-   synthesize events. No CGEventTap is used.
+2. **Global NSEvent monitors** (`NSEvent.addGlobalMonitorForEvents`) registered for
+   double-tap trigger detection (`.flagsChanged` + `.keyDown`) and for modifier key
+   filter state while the popup is visible (`.flagsChanged` only — reads which modifier
+   keys are held, not what the user types). All monitors are passive-only; they cannot
+   suppress or synthesize events. No CGEventTap is used.
 3. **Parsing of AX attribute values** (strings) returned by target applications.
    A malicious app could return unexpected data here.
 
