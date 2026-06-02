@@ -116,7 +116,7 @@ final class DoubleTapTrigger {
 
     // MARK: - Event handling
 
-    private func handleFlags(_ flags: NSEvent.ModifierFlags) {
+    func handleFlags(_ flags: NSEvent.ModifierFlags) {
         let modMask: NSEvent.ModifierFlags = [.command, .option, .control, .shift]
         let curr = flags.intersection(modMask)
         let prev = prevFlags.intersection(modMask)
