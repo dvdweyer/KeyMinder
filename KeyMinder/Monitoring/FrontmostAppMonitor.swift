@@ -3,12 +3,15 @@ import Observation
 
 /// Tracks the frontmost application, ignoring KeyMinder itself, so the popup can
 /// always show shortcuts for the app the user was actually working in.
+@MainActor
 @Observable
 final class FrontmostAppMonitor {
 
     private(set) var frontmostApp: NSRunningApplication?
 
-    private var observer: NSObjectProtocol?
+    // nonisolated(unsafe): only accessed on the main actor in practice;
+    // nonisolated is required because deinit is implicitly nonisolated in Swift.
+    nonisolated(unsafe) private var observer: NSObjectProtocol?
     private let ownPID = ProcessInfo.processInfo.processIdentifier
 
     init() {
@@ -19,7 +22,7 @@ final class FrontmostAppMonitor {
             queue: .main
         ) { [weak self] note in
             let app = note.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication
-            self?.update(app)
+            MainActor.assumeIsolated { self?.update(app) }
         }
     }
 
