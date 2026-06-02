@@ -69,16 +69,22 @@ level is hidden unless you pass `--level info`.
 
 - `KeyMinderApp.swift` — `@main`; empty `Settings` scene. All UI is driven by `AppDelegate`.
 - `AppDelegate.swift` (`@MainActor`) — owns the `NSStatusItem` (left-click toggles
-  the popup, right-click shows context menu with Settings, About, and Quit), `FrontmostAppMonitor`, and
+  the popup, right-click shows context menu), `FrontmostAppMonitor`, and
   `PopupController`. `presentPopup()` runs an async scrape via two stored tasks:
-  `scrapeTask` (outer coordinator) and `detachedScrapeTask` (background AX work);
-  both are cancelled before each new scrape to prevent concurrent traversals.
-  `onPermissionGranted` calls `setupDoubleTap()` then `presentPopup()` so the
-  double-tap trigger is armed the moment Accessibility is granted without requiring
-  a relaunch. `setupSleepWakeObserver()` re-arms the trigger on
-  `NSWorkspace.didWakeNotification` (sleep/wake invalidates event monitors).
-  `showAbout()` calls `NSApp.orderFrontStandardAboutPanel` with the version and
-  an attributed-string credits block linking to the homepage.
+  `scrapeTask` (outer coordinator) and `detachedScrapeTask` (background `Task.detached`
+  AX work); both are cancelled before each new scrape to prevent concurrent traversals.
+  On first launch, `setupHotkey()` seeds ⌥⌘K as the factory default hotkey (guarded by
+  `didSetDefaultHotkey` so the seed runs only once and never overwrites a deliberate
+  "no hotkey" choice). The right-click context menu shows a disabled info row with the
+  current hotkey (or "(unset)") so users can discover their trigger without opening
+  Settings; it also has Settings…, About KeyMinder, and Quit. `onPermissionGranted`
+  calls `setupDoubleTap()` then `presentPopup()` so the double-tap trigger is armed
+  the moment Accessibility is granted without requiring a relaunch.
+  `setupSleepWakeObserver()` re-arms the trigger on `NSWorkspace.didWakeNotification`
+  (sleep/wake can invalidate event monitors). `showWelcomePopupIfNeeded()` auto-presents
+  the popup 500 ms after first launch so the user discovers the app immediately.
+  `showAbout()` calls `NSApp.orderFrontStandardAboutPanel` with the version and an
+  attributed-string credits block linking to the homepage.
 
 ### Monitoring & Accessibility
 
@@ -92,16 +98,23 @@ level is hidden unless you pass `--level info`.
 ### Scraping
 
 - `Scraping/MenuScraper.swift` — AX traversal of the menu bar → `[MenuSection]`.
-  **Submenus are currently flattened** into the parent menu.
+  Each top-level menu produces one unnamed `ShortcutGroup` for its direct items plus
+  one named `ShortcutGroup` per submenu (title = submenu name). Sub-submenus (depth ≥ 2)
+  are flattened into their parent's named group. Accepts `includeItemsWithoutShortcuts`
+  to emit leaf items with no key equivalent (empty `keys` string) for all-entries mode.
+  Caps per-request AX timeouts at 1 s via `AXUIElementSetMessagingTimeout`.
 - `Scraping/ShortcutFormatter.swift` — decodes the AX modifier mask
   (shift=1, option=2, control=4, no-command=8) plus char/glyph/virtual-key into
   display symbols (⌃⌥⇧⌘ + key).
 
 ### Model
 
-- `Model/ShortcutModel.swift` — `Shortcut`, `ShortcutGroup`, `MenuSection`,
-  `AppShortcuts`, `PopupContent`. Matching extensions on all types;
-  `Shortcut.matches(_:)` is case- and diacritic-insensitive via
+- `Model/ShortcutModel.swift` — `Shortcut` (title + keys string + optional
+  `AXUIElement`); `ShortcutGroup` (`title == nil` for a menu's direct items, non-nil
+  for a named submenu group); `MenuSection` (one top-level menu → one unnamed group +
+  zero or more named submenu groups); `AppShortcuts` (all sections for one app, plus
+  `includesItemsWithoutShortcuts` flag); `PopupContent` enum. Matching extensions on
+  all types; `Shortcut.matches(_:)` is case- and diacritic-insensitive via
   `localizedStandardContains` and explicitly returns `true` for an empty query.
 
 ### Settings
@@ -110,7 +123,9 @@ level is hidden unless you pass `--level info`.
   hotkey via Carbon `RegisterEventHotKey`. The C event-handler callback dispatches
   to the main actor via `DispatchQueue.main.async`.
 - `Settings/GlobalHotkey.swift` — value type encoding a key code + Carbon modifier
-  mask; `UserDefaults` persistence; `displayString` for UI.
+  mask; `UserDefaults` persistence; `displayString` for UI. `defaultHotkey` (⌥⌘K) is
+  the factory default applied on first launch; `didSetDefaultHotkey` flag in
+  `UserDefaults` ensures the seed runs exactly once.
 - `Settings/DoubleTapTrigger.swift` — detects a rapid double-press of a single
   modifier key using `NSEvent.addGlobalMonitorForEvents` (`.flagsChanged` + `.keyDown`).
   Runs entirely on the main thread; no CGEventTap, no background thread. The
@@ -126,20 +141,41 @@ level is hidden unless you pass `--level info`.
 ### UI — Popup
 
 - `UI/Popup/PopupController.swift` (`@MainActor`) — NSPanel lifecycle: `show()` /
-  `hide()` with fade animations; dismissal monitors (click-outside, Esc, app-switch);
-  `activeVisibleFrame` for nil-safe screen geometry (crash-safe during display
-  reconfiguration); permission-poll timer that fires `onPermissionGranted` the moment
-  `AXIsProcessTrusted()` becomes true; panel is released (`self.panel = nil`) on hide
-  to free the SwiftUI tree while the popup is not visible.
+  `hide()` with fade-in (0.12 s) and scale (0.98→1.0) / fade-out (0.10 s) animations;
+  dismissal monitors (click-outside, Esc, app-switch). `activeVisibleFrame` selects the
+  screen containing the mouse cursor (primary), then `NSScreen.main`, then the first
+  screen — nil-safe to survive display-reconfiguration races. The panel is always
+  centered on that screen. Esc clears a non-empty filter before dismissing (clear-then-
+  dismiss semantics). A local key monitor handles Tab (advance row selection) /
+  Shift-Tab (reverse) / Return or numpad Enter (activate selected shortcut). Permission-
+  poll timer fires `onPermissionGranted` the moment `AXIsProcessTrusted()` becomes true.
+  Panel is released (`self.panel = nil`) on hide to free the SwiftUI tree while idle.
 - `UI/Popup/PopupPanel.swift` — non-activating `NSPanel` subclass.
-- `UI/Popup/PopupRootView.swift` — root SwiftUI view; `PopupFilterModel` (`@Observable
-  @MainActor`) holds the live filter query owned by `PopupController`; `PopupRootView`
-  dispatches to `FilterableShortcutsView` (shortcuts grid with type-to-filter),
-  `PopupOnboardingView`, or `PopupMessageView`.
-- `UI/Popup/MenuLayout.swift` — greedy column-balancing algorithm (binary search on
-  capacity); `MenuSectionView` / `ShortcutRow` with full VoiceOver support
-  (`.isHeader` trait on section titles; composed spoken labels on shortcut rows via
-  `spokenKeys(_:)`; decorative images hidden).
+- `UI/Popup/PopupRootView.swift` — contains all popup SwiftUI types:
+  - `PopupFilterModel` (`@Observable @MainActor`) — owned by `PopupController`;
+    holds the live `query`, fixed `columns` layout, `selectedIndex` for Tab navigation,
+    cached `visibleShortcuts` (recomputed on each query change), `displayableCount`,
+    `matchCount`, and `showsAllItems` (true when all-entries mode is on and query ≥ 2
+    chars). `selectNext()` / `selectPrevious()` wrap around.
+  - `PopupRootView` — dispatches to `FilterableShortcutsView`, `PopupOnboardingView`,
+    or `PopupMessageView`; applies `.regularMaterial` background + border overlay.
+  - `FilterableShortcutsView` — header (app icon, name, count, auto-focused search
+    field) + scrollable shortcut grid; auto-focuses the filter field on appear;
+    scroll-follows the selected row.
+  - `MenuSectionView` — one section card: section header (`.isHeader` VoiceOver trait)
+    + optional `SubGroupHeader` labels for named submenu groups + shortcut rows. The
+    entire card is absent from layout when no rows pass the visibility gate.
+  - `SubGroupHeader` — compact label above a submenu's items inside a section card.
+  - `ShortcutRow` — right-aligned key glyphs + command title; hover highlight and
+    tap-to-activate when the row has an `axElement`; VoiceOver label via `spokenKeys(_:)`
+    (e.g. "⇧⌘N" → "Shift Command N"); Tab-selection highlight.
+  - `PopupMessageView` — centered icon-over-text placeholder for empty / no-app states.
+- `UI/Popup/MenuLayout.swift` — layout constants (`columnWidth`, `columnSpacing`,
+  `sectionSpacing`, `rowHeight`, `rowSpacing`, `headerHeight`, `subGroupHeaderHeight`)
+  and two algorithms: `height(of:)` estimates a section card's rendered height
+  (accounting for sub-group headers); `distribute(_:columns:)` partitions sections
+  into at most `columns` contiguous slices using binary search on per-column capacity
+  to minimise the tallest column.
 - `UI/Popup/Theme.swift` — colours, spacing constants.
 - `UI/Popup/PopupOnboardingView.swift` — onboarding screen shown before Accessibility
   is granted.
@@ -152,9 +188,14 @@ level is hidden unless you pass `--level info`.
     before creating the `NSWindow`, so the window always fits its content (including
     at larger accessibility text sizes).
   - `SettingsModel` (`@MainActor @Observable`) — hotkey recording state, UserDefaults
-    persistence, `HotkeyManager` registration, login-item toggle, double-tap config,
-    and `debugLoggingEnabled` toggle (writes to `UserDefaults`).
-  - `SettingsView` / `HotkeyBadge` — SwiftUI views; `@State` owns `SettingsModel`.
+    persistence, `HotkeyManager` registration, login-item toggle, double-tap config
+    (`doubleTapEnabled` + `doubleTapModifier`), `showAllMenuItems` (popup content mode),
+    and `debugLoggingEnabled` toggle (all persisted to `UserDefaults`).
+  - `SettingsView` — five sections: Global Shortcut (hotkey badge + record/change/clear),
+    Launch at Login toggle, Double-tap Trigger (enable toggle + modifier picker), Popup
+    Content ("Show all menu entries" toggle), Developer (debug logging toggle).
+  - `HotkeyBadge` — pill badge showing current hotkey or recording prompt; `@State`
+    owns `SettingsModel`.
 
 ### Assets & support
 
@@ -170,6 +211,11 @@ level is hidden unless you pass `--level info`.
   `ShortcutFormatter.format(cmdChar:virtualKey:glyph:modifiers:)`.
 - `KeyMinderTests/ShortcutMatchingTests.swift` — `Shortcut.matches`,
   `ShortcutGroup.hasMatch`, `MenuSection.hasMatch`, `AppShortcuts.matchCount`.
+- `KeyMinderTests/DoubleTapTriggerTests.swift` — state machine driven via
+  `handleFlags(_:)` (NSEvent monitors do not fire in unit tests); covers happy-path,
+  chord reset, expired window, and modifier switch.
+- `KeyMinderTests/PopupFilterModelTests.swift` — filter query, `displayableCount`,
+  `matchCount`, `showsAllItems`, and Tab navigation.
 
 The Xcode project uses a **file-system-synchronized group** (objectVersion 70):
 new `.swift` files under `KeyMinder/` are picked up automatically — no need to
@@ -195,8 +241,9 @@ edit `project.pbxproj`.
 
 ## Known limitations / next up
 
-- Submenu sub-group headers (e.g. "Move & Resize") not shown yet — scraper flattens submenus.
-- AX scraping runs on the main thread; a busy target app could briefly block.
+- AX scraping runs on a background `Task.detached`; the main thread is unblocked, but
+  the AX IPC itself is synchronous C code with no Swift cancellation checkpoints — a
+  busy target app can still delay the popup until the 1 s AX timeout fires.
 - System-wide shortcuts (Spotlight, Screenshots, …) not implemented yet — planned phase.
 - **Lazy-populated submenus are invisible to the scraper.** Apps that use
   `NSMenuDelegate`'s `menuNeedsUpdate:` or `menu:updateItem:atIndex:shouldCancel:`
@@ -210,7 +257,7 @@ edit `project.pbxproj`.
   Intrusive workarounds (`kAXPressAction`, `kAXShowMenuAction`, synthetic
   `CGEvent` clicks) would flash menus on screen and are intentionally excluded.
   The scraper now logs these at `.info` as
-  `"Submenu '<name>' yielded 0 shortcuts (0 child items; likely lazy-populated)"`
+  `"Submenu '<name>' yielded 0 items (0 child items; likely lazy-populated)"`
   so occurrences can be quantified with:
   ```
   /usr/bin/log stream --level info --predicate "subsystem == 'org.afaik.KeyMinder'"

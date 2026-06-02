@@ -52,9 +52,10 @@ timeline.
   to read the frontmost app's menu bar. Any path by which a third party could
   leverage that grant to exfiltrate data or control the user's machine is in
   scope.
-- **Global hotkey / CGEvent tap hijacking** — KeyMinder installs a system-wide
-  keyboard listener. Vulnerabilities that let an attacker intercept keystrokes
-  beyond the registered hotkey are in scope.
+- **Global hotkey / event monitor hijacking** — KeyMinder installs a system-wide
+  keyboard listener (Carbon `RegisterEventHotKey` + `NSEvent.addGlobalMonitorForEvents`).
+  Vulnerabilities that let an attacker intercept keystrokes beyond the registered
+  hotkey or double-tap modifier are in scope.
 - **Code-execution via malformed input** — crashes or code execution triggered
   by specially crafted app names, menu titles, or shortcut strings scraped from
   a target application.
@@ -81,8 +82,9 @@ and no remote backend. Its attack surface is:
 1. **The Accessibility API grant** — KeyMinder reads menu-bar structure from
    the frontmost app. It does not inject input, does not read window contents,
    and does not access files outside its own container.
-2. **A CGEvent tap** registered for double-tap trigger detection. The tap is
-   passive-only (`listenOnly`); it cannot suppress or synthesize events.
+2. **A global NSEvent monitor** (`NSEvent.addGlobalMonitorForEvents`) registered for
+   double-tap trigger detection. The monitor is passive-only; it cannot suppress or
+   synthesize events. No CGEventTap is used.
 3. **Parsing of AX attribute values** (strings) returned by target applications.
    A malicious app could return unexpected data here.
 
