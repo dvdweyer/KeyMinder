@@ -257,18 +257,23 @@ final class PopupController {
             col.compactMap { fullByTitle[$0.title] }
         }
 
-        let model = PopupFilterModel(app: app, columns: displayColumns)
-        model.heldModifiers = Self.extractModifiers(from: NSEvent.modifierFlags)
-        filterModel = model
-
         // Height is measured with an empty query, so showsAllItems is false and
         // no-shortcut rows are absent from the layout — giving the compact
         // shortcuts-only height.
-        let measureView = rootView(content, model: model, width: width,
+        let placeholderModel = PopupFilterModel(app: app, columns: displayColumns)
+        let measureView = rootView(content, model: placeholderModel, width: width,
                                    height: nil, scrolls: false)
         let measurer = NSHostingController(rootView: measureView)
         let naturalHeight = measurer.sizeThatFits(in: CGSize(width: width, height: .greatestFiniteMagnitude)).height
         let height = min(naturalHeight, maxPanelHeight)
+
+        // When all content fits without scrolling, filtering dims non-matching rows
+        // rather than collapsing the layout, keeping column heights stable.
+        let fitsWithoutScrolling = naturalHeight <= maxPanelHeight
+        let model = PopupFilterModel(app: app, columns: displayColumns,
+                                     fitsWithoutScrolling: fitsWithoutScrolling)
+        model.heldModifiers = Self.extractModifiers(from: NSEvent.modifierFlags)
+        filterModel = model
 
         let root = rootView(content, model: model, width: width,
                             height: height, scrolls: true)

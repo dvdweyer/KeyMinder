@@ -69,9 +69,14 @@ final class PopupFilterModel {
         selectedIndex = ((selectedIndex ?? count) - 1 + count) % count
     }
 
-    init(app: AppShortcuts, columns: [[MenuSection]]) {
+    /// When true the popup fits all shortcuts without scrolling, so filtering
+    /// dims non-matching rows rather than hiding them (layout stays stable).
+    let fitsWithoutScrolling: Bool
+
+    init(app: AppShortcuts, columns: [[MenuSection]], fitsWithoutScrolling: Bool = false) {
         self.app = app
         self.columns = columns
+        self.fitsWithoutScrolling = fitsWithoutScrolling
         updateVisibleShortcuts()
     }
 
@@ -255,6 +260,7 @@ private struct FilterableShortcutsView: View {
                         MenuSectionView(section: section, query: model.activeQuery,
                                         showsAllItems: model.showsAllItems,
                                         modifierFilter: model.modifierFilter,
+                                        dimMode: model.fitsWithoutScrolling,
                                         selectedShortcutID: model.selectedShortcut?.id,
                                         onActivate: onActivate)
                     }
@@ -356,7 +362,8 @@ struct PopupMessageView: View {
 
 /// One menu's section card: a header bar, then shortcut rows optionally broken
 /// up by sub-group labels for items that came from a submenu.
-/// The entire card is absent from the layout when no rows pass `isVisible`.
+/// In normal mode the card is absent when no rows match. In dim mode every keyed
+/// row is always rendered; non-matching rows are dimmed and non-interactive.
 struct MenuSectionView: View {
     let section: MenuSection
     /// Active filter query; empty means no filter (all rows visible).
@@ -366,19 +373,35 @@ struct MenuSectionView: View {
     var showsAllItems: Bool = false
     /// Exact modifier set to match; empty means no modifier filter.
     var modifierFilter: Set<Character> = []
+    /// When true, non-matching rows are dimmed instead of hidden (stable layout).
+    var dimMode: Bool = false
     var selectedShortcutID: UUID? = nil
     var onActivate: (Shortcut) -> Void = { _ in }
 
-    /// A shortcut is visible when it passes the keys gate, matches the text query,
-    /// and its modifier set exactly equals the active modifier filter (if any).
-    private func isVisible(_ shortcut: Shortcut) -> Bool {
-        (!shortcut.keys.isEmpty || showsAllItems)
-            && shortcut.matches(query)
-            && shortcut.matchesModifierFilter(modifierFilter)
+    private func passesGate(_ shortcut: Shortcut) -> Bool {
+        !shortcut.keys.isEmpty || showsAllItems
+    }
+
+    private func matchesFilter(_ shortcut: Shortcut) -> Bool {
+        shortcut.matches(query) && shortcut.matchesModifierFilter(modifierFilter)
+    }
+
+    /// Whether a row should be rendered at all.
+    private func isShown(_ shortcut: Shortcut) -> Bool {
+        dimMode ? passesGate(shortcut) : (passesGate(shortcut) && matchesFilter(shortcut))
+    }
+
+    /// Whether a row should be dimmed (dim mode only; always false in normal mode).
+    private func isDimmed(_ shortcut: Shortcut) -> Bool {
+        dimMode && !matchesFilter(shortcut)
+    }
+
+    private func groupHasContent(_ group: ShortcutGroup) -> Bool {
+        group.shortcuts.contains { isShown($0) }
     }
 
     private var hasVisibleContent: Bool {
-        section.groups.contains { group in group.shortcuts.contains { isVisible($0) } }
+        section.groups.contains { groupHasContent($0) }
     }
 
     var body: some View {
@@ -395,14 +418,15 @@ struct MenuSectionView: View {
                     .accessibilityAddTraits(.isHeader)
 
                 ForEach(section.groups) { group in
-                    if group.shortcuts.contains(where: { isVisible($0) }) {
+                    if groupHasContent(group) {
                         if let groupTitle = group.title {
                             SubGroupHeader(title: groupTitle)
                         }
                         ForEach(group.shortcuts) { shortcut in
-                            if isVisible(shortcut) {
+                            if isShown(shortcut) {
                                 ShortcutRow(shortcut: shortcut,
                                             selected: selectedShortcutID == shortcut.id,
+                                            dimmed: isDimmed(shortcut),
                                             onActivate: onActivate)
                             }
                         }
@@ -430,29 +454,33 @@ private struct SubGroupHeader: View {
 }
 
 /// A single row: right-aligned key glyphs followed by the command name.
-/// Only rendered for items that pass the visibility gate in `MenuSectionView`,
-/// so every visible row is already a match — no dimming needed.
+///
+/// In normal mode every rendered row is a filter match, so it is always
+/// interactive. In dim mode non-matching rows are rendered with `dimmed: true`,
+/// which fades the text and disables hover, tap, and Tab selection.
 ///
 /// Rows with an AX element are clickable: tapping them fires `onActivate` so
 /// `PopupController` can dismiss the popup and execute the shortcut.
 struct ShortcutRow: View {
     let shortcut: Shortcut
     var selected: Bool = false
+    /// True when the row is shown but does not match the active filter (dim mode).
+    var dimmed: Bool = false
     var onActivate: (Shortcut) -> Void = { _ in }
 
     @State private var hovered = false
 
-    private var clickable: Bool { shortcut.axElement != nil }
+    private var clickable: Bool { shortcut.axElement != nil && !dimmed }
 
     var body: some View {
         HStack(spacing: 8) {
             Text(shortcut.keys)
                 .font(.system(size: 12, weight: .medium, design: .rounded))
-                .foregroundStyle(Theme.keyAccent)
+                .foregroundStyle(dimmed ? Theme.fadedText : Theme.keyAccent)
                 .frame(width: Theme.keyColumnWidth, alignment: .trailing)
             Text(shortcut.title)
                 .font(.system(size: 12))
-                .foregroundStyle(.primary)
+                .foregroundStyle(dimmed ? Theme.fadedText : Color.primary)
                 .lineLimit(1)
                 .truncationMode(.tail)
                 .help(shortcut.title)
