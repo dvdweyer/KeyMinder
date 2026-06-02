@@ -217,7 +217,7 @@ final class PopupFilterModelTests: XCTestCase {
             makeShortcut(title: "Undo",    keys: "⌃Z"),    // ⌃ only — should not match
         ])
         let model = makeModel(sections: [section])
-        model.modifierFilter = ["⌘"]
+        model.heldModifiers = ["⌘"]
         XCTAssertEqual(model.visibleShortcuts.map(\.title), ["Save", "Open"])
     }
 
@@ -228,7 +228,7 @@ final class PopupFilterModelTests: XCTestCase {
             makeShortcut(title: "Triple",      keys: "⌃⇧⌘T"),  // three modifiers — no match
         ])
         let model = makeModel(sections: [section])
-        model.modifierFilter = ["⇧", "⌘"]
+        model.heldModifiers = ["⇧", "⌘"]
         XCTAssertEqual(model.visibleShortcuts.map(\.title), ["Save As"])
     }
 
@@ -238,23 +238,23 @@ final class PopupFilterModelTests: XCTestCase {
             makeShortcut(title: "Open", keys: "⌥⌘O"),
         ])
         let model = makeModel(sections: [section])
-        model.modifierFilter = []
+        model.heldModifiers = []
         XCTAssertEqual(model.visibleShortcuts.count, 2)
     }
 
-    func testModifierFilter_resetsSelectedIndex() {
+    func testHeldModifiers_resetsSelectedIndex() {
         let section = makeSection("File", shortcuts: [makeShortcut(title: "Save", keys: "⌘S")])
         let model = makeModel(sections: [section])
         model.selectedIndex = 0
-        model.modifierFilter = ["⌘"]
+        model.heldModifiers = ["⌘"]
         XCTAssertNil(model.selectedIndex)
     }
 
-    func testModifierFilter_sameValueAssignment_doesNotResetSelectedIndex() {
+    func testHeldModifiers_sameValueAssignment_doesNotResetSelectedIndex() {
         let section = makeSection("File", shortcuts: [makeShortcut(title: "Save", keys: "⌘S")])
         let model = makeModel(sections: [section])
         model.selectedIndex = 0
-        model.modifierFilter = []  // same as initial — guard fires
+        model.heldModifiers = []  // same as initial — guard fires
         XCTAssertEqual(model.selectedIndex, 0)
     }
 
@@ -265,7 +265,7 @@ final class PopupFilterModelTests: XCTestCase {
             makeShortcut(title: "Open",    keys: "⌘O"),
         ])
         let model = makeModel(sections: [section])
-        model.modifierFilter = ["⌘"]
+        model.heldModifiers = ["⌘"]
         XCTAssertEqual(model.matchCount, 2)
     }
 
@@ -276,7 +276,7 @@ final class PopupFilterModelTests: XCTestCase {
             makeShortcut(title: "Save As", keys: "⇧⌘S"),
         ])
         let model = makeModel(sections: [section])
-        model.modifierFilter = ["⌘"]
+        model.heldModifiers = ["⌘"]
         model.query = "save"
         XCTAssertEqual(model.matchCount, 1)
         XCTAssertEqual(model.visibleShortcuts[0].title, "Save")
@@ -289,5 +289,37 @@ final class PopupFilterModelTests: XCTestCase {
         XCTAssertTrue(model.modifierFilter.contains("⌘"))
         model.toggleModifier("⌘")
         XCTAssertFalse(model.hasModifierFilter)
+    }
+
+    func testModifierFilter_unionOfToggledAndHeld() {
+        let section = makeSection("File", shortcuts: [
+            makeShortcut(title: "Save",    keys: "⌘S"),    // ⌘ only
+            makeShortcut(title: "Save As", keys: "⇧⌘S"),   // ⇧⌘
+            makeShortcut(title: "Undo",    keys: "⌃Z"),    // ⌃ only
+        ])
+        let model = makeModel(sections: [section])
+        model.toggleModifier("⌘")   // persistent: ⌘
+        model.heldModifiers = ["⇧", "⌘"]  // held: ⇧⌘ — union = ⇧⌘
+        // exact match against union {⌘, ⇧}
+        XCTAssertEqual(model.visibleShortcuts.map(\.title), ["Save As"])
+    }
+
+    func testHasToggledModifiers_falseWhenOnlyHeld() {
+        let model = makeModel(sections: [])
+        model.heldModifiers = ["⌘"]
+        XCTAssertFalse(model.hasToggledModifiers)
+        XCTAssertTrue(model.hasModifierFilter)
+    }
+
+    func testClearToggledModifiers_leavesHeldIntact() {
+        let section = makeSection("File", shortcuts: [makeShortcut(title: "Save", keys: "⌘S")])
+        let model = makeModel(sections: [section])
+        model.toggleModifier("⌘")
+        model.heldModifiers = ["⌘"]
+        model.clearToggledModifiers()
+        XCTAssertFalse(model.hasToggledModifiers)
+        // heldModifiers still active — filter is still {⌘}
+        XCTAssertTrue(model.hasModifierFilter)
+        XCTAssertEqual(model.visibleShortcuts.map(\.title), ["Save"])
     }
 }

@@ -258,6 +258,7 @@ final class PopupController {
         }
 
         let model = PopupFilterModel(app: app, columns: displayColumns)
+        model.heldModifiers = Self.extractModifiers(from: NSEvent.modifierFlags)
         filterModel = model
 
         // Height is measured with an empty query, so showsAllItems is false and
@@ -385,6 +386,25 @@ final class PopupController {
             eventMonitors.append(localKey)
         }
 
+        // Modifier key presses update the held-modifier filter in real time.
+        // Global fires when another app is frontmost (normal case for this popup);
+        // local fires when the popup panel itself is key (search field focused).
+        if let flagsGlobal = NSEvent.addGlobalMonitorForEvents(
+            matching: .flagsChanged,
+            handler: { [weak self] event in self?.handleFlagsChanged(event) }
+        ) {
+            eventMonitors.append(flagsGlobal)
+        }
+        if let flagsLocal = NSEvent.addLocalMonitorForEvents(
+            matching: .flagsChanged,
+            handler: { [weak self] event in
+                self?.handleFlagsChanged(event)
+                return event
+            }
+        ) {
+            eventMonitors.append(flagsLocal)
+        }
+
         // Switching to another app (e.g. via ⌘-Tab) dismisses.
         workspaceObserver = NSWorkspace.shared.notificationCenter.addObserver(
             forName: NSWorkspace.didActivateApplicationNotification,
@@ -404,20 +424,37 @@ final class PopupController {
         if element != nil { ShortcutActivator.activate(shortcut) }
     }
 
-    /// Esc behaviour: clear a non-empty text filter first, then a modifier filter,
-    /// then dismiss. Returns `true` when it only cleared a filter.
+    /// Esc behaviour: clear text filter first, then toggled modifier filter, then
+    /// dismiss. Physically-held modifiers are not cleared — they self-clear on release.
     @discardableResult
     private func handleEscape() -> Bool {
         if let filterModel, filterModel.hasQuery {
             filterModel.query = ""
             return true
         }
-        if let filterModel, filterModel.hasModifierFilter {
-            filterModel.modifierFilter = []
+        if let filterModel, filterModel.hasToggledModifiers {
+            filterModel.clearToggledModifiers()
             return true
         }
         hide()
         return false
+    }
+
+    /// Updates `filterModel.heldModifiers` to reflect which modifier keys are
+    /// currently pressed, as reported by a `flagsChanged` event.
+    private func handleFlagsChanged(_ event: NSEvent) {
+        guard let filterModel else { return }
+        filterModel.heldModifiers = Self.extractModifiers(from: event.modifierFlags)
+    }
+
+    /// Returns the set of modifier glyphs currently held according to `flags`.
+    private static func extractModifiers(from flags: NSEvent.ModifierFlags) -> Set<Character> {
+        var held: Set<Character> = []
+        if flags.contains(.command) { held.insert("⌘") }
+        if flags.contains(.option)  { held.insert("⌥") }
+        if flags.contains(.shift)   { held.insert("⇧") }
+        if flags.contains(.control) { held.insert("⌃") }
+        return held
     }
 
     private func removeDismissalMonitors() {

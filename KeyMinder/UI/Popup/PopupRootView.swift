@@ -23,13 +23,27 @@ final class PopupFilterModel {
         }
     }
 
-    var modifierFilter: Set<Character> = [] {
+    /// Modifier glyphs toggled on via the UI buttons — persist until untoggled.
+    private var toggledModifiers: Set<Character> = [] {
         didSet {
-            guard oldValue != modifierFilter else { return }
+            guard oldValue != toggledModifiers else { return }
             selectedIndex = nil
             updateVisibleShortcuts()
         }
     }
+
+    /// Modifier glyphs currently held as physical keys — set by `PopupController`
+    /// from `flagsChanged` events and cleared when keys are released.
+    var heldModifiers: Set<Character> = [] {
+        didSet {
+            guard oldValue != heldModifiers else { return }
+            selectedIndex = nil
+            updateVisibleShortcuts()
+        }
+    }
+
+    /// Union of toggled and held modifiers — the effective filter applied to shortcuts.
+    var modifierFilter: Set<Character> { toggledModifiers.union(heldModifiers) }
 
     var selectedIndex: Int? = nil
 
@@ -79,12 +93,16 @@ final class PopupFilterModel {
     }
 
     func toggleModifier(_ mod: Character) {
-        if modifierFilter.contains(mod) {
-            modifierFilter.remove(mod)
+        if toggledModifiers.contains(mod) {
+            toggledModifiers.remove(mod)
         } else {
-            modifierFilter.insert(mod)
+            toggledModifiers.insert(mod)
         }
     }
+
+    /// Clears only the toggled (persistent) modifier filter. Used by Esc so that
+    /// physically-held keys remain active until the user releases them.
+    func clearToggledModifiers() { toggledModifiers = [] }
 
     /// The trimmed query, or empty when no filter is active.
     var activeQuery: String { query.trimmingCharacters(in: .whitespaces) }
@@ -92,8 +110,13 @@ final class PopupFilterModel {
     /// Whether a non-empty text filter is active.
     var hasQuery: Bool { !activeQuery.isEmpty }
 
-    /// Whether a modifier filter is active.
+    /// Whether any modifier filter is active (toggled or held).
     var hasModifierFilter: Bool { !modifierFilter.isEmpty }
+
+    /// Whether the persistent (toggled) modifier filter is non-empty. Used by the
+    /// Esc handler so that Esc clears toggled state rather than dismissing when
+    /// only physical keys are held (those clear themselves on release).
+    var hasToggledModifiers: Bool { !toggledModifiers.isEmpty }
 
     /// True when non-shortcut items should be visible: all-entries mode is on
     /// and the user has typed at least two characters in the filter.
