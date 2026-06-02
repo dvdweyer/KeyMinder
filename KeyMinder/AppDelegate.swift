@@ -11,10 +11,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         NSApp.setActivationPolicy(.accessory)
         popup.onGrant = { AccessibilityPermission.requestAccess() }
         popup.onOpenSettings = { AccessibilityPermission.openSettings() }
-        popup.onPermissionGranted = { [weak self] in self?.presentPopup() }
+        popup.onPermissionGranted = { [weak self] in
+            self?.setupDoubleTap()
+            self?.presentPopup()
+        }
         setupStatusItem()
         setupHotkey()
         setupDoubleTap()
+        setupSleepWakeObserver()
         showWelcomePopupIfNeeded()
     }
 
@@ -48,6 +52,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         DoubleTapTrigger.shared.onActivate = { [weak self] in self?.togglePopup() }
         if UserDefaults.standard.doubleTapEnabled {
             DoubleTapTrigger.shared.start(modifier: UserDefaults.standard.doubleTapModifier)
+        }
+    }
+
+    private func setupSleepWakeObserver() {
+        NSWorkspace.shared.notificationCenter.addObserver(
+            forName: NSWorkspace.didWakeNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            // CGEventTaps can be silently invalidated on wake; re-arm the trigger.
+            MainActor.assumeIsolated { self?.setupDoubleTap() }
         }
     }
 
