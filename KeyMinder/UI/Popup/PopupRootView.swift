@@ -16,32 +16,23 @@ final class PopupFilterModel {
     let columns: [[MenuSection]]
 
     var query: String = "" {
-        didSet { if oldValue != query { selectedIndex = nil } }
+        didSet {
+            guard oldValue != query else { return }
+            selectedIndex = nil
+            updateVisibleShortcuts()
+        }
     }
 
     var selectedIndex: Int? = nil
 
-    /// Flat list of visible shortcuts in column-layout order (left to right,
+    /// Cached flat list of visible shortcuts in column-layout order (left to right,
     /// top to bottom within each column). Defines the Tab navigation sequence.
-    var visibleShortcuts: [Shortcut] {
-        var result: [Shortcut] = []
-        for column in columns {
-            for section in column {
-                for group in section.groups {
-                    for shortcut in group.shortcuts
-                        where (!shortcut.keys.isEmpty || showsAllItems) && shortcut.matches(activeQuery) {
-                        result.append(shortcut)
-                    }
-                }
-            }
-        }
-        return result
-    }
+    /// Recomputed once per query change; callers may read it multiple times for free.
+    private(set) var visibleShortcuts: [Shortcut] = []
 
     var selectedShortcut: Shortcut? {
         guard let idx = selectedIndex else { return nil }
-        let visible = visibleShortcuts
-        return idx < visible.count ? visible[idx] : nil
+        return idx < visibleShortcuts.count ? visibleShortcuts[idx] : nil
     }
 
     func selectNext() {
@@ -59,6 +50,22 @@ final class PopupFilterModel {
     init(app: AppShortcuts, columns: [[MenuSection]]) {
         self.app = app
         self.columns = columns
+        updateVisibleShortcuts()
+    }
+
+    private func updateVisibleShortcuts() {
+        var result: [Shortcut] = []
+        for column in columns {
+            for section in column {
+                for group in section.groups {
+                    for shortcut in group.shortcuts
+                        where (!shortcut.keys.isEmpty || showsAllItems) && shortcut.matches(activeQuery) {
+                        result.append(shortcut)
+                    }
+                }
+            }
+        }
+        visibleShortcuts = result
     }
 
     /// The trimmed query, or empty when no filter is active.
