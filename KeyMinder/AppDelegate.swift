@@ -225,7 +225,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         credits.append(linkText)
 
         NSApp.orderFrontStandardAboutPanel(options: [
-            .applicationVersion: "\(version) (\(gitCommitHash))",
+            .applicationVersion: version,
             .credits: credits,
         ])
         NSApp.activate(ignoringOtherApps: true)
