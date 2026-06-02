@@ -84,10 +84,10 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B7D42D5EC0904CF1BDE4E3EC /* Build configuration list for PBXNativeTarget "KeyMinder" */;
 			buildPhases = (
+				B1C2D3E4F5A6B7C8D9E0F1A2 /* Set build number from git commit count */,
 				21C3846337FB4F9B86087FF8 /* Sources */,
 				BE6D0B4A1AFE430EBACD9C21 /* Frameworks */,
 				6F2C1809158C444ABB89D42B /* Resources */,
-				B1C2D3E4F5A6B7C8D9E0F1A2 /* Set build number from git commit count */,
 			);
 			buildRules = (
 			);
@@ -187,15 +187,17 @@
 			inputFileListPaths = (
 			);
 			inputPaths = (
+				"$(SRCROOT)/KeyMinder/Info.plist",
 			);
 			name = "Set build number from git commit count";
 			outputFileListPaths = (
 			);
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Info.plist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "BUILD_NUMBER=$(git -C \"$SRCROOT\" rev-list --count HEAD)\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $BUILD_NUMBER\" \"$TARGET_BUILD_DIR/$INFOPLIST_PATH\"\n";
+			shellScript = "set -euo pipefail\nBUILD_NUMBER=$(git -C \"$SRCROOT\" rev-list --count HEAD)\ncp \"$SRCROOT/KeyMinder/Info.plist\" \"$DERIVED_FILE_DIR/Info.plist\"\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $BUILD_NUMBER\" \"$DERIVED_FILE_DIR/Info.plist\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -238,11 +240,8 @@
 				DEAD_CODE_STRIPPING = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = KeyMinder;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
-				INFOPLIST_KEY_LSUIElement = YES;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				INFOPLIST_FILE = "$(DERIVED_FILE_DIR)/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -391,11 +390,8 @@
 				DEAD_CODE_STRIPPING = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = KeyMinder;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
-				INFOPLIST_KEY_LSUIElement = YES;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				INFOPLIST_FILE = "$(DERIVED_FILE_DIR)/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
