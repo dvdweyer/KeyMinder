@@ -175,6 +175,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         settings.target = self
         settings.keyEquivalentModifierMask = .command
 
+        let about = menu.addItem(withTitle: "About KeyMinder",
+                                 action: #selector(showAbout), keyEquivalent: "")
+        about.target = self
+
         menu.addItem(.separator())
 
         let quit = menu.addItem(withTitle: "Quit KeyMinder",
@@ -185,6 +189,31 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         statusItem?.menu = menu
         statusItem?.button?.performClick(nil)
         statusItem?.menu = nil
+    }
+
+    @objc private func showAbout() {
+        let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "?"
+        let homepageURL = URL(string: "https://donald.van-de-weyer.net/keyminder.html")!
+
+        let credits = NSMutableAttributedString(
+            string: "Donald van de Weyer\n",
+            attributes: [.font: NSFont.systemFont(ofSize: NSFont.smallSystemFontSize)]
+        )
+        let linkText = NSAttributedString(
+            string: homepageURL.absoluteString,
+            attributes: [
+                .font: NSFont.systemFont(ofSize: NSFont.smallSystemFontSize),
+                .link: homepageURL,
+                .foregroundColor: NSColor.linkColor,
+            ]
+        )
+        credits.append(linkText)
+
+        NSApp.orderFrontStandardAboutPanel(options: [
+            .applicationVersion: "\(version) (\(gitCommitHash))",
+            .credits: credits,
+        ])
+        NSApp.activate(ignoringOtherApps: true)
     }
 
     @objc private func grantAccess() { AccessibilityPermission.requestAccess() }
