@@ -265,10 +265,8 @@ final class PopupController {
         // shortcuts-only height.
         let measureView = rootView(content, model: model, width: width,
                                    height: nil, scrolls: false)
-        let measurer = NSHostingView(rootView: measureView)
-        measurer.frame = CGRect(x: 0, y: 0, width: width, height: 0)
-        measurer.layoutSubtreeIfNeeded()
-        let naturalHeight = measurer.fittingSize.height
+        let measurer = NSHostingController(rootView: measureView)
+        let naturalHeight = measurer.sizeThatFits(in: CGSize(width: width, height: .greatestFiniteMagnitude)).height
         let height = min(naturalHeight, maxPanelHeight)
 
         let root = rootView(content, model: model, width: width,

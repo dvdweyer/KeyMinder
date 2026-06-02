@@ -18,18 +18,12 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
     }
 
     private init() {
-        // Measure the natural content height at the fixed 420 pt width before
-        // creating the window. This mirrors PopupController.measuredContent:
-        // constrain the width, leave height unconstrained (frame height 0),
-        // trigger layout, then read fittingSize. The window is then sized to
-        // the result so content is never clipped — including at larger
-        // accessibility text sizes.
-        let hosting = NSHostingView(rootView: SettingsView())
-        hosting.frame = CGRect(x: 0, y: 0, width: 420, height: 0)
-        hosting.layoutSubtreeIfNeeded()
-        let measured = hosting.fittingSize.height.rounded()
+        let measured = NSHostingController(rootView: SettingsView())
+            .sizeThatFits(in: CGSize(width: 420, height: CGFloat.greatestFiniteMagnitude))
+            .height.rounded()
         let contentHeight = min(max(measured, 280), 600)
 
+        let hosting = NSHostingView(rootView: SettingsView())
         let window = NSWindow(
             contentRect: NSRect(x: 0, y: 0, width: 420, height: contentHeight),
             styleMask:   [.titled, .closable],
@@ -37,7 +31,7 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
             defer:       false
         )
         window.title = "KeyMinder Settings"
-        window.contentView = hosting   // reuse the already-measured hosting view
+        window.contentView = hosting
         window.center()
         // setFrameAutosaveName is intentionally omitted: the height is computed
         // dynamically and a previously-saved fixed height (e.g. the old 320 pt)
