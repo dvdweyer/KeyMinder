@@ -23,6 +23,14 @@ final class PopupFilterModel {
         }
     }
 
+    var modifierFilter: Set<Character> = [] {
+        didSet {
+            guard oldValue != modifierFilter else { return }
+            selectedIndex = nil
+            updateVisibleShortcuts()
+        }
+    }
+
     var selectedIndex: Int? = nil
 
     /// Cached flat list of visible shortcuts in column-layout order (left to right,
@@ -59,7 +67,9 @@ final class PopupFilterModel {
             for section in column {
                 for group in section.groups {
                     for shortcut in group.shortcuts
-                        where (!shortcut.keys.isEmpty || showsAllItems) && shortcut.matches(activeQuery) {
+                        where (!shortcut.keys.isEmpty || showsAllItems)
+                            && shortcut.matches(activeQuery)
+                            && shortcut.matchesModifierFilter(modifierFilter) {
                         result.append(shortcut)
                     }
                 }
@@ -68,11 +78,22 @@ final class PopupFilterModel {
         visibleShortcuts = result
     }
 
+    func toggleModifier(_ mod: Character) {
+        if modifierFilter.contains(mod) {
+            modifierFilter.remove(mod)
+        } else {
+            modifierFilter.insert(mod)
+        }
+    }
+
     /// The trimmed query, or empty when no filter is active.
     var activeQuery: String { query.trimmingCharacters(in: .whitespaces) }
 
-    /// Whether a non-empty filter is active.
+    /// Whether a non-empty text filter is active.
     var hasQuery: Bool { !activeQuery.isEmpty }
+
+    /// Whether a modifier filter is active.
+    var hasModifierFilter: Bool { !modifierFilter.isEmpty }
 
     /// True when non-shortcut items should be visible: all-entries mode is on
     /// and the user has typed at least two characters in the filter.
@@ -87,11 +108,13 @@ final class PopupFilterModel {
         app.sections.reduce(0) { $0 + $1.shortcuts.filter { !$0.keys.isEmpty || showsAllItems }.count }
     }
 
-    /// Count of displayable items that match the active filter query.
+    /// Count of displayable items matching all active filters (text query + modifier filter).
     var matchCount: Int {
         app.sections.reduce(0) { total, section in
             total + section.shortcuts.filter {
-                (!$0.keys.isEmpty || showsAllItems) && $0.matches(activeQuery)
+                (!$0.keys.isEmpty || showsAllItems)
+                    && $0.matches(activeQuery)
+                    && $0.matchesModifierFilter(modifierFilter)
             }.count
         }
     }
@@ -208,6 +231,7 @@ private struct FilterableShortcutsView: View {
                     ForEach(column) { section in
                         MenuSectionView(section: section, query: model.activeQuery,
                                         showsAllItems: model.showsAllItems,
+                                        modifierFilter: model.modifierFilter,
                                         selectedShortcutID: model.selectedShortcut?.id,
                                         onActivate: onActivate)
                     }
@@ -231,13 +255,29 @@ private struct FilterableShortcutsView: View {
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
             Spacer(minLength: 12)
+            modifierButtons
             searchField
+        }
+    }
+
+    private var modifierButtons: some View {
+        let mods: [(glyph: String, label: String)] = [
+            ("⌃", "Control"), ("⌥", "Option"), ("⇧", "Shift"), ("⌘", "Command"),
+        ]
+        return HStack(spacing: 3) {
+            ForEach(mods, id: \.glyph) { item in
+                let ch = item.glyph.first!
+                ModifierToggle(glyph: ch, isActive: model.modifierFilter.contains(ch)) {
+                    model.toggleModifier(ch)
+                }
+                .accessibilityLabel(item.label)
+            }
         }
     }
 
     private var countText: Text {
         let n = model.displayableCount
-        if model.hasQuery { return Text("\(model.matchCount) of \(n)") }
+        if model.hasQuery || model.hasModifierFilter { return Text("\(model.matchCount) of \(n)") }
         let label = model.showsAllItems ? "menu items" : "shortcuts"
         return Text("\(n) \(label)")
     }
@@ -301,13 +341,17 @@ struct MenuSectionView: View {
     /// When true, items without keyboard shortcuts are rendered; when false
     /// they are omitted from the layout entirely.
     var showsAllItems: Bool = false
+    /// Exact modifier set to match; empty means no modifier filter.
+    var modifierFilter: Set<Character> = []
     var selectedShortcutID: UUID? = nil
     var onActivate: (Shortcut) -> Void = { _ in }
 
-    /// A shortcut is visible when it passes the keys gate and matches the query.
-    /// `Shortcut.matches("")` returns `true`, so an empty query shows everything.
+    /// A shortcut is visible when it passes the keys gate, matches the text query,
+    /// and its modifier set exactly equals the active modifier filter (if any).
     private func isVisible(_ shortcut: Shortcut) -> Bool {
-        (!shortcut.keys.isEmpty || showsAllItems) && shortcut.matches(query)
+        (!shortcut.keys.isEmpty || showsAllItems)
+            && shortcut.matches(query)
+            && shortcut.matchesModifierFilter(modifierFilter)
     }
 
     private var hasVisibleContent: Bool {
@@ -407,6 +451,30 @@ struct ShortcutRow: View {
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("\(shortcut.title), \(spokenKeys(shortcut.keys))")
         .accessibilityAddTraits(clickable ? .isButton : [])
+    }
+}
+
+// MARK: - Modifier filter toggle
+
+private struct ModifierToggle: View {
+    let glyph: Character
+    let isActive: Bool
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Text(String(glyph))
+                .font(.system(size: 12, weight: .medium, design: .rounded))
+                .foregroundStyle(isActive ? Color.white : Theme.keyAccent)
+                .frame(width: 22, height: 22)
+                .background(isActive ? Theme.keyAccent : Color.clear,
+                            in: RoundedRectangle(cornerRadius: 4))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 4)
+                        .strokeBorder(Theme.keyAccent.opacity(isActive ? 1.0 : 0.4), lineWidth: 1)
+                )
+        }
+        .buttonStyle(.plain)
     }
 }
 

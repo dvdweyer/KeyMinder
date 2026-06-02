@@ -404,13 +404,16 @@ final class PopupController {
         if element != nil { ShortcutActivator.activate(shortcut) }
     }
 
-    /// Esc behaviour: clear a non-empty filter (keeping the popup open), or
-    /// dismiss the popup when there's nothing to clear. Returns `true` when it
-    /// only cleared the filter.
+    /// Esc behaviour: clear a non-empty text filter first, then a modifier filter,
+    /// then dismiss. Returns `true` when it only cleared a filter.
     @discardableResult
     private func handleEscape() -> Bool {
         if let filterModel, filterModel.hasQuery {
             filterModel.query = ""
+            return true
+        }
+        if let filterModel, filterModel.hasModifierFilter {
+            filterModel.modifierFilter = []
             return true
         }
         hide()

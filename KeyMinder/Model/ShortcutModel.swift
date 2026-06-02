@@ -93,6 +93,18 @@ extension Shortcut {
             || title.localizedStandardContains(query)
             || keys.localizedStandardContains(query)
     }
+
+    /// The set of modifier glyphs present in this shortcut's key string.
+    var modifiers: Set<Character> {
+        Set(keys.filter { Self.modifierGlyphs.contains($0) })
+    }
+
+    /// True when `mods` is empty (no filter) or exactly equals this shortcut's modifier set.
+    func matchesModifierFilter(_ mods: Set<Character>) -> Bool {
+        mods.isEmpty || modifiers == mods
+    }
+
+    static let modifierGlyphs: Set<Character> = ["⌃", "⌥", "⇧", "⌘"]
 }
 
 extension ShortcutGroup {

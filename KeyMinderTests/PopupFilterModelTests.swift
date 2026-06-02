@@ -206,4 +206,88 @@ final class PopupFilterModelTests: XCTestCase {
         model.query = ""  // same as initial value — guard oldValue != query fires
         XCTAssertEqual(model.selectedIndex, 0)
     }
+
+    // MARK: - modifierFilter (exact-match)
+
+    func testModifierFilter_commandOnly_showsExactMatches() {
+        let section = makeSection("File", shortcuts: [
+            makeShortcut(title: "Save",    keys: "⌘S"),    // ⌘ only — should match
+            makeShortcut(title: "Save As", keys: "⇧⌘S"),   // ⌘ + ⇧ — should not match
+            makeShortcut(title: "Open",    keys: "⌘O"),    // ⌘ only — should match
+            makeShortcut(title: "Undo",    keys: "⌃Z"),    // ⌃ only — should not match
+        ])
+        let model = makeModel(sections: [section])
+        model.modifierFilter = ["⌘"]
+        XCTAssertEqual(model.visibleShortcuts.map(\.title), ["Save", "Open"])
+    }
+
+    func testModifierFilter_twoModifiers_requiresBothExactly() {
+        let section = makeSection("Edit", shortcuts: [
+            makeShortcut(title: "Save As",     keys: "⇧⌘S"),   // exact ⇧⌘ — match
+            makeShortcut(title: "Save",        keys: "⌘S"),    // ⌘ only — no match
+            makeShortcut(title: "Triple",      keys: "⌃⇧⌘T"),  // three modifiers — no match
+        ])
+        let model = makeModel(sections: [section])
+        model.modifierFilter = ["⇧", "⌘"]
+        XCTAssertEqual(model.visibleShortcuts.map(\.title), ["Save As"])
+    }
+
+    func testModifierFilter_empty_showsAll() {
+        let section = makeSection("File", shortcuts: [
+            makeShortcut(title: "Save", keys: "⌘S"),
+            makeShortcut(title: "Open", keys: "⌥⌘O"),
+        ])
+        let model = makeModel(sections: [section])
+        model.modifierFilter = []
+        XCTAssertEqual(model.visibleShortcuts.count, 2)
+    }
+
+    func testModifierFilter_resetsSelectedIndex() {
+        let section = makeSection("File", shortcuts: [makeShortcut(title: "Save", keys: "⌘S")])
+        let model = makeModel(sections: [section])
+        model.selectedIndex = 0
+        model.modifierFilter = ["⌘"]
+        XCTAssertNil(model.selectedIndex)
+    }
+
+    func testModifierFilter_sameValueAssignment_doesNotResetSelectedIndex() {
+        let section = makeSection("File", shortcuts: [makeShortcut(title: "Save", keys: "⌘S")])
+        let model = makeModel(sections: [section])
+        model.selectedIndex = 0
+        model.modifierFilter = []  // same as initial — guard fires
+        XCTAssertEqual(model.selectedIndex, 0)
+    }
+
+    func testMatchCount_withModifierFilter() {
+        let section = makeSection("File", shortcuts: [
+            makeShortcut(title: "Save",    keys: "⌘S"),
+            makeShortcut(title: "Save As", keys: "⇧⌘S"),
+            makeShortcut(title: "Open",    keys: "⌘O"),
+        ])
+        let model = makeModel(sections: [section])
+        model.modifierFilter = ["⌘"]
+        XCTAssertEqual(model.matchCount, 2)
+    }
+
+    func testMatchCount_modifierAndTextQuery_intersects() {
+        let section = makeSection("File", shortcuts: [
+            makeShortcut(title: "Save",    keys: "⌘S"),
+            makeShortcut(title: "Open",    keys: "⌘O"),
+            makeShortcut(title: "Save As", keys: "⇧⌘S"),
+        ])
+        let model = makeModel(sections: [section])
+        model.modifierFilter = ["⌘"]
+        model.query = "save"
+        XCTAssertEqual(model.matchCount, 1)
+        XCTAssertEqual(model.visibleShortcuts[0].title, "Save")
+    }
+
+    func testToggleModifier_addsAndRemoves() {
+        let model = makeModel(sections: [])
+        XCTAssertFalse(model.hasModifierFilter)
+        model.toggleModifier("⌘")
+        XCTAssertTrue(model.modifierFilter.contains("⌘"))
+        model.toggleModifier("⌘")
+        XCTAssertFalse(model.hasModifierFilter)
+    }
 }
