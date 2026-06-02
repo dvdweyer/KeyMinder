@@ -67,7 +67,7 @@ final class DoubleTapTrigger {
     }
 
     /// Maximum interval (seconds) between first release and second press to count as a double-tap.
-    private static let window: TimeInterval = 0.35
+    private static let window: TimeInterval = 0.50
 
     private init() {}
 
@@ -129,7 +129,8 @@ final class DoubleTapTrigger {
     // MARK: - Event handling — called from the C callback on the main run loop
 
     fileprivate func handle(type: CGEventType, event: CGEvent) {
-        // macOS may disable the tap if it's slow; re-enable immediately.
+        // Apple docs: listen-only taps are never disabled by timeout, so this
+        // branch is unreachable in practice — kept as a defensive safety net.
         if type == .tapDisabledByTimeout {
             Logger.hotkey.warning("DoubleTapTrigger: re-enabling tap after timeout")
             if let tap = eventTap { CGEvent.tapEnable(tap: tap, enable: true) }
