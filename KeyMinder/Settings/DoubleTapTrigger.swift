@@ -61,6 +61,13 @@ final class DoubleTapTrigger {
     private var tapThread:     Thread?
     private var tapRunLoop:    CFRunLoop?
 
+    // Written by stop() (before disabling) and installTap() (before thread start).
+    // Read by the C callback on the background thread to re-enable the tap
+    // synchronously, without an async-dispatch gap during which events are missed.
+    // nonisolated(unsafe) is safe: stop() nils this before calling tapEnable(enable:false),
+    // and installTap() sets it before starting the thread (semaphore ensures ordering).
+    nonisolated(unsafe) fileprivate var tapPortForCallback: CFMachPort?
+
     // State machine — all mutations happen on the main actor via DispatchQueue.main.async.
     private var prevFlags: CGEventFlags = []
     private var tapState:  TapState    = .idle
@@ -90,6 +97,9 @@ final class DoubleTapTrigger {
 
     /// Stop monitoring.
     func stop() {
+        // Nil the callback port first so an in-flight callback cannot re-enable
+        // the tap after we disable it below.
+        tapPortForCallback = nil
         if let tap = eventTap {
             CGEvent.tapEnable(tap: tap, enable: false)
             eventTap = nil
@@ -133,8 +143,9 @@ final class DoubleTapTrigger {
             Logger.hotkey.error("DoubleTapTrigger: CFMachPortCreateRunLoopSource failed")
             return
         }
-        eventTap      = tap
-        runLoopSource = src
+        eventTap             = tap
+        runLoopSource        = src
+        tapPortForCallback   = tap  // must be set before the thread starts (semaphore below ensures visibility)
 
         // Spin a dedicated thread so callbacks are delivered independently of main-thread load.
         // A semaphore lets the main thread capture the background run loop before returning;
@@ -166,20 +177,20 @@ final class DoubleTapTrigger {
         // Discard queued callbacks that arrived after stop() was called.
         guard eventTap != nil else { return }
 
-        // A listen-only tap is documented as never being disabled automatically, but
-        // handle both disable types defensively so the tap survives on any OS version.
-        if type == .tapDisabledByTimeout || type == .tapDisabledByUserInput {
-            let reason = type == .tapDisabledByTimeout ? "timeout" : "user-input"
-            Logger.hotkey.warning("DoubleTapTrigger: re-enabling tap after \(reason, privacy: .public) disable")
-            if let tap = eventTap { CGEvent.tapEnable(tap: tap, enable: true) }
-            return
-        }
-
         switch type {
         case .keyDown:      tapState = .idle   // any regular keypress resets the sequence
         case .flagsChanged: handleFlags(flags)
         default:            break
         }
+    }
+
+    /// Called after a tapDisabledBy* event was handled in the C callback.
+    /// Resets the state machine because events were likely missed during the dark window.
+    fileprivate func handleReEnable(reason: String) {
+        guard eventTap != nil else { return }
+        Logger.hotkey.warning("DoubleTapTrigger: re-enabled after \(reason, privacy: .public) disable — state reset")
+        prevFlags = CGEventFlags()
+        tapState  = .idle
     }
 
     private func handleFlags(_ flags: CGEventFlags) {
@@ -236,13 +247,29 @@ final class DoubleTapTrigger {
 
 // MARK: - C event callback (fires on the dedicated tap thread)
 
-/// Top-level C-compatible callback. Runs on the background tap thread; dispatches
-/// to the main actor for all state mutations. The CGEvent is only valid for the
-/// duration of this callback, so required values are extracted synchronously before
-/// the async dispatch.
+/// Top-level C-compatible callback. Runs on the background tap thread.
+///
+/// Disable events (`tapDisabledByUserInput` / `tapDisabledByTimeout`) are re-enabled
+/// **synchronously** here, before returning, so the dark window where key events are
+/// missed is collapsed to near-zero. Only the state-machine reset is deferred to the
+/// main actor. All other events are dispatched to the main actor for state mutation.
+///
+/// The CGEvent is only valid for the duration of this callback; values are extracted
+/// synchronously before any async dispatch.
 private let doubleTapCCallback: CGEventTapCallBack = { _, type, event, ctx in
     guard let ctx else { return nil }
     let trigger = Unmanaged<DoubleTapTrigger>.fromOpaque(ctx).takeUnretainedValue()
+
+    if type == .tapDisabledByTimeout || type == .tapDisabledByUserInput {
+        // Re-enable synchronously so subsequent events are not lost.
+        if let tap = trigger.tapPortForCallback { CGEvent.tapEnable(tap: tap, enable: true) }
+        let reason = type == .tapDisabledByTimeout ? "timeout" : "user-input"
+        DispatchQueue.main.async {
+            MainActor.assumeIsolated { trigger.handleReEnable(reason: reason) }
+        }
+        return nil
+    }
+
     let capturedType  = type
     let capturedFlags = event.flags
     DispatchQueue.main.async {
