@@ -23,7 +23,7 @@ private extension MenuSection {
 
 private extension AppShortcuts {
     static func fixture(sections: [MenuSection]) -> AppShortcuts {
-        AppShortcuts(appName: "TestApp", bundleIdentifier: nil, icon: nil, sections: sections)
+        AppShortcuts(appName: "TestApp", bundleIdentifier: nil, icon: nil, sections: sections, includesItemsWithoutShortcuts: false)
     }
 }
 
