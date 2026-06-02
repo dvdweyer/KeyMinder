@@ -105,7 +105,9 @@ final class DoubleTapTrigger {
         }
         keyDownMonitor = NSEvent.addGlobalMonitorForEvents(matching: .keyDown) { [weak self] _ in
             MainActor.assumeIsolated {
-                Logger.hotkey.debug("DoubleTapTrigger: keyDown reset (was \(self?.tapStateName ?? "?", privacy: .public))")
+                if UserDefaults.standard.debugLoggingEnabled {
+                    Logger.hotkey.debug("DoubleTapTrigger: keyDown reset (was \(self?.tapStateName ?? "?", privacy: .public))")
+                }
                 self?.tapState = .idle
             }
         }
@@ -124,13 +126,17 @@ final class DoubleTapTrigger {
         let wasDown = prev.contains(bit)
         let isDown  = curr.contains(bit)
 
-        Logger.hotkey.debug("DoubleTapTrigger: flags 0x\(String(flags.rawValue, radix: 16), privacy: .public) isDown=\(isDown, privacy: .public) wasDown=\(wasDown, privacy: .public) state=\(self.tapStateName, privacy: .public)")
+        if UserDefaults.standard.debugLoggingEnabled {
+            Logger.hotkey.debug("DoubleTapTrigger: flags 0x\(String(flags.rawValue, radix: 16), privacy: .public) isDown=\(isDown, privacy: .public) wasDown=\(wasDown, privacy: .public) state=\(self.tapStateName, privacy: .public)")
+        }
 
         if isDown, !wasDown {
             // ── Leading edge: modifier pressed ──
             // Abort if any other modifier is also held (this is a chord, not a solo tap).
             guard curr == [bit] else {
-                Logger.hotkey.debug("DoubleTapTrigger: chord — reset")
+                if UserDefaults.standard.debugLoggingEnabled {
+                    Logger.hotkey.debug("DoubleTapTrigger: chord — reset")
+                }
                 tapState = .idle; return
             }
 
@@ -150,7 +156,9 @@ final class DoubleTapTrigger {
                     tapState = .firstDown
                 }
             }
-            Logger.hotkey.debug("DoubleTapTrigger: → \(self.tapStateName, privacy: .public)")
+            if UserDefaults.standard.debugLoggingEnabled {
+                Logger.hotkey.debug("DoubleTapTrigger: → \(self.tapStateName, privacy: .public)")
+            }
 
         } else if !isDown, wasDown {
             // ── Trailing edge: modifier released ──
@@ -161,7 +169,9 @@ final class DoubleTapTrigger {
             default:
                 tapState = .idle
             }
-            Logger.hotkey.debug("DoubleTapTrigger: → \(self.tapStateName, privacy: .public)")
+            if UserDefaults.standard.debugLoggingEnabled {
+                Logger.hotkey.debug("DoubleTapTrigger: → \(self.tapStateName, privacy: .public)")
+            }
         }
     }
 }

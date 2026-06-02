@@ -79,6 +79,10 @@ final class SettingsModel {
         didSet { UserDefaults.standard.showAllMenuItems = showAllMenuItems }
     }
 
+    var debugLoggingEnabled: Bool = UserDefaults.standard.debugLoggingEnabled {
+        didSet { UserDefaults.standard.debugLoggingEnabled = debugLoggingEnabled }
+    }
+
     var doubleTapEnabled: Bool = UserDefaults.standard.doubleTapEnabled {
         didSet {
             UserDefaults.standard.doubleTapEnabled = doubleTapEnabled
@@ -215,6 +219,13 @@ struct SettingsView: View {
                 .fixedSize(horizontal: false, vertical: true)
 
             Toggle("Show all menu entries", isOn: $model.showAllMenuItems)
+
+            Divider()
+
+            Text("Developer")
+                .font(.headline)
+
+            Toggle("Enable debug logging", isOn: $model.debugLoggingEnabled)
         }
         .padding(20)
         .frame(width: 420, alignment: .topLeading)   // height: let VStack size to content

@@ -119,6 +119,8 @@ level is hidden unless you pass `--level info`.
   `nsFlag`. State machine: `idle → firstDown → firstUp → FIRED` with a 500 ms window.
   `start(modifier:)` / `stop()` install and remove the monitors; called from
   `AppDelegate.setupDoubleTap()` on launch, on Accessibility grant, and on wake.
+  All `.debug()` log calls are gated behind `UserDefaults.standard.debugLoggingEnabled`
+  (default `false`); see `Support/Logging.swift` for the UserDefaults extension.
 - `Settings/LoginItemManager.swift` — wraps `SMAppService` to register/unregister
   the app as a login item.
 
@@ -151,7 +153,8 @@ level is hidden unless you pass `--level info`.
     before creating the `NSWindow`, so the window always fits its content (including
     at larger accessibility text sizes).
   - `SettingsModel` (`@MainActor @Observable`) — hotkey recording state, UserDefaults
-    persistence, `HotkeyManager` registration, login-item toggle, double-tap config.
+    persistence, `HotkeyManager` registration, login-item toggle, double-tap config,
+    and `debugLoggingEnabled` toggle (writes to `UserDefaults`).
   - `SettingsView` / `HotkeyBadge` — SwiftUI views; `@State` owns `SettingsModel`.
 
 ### Assets & support
