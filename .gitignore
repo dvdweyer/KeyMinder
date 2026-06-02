@@ -13,6 +13,3 @@ xcuserdata/
 .build/
 .swiftpm/
 .claude/settings.local.json
-
-# Local working notes (not tracked)
-Claude/
