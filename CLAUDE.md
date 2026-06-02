@@ -73,7 +73,10 @@ level is hidden unless you pass `--level info`.
   `PopupController`. `presentPopup()` runs an async scrape via two stored tasks:
   `scrapeTask` (outer coordinator) and `detachedScrapeTask` (background AX work);
   both are cancelled before each new scrape to prevent concurrent traversals.
-  `onPermissionGranted` auto-refreshes the popup the moment Accessibility is granted.
+  `onPermissionGranted` calls `setupDoubleTap()` then `presentPopup()` so the
+  double-tap trigger is armed the moment Accessibility is granted without requiring
+  a relaunch. `setupSleepWakeObserver()` re-arms the trigger on
+  `NSWorkspace.didWakeNotification` (sleep/wake invalidates event monitors).
   `showAbout()` calls `NSApp.orderFrontStandardAboutPanel` with the version,
   `gitCommitHash` from `GitInfo.swift`, and an attributed-string credits block
   linking to the homepage.
@@ -109,8 +112,13 @@ level is hidden unless you pass `--level info`.
   to the main actor via `DispatchQueue.main.async`.
 - `Settings/GlobalHotkey.swift` — value type encoding a key code + Carbon modifier
   mask; `UserDefaults` persistence; `displayString` for UI.
-- `Settings/DoubleTapTrigger.swift` — CGEvent tap that detects a rapid double-press
-  of a single modifier key.
+- `Settings/DoubleTapTrigger.swift` — detects a rapid double-press of a single
+  modifier key using `NSEvent.addGlobalMonitorForEvents` (`.flagsChanged` + `.keyDown`).
+  Runs entirely on the main thread; no CGEventTap, no background thread. The
+  `DoubleTapModifier` enum maps each key to its `NSEvent.ModifierFlags` bit via
+  `nsFlag`. State machine: `idle → firstDown → firstUp → FIRED` with a 500 ms window.
+  `start(modifier:)` / `stop()` install and remove the monitors; called from
+  `AppDelegate.setupDoubleTap()` on launch, on Accessibility grant, and on wake.
 - `Settings/LoginItemManager.swift` — wraps `SMAppService` to register/unregister
   the app as a login item.
 
