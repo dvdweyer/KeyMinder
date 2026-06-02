@@ -345,6 +345,9 @@ final class PopupController {
 
         // Esc while frontmost (works because we have Accessibility permission).
         // Used when the panel isn't key; same clear-then-dismiss semantics.
+        // Security: this callback receives ALL system-wide keyDown events while the popup
+        // is visible. Only keyCode 53 (Esc) must ever be acted upon here — do not log,
+        // store, or forward any other key event data.
         if let globalKey = NSEvent.addGlobalMonitorForEvents(
             matching: [.keyDown],
             handler: { [weak self] event in if event.keyCode == 53 { _ = self?.handleEscape() } }

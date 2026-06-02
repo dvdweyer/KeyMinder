@@ -15,7 +15,7 @@ enum ShortcutActivator {
         guard let element = shortcut.axElement else { return false }
         let result = AXUIElementPerformAction(element, kAXPressAction as CFString)
         if result != .success {
-            Logger.accessibility.error("AX press failed for '\(shortcut.title, privacy: .public)'")
+            Logger.accessibility.error("AX press failed for '\(shortcut.title, privacy: .private)'")
         }
         return result == .success
     }

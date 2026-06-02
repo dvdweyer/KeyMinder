@@ -74,7 +74,7 @@ final class SettingsModel {
             } catch {
                 // Roll back the toggle if the system call fails.
                 launchAtLogin = LoginItemManager.shared.isEnabled
-                Logger.settings.error("Login item toggle failed: \(error.localizedDescription)")
+                Logger.settings.error("Login item toggle failed: \(error.localizedDescription, privacy: .private)")
             }
         }
     }

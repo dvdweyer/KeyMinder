@@ -87,7 +87,7 @@ enum MenuScraper {
                     // the menu is actually displayed, not when AX reads it).
                     let itemCount = children(submenu).count
                     let hint = itemCount == 0 ? "; likely lazy-populated" : ""
-                    Logger.scraper.info("Submenu '\(title, privacy: .public)' yielded 0 items (\(itemCount, privacy: .public) child items\(hint, privacy: .public))")
+                    Logger.scraper.info("Submenu '\(title, privacy: .private)' yielded 0 items (\(itemCount, privacy: .public) child items\(hint, privacy: .private))")
                 }
             }
         }
@@ -102,7 +102,10 @@ enum MenuScraper {
 
     /// Recursively collects items within `menu`, flattening any nested submenus
     /// into a single list. Used for submenu contents (depth ≥ 2).
-    private static func collectShortcutsFlat(in menu: AXUIElement, includeAll: Bool = false) -> [Shortcut] {
+    private static func collectShortcutsFlat(
+        in menu: AXUIElement, includeAll: Bool = false, depth: Int = 0
+    ) -> [Shortcut] {
+        guard depth < 10 else { return [] }
         var result: [Shortcut] = []
         for item in children(menu) {
             guard let title = string(item, kAXTitleAttribute), !title.isEmpty else { continue }
@@ -123,11 +126,11 @@ enum MenuScraper {
 
             // Flatten sub-submenus.
             if let submenu {
-                let sub = collectShortcutsFlat(in: submenu, includeAll: includeAll)
+                let sub = collectShortcutsFlat(in: submenu, includeAll: includeAll, depth: depth + 1)
                 if sub.isEmpty {
                     let itemCount = children(submenu).count
                     let hint = itemCount == 0 ? "; likely lazy-populated" : ""
-                    Logger.scraper.info("Nested submenu '\(title, privacy: .public)' yielded 0 items (\(itemCount, privacy: .public) child items\(hint, privacy: .public))")
+                    Logger.scraper.info("Nested submenu '\(title, privacy: .private)' yielded 0 items (\(itemCount, privacy: .public) child items\(hint, privacy: .private))")
                 }
                 result.append(contentsOf: sub)
             }
