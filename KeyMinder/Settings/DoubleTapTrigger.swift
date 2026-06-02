@@ -184,14 +184,6 @@ final class DoubleTapTrigger {
         }
     }
 
-    /// Called after a tapDisabledBy* event was handled in the C callback.
-    /// Resets the state machine because events were likely missed during the dark window.
-    fileprivate func handleReEnable(reason: String) {
-        guard eventTap != nil else { return }
-        Logger.hotkey.warning("DoubleTapTrigger: re-enabled after \(reason, privacy: .public) disable — state reset")
-        prevFlags = CGEventFlags()
-        tapState  = .idle
-    }
 
     private func handleFlags(_ flags: CGEventFlags) {
         // Mask down to the four modifier bits we care about, ignoring
@@ -261,12 +253,11 @@ private let doubleTapCCallback: CGEventTapCallBack = { _, type, event, ctx in
     let trigger = Unmanaged<DoubleTapTrigger>.fromOpaque(ctx).takeUnretainedValue()
 
     if type == .tapDisabledByTimeout || type == .tapDisabledByUserInput {
-        // Re-enable synchronously so subsequent events are not lost.
+        // Re-enable synchronously so subsequent events are not lost. os.Logger is
+        // thread-safe so we can log directly without an async dispatch.
         if let tap = trigger.tapPortForCallback { CGEvent.tapEnable(tap: tap, enable: true) }
         let reason = type == .tapDisabledByTimeout ? "timeout" : "user-input"
-        DispatchQueue.main.async {
-            MainActor.assumeIsolated { trigger.handleReEnable(reason: reason) }
-        }
+        Logger.hotkey.info("DoubleTapTrigger: re-enabled after \(reason, privacy: .public) disable")
         return nil
     }
 
