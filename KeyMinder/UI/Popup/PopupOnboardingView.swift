@@ -14,8 +14,8 @@ struct PopupOnboardingView: View {
             Text("KeyMinder needs Accessibility access")
                 .font(.headline)
 
-            Text("KeyMinder reads the active app's menus to show its keyboard "
-                 + "shortcuts. Grant access in Privacy & Security, then reopen this popup.")
+            Text("KeyMinder reads the active app's menus to show its keyboard shortcuts. "
+                 + "Grant access in Privacy & Security — the popup will update automatically.")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
