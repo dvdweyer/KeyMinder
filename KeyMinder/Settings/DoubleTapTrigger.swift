@@ -1,5 +1,3 @@
-@preconcurrency import CoreFoundation
-import CoreGraphics
 import AppKit
 import os
 
@@ -27,12 +25,11 @@ enum DoubleTapModifier: String, CaseIterable, Codable {
         }
     }
 
-    /// The `CGEventFlags` bit for this modifier.
-    var cgFlag: CGEventFlags {
+    var nsFlag: NSEvent.ModifierFlags {
         switch self {
-        case .command: .maskCommand
-        case .option:  .maskAlternate
-        case .control: .maskControl
+        case .command: .command
+        case .option:  .option
+        case .control: .control
         }
     }
 }
@@ -42,10 +39,9 @@ enum DoubleTapModifier: String, CaseIterable, Codable {
 /// Fires `onActivate` when the user quickly presses and releases the same modifier key twice,
 /// without any other key held at the same time.
 ///
-/// Uses a passive, listen-only `CGEventTap` running on a dedicated background thread so that
-/// main-thread load (SwiftUI layout passes, popup animations) cannot delay event delivery and
-/// distort the timing window. Callbacks are dispatched to the main actor before touching any
-/// state.
+/// Uses `NSEvent.addGlobalMonitorForEvents` — the standard AppKit API for system-wide
+/// event monitoring. Runs on the main thread. Does not require CGEventTap and is not
+/// affected by `tapDisabledByUserInput` events.
 ///
 /// Requires the Accessibility permission that KeyMinder already holds for menu scraping.
 @MainActor
@@ -56,27 +52,25 @@ final class DoubleTapTrigger {
     /// Called on the main thread when a qualifying double-tap is detected.
     var onActivate: (() -> Void)?
 
-    private var eventTap:      CFMachPort?
-    private var runLoopSource: CFRunLoopSource?
-    private var tapThread:     Thread?
-    private var tapRunLoop:    CFRunLoop?
+    private var flagsMonitor:   Any?
+    private var keyDownMonitor: Any?
 
-    // Written by stop() (before disabling) and installTap() (before thread start).
-    // Read by the C callback on the background thread to re-enable the tap
-    // synchronously, without an async-dispatch gap during which events are missed.
-    // nonisolated(unsafe) is safe: stop() nils this before calling tapEnable(enable:false),
-    // and installTap() sets it before starting the thread (semaphore ensures ordering).
-    nonisolated(unsafe) fileprivate var tapPortForCallback: CFMachPort?
-
-    // State machine — all mutations happen on the main actor via DispatchQueue.main.async.
-    private var prevFlags: CGEventFlags = []
-    private var tapState:  TapState    = .idle
+    private var prevFlags: NSEvent.ModifierFlags = []
+    private var tapState:  TapState = .idle
     private var watched:   DoubleTapModifier = .command
 
     private enum TapState {
         case idle
         case firstDown
         case firstUp(at: Date)
+    }
+
+    private var tapStateName: String {
+        switch tapState {
+        case .idle:      return "idle"
+        case .firstDown: return "firstDown"
+        case .firstUp:   return "firstUp"
+        }
     }
 
     /// Maximum interval (seconds) between first release and second press to count as a double-tap.
@@ -92,120 +86,53 @@ final class DoubleTapTrigger {
         watched   = modifier
         prevFlags = []
         tapState  = .idle
-        installTap()
+        installMonitors()
     }
 
     /// Stop monitoring.
     func stop() {
-        // Nil the callback port first so an in-flight callback cannot re-enable
-        // the tap after we disable it below.
-        tapPortForCallback = nil
-        if let tap = eventTap {
-            CGEvent.tapEnable(tap: tap, enable: false)
-            eventTap = nil
-        }
-        if let rl = tapRunLoop {
-            CFRunLoopStop(rl)
-            tapRunLoop = nil
-        }
-        if let src = runLoopSource {
-            CFRunLoopSourceInvalidate(src)
-            runLoopSource = nil
-        }
-        tapThread = nil
-        tapState  = .idle
+        if let m = flagsMonitor   { NSEvent.removeMonitor(m); flagsMonitor   = nil }
+        if let m = keyDownMonitor { NSEvent.removeMonitor(m); keyDownMonitor = nil }
+        tapState = .idle
     }
 
-    // MARK: - Tap installation
+    // MARK: - Monitor installation
 
-    private func installTap() {
-        let mask: CGEventMask =
-            (1 << CGEventType.flagsChanged.rawValue) |
-            (1 << CGEventType.keyDown.rawValue)
-
-        // passUnretained is safe: DoubleTapTrigger.shared is a singleton whose
-        // lifetime exceeds the tap's, and stop() is called before any dealloc.
-        let ctx = Unmanaged.passUnretained(self).toOpaque()
-
-        guard let tap = CGEvent.tapCreate(
-            tap:              .cgSessionEventTap,
-            place:            .headInsertEventTap,
-            options:          .listenOnly,
-            eventsOfInterest: mask,
-            callback:         doubleTapCCallback,
-            userInfo:         ctx
-        ) else {
-            Logger.hotkey.error("DoubleTapTrigger: CGEventTapCreate failed — check Accessibility permission")
-            return
+    private func installMonitors() {
+        // NSEvent global monitors run on the main thread and are never disabled by the system.
+        flagsMonitor = NSEvent.addGlobalMonitorForEvents(matching: .flagsChanged) { [weak self] event in
+            MainActor.assumeIsolated { self?.handleFlags(event.modifierFlags) }
         }
-
-        guard let src = CFMachPortCreateRunLoopSource(nil, tap, 0) else {
-            Logger.hotkey.error("DoubleTapTrigger: CFMachPortCreateRunLoopSource failed")
-            return
+        keyDownMonitor = NSEvent.addGlobalMonitorForEvents(matching: .keyDown) { [weak self] _ in
+            MainActor.assumeIsolated {
+                Logger.hotkey.debug("DoubleTapTrigger: keyDown reset (was \(self?.tapStateName ?? "?", privacy: .public))")
+                self?.tapState = .idle
+            }
         }
-        eventTap             = tap
-        runLoopSource        = src
-        tapPortForCallback   = tap  // must be set before the thread starts (semaphore below ensures visibility)
-
-        // Spin a dedicated thread so callbacks are delivered independently of main-thread load.
-        // A semaphore lets the main thread capture the background run loop before returning;
-        // the wait is sub-millisecond (the thread just calls CFRunLoopGetCurrent and signals).
-        final class RunLoopBox: @unchecked Sendable { var value: CFRunLoop? }
-        let box    = RunLoopBox()
-        let sem    = DispatchSemaphore(value: 0)
-        let srcRef = src    // non-optional local avoids the Sendable capture warning
-        let t = Thread {
-            box.value = CFRunLoopGetCurrent()
-            CFRunLoopAddSource(CFRunLoopGetCurrent(), srcRef, .commonModes)
-            sem.signal()        // main thread may proceed; run loop is live
-            CFRunLoopRun()      // blocks until stop() calls CFRunLoopStop
-        }
-        t.name = "org.afaik.KeyMinder.doubleTap"
-        t.qualityOfService = .userInteractive
-        tapThread = t
-        t.start()
-        sem.wait()
-        tapRunLoop = box.value
-
-        CGEvent.tapEnable(tap: tap, enable: true)
         Logger.hotkey.info("DoubleTapTrigger: watching \(self.watched.rawValue, privacy: .public)")
     }
 
-    // MARK: - Event handling — dispatched to main actor from the background tap thread
+    // MARK: - Event handling
 
-    fileprivate func handle(type: CGEventType, flags: CGEventFlags) {
-        // Discard queued callbacks that arrived after stop() was called.
-        guard eventTap != nil else { return }
-
-        switch type {
-        case .keyDown:      tapState = .idle   // any regular keypress resets the sequence
-        case .flagsChanged: handleFlags(flags)
-        default:            break
-        }
-    }
-
-
-    private func handleFlags(_ flags: CGEventFlags) {
-        // Mask down to the four modifier bits we care about, ignoring
-        // device-dependent bits, Fn, Caps Lock, etc.
-        let modMask  = CGEventFlags(rawValue:
-            CGEventFlags.maskCommand.rawValue  |
-            CGEventFlags.maskAlternate.rawValue |
-            CGEventFlags.maskControl.rawValue  |
-            CGEventFlags.maskShift.rawValue
-        )
-        let curr = CGEventFlags(rawValue: flags.rawValue     & modMask.rawValue)
-        let prev = CGEventFlags(rawValue: prevFlags.rawValue & modMask.rawValue)
+    private func handleFlags(_ flags: NSEvent.ModifierFlags) {
+        let modMask: NSEvent.ModifierFlags = [.command, .option, .control, .shift]
+        let curr = flags.intersection(modMask)
+        let prev = prevFlags.intersection(modMask)
         defer { prevFlags = flags }
 
-        let bit     = watched.cgFlag
-        let wasDown = (prev.rawValue & bit.rawValue) != 0
-        let isDown  = (curr.rawValue & bit.rawValue) != 0
+        let bit     = watched.nsFlag
+        let wasDown = prev.contains(bit)
+        let isDown  = curr.contains(bit)
+
+        Logger.hotkey.debug("DoubleTapTrigger: flags 0x\(String(flags.rawValue, radix: 16), privacy: .public) isDown=\(isDown, privacy: .public) wasDown=\(wasDown, privacy: .public) state=\(self.tapStateName, privacy: .public)")
 
         if isDown, !wasDown {
             // ── Leading edge: modifier pressed ──
             // Abort if any other modifier is also held (this is a chord, not a solo tap).
-            guard curr.rawValue == bit.rawValue else { tapState = .idle; return }
+            guard curr == [bit] else {
+                Logger.hotkey.debug("DoubleTapTrigger: chord — reset")
+                tapState = .idle; return
+            }
 
             switch tapState {
             case .idle:
@@ -217,56 +144,26 @@ final class DoubleTapTrigger {
             case .firstUp(let t):
                 if Date().timeIntervalSince(t) < Self.window {
                     tapState = .idle
-                    onActivate?()           // already on the main actor
+                    Logger.hotkey.info("DoubleTapTrigger: FIRED")
+                    onActivate?()
                 } else {
-                    // Window expired; treat this press as the new first press.
                     tapState = .firstDown
                 }
             }
+            Logger.hotkey.debug("DoubleTapTrigger: → \(self.tapStateName, privacy: .public)")
 
         } else if !isDown, wasDown {
             // ── Trailing edge: modifier released ──
             switch tapState {
             case .firstDown:
                 // Only advance if no other modifier is still held.
-                tapState = curr.rawValue == 0 ? .firstUp(at: Date()) : .idle
+                tapState = curr.isEmpty ? .firstUp(at: Date()) : .idle
             default:
                 tapState = .idle
             }
+            Logger.hotkey.debug("DoubleTapTrigger: → \(self.tapStateName, privacy: .public)")
         }
     }
-}
-
-// MARK: - C event callback (fires on the dedicated tap thread)
-
-/// Top-level C-compatible callback. Runs on the background tap thread.
-///
-/// Disable events (`tapDisabledByUserInput` / `tapDisabledByTimeout`) are re-enabled
-/// **synchronously** here, before returning, so the dark window where key events are
-/// missed is collapsed to near-zero. Only the state-machine reset is deferred to the
-/// main actor. All other events are dispatched to the main actor for state mutation.
-///
-/// The CGEvent is only valid for the duration of this callback; values are extracted
-/// synchronously before any async dispatch.
-private let doubleTapCCallback: CGEventTapCallBack = { _, type, event, ctx in
-    guard let ctx else { return nil }
-    let trigger = Unmanaged<DoubleTapTrigger>.fromOpaque(ctx).takeUnretainedValue()
-
-    if type == .tapDisabledByTimeout || type == .tapDisabledByUserInput {
-        // Re-enable synchronously so subsequent events are not lost. os.Logger is
-        // thread-safe so we can log directly without an async dispatch.
-        if let tap = trigger.tapPortForCallback { CGEvent.tapEnable(tap: tap, enable: true) }
-        let reason = type == .tapDisabledByTimeout ? "timeout" : "user-input"
-        Logger.hotkey.info("DoubleTapTrigger: re-enabled after \(reason, privacy: .public) disable")
-        return nil
-    }
-
-    let capturedType  = type
-    let capturedFlags = event.flags
-    DispatchQueue.main.async {
-        MainActor.assumeIsolated { trigger.handle(type: capturedType, flags: capturedFlags) }
-    }
-    return nil  // listen-only tap: return value is ignored by the system
 }
 
 // MARK: - UserDefaults
