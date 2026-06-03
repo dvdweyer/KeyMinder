@@ -42,6 +42,16 @@ if [[ -z "$VERSION" ]]; then
     exit 1
 fi
 
+# ── QC: webpage must reference the same version ───────────────────────────────
+HTML="$REPO_DIR/Documentation/keyminder.html"
+HTML_VERSION=$(grep -o 'href="KeyMinder_[0-9.]*\.zip"' "$HTML" | head -1 \
+    | sed 's/href="KeyMinder_//; s/\.zip"//')
+if [[ "$HTML_VERSION" != "$VERSION" ]]; then
+    echo "error: keyminder.html download link points to v${HTML_VERSION} but project is v${VERSION}" >&2
+    echo "       Update the href, button text, install step, and changelog in Documentation/keyminder.html" >&2
+    exit 1
+fi
+
 ARCHIVE="$BUILD_DIR/KeyMinder.xcarchive"
 EXPORT_DIR="$BUILD_DIR/export"
 APP="$EXPORT_DIR/KeyMinder.app"
@@ -114,7 +124,7 @@ for f in "$REPO_DIR/Documentation/"*.png; do
 done
 
 echo "--- Deploying via rsync…"
-bash "$DEPLOY_SH"
+(cd "$(dirname "$DEPLOY_SH")" && bash "$(basename "$DEPLOY_SH")")
 
 # ── Cleanup ───────────────────────────────────────────────────────────────────
 rm -rf "$BUILD_DIR"
