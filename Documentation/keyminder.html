@@ -336,6 +336,84 @@
     .req-grid { grid-template-columns: 1fr; }
     header h1 { font-size: 1.7rem; }
   }
+
+  @media (prefers-color-scheme: dark) {
+    body {
+      background: #141413;
+      color: #e8e8e3;
+    }
+
+    header {
+      background: #1c1c1b;
+      border-bottom-color: #2c2c2a;
+    }
+
+    header p { color: #999; }
+
+    .download-note { color: #666; }
+
+    .btn-primary {
+      background: #e8e8e3;
+      color: #141413;
+    }
+
+    .btn-secondary {
+      background: #1c1c1b;
+      color: #e8e8e3;
+      border-color: #3a3a38;
+    }
+
+    .section {
+      background: #1c1c1b;
+      border-color: #2c2c2a;
+    }
+
+    .section h2 { color: #666; }
+    .section p  { color: #aaa; }
+
+    .screenshot img {
+      box-shadow: 0 4px 24px rgba(0,0,0,0.4), 0 0 0 0.5px rgba(255,255,255,0.06);
+    }
+
+    .screenshot img:hover {
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 0 0.5px rgba(255,255,255,0.08);
+    }
+
+    .screenshot-hint { color: #555; }
+
+    .steps li {
+      border-bottom-color: #262624;
+      color: #aaa;
+    }
+
+    .steps li::before {
+      background: #262624;
+      color: #777;
+    }
+
+    code {
+      background: #262624;
+      color: #bbb;
+    }
+
+    .req-item {
+      background: #222220;
+      color: #aaa;
+    }
+
+    .req-dot { background: #e8e8e3; }
+
+    .changelog-entry { border-bottom-color: #262624; }
+
+    .changelog-version strong { color: #e8e8e3; }
+    .changelog-version span   { color: #555; }
+
+    .changelog-entry ul li { color: #888; }
+    .changelog-entry ul li::before { color: #444; }
+
+    footer { color: #555; }
+    footer a { color: #888; }
+  }
 </style>
 </head>
 <body>
@@ -362,7 +440,10 @@
     <p>Click any shortcut in the popup to run it immediately. KeyMinder reads menu structures directly via the macOS Accessibility API, so shortcuts are always accurate and up to date for whatever app you're using.</p>
     <p>You can search for a keyboard shortcut by starting to type its name and then tab there to execute the command directly. Toggle or hold modifier keys (⌃ ⌥ ⇧ ⌘) to filter by exact modifier combination — hold ⌘ to see only Command shortcuts, add ⇧ to narrow to Command-Shift. When all shortcuts fit on screen, non-matching rows dim in place so the layout stays stable. There is even an option to show menu items without keyboard shortcuts — these show only when at least two letters of the command are matched.</p>
     <div class="screenshot">
-      <img src="Safari_Shortcuts.png" alt="KeyMinder showing Safari keyboard shortcuts grouped by menu" id="screenshotThumb">
+      <picture>
+        <source srcset="Safari_Shortcuts_dark-mode.png" media="(prefers-color-scheme: dark)">
+        <img src="Safari_Shortcuts_light-mode.png" alt="KeyMinder showing Safari keyboard shortcuts grouped by menu" id="screenshotThumb">
+      </picture>
       <p class="screenshot-hint">Click to enlarge</p>
     </div>
   </div>
@@ -371,7 +452,7 @@
   <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Screenshot full size">
     <div class="lightbox-inner">
       <button class="lightbox-close" id="lightboxClose" aria-label="Close">&#x2715;</button>
-      <img src="Safari_Shortcuts.png" alt="KeyMinder showing Safari keyboard shortcuts grouped by menu">
+      <img id="lightboxImg" src="Safari_Shortcuts_light-mode.png" alt="KeyMinder showing Safari keyboard shortcuts grouped by menu">
     </div>
   </div>
 
@@ -584,11 +665,17 @@
 </footer>
 
 <script>
-  const lightbox = document.getElementById('lightbox');
-  const thumb    = document.getElementById('screenshotThumb');
-  const closeBtn = document.getElementById('lightboxClose');
+  const lightbox  = document.getElementById('lightbox');
+  const thumb     = document.getElementById('screenshotThumb');
+  const closeBtn  = document.getElementById('lightboxClose');
+  const lbImg     = document.getElementById('lightboxImg');
+  const darkMQ    = window.matchMedia('(prefers-color-scheme: dark)');
 
-  function open()  { lightbox.classList.add('open');    document.body.style.overflow = 'hidden'; }
+  function screenshotSrc() {
+    return darkMQ.matches ? 'Safari_Shortcuts_dark-mode.png' : 'Safari_Shortcuts_light-mode.png';
+  }
+
+  function open()  { lbImg.src = screenshotSrc(); lightbox.classList.add('open');    document.body.style.overflow = 'hidden'; }
   function close() { lightbox.classList.remove('open'); document.body.style.overflow = ''; }
 
   thumb.addEventListener('click', open);
