@@ -14,5 +14,5 @@ for f in "$REPO_DIR/Documentation/"*.png; do
     [[ -e "$f" ]] && cp "$f" "$SITE_DIR/"
 done
 
-bash "$DEPLOY_SH"
+cd "$(dirname "$DEPLOY_SH")" && bash "$DEPLOY_SH"
 echo "Docs deployed."
