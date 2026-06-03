@@ -238,10 +238,23 @@ final class PopupController {
         // In all-entries mode, distribute columns using shortcuts-only section
         // heights so the panel is sized for the compact initial view. No-shortcut
         // items appear inside the ScrollView once the query reaches 2 characters.
-        let layoutSections = app.includesItemsWithoutShortcuts
-            ? Self.shortcutsOnly(app.sections)
-            : app.sections
+        //
+        // `shortcutsOnly` returns (layout, full) pairs so the mapping back to full
+        // sections is by UUID rather than title — crash-safe for apps that happen to
+        // have two top-level menus with the same title. If every item lacks a shortcut
+        // the pairs are empty; fall back to self-paired full sections so the popup
+        // still has content to display.
+        let sectionPairs: [(layout: MenuSection, full: MenuSection)]
+        if app.includesItemsWithoutShortcuts {
+            let pairs = Self.shortcutsOnly(app.sections)
+            sectionPairs = pairs.isEmpty
+                ? app.sections.map { (layout: $0, full: $0) }
+                : pairs
+        } else {
+            sectionPairs = app.sections.map { (layout: $0, full: $0) }
+        }
 
+        let layoutSections = sectionPairs.map(\.layout)
         let count = min(layoutSections.count, maxColumns)
         let distributedLayout = MenuLayout.distribute(layoutSections, columns: count)
         let actual = max(1, distributedLayout.count)
@@ -250,11 +263,11 @@ final class PopupController {
             + CGFloat(actual - 1) * MenuLayout.columnSpacing
         let width = contentWidth + 2 * Theme.contentPadding
 
-        // Map the shortcuts-only column assignment back to full sections so that
-        // no-shortcut items are present in the model and can appear on demand.
-        let fullByTitle = Dictionary(uniqueKeysWithValues: app.sections.map { ($0.title, $0) })
+        // Map layout sections back to full sections by UUID (stable, unique by
+        // construction — each MenuSection.id is a let UUID generated at init).
+        let fullByID = Dictionary(uniqueKeysWithValues: sectionPairs.map { ($0.layout.id, $0.full) })
         let displayColumns: [[MenuSection]] = distributedLayout.map { col in
-            col.compactMap { fullByTitle[$0.title] }
+            col.compactMap { fullByID[$0.id] }
         }
 
         // Height is measured with an empty query, so showsAllItems is false and
@@ -280,16 +293,21 @@ final class PopupController {
         return (NSHostingView(rootView: root), CGSize(width: width, height: height))
     }
 
-    /// Returns a copy of `sections` containing only shortcuts (non-empty keys),
-    /// dropping empty groups and sections. Used for column distribution and panel
-    /// sizing in all-entries mode so the popup opens at shortcuts-only dimensions.
-    private static func shortcutsOnly(_ sections: [MenuSection]) -> [MenuSection] {
+    /// Returns (layout, full) pairs for sections that contain at least one keyed
+    /// shortcut. The layout copy holds only shortcuts with non-empty keys (for
+    /// sizing); the full section is the original (for display). Pairing by value
+    /// rather than title makes the caller's UUID-based lookup crash-safe when two
+    /// top-level menus share a title.
+    private static func shortcutsOnly(
+        _ sections: [MenuSection]
+    ) -> [(layout: MenuSection, full: MenuSection)] {
         sections.compactMap { section in
             let groups = section.groups.compactMap { group -> ShortcutGroup? in
                 let shortcuts = group.shortcuts.filter { !$0.keys.isEmpty }
                 return shortcuts.isEmpty ? nil : ShortcutGroup(title: group.title, shortcuts: shortcuts)
             }
-            return groups.isEmpty ? nil : MenuSection(title: section.title, groups: groups)
+            guard !groups.isEmpty else { return nil }
+            return (layout: MenuSection(title: section.title, groups: groups), full: section)
         }
     }
 

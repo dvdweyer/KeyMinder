@@ -103,14 +103,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     /// a scrape is already in flight.
     private var scrapeTask: Task<Void, Never>?
 
-    /// The background AX scrape itself. Stored separately so it can be
-    /// cancelled before the next scrape starts, preventing multiple concurrent
-    /// AX traversals from accumulating on rapid toggling.
-    ///
-    /// Note: MenuScraper.scrape(pid:) is synchronous C AX IPC with no Swift
-    /// cancellation checkpoints, so the cancelled task still runs to its first
-    /// natural exit. The main benefit is that at most one scrape is in flight
-    /// at a time once any previous scrapeTask is cancelled.
+    /// The background AX scrape itself. Stored so the next `presentPopup()` call
+    /// can await it before starting a new traversal — `MenuScraper.scrape` is
+    /// synchronous C AX IPC with no Swift cancellation checkpoints, so cancelling
+    /// the outer task does not stop an in-flight scrape. Awaiting it first ensures
+    /// at most one AX traversal runs at any time.
     private var detachedScrapeTask: Task<[MenuSection], Never>?
 
     /// Scrapes the frontmost app's menus off the main thread, then presents
@@ -133,24 +130,32 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let icon = app.icon
         let includeAll = UserDefaults.standard.showAllMenuItems
 
-        // Cancel any stale in-flight scrapes before starting new ones.
+        // Cancel the outer coordinator so a stale result never reaches the UI.
         scrapeTask?.cancel()
-        detachedScrapeTask?.cancel()
-
-        let work = Task.detached(priority: .userInitiated) {
-            MenuScraper.scrape(pid: pid, includeItemsWithoutShortcuts: includeAll)
-        }
-        detachedScrapeTask = work
 
         scrapeTask = Task {
-            let sections = await work.value
+            // If an AX traversal is already in flight, let it finish before
+            // starting a new one — we can't cancel the synchronous C IPC, so
+            // starting another would create concurrent traversals of the same app.
+            // The result is discarded; we only wait to serialise access.
+            if let previous = self.detachedScrapeTask {
+                _ = await previous.value
+                self.detachedScrapeTask = nil
+            }
 
-            // When this outer task has been cancelled (because presentPopup()
-            // was called again), `detachedScrapeTask` already points to the
-            // newer work — don't touch it.  Only clear on the success path
-            // where we know we are still the active scrape.
+            // If we were cancelled while draining (another presentPopup fired),
+            // stop here — the newer task will handle the scrape.
             guard !Task.isCancelled else { return }
-            detachedScrapeTask = nil
+
+            let work = Task.detached(priority: .userInitiated) {
+                MenuScraper.scrape(pid: pid, includeItemsWithoutShortcuts: includeAll)
+            }
+            self.detachedScrapeTask = work
+
+            let sections = await work.value
+            self.detachedScrapeTask = nil
+
+            guard !Task.isCancelled else { return }
 
             let shortcuts = AppShortcuts(
                 appName: appName,

@@ -56,8 +56,9 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
 @Observable
 final class SettingsModel {
 
-    private(set) var hotkey:      GlobalHotkey? = UserDefaults.standard.globalHotkey
-    private(set) var isRecording: Bool = false
+    private(set) var hotkey:             GlobalHotkey? = UserDefaults.standard.globalHotkey
+    private(set) var isRecording:        Bool = false
+    private(set) var registrationFailed: Bool = false
 
     /// Whether KeyMinder is registered as a login item.
     var launchAtLogin: Bool = LoginItemManager.shared.isEnabled {
@@ -112,6 +113,7 @@ final class SettingsModel {
     func startRecording() {
         guard !isRecording else { return }
         isRecording = true
+        registrationFailed = false
         // Local monitor fires for key events in our own windows (settings panel is key).
         eventMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
             guard let self else { return event }
@@ -130,6 +132,7 @@ final class SettingsModel {
         HotkeyManager.shared.unregister()
         UserDefaults.standard.globalHotkey = nil
         hotkey = nil
+        registrationFailed = false
     }
 
     // MARK: Private
@@ -142,9 +145,12 @@ final class SettingsModel {
         }
         // Any combo with a strong modifier (⌘/⌥/⌃) is accepted.
         if let newHotkey = GlobalHotkey.from(event: event) {
-            hotkey = newHotkey
-            UserDefaults.standard.globalHotkey = newHotkey
-            HotkeyManager.shared.register(newHotkey)
+            if HotkeyManager.shared.register(newHotkey) {
+                hotkey = newHotkey
+                UserDefaults.standard.globalHotkey = newHotkey
+            } else {
+                registrationFailed = true
+            }
             stopRecording()
         }
         // Keys with only Shift (or no modifier) are silently ignored; recording continues.
@@ -177,6 +183,12 @@ struct SettingsView: View {
             HStack(spacing: 8) {
                 HotkeyBadge(model: model)
                 recordingButtons
+            }
+
+            if model.registrationFailed {
+                Text("Shortcut already in use")
+                    .font(.caption)
+                    .foregroundStyle(.red)
             }
 
             Divider()

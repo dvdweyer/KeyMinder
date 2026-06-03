@@ -30,7 +30,8 @@ final class HotkeyManager {
 
     // MARK: - Public API
 
-    func register(_ hotkey: GlobalHotkey) {
+    @discardableResult
+    func register(_ hotkey: GlobalHotkey) -> Bool {
         unregister()
         // EventHotKeyID is passed by value to RegisterEventHotKey.
         let hkID = EventHotKeyID(signature: HotkeyManager.signature,
@@ -47,8 +48,10 @@ final class HotkeyManager {
         if status == noErr {
             hotKeyRef = ref
             Logger.hotkey.info("registered hotkey: \(hotkey.displayString, privacy: .public)")
+            return true
         } else {
             Logger.hotkey.error("RegisterEventHotKey failed, status=\(status)")
+            return false
         }
     }
 
