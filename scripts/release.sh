@@ -3,6 +3,7 @@
 # → copy to local website → deploy via rsync.
 #
 # Prerequisites:
+#   - Copy scripts/.env.example to scripts/.env and fill in TEAM_ID.
 #   - Run scripts/setup-notarytool.sh once to store keychain credentials.
 #   - Xcode must be installed at /Applications/Xcode.app.
 #   - The project's Release config must be signed with Developer ID Application.
@@ -17,7 +18,21 @@ DEPLOY_SH="$HOME/Public/Sites/deploy.sh"
 NOTARYTOOL_PROFILE="KeyMinder"
 BUILD_DIR="/tmp/KeyMinder-release-$$"
 
-# ── Version ──────────────────────────────────────────────────────────────────
+# ── Config ────────────────────────────────────────────────────────────────────
+ENV_FILE="$SCRIPT_DIR/.env"
+if [[ ! -f "$ENV_FILE" ]]; then
+    echo "error: $ENV_FILE not found. Copy scripts/.env.example to scripts/.env and fill in TEAM_ID." >&2
+    exit 1
+fi
+# shellcheck source=.env
+source "$ENV_FILE"
+
+if [[ -z "${TEAM_ID:-}" ]]; then
+    echo "error: TEAM_ID is not set in scripts/.env" >&2
+    exit 1
+fi
+
+# ── Version ───────────────────────────────────────────────────────────────────
 VERSION=$(grep 'MARKETING_VERSION' \
     "$REPO_DIR/KeyMinder.xcodeproj/project.pbxproj" \
     | head -1 | sed 's/.*MARKETING_VERSION = //; s/;//; s/[[:space:]]//g')
@@ -31,14 +46,31 @@ ARCHIVE="$BUILD_DIR/KeyMinder.xcarchive"
 EXPORT_DIR="$BUILD_DIR/export"
 APP="$EXPORT_DIR/KeyMinder.app"
 ZIP="$BUILD_DIR/KeyMinder_${VERSION}.zip"
-SITE_ZIP="$SITE_DIR/KeyMinder_${VERSION}.zip"
 
 echo "==> KeyMinder $VERSION"
 echo ""
 
 # ── Build ─────────────────────────────────────────────────────────────────────
-echo "--- Archiving…"
 mkdir -p "$BUILD_DIR"
+
+# Generate ExportOptions.plist with team ID from .env (never stored in the repo).
+EXPORT_OPTIONS="$BUILD_DIR/ExportOptions.plist"
+cat > "$EXPORT_OPTIONS" << EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>method</key>
+    <string>developer-id</string>
+    <key>teamID</key>
+    <string>${TEAM_ID}</string>
+    <key>signingStyle</key>
+    <string>automatic</string>
+</dict>
+</plist>
+EOF
+
+echo "--- Archiving…"
 xcodebuild archive \
     -project "$REPO_DIR/KeyMinder.xcodeproj" \
     -scheme KeyMinder \
@@ -50,7 +82,7 @@ echo ""
 echo "--- Exporting (Developer ID)…"
 xcodebuild -exportArchive \
     -archivePath "$ARCHIVE" \
-    -exportOptionsPlist "$SCRIPT_DIR/ExportOptions.plist" \
+    -exportOptionsPlist "$EXPORT_OPTIONS" \
     -exportPath "$EXPORT_DIR" \
     -allowProvisioningUpdates
 
@@ -77,7 +109,6 @@ echo "--- Copying to website…"
 mkdir -p "$SITE_DIR"
 cp "$ZIP" "$SITE_DIR/"
 cp "$REPO_DIR/Documentation/keyminder.html" "$SITE_DIR/index.html"
-# Copy any PNG assets (screenshots etc.)
 for f in "$REPO_DIR/Documentation/"*.png; do
     [[ -e "$f" ]] && cp "$f" "$SITE_DIR/"
 done
@@ -90,4 +121,3 @@ rm -rf "$BUILD_DIR"
 
 echo ""
 echo "==> Done — KeyMinder $VERSION is live."
-echo "    $SITE_ZIP"
