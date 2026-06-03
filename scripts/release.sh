@@ -14,6 +14,7 @@ export DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 SITE_DIR="$HOME/Public/Sites/donald.van-de-weyer.net/keyminder"
+KEYMINDER_SITE_DIR="$HOME/Public/Sites/keyminder.app"
 DEPLOY_SH="$HOME/Public/Sites/deploy.sh"
 NOTARYTOOL_PROFILE="KeyMinder"
 BUILD_DIR="/tmp/KeyMinder-release-$$"
@@ -116,11 +117,13 @@ ditto -c -k --sequesterRsrc --keepParent "$APP" "$ZIP"
 # ── Deploy ────────────────────────────────────────────────────────────────────
 echo ""
 echo "--- Copying to website…"
-mkdir -p "$SITE_DIR"
+mkdir -p "$SITE_DIR" "$KEYMINDER_SITE_DIR"
 cp "$ZIP" "$SITE_DIR/"
+cp "$ZIP" "$KEYMINDER_SITE_DIR/"
 cp "$REPO_DIR/Documentation/keyminder.html" "$SITE_DIR/index.html"
+cp "$REPO_DIR/Documentation/keyminder.html" "$KEYMINDER_SITE_DIR/index.html"
 for f in "$REPO_DIR/Documentation/"*.png; do
-    [[ -e "$f" ]] && cp "$f" "$SITE_DIR/"
+    [[ -e "$f" ]] && cp "$f" "$SITE_DIR/" && cp "$f" "$KEYMINDER_SITE_DIR/"
 done
 
 echo "--- Deploying via rsync…"
