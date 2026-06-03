@@ -126,3 +126,29 @@ in a dedicated section, sourced from
 
 A display option that shows only the key badge column (no command title) for
 users who already know what the shortcuts do and want maximum density.
+
+---
+
+## Localisation
+
+Translate the app UI to common languages. Menu item titles scraped via AX are
+already in the system locale of the target app, so they require no extra work.
+Only the KeyMinder-owned strings (settings labels, onboarding text, context menu
+items, error messages) need translation.
+
+**Notes:** straightforward `Localizable.strings` / `String(localized:)` work.
+Priority locales: French, German, Spanish, Japanese, Simplified Chinese.
+
+---
+
+## User-selectable key-highlight colour
+
+The key-badge accent colour is currently hardcoded to green. Allow the user to
+choose a colour in Settings, defaulting to the system accent colour from System
+Settings → Appearance.
+
+**Notes:** system accent colour is readable at runtime via
+`NSColor.controlAccentColor`. The setting would be stored in `UserDefaults` as a
+raw colour (or a sentinel value meaning "follow system"). `Theme.keyAccent` in
+`UI/Popup/Theme.swift` is the single point of change — it already drives all key
+badge fills.
