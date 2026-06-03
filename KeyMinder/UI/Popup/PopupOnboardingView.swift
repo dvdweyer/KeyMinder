@@ -9,7 +9,7 @@ struct PopupOnboardingView: View {
         VStack(spacing: 14) {
             Image(systemName: "accessibility")
                 .font(.system(size: 40))
-                .foregroundStyle(Theme.keyAccent)
+                .foregroundStyle(ThemeSettings.shared.keyAccent)
 
             Text("KeyMinder needs Accessibility access")
                 .font(.headline)

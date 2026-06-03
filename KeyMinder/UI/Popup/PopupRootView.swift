@@ -476,7 +476,7 @@ struct ShortcutRow: View {
         HStack(spacing: 8) {
             Text(shortcut.keys)
                 .font(.system(size: 12, weight: .medium, design: .rounded))
-                .foregroundStyle(dimmed ? Theme.fadedText : Theme.keyAccent)
+                .foregroundStyle(dimmed ? Theme.fadedText : ThemeSettings.shared.keyAccent)
                 .frame(width: Theme.keyColumnWidth, alignment: .trailing)
             Text(shortcut.title)
                 .font(.system(size: 12))
@@ -516,13 +516,13 @@ private struct ModifierToggle: View {
         Button(action: action) {
             Text(String(glyph))
                 .font(.system(size: 12, weight: .medium, design: .rounded))
-                .foregroundStyle(isActive ? Color.white : Theme.keyAccent)
+                .foregroundStyle(isActive ? Color.white : ThemeSettings.shared.keyAccent)
                 .frame(width: 22, height: 22)
-                .background(isActive ? Theme.keyAccent : Color.clear,
+                .background(isActive ? ThemeSettings.shared.keyAccent : Color.clear,
                             in: RoundedRectangle(cornerRadius: 4))
                 .overlay(
                     RoundedRectangle(cornerRadius: 4)
-                        .strokeBorder(Theme.keyAccent.opacity(isActive ? 1.0 : 0.4), lineWidth: 1)
+                        .strokeBorder(ThemeSettings.shared.keyAccent.opacity(isActive ? 1.0 : 0.4), lineWidth: 1)
                 )
         }
         .buttonStyle(.plain)

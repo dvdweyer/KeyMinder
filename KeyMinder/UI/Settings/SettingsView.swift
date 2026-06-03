@@ -234,6 +234,40 @@ struct SettingsView: View {
 
             Divider()
 
+            Text("Appearance")
+                .font(.headline)
+
+            Text("Colour used for keyboard shortcut glyphs in the popup.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            let ts = ThemeSettings.shared
+            HStack(spacing: 10) {
+                ColorPicker("Key colour", selection: Binding(
+                    get: { ts.keyAccent },
+                    set: { ts.setCustomColor($0) }
+                ), supportsOpacity: false)
+                .labelsHidden()
+                .disabled(ts.followsSystemAccent)
+
+                Text("Key colour")
+
+                Spacer()
+
+                if !ts.followsSystemAccent {
+                    Button("Reset") { ts.resetToSystem() }
+                        .foregroundStyle(.secondary)
+                }
+            }
+
+            Toggle("Follow system accent colour", isOn: Binding(
+                get: { ts.followsSystemAccent },
+                set: { if $0 { ts.resetToSystem() } else { ts.enableCustom() } }
+            ))
+
+            Divider()
+
             Text("Developer")
                 .font(.headline)
 
