@@ -526,6 +526,8 @@ private struct ModifierToggle: View {
                 )
         }
         .buttonStyle(.plain)
+        .accessibilityAddTraits(isActive ? .isSelected : [])
+        .accessibilityValue(isActive ? "on" : "off")
     }
 }
 
