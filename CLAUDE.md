@@ -47,13 +47,15 @@ identity-based and **persists across rebuilds and run locations**. Reset with
   temporary-exception ones) re-opens this. The TCC Accessibility grant does
   **not** punch through the sandbox; they are separate layers. This is the same
   wall that keeps KeyCue, Shortcat, Bartender, etc. off the Mac App Store.
-- **The shipping path is Developer ID + notarization:** Archive → Distribute App
-  → **Direct Distribution** → notarize → staple → zip/DMG to users.
+- **The shipping path is Developer ID + notarization.** `scripts/release.sh`
+  automates the full pipeline: archive → export (Developer ID) → notarize →
+  staple → re-zip → copy to local site dirs → rsync deploy. Run it from the
+  repo root; it reads `TEAM_ID` from `scripts/.env` (not checked in) and the
+  notarytool keychain profile `KeyMinder` (set up once via
+  `scripts/setup-notarytool.sh`).
 - Release config already has **Hardened Runtime on** (required for notarization).
   There is **no entitlements file**, so the app is non-sandboxed — correct for
-  this path. For a distribution archive, switch the signing identity from
-  "Apple Development" to **"Developer ID Application"** (Xcode automatic signing
-  does this when you pick Direct Distribution).
+  this path.
 
 ## Logs
 
@@ -72,7 +74,10 @@ level is hidden unless you pass `--level info`.
   the popup, right-click shows context menu), `FrontmostAppMonitor`, and
   `PopupController`. `presentPopup()` runs an async scrape via two stored tasks:
   `scrapeTask` (outer coordinator) and `detachedScrapeTask` (background `Task.detached`
-  AX work); both are cancelled before each new scrape to prevent concurrent traversals.
+  AX work). On each new `presentPopup()` call, `scrapeTask` is cancelled (so stale
+  results never reach the UI); `detachedScrapeTask` is *awaited* inside the new
+  `scrapeTask` to drain before a new traversal starts — ensuring at most one AX
+  traversal runs at any time despite the synchronous C IPC being uninterruptible.
   On first launch, `setupHotkey()` seeds ⌥⌘K as the factory default hotkey (guarded by
   `didSetDefaultHotkey` so the seed runs only once and never overwrites a deliberate
   "no hotkey" choice). The right-click context menu shows a disabled info row with the
@@ -123,8 +128,15 @@ level is hidden unless you pass `--level info`.
 ### Settings
 
 - `Settings/HotkeyManager.swift` (`@MainActor`) — singleton; registers a global
-  hotkey via Carbon `RegisterEventHotKey`. The C event-handler callback dispatches
+  hotkey via Carbon `RegisterEventHotKey`. `register(_:)` is `@discardableResult`
+  and returns `Bool` (`true` on `noErr`). The C event-handler callback dispatches
   to the main actor via `DispatchQueue.main.async`.
+- `Settings/ThemeSettings.swift` (`@Observable @MainActor`) — singleton managing
+  the key-badge accent colour. Stores a `customColor: NSColor?` in `UserDefaults`
+  (keyed archive); `nil` means follow `NSColor.controlAccentColor` (system accent).
+  `keyAccent: Color` is the computed property read by all popup and onboarding views.
+  `setCustomColor(_:)`, `enableCustom()`, and `resetToSystem()` are the mutation
+  points.
 - `Settings/GlobalHotkey.swift` — value type encoding a key code + Carbon modifier
   mask; `UserDefaults` persistence; `displayString` for UI. `defaultHotkey` (⌥⌘K) is
   the factory default applied on first launch; `didSetDefaultHotkey` flag in
@@ -178,7 +190,8 @@ level is hidden unless you pass `--level info`.
   - `FilterableShortcutsView` — header (app icon, name, count, modifier toggle buttons,
     auto-focused search field) + scrollable shortcut grid; auto-focuses the filter field
     on appear; scroll-follows the selected row. Modifier buttons (⌃ ⌥ ⇧ ⌘) are rendered
-    by `ModifierToggle` — filled with `Theme.keyAccent` when active, outlined when not.
+    by `ModifierToggle` — filled with `ThemeSettings.shared.keyAccent` when active,
+    outlined when not.
   - `MenuSectionView` — one section card: section header (`.isHeader` VoiceOver trait)
     + optional `SubGroupHeader` labels for named submenu groups + shortcut rows. In normal
     mode the card is absent when no rows pass the filter. In dim mode (`dimMode: true`)
@@ -199,8 +212,9 @@ level is hidden unless you pass `--level info`.
   (accounting for sub-group headers); `distribute(_:columns:)` partitions sections
   into at most `columns` contiguous slices using binary search on per-column capacity
   to minimise the tallest column.
-- `UI/Popup/Theme.swift` — colours, spacing constants. `fadedText` is the low-contrast
-  colour used for dimmed rows in dim mode (light grey / dark grey adaptive).
+- `UI/Popup/Theme.swift` — spacing constants and two semantic colours: `fadedText`
+  (low-contrast, used for dimmed rows; light grey / dark grey adaptive) and
+  `sectionHeaderFill`. The key-badge accent colour has moved to `ThemeSettings`.
 - `UI/Popup/PopupOnboardingView.swift` — onboarding screen shown before Accessibility
   is granted.
 
@@ -214,10 +228,13 @@ level is hidden unless you pass `--level info`.
   - `SettingsModel` (`@MainActor @Observable`) — hotkey recording state, UserDefaults
     persistence, `HotkeyManager` registration, login-item toggle, double-tap config
     (`doubleTapEnabled` + `doubleTapModifier`), `showAllMenuItems` (popup content mode),
-    and `debugLoggingEnabled` toggle (all persisted to `UserDefaults`).
-  - `SettingsView` — five sections: Global Shortcut (hotkey badge + record/change/clear),
-    Launch at Login toggle, Double-tap Trigger (enable toggle + modifier picker), Popup
-    Content ("Show all menu entries" toggle), Developer (debug logging toggle).
+    `debugLoggingEnabled` toggle, and `registrationFailed: Bool` (set when Carbon
+    rejects a hotkey; cleared on each new recording attempt and on clear).
+  - `SettingsView` — six sections: Global Shortcut (hotkey badge + record/change/clear;
+    shows "Shortcut already in use" when `registrationFailed`), Launch at Login toggle,
+    Double-tap Trigger (enable toggle + modifier picker), Popup Content ("Show all menu
+    entries" toggle), Appearance (colour picker + "Follow system accent colour" toggle,
+    writes to `ThemeSettings`), Developer (debug logging toggle).
   - `HotkeyBadge` — pill badge showing current hotkey or recording prompt; `@State`
     owns `SettingsModel`.
 
