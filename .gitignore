@@ -16,3 +16,6 @@ xcuserdata/
 
 # Local secrets
 scripts/.env
+
+# Internal working notes (not for repo)
+internal/
