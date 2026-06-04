@@ -24,6 +24,11 @@ final class PopupController {
     /// the Esc handlers so Esc clears a non-empty filter before dismissing.
     private var filterModel: PopupFilterModel?
 
+    /// Query from the most recently closed/replaced model and its app's bundle ID.
+    /// Restored when the same app reopens so the filter persists across toggles.
+    private var lastFilterQuery: String = ""
+    private var lastFilterBundleID: String? = nil
+
     // MARK: - Permission polling
 
     /// Fires every 0.5 s while the onboarding screen is visible and checks
@@ -102,6 +107,10 @@ final class PopupController {
 
     /// Builds, sizes, and centers the hosting view for `content` on `panel`.
     private func apply(_ content: PopupContent, to panel: PopupPanel) {
+        if let old = filterModel {
+            lastFilterQuery = old.query
+            lastFilterBundleID = old.app.bundleIdentifier
+        }
         filterModel = nil
         let (hosting, size) = makeContent(for: content)
         hosting.frame = CGRect(origin: .zero, size: size)
@@ -285,6 +294,9 @@ final class PopupController {
         let fitsWithoutScrolling = naturalHeight <= maxPanelHeight
         let model = PopupFilterModel(app: app, columns: displayColumns,
                                      fitsWithoutScrolling: fitsWithoutScrolling)
+        if let bid = app.bundleIdentifier, bid == lastFilterBundleID {
+            model.query = lastFilterQuery
+        }
         model.heldModifiers = Self.extractModifiers(from: NSEvent.modifierFlags)
         filterModel = model
 
