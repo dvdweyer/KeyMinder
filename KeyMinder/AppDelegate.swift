@@ -19,7 +19,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         setupHotkey()
         setupDoubleTap()
         setupSleepWakeObserver()
-        showWelcomePopupIfNeeded()
+        showFirstLaunchSettingsIfNeeded()
     }
 
     // MARK: - Global hotkey
@@ -240,19 +240,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     @objc private func openSettings() { SettingsWindowController.show() }
     @objc private func quit() { NSApp.terminate(nil) }
 
-    // MARK: - First-launch welcome
+    // MARK: - First-launch setup
 
-    /// On the very first launch, auto-presents the popup once so the user
-    /// discovers what KeyMinder does without having to find the status-bar icon
-    /// themselves. Subsequent launches are unaffected.
-    private func showWelcomePopupIfNeeded() {
+    /// On the very first launch, opens Settings so the user can configure their
+    /// preferred hotkey and double-tap trigger before using the app.
+    /// Subsequent launches are unaffected.
+    private func showFirstLaunchSettingsIfNeeded() {
         guard !UserDefaults.standard.didShowWelcome else { return }
         UserDefaults.standard.didShowWelcome = true
-        // Defer slightly so the status-bar item is visible before the popup
+        // Defer slightly so the status-bar item is visible before the window
         // appears (the run loop needs one pass to render the menu-bar icon).
         Task { @MainActor in
             try? await Task.sleep(for: .milliseconds(500))
-            presentPopup()
+            SettingsWindowController.show()
         }
     }
 }
