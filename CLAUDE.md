@@ -245,7 +245,8 @@ level is hidden unless you pass `--level info`.
 - `Assets.xcassets/` — `AppIcon.appiconset` (10 PNG slots, 16 pt → 512 pt @1×/@2×)
   and `AccentColor.colorset` (system accent colour).
 - `Localizable.xcstrings` — String Catalog; source language `en`; 50 keys translated
-  into de, nl, it, fr, es, zh-Hans. `LOCALIZATION_PREFERS_STRING_CATALOGS = YES` and
+  into ar, da, de, es, fi, fr, he, hi, it, ja, nb, nl, pt, sv, zh-Hans, zh-Hant.
+  `LOCALIZATION_PREFERS_STRING_CATALOGS = YES` and
   `SWIFT_EMIT_LOC_STRINGS = YES` are set, so building in Xcode automatically extracts
   new `Text("…")` literals into the catalog. AppKit strings (NSMenuItem titles,
   `NSWindow.title`) use `String(localized:)` explicitly.
