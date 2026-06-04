@@ -11,6 +11,10 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
 
     private static var instance: SettingsWindowController?
 
+    /// Called once when the window closes, then cleared. Set by AppDelegate before
+    /// the first-launch open so it can trigger the post-setup hint.
+    static var onFirstClose: (() -> Void)? = nil
+
     static func show() {
         if instance == nil { instance = SettingsWindowController() }
         NSApp.activate(ignoringOtherApps: true)
@@ -45,6 +49,8 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
 
     func windowWillClose(_ notification: Notification) {
         Self.instance = nil
+        Self.onFirstClose?()
+        Self.onFirstClose = nil
     }
 }
 

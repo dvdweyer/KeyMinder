@@ -1,4 +1,5 @@
 import AppKit
+import SwiftUI
 
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
@@ -6,6 +7,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     let frontmostMonitor = FrontmostAppMonitor()
     private let popup = PopupController()
     private var statusItem: NSStatusItem?
+    private var hintPopover: NSPopover?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
@@ -113,6 +115,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     /// Scrapes the frontmost app's menus off the main thread, then presents
     /// the popup with the result. The panel does not appear until data is ready.
     private func presentPopup() {
+        dismissHint()
         guard AccessibilityPermission.isTrusted else {
             popup.show(.needsPermission)
             return
@@ -171,6 +174,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     // MARK: - Context menu (right-click)
 
     private func showContextMenu() {
+        dismissHint()
         popup.hide()
         let menu = NSMenu()
         if !AccessibilityPermission.isTrusted {
@@ -244,16 +248,44 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     /// On the very first launch, opens Settings so the user can configure their
     /// preferred hotkey and double-tap trigger before using the app.
+    /// When Settings is closed, a popover hint appears on the menu-bar icon.
     /// Subsequent launches are unaffected.
     private func showFirstLaunchSettingsIfNeeded() {
         guard !UserDefaults.standard.didShowWelcome else { return }
         UserDefaults.standard.didShowWelcome = true
+        SettingsWindowController.onFirstClose = { [weak self] in
+            Task { @MainActor [weak self] in
+                try? await Task.sleep(for: .milliseconds(300))
+                self?.showMenuBarHint()
+            }
+        }
         // Defer slightly so the status-bar item is visible before the window
         // appears (the run loop needs one pass to render the menu-bar icon).
         Task { @MainActor in
             try? await Task.sleep(for: .milliseconds(500))
             SettingsWindowController.show()
         }
+    }
+
+    private func showMenuBarHint() {
+        guard let button = statusItem?.button else { return }
+        let hotkey = UserDefaults.standard.globalHotkey?.displayString
+        let popover = NSPopover()
+        popover.contentViewController = NSHostingController(
+            rootView: MenuBarHintView(hotkey: hotkey)
+        )
+        popover.behavior = .applicationDefined
+        popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
+        hintPopover = popover
+        Task { @MainActor [weak self] in
+            try? await Task.sleep(for: .seconds(5))
+            self?.dismissHint()
+        }
+    }
+
+    private func dismissHint() {
+        hintPopover?.close()
+        hintPopover = nil
     }
 }
 
@@ -266,5 +298,35 @@ private extension UserDefaults {
     var didShowWelcome: Bool {
         get { bool(forKey: Self.didShowWelcomeKey) }
         set { set(newValue, forKey: Self.didShowWelcomeKey) }
+    }
+}
+
+// MARK: - First-launch hint view
+
+private struct MenuBarHintView: View {
+    let hotkey: String?
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 12) {
+            Image(systemName: "keyboard")
+                .font(.system(size: 22))
+                .foregroundStyle(.secondary)
+                .padding(.top, 2)
+            VStack(alignment: .leading, spacing: 4) {
+                Text("KeyMinder is ready")
+                    .font(.headline)
+                if let hk = hotkey {
+                    Text("Press \(hk) to show shortcuts for the active app.")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                } else {
+                    Text("Click this icon to show shortcuts for the active app.")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+            }
+        }
+        .padding(16)
+        .frame(width: 280)
     }
 }
