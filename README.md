@@ -11,6 +11,12 @@ Instead of hunting through menus to find shortcuts, KeyMinder pops up a clean ov
 - macOS 14 (Sonoma) or later
 - Accessibility permission (required to read other apps' menus)
 
+## Languages
+
+KeyMinder is fully localized. The interface adapts automatically to your Mac's system language:
+
+Arabic, Danish, Dutch, Finnish, French, German, Hebrew, Hindi, Italian, Japanese, Norwegian, Portuguese, Simplified Chinese, Spanish, Swedish, Traditional Chinese, and English.
+
 ## Why not on the App Store?
 
 KeyMinder reads other apps' menus via the macOS Accessibility API. This is fundamentally incompatible with the App Store's mandatory App Sandbox — no entitlement exists to re-open this capability inside the sandbox. The same constraint applies to similar tools like KeyCue and Shortcat.
