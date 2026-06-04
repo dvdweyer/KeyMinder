@@ -205,7 +205,7 @@ level is hidden unless you pass `--level info`.
     text elements use `Theme.fadedText`, `clickable` is false (no tap, no hover, no
     `.isButton` trait), and the row is invisible to Tab navigation (it is absent from
     `visibleShortcuts`).
-  - `PopupMessageView` — centered icon-over-text placeholder for empty / no-app states.
+  - `PopupMessageView` — centered icon-over-text placeholder for empty / no-app states. `text` is `LocalizedStringKey` (not `String`) so string-literal call sites are localized automatically.
 - `UI/Popup/MenuLayout.swift` — layout constants (`columnWidth`, `columnSpacing`,
   `sectionSpacing`, `rowHeight`, `rowSpacing`, `headerHeight`, `subGroupHeaderHeight`)
   and two algorithms: `height(of:)` estimates a section card's rendered height
@@ -236,12 +236,19 @@ level is hidden unless you pass `--level info`.
     entries" toggle), Appearance (colour picker + "Follow system accent colour" toggle,
     writes to `ThemeSettings`), Developer (debug logging toggle).
   - `HotkeyBadge` — pill badge showing current hotkey or recording prompt; `@State`
-    owns `SettingsModel`.
+    owns `SettingsModel`. Uses a `@ViewBuilder` `labelText` property with explicit
+    `Text("Type your shortcut…")` / `Text(verbatim: hk.displayString)` / `Text("Not set")`
+    branches so the keyboard shortcut display string bypasses localization lookup.
 
 ### Assets & support
 
 - `Assets.xcassets/` — `AppIcon.appiconset` (10 PNG slots, 16 pt → 512 pt @1×/@2×)
   and `AccentColor.colorset` (system accent colour).
+- `Localizable.xcstrings` — String Catalog; source language `en`; 50 keys translated
+  into de, nl, it, fr, es, zh-Hans. `LOCALIZATION_PREFERS_STRING_CATALOGS = YES` and
+  `SWIFT_EMIT_LOC_STRINGS = YES` are set, so building in Xcode automatically extracts
+  new `Text("…")` literals into the catalog. AppKit strings (NSMenuItem titles,
+  `NSWindow.title`) use `String(localized:)` explicitly.
 - `Support/Logging.swift` — `os.Logger` subsystem/category constants.
 
 ### Tests
@@ -276,6 +283,11 @@ edit `project.pbxproj`.
   `DispatchQueue.main.async { }`. SwiftUI `.onAppear` closures are `@MainActor`,
   so a plain `Task` inherits that context.
 - Light/dark handled automatically via `.regularMaterial` + semantic colors.
+- **Localization**: SwiftUI `Text("…")`, `Button("…")`, `Toggle("…")`, etc. accept
+  `LocalizedStringKey` implicitly — no wrapping needed for new UI strings. AppKit
+  strings (NSMenuItem, NSWindow.title) need explicit `String(localized:)`. The build
+  auto-populates `Localizable.xcstrings`; add translations there for each new key.
+  Test a language with scheme → Options → App Language.
 - **Versioning: every commit bumps the patch (last) number** of
   `MARKETING_VERSION` and is tagged `vX.Y.Z`. Canonical sources of truth:
   `MARKETING_VERSION` in `KeyMinder.xcodeproj/project.pbxproj`, or
