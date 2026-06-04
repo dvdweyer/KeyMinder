@@ -307,8 +307,8 @@ private struct FilterableShortcutsView: View {
     private var countText: Text {
         let n = model.displayableCount
         if model.hasQuery || model.hasModifierFilter { return Text("\(model.matchCount) of \(n)") }
-        let label = model.showsAllItems ? "menu items" : "shortcuts"
-        return Text("\(n) \(label)")
+        if model.showsAllItems { return Text("\(n) menu items") }
+        return Text("\(n) shortcuts")
     }
 
     private var searchField: some View {
@@ -343,7 +343,7 @@ private struct FilterableShortcutsView: View {
 
 /// Centered icon-over-text placeholder used for empty / no-match / no-app states.
 struct PopupMessageView: View {
-    let text: String
+    let text: LocalizedStringKey
     let systemImage: String
 
     var body: some View {

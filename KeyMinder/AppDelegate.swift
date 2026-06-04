@@ -174,7 +174,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         popup.hide()
         let menu = NSMenu()
         if !AccessibilityPermission.isTrusted {
-            let grant = menu.addItem(withTitle: "Grant Accessibility Access…",
+            let grant = menu.addItem(withTitle: String(localized: "Grant Accessibility Access…"),
                                      action: #selector(grantAccess), keyEquivalent: "")
             grant.target = self
             menu.addItem(.separator())
@@ -183,25 +183,25 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // users learn the keyboard trigger without having to open Settings.
         let hotkeyTitle: String
         if let hk = UserDefaults.standard.globalHotkey {
-            hotkeyTitle = "Show Shortcuts  \(hk.displayString)"
+            hotkeyTitle = String(localized: "Show Shortcuts  \(hk.displayString)")
         } else {
-            hotkeyTitle = "Show Shortcuts  (unset)"
+            hotkeyTitle = String(localized: "Show Shortcuts  (unset)")
         }
         let hotkeyInfo = menu.addItem(withTitle: hotkeyTitle, action: nil, keyEquivalent: "")
         hotkeyInfo.isEnabled = false
 
-        let settings = menu.addItem(withTitle: "Settings…",
+        let settings = menu.addItem(withTitle: String(localized: "Settings…"),
                                     action: #selector(openSettings), keyEquivalent: ",")
         settings.target = self
         settings.keyEquivalentModifierMask = .command
 
-        let about = menu.addItem(withTitle: "About KeyMinder",
+        let about = menu.addItem(withTitle: String(localized: "About KeyMinder"),
                                  action: #selector(showAbout), keyEquivalent: "")
         about.target = self
 
         menu.addItem(.separator())
 
-        let quit = menu.addItem(withTitle: "Quit KeyMinder",
+        let quit = menu.addItem(withTitle: String(localized: "Quit KeyMinder"),
                                 action: #selector(quit), keyEquivalent: "q")
         quit.target = self
 

@@ -30,7 +30,7 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
             backing:     .buffered,
             defer:       false
         )
-        window.title = "KeyMinder Settings"
+        window.title = String(localized: "KeyMinder Settings")
         window.contentView = hosting
         window.center()
         // setFrameAutosaveName is intentionally omitted: the height is computed
@@ -304,11 +304,6 @@ struct HotkeyBadge: View {
     // observes accesses to model.isRecording and model.hotkey in body.
     var model: SettingsModel
 
-    private var label: String {
-        if model.isRecording { return "Type your shortcut…" }
-        return model.hotkey?.displayString ?? "Not set"
-    }
-
     private var badgeForeground: Color {
         if model.isRecording { return .orange }
         return model.hotkey != nil ? .primary : .secondary
@@ -323,7 +318,7 @@ struct HotkeyBadge: View {
     }
 
     var body: some View {
-        Text(label)
+        labelText
             .font(.system(.body, design: .monospaced).weight(.semibold))
             .foregroundStyle(badgeForeground)
             .padding(.horizontal, 10)
@@ -338,5 +333,16 @@ struct HotkeyBadge: View {
                     )
             )
             .animation(.easeInOut(duration: 0.15), value: model.isRecording)
+    }
+
+    @ViewBuilder
+    private var labelText: some View {
+        if model.isRecording {
+            Text("Type your shortcut…")
+        } else if let hk = model.hotkey {
+            Text(verbatim: hk.displayString)
+        } else {
+            Text("Not set")
+        }
     }
 }
