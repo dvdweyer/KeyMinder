@@ -23,6 +23,14 @@ final class PopupFilterModel {
         }
     }
 
+    var showOnlyFavourites: Bool = false {
+        didSet {
+            guard oldValue != showOnlyFavourites else { return }
+            selectedIndex = nil
+            updateVisibleShortcuts()
+        }
+    }
+
     /// Modifier glyphs toggled on via the UI buttons — persist until untoggled.
     private var toggledModifiers: Set<Character> = [] {
         didSet {
@@ -81,6 +89,7 @@ final class PopupFilterModel {
     }
 
     private func updateVisibleShortcuts() {
+        let appID = app.bundleIdentifier ?? app.appName
         var result: [Shortcut] = []
         for column in columns {
             for section in column {
@@ -88,13 +97,21 @@ final class PopupFilterModel {
                     for shortcut in group.shortcuts
                         where (!shortcut.keys.isEmpty || showsAllItems)
                             && shortcut.matches(activeQuery)
-                            && shortcut.matchesModifierFilter(modifierFilter) {
+                            && shortcut.matchesModifierFilter(modifierFilter)
+                            && (!showOnlyFavourites || FavouritesStore.shared.isFavourite(shortcut, appID: appID)) {
                         result.append(shortcut)
                     }
                 }
             }
         }
         visibleShortcuts = result
+    }
+
+    func toggleFavourite(_ shortcut: Shortcut) {
+        let appID = app.bundleIdentifier ?? app.appName
+        FavouritesStore.shared.toggle(shortcut, appID: appID)
+        if showOnlyFavourites { selectedIndex = nil }
+        updateVisibleShortcuts()
     }
 
     func toggleModifier(_ mod: Character) {
@@ -129,20 +146,28 @@ final class PopupFilterModel {
         app.includesItemsWithoutShortcuts && activeQuery.count >= 2
     }
 
-    /// Count of items currently displayable (passing the keys/showsAllItems gate).
-    /// Used as both the no-query header count and the "of N" filter denominator,
-    /// so the number always reflects what the user can actually see.
+    /// Count of items currently displayable (passing the keys/showsAllItems gate and
+    /// the favourites filter when active).
     var displayableCount: Int {
-        app.sections.reduce(0) { $0 + $1.shortcuts.filter { !$0.keys.isEmpty || showsAllItems }.count }
+        let appID = app.bundleIdentifier ?? app.appName
+        return app.sections.reduce(0) { total, section in
+            total + section.shortcuts.filter {
+                (!$0.keys.isEmpty || showsAllItems) &&
+                (!showOnlyFavourites || FavouritesStore.shared.isFavourite($0, appID: appID))
+            }.count
+        }
     }
 
-    /// Count of displayable items matching all active filters (text query + modifier filter).
+    /// Count of displayable items matching all active filters (text query + modifier filter
+    /// + favourites filter when active).
     var matchCount: Int {
-        app.sections.reduce(0) { total, section in
+        let appID = app.bundleIdentifier ?? app.appName
+        return app.sections.reduce(0) { total, section in
             total + section.shortcuts.filter {
                 (!$0.keys.isEmpty || showsAllItems)
                     && $0.matches(activeQuery)
                     && $0.matchesModifierFilter(modifierFilter)
+                    && (!showOnlyFavourites || FavouritesStore.shared.isFavourite($0, appID: appID))
             }.count
         }
     }
@@ -260,9 +285,12 @@ private struct FilterableShortcutsView: View {
                         MenuSectionView(section: section, query: model.activeQuery,
                                         showsAllItems: model.showsAllItems,
                                         modifierFilter: model.modifierFilter,
+                                        showOnlyFavourites: model.showOnlyFavourites,
+                                        appID: model.app.bundleIdentifier ?? model.app.appName,
                                         dimMode: model.fitsWithoutScrolling,
                                         selectedShortcutID: model.selectedShortcut?.id,
-                                        onActivate: onActivate)
+                                        onActivate: onActivate,
+                                        onToggleFavourite: { model.toggleFavourite($0) })
                     }
                 }
                 .frame(width: MenuLayout.columnWidth, alignment: .top)
@@ -293,6 +321,7 @@ private struct FilterableShortcutsView: View {
         let mods: [(glyph: String, label: String)] = [
             ("⌃", "Control"), ("⌥", "Option"), ("⇧", "Shift"), ("⌘", "Command"),
         ]
+        let appID = model.app.bundleIdentifier ?? model.app.appName
         return HStack(spacing: 3) {
             ForEach(mods, id: \.glyph) { item in
                 let ch = item.glyph.first!
@@ -300,6 +329,11 @@ private struct FilterableShortcutsView: View {
                     model.toggleModifier(ch)
                 }
                 .accessibilityLabel(item.label)
+            }
+            if FavouritesStore.shared.hasFavourites(for: appID) {
+                FavouritesToggle(isActive: model.showOnlyFavourites) {
+                    model.showOnlyFavourites.toggle()
+                }
             }
         }
     }
@@ -373,10 +407,15 @@ struct MenuSectionView: View {
     var showsAllItems: Bool = false
     /// Exact modifier set to match; empty means no modifier filter.
     var modifierFilter: Set<Character> = []
+    /// When true, only pinned shortcuts are shown.
+    var showOnlyFavourites: Bool = false
+    /// App identifier for favourites lookup. Empty string disables star buttons.
+    var appID: String = ""
     /// When true, non-matching rows are dimmed instead of hidden (stable layout).
     var dimMode: Bool = false
     var selectedShortcutID: UUID? = nil
     var onActivate: (Shortcut) -> Void = { _ in }
+    var onToggleFavourite: (Shortcut) -> Void = { _ in }
 
     private func passesGate(_ shortcut: Shortcut) -> Bool {
         !shortcut.keys.isEmpty || showsAllItems
@@ -388,7 +427,9 @@ struct MenuSectionView: View {
 
     /// Whether a row should be rendered at all.
     private func isShown(_ shortcut: Shortcut) -> Bool {
-        dimMode ? passesGate(shortcut) : (passesGate(shortcut) && matchesFilter(shortcut))
+        guard passesGate(shortcut) else { return false }
+        if showOnlyFavourites && !FavouritesStore.shared.isFavourite(shortcut, appID: appID) { return false }
+        return dimMode ? true : matchesFilter(shortcut)
     }
 
     /// Whether a row should be dimmed (dim mode only; always false in normal mode).
@@ -425,9 +466,11 @@ struct MenuSectionView: View {
                         ForEach(group.shortcuts) { shortcut in
                             if isShown(shortcut) {
                                 ShortcutRow(shortcut: shortcut,
+                                            appID: appID,
                                             selected: selectedShortcutID == shortcut.id,
                                             dimmed: isDimmed(shortcut),
-                                            onActivate: onActivate)
+                                            onActivate: onActivate,
+                                            onToggleFavourite: { onToggleFavourite(shortcut) })
                             }
                         }
                     }
@@ -463,14 +506,21 @@ private struct SubGroupHeader: View {
 /// `PopupController` can dismiss the popup and execute the shortcut.
 struct ShortcutRow: View {
     let shortcut: Shortcut
+    /// App identifier used to check and toggle favourite status.
+    var appID: String = ""
     var selected: Bool = false
     /// True when the row is shown but does not match the active filter (dim mode).
     var dimmed: Bool = false
     var onActivate: (Shortcut) -> Void = { _ in }
+    var onToggleFavourite: () -> Void = {}
 
     @State private var hovered = false
 
     private var clickable: Bool { shortcut.axElement != nil && !dimmed }
+    private var isFavourite: Bool {
+        !appID.isEmpty && FavouritesStore.shared.isFavourite(shortcut, appID: appID)
+    }
+    private var showStar: Bool { !dimmed && !appID.isEmpty && (hovered || isFavourite) }
 
     var body: some View {
         HStack(spacing: 8) {
@@ -485,6 +535,15 @@ struct ShortcutRow: View {
                 .truncationMode(.tail)
                 .help(shortcut.title)
             Spacer(minLength: 0)
+            Button(action: onToggleFavourite) {
+                Image(systemName: isFavourite ? "star.fill" : "star")
+                    .font(.system(size: 10))
+                    .foregroundStyle(isFavourite ? ThemeSettings.shared.keyAccent : Color.secondary.opacity(0.5))
+            }
+            .buttonStyle(.plain)
+            .opacity(showStar ? 1 : 0)
+            .allowsHitTesting(showStar)
+            .accessibilityHidden(true)
         }
         .frame(height: MenuLayout.rowHeight)
         .background(
@@ -494,7 +553,7 @@ struct ShortcutRow: View {
                     Color.primary.opacity(clickable && hovered ? 0.07 : 0)
                 )
         )
-        .onHover { if clickable { hovered = $0 } }
+        .onHover { hovered = $0 }
         .onTapGesture { if clickable { onActivate(shortcut) } }
         // Collapse the two Text children into one VoiceOver element so the
         // screen reader speaks "New Conversation, Shift Command N" rather than
@@ -502,6 +561,9 @@ struct ShortcutRow: View {
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("\(shortcut.title), \(spokenKeys(shortcut.keys))")
         .accessibilityAddTraits(clickable ? .isButton : [])
+        .accessibilityAction(named: Text(isFavourite ? "Remove from favourites" : "Add to favourites")) {
+            if !dimmed && !appID.isEmpty { onToggleFavourite() }
+        }
     }
 }
 
@@ -526,6 +588,32 @@ private struct ModifierToggle: View {
                 )
         }
         .buttonStyle(.plain)
+        .accessibilityAddTraits(isActive ? .isSelected : [])
+        .accessibilityValue(isActive ? "on" : "off")
+    }
+}
+
+// MARK: - Favourites filter toggle
+
+private struct FavouritesToggle: View {
+    let isActive: Bool
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Image(systemName: isActive ? "star.fill" : "star")
+                .font(.system(size: 11, weight: .medium))
+                .foregroundStyle(isActive ? Color.white : ThemeSettings.shared.keyAccent)
+                .frame(width: 22, height: 22)
+                .background(isActive ? ThemeSettings.shared.keyAccent : Color.clear,
+                            in: RoundedRectangle(cornerRadius: 4))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 4)
+                        .strokeBorder(ThemeSettings.shared.keyAccent.opacity(isActive ? 1.0 : 0.4), lineWidth: 1)
+                )
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("Favourites")
         .accessibilityAddTraits(isActive ? .isSelected : [])
         .accessibilityValue(isActive ? "on" : "off")
     }

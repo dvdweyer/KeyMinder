@@ -471,6 +471,10 @@ final class PopupController {
             filterModel.clearToggledModifiers()
             return true
         }
+        if let filterModel, filterModel.showOnlyFavourites {
+            filterModel.showOnlyFavourites = false
+            return true
+        }
         hide()
         return false
     }
