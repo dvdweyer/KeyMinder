@@ -1,8 +1,11 @@
 #!/bin/bash
 # Full release pipeline: archive → sign (Developer ID) → notarize → staple → zip
-# → copy to local website → deploy via rsync.
+# → copy to local website → deploy via rsync → install to /Applications.
 #
-# Prerequisites:
+# Usage: release.sh [--local-only]
+#   --local-only  Debug build + install to /Applications only; skips notarize/rsync.
+#
+# Prerequisites (full pipeline):
 #   - Copy scripts/.env.example to scripts/.env and fill in TEAM_ID.
 #   - Run scripts/setup-notarytool.sh once to store keychain credentials.
 #   - Xcode must be installed at /Applications/Xcode.app.
@@ -13,6 +16,44 @@ export DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+
+# ── Flags ─────────────────────────────────────────────────────────────────────
+LOCAL_ONLY=false
+for arg in "$@"; do
+    case "$arg" in
+        --local-only) LOCAL_ONLY=true ;;
+        *) echo "error: unknown argument: $arg" >&2; exit 1 ;;
+    esac
+done
+
+# ── Local-only fast path ───────────────────────────────────────────────────────
+if [[ "$LOCAL_ONLY" == true ]]; then
+    echo "==> KeyMinder — local Debug install"
+    echo ""
+    _BUILD_DIR="/tmp/KeyMinder-debug-$$"
+    mkdir -p "$_BUILD_DIR"
+
+    echo "--- Building (Debug)…"
+    xcodebuild build \
+        -project "$REPO_DIR/KeyMinder.xcodeproj" \
+        -scheme KeyMinder \
+        -configuration Debug \
+        -derivedDataPath "$_BUILD_DIR" \
+        -allowProvisioningUpdates
+
+    echo ""
+    echo "--- Installing to /Applications…"
+    pkill -x KeyMinder 2>/dev/null || true
+    sleep 0.5
+    cp -R "$_BUILD_DIR/Build/Products/Debug/KeyMinder.app" /Applications/
+    xattr -cr /Applications/KeyMinder.app
+    rm -rf "$_BUILD_DIR"
+
+    echo ""
+    echo "==> Done — KeyMinder (Debug) installed to /Applications."
+    exit 0
+fi
+
 SITE_DIR="$HOME/Public/Sites/donald.van-de-weyer.net/keyminder"
 KEYMINDER_SITE_DIR="$HOME/Public/Sites/keyminder.app"
 DEPLOY_SH="$HOME/Public/Sites/deploy.sh"
@@ -128,6 +169,14 @@ done
 
 echo "--- Deploying via rsync…"
 (cd "$(dirname "$DEPLOY_SH")" && bash "$(basename "$DEPLOY_SH")")
+
+# ── Local install ─────────────────────────────────────────────────────────────
+echo ""
+echo "--- Installing to /Applications…"
+pkill -x KeyMinder 2>/dev/null || true
+sleep 0.5
+cp -R "$APP" /Applications/
+xattr -cr /Applications/KeyMinder.app
 
 # ── Cleanup ───────────────────────────────────────────────────────────────────
 rm -rf "$BUILD_DIR"
