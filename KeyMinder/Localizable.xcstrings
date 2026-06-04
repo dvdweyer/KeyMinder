@@ -47,6 +47,12 @@
             "value": "%1$@ %2$@"
           }
         },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ %2$@"
+          }
+        },
         "hi": {
           "stringUnit": {
             "state": "translated",
@@ -144,6 +150,12 @@
           }
         },
         "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, %2$@"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "%1$@, %2$@"
@@ -358,6 +370,36 @@
             }
           }
         },
+        "he": {
+          "variations": {
+            "plural": {
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld ערכי תפריט"
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld ערך תפריט"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld ערכי תפריט"
+                }
+              },
+              "two": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld ערכי תפריט"
+                }
+              }
+            }
+          }
+        },
         "hi": {
           "variations": {
             "plural": {
@@ -541,6 +583,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%lld sur %lld"
+          }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld מתוך %lld"
           }
         },
         "hi": {
@@ -752,6 +800,36 @@
             }
           }
         },
+        "he": {
+          "variations": {
+            "plural": {
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld קיצורי דרך"
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld קיצור דרך"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld קיצורי דרך"
+                }
+              },
+              "two": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld קיצורי דרך"
+                }
+              }
+            }
+          }
+        },
         "hi": {
           "variations": {
             "plural": {
@@ -937,6 +1015,12 @@
             "value": "À propos de KeyMinder"
           }
         },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "אודות KeyMinder"
+          }
+        },
         "hi": {
           "stringUnit": {
             "state": "translated",
@@ -1030,6 +1114,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Apparence"
+          }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "מראה"
           }
         },
         "hi": {
@@ -1127,6 +1217,12 @@
             "value": "Annuler"
           }
         },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ביטול"
+          }
+        },
         "hi": {
           "stringUnit": {
             "state": "translated",
@@ -1220,6 +1316,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Modifier…"
+          }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "שינוי…"
           }
         },
         "hi": {
@@ -1317,6 +1419,12 @@
             "value": "Effacer"
           }
         },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "נקה"
+          }
+        },
         "hi": {
           "stringUnit": {
             "state": "translated",
@@ -1412,6 +1520,12 @@
             "value": "Effacer le filtre"
           }
         },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "נקה מסנן"
+          }
+        },
         "hi": {
           "stringUnit": {
             "state": "translated",
@@ -1505,6 +1619,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Couleur des glyphes de raccourcis dans la fenêtre."
+          }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הצבע לסמלי קיצורי המקלדת בחלון הקופץ."
           }
         },
         "hi": {
@@ -1603,6 +1723,12 @@
             "value": "Commande"
           }
         },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "פקודה"
+          }
+        },
         "hi": {
           "stringUnit": {
             "state": "translated",
@@ -1697,6 +1823,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Contrôle"
+          }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Control"
           }
         },
         "hi": {
@@ -1794,6 +1926,12 @@
             "value": "Développeur"
           }
         },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "מפתח"
+          }
+        },
         "hi": {
           "stringUnit": {
             "state": "translated",
@@ -1887,6 +2025,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Déclencheur double appui"
+          }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "טריגר הקשה כפולה"
           }
         },
         "hi": {
@@ -1984,6 +2128,12 @@
             "value": "Activer"
           }
         },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הפעל"
+          }
+        },
         "hi": {
           "stringUnit": {
             "state": "translated",
@@ -2077,6 +2227,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Activer la journalisation de débogage"
+          }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הפעל רישום ניפוי שגיאות"
           }
         },
         "hi": {
@@ -2174,6 +2330,12 @@
             "value": "Filtrer"
           }
         },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "סנן"
+          }
+        },
         "hi": {
           "stringUnit": {
             "state": "translated",
@@ -2267,6 +2429,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Suivre la couleur d'accentuation du système"
+          }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "עקוב אחר צבע ההדגשה של המערכת"
           }
         },
         "hi": {
@@ -2364,6 +2532,12 @@
             "value": "Raccourci global"
           }
         },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "קיצור דרך גלובלי"
+          }
+        },
         "hi": {
           "stringUnit": {
             "state": "translated",
@@ -2457,6 +2631,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Accorder l'accès à l'accessibilité…"
+          }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הענק גישה לנגישות…"
           }
         },
         "hi": {
@@ -2554,6 +2734,12 @@
             "value": "Accorder l'accès…"
           }
         },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הענק גישה…"
+          }
+        },
         "hi": {
           "stringUnit": {
             "state": "translated",
@@ -2647,6 +2833,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Couleur de touche"
+          }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "צבע מקש"
           }
         },
         "hi": {
@@ -2744,6 +2936,12 @@
             "value": "Réglages KeyMinder"
           }
         },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הגדרות KeyMinder"
+          }
+        },
         "hi": {
           "stringUnit": {
             "state": "translated",
@@ -2837,6 +3035,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "KeyMinder a besoin de l'accès à l'accessibilité"
+          }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "KeyMinder זקוק לגישה לנגישות"
           }
         },
         "hi": {
@@ -2935,6 +3139,12 @@
             "value": "KeyMinder lit les menus de l'application active pour afficher ses raccourcis. Accordez l'accès dans Confidentialité et sécurité — la fenêtre se mettra à jour automatiquement."
           }
         },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "KeyMinder קורא את התפריטים של היישום הפעיל כדי להציג את קיצורי המקלדת שלו. הענק גישה בפרטיות ואבטחה — החלון הקופץ יתעדכן אוטומטית."
+          }
+        },
         "hi": {
           "stringUnit": {
             "state": "translated",
@@ -3028,6 +3238,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Lancer à la connexion"
+          }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הפעל בכניסה"
           }
         },
         "hi": {
@@ -3125,6 +3341,12 @@
             "value": "Modificateur"
           }
         },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "מקש עיצוב"
+          }
+        },
         "hi": {
           "stringUnit": {
             "state": "translated",
@@ -3218,6 +3440,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Aucune application active"
+          }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "אין יישום פעיל"
           }
         },
         "hi": {
@@ -3315,6 +3543,12 @@
             "value": "Aucun raccourci trouvé pour %@"
           }
         },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "לא נמצאו קיצורי מקלדת עבור %@"
+          }
+        },
         "hi": {
           "stringUnit": {
             "state": "translated",
@@ -3408,6 +3642,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Non défini"
+          }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "לא הוגדר"
           }
         },
         "hi": {
@@ -3505,6 +3745,12 @@
             "value": "Ouvrez KeyMinder depuis n'importe quelle application pour voir les raccourcis actifs."
           }
         },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "פתח את KeyMinder מכל יישום כדי לראות את קיצורי המקלדת הפעילים."
+          }
+        },
         "hi": {
           "stringUnit": {
             "state": "translated",
@@ -3600,6 +3846,12 @@
             "value": "Ouvrir Réglages…"
           }
         },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "פתח הגדרות…"
+          }
+        },
         "hi": {
           "stringUnit": {
             "state": "translated",
@@ -3691,6 +3943,12 @@
           }
         },
         "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Option"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Option"
@@ -3791,6 +4049,12 @@
             "value": "Contenu de la fenêtre"
           }
         },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "תוכן החלון הקופץ"
+          }
+        },
         "hi": {
           "stringUnit": {
             "state": "translated",
@@ -3884,6 +4148,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Quitter KeyMinder"
+          }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "צא מ-KeyMinder"
           }
         },
         "hi": {
@@ -3981,6 +4251,12 @@
             "value": "Enregistrer le raccourci…"
           }
         },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הקלט קיצור…"
+          }
+        },
         "hi": {
           "stringUnit": {
             "state": "translated",
@@ -4076,6 +4352,12 @@
             "value": "Réinitialiser"
           }
         },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "איפוס"
+          }
+        },
         "hi": {
           "stringUnit": {
             "state": "translated",
@@ -4169,6 +4451,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Réglages…"
+          }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הגדרות…"
           }
         },
         "hi": {
@@ -4267,6 +4555,12 @@
             "value": "Maj"
           }
         },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shift"
+          }
+        },
         "hi": {
           "stringUnit": {
             "state": "translated",
@@ -4360,6 +4654,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Raccourci déjà utilisé"
+          }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "קיצור הדרך כבר בשימוש"
           }
         },
         "hi": {
@@ -4457,6 +4757,12 @@
             "value": "Affichez KeyMinder en appuyant rapidement et en relâchant une touche modificatrice deux fois."
           }
         },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הצג את KeyMinder על ידי לחיצה מהירה ושחרור מקש עיצוב פעמיים."
+          }
+        },
         "hi": {
           "stringUnit": {
             "state": "translated",
@@ -4550,6 +4856,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Afficher les raccourcis  %@"
+          }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הצג קיצורי דרך  %@"
           }
         },
         "hi": {
@@ -4647,6 +4959,12 @@
             "value": "Afficher les raccourcis  (non défini)"
           }
         },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הצג קיצורי דרך  (לא הוגדר)"
+          }
+        },
         "hi": {
           "stringUnit": {
             "state": "translated",
@@ -4740,6 +5058,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Afficher toutes les entrées de menu"
+          }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הצג את כל ערכי התפריט"
           }
         },
         "hi": {
@@ -4837,6 +5161,12 @@
             "value": "Afficher toutes les entrées de menu, pas seulement celles avec des raccourcis, pour découvrir les actions disponibles."
           }
         },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הצג את כל ערכי התפריט, לא רק את אלה עם קיצורי מקלדת, כדי לגלות פעולות זמינות."
+          }
+        },
         "hi": {
           "stringUnit": {
             "state": "translated",
@@ -4930,6 +5260,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tapez votre raccourci…"
+          }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הקלד את קיצור הדרך שלך…"
           }
         },
         "hi": {
@@ -5034,6 +5370,12 @@
             "value": "désactivé"
           }
         },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "כבוי"
+          }
+        },
         "hi": {
           "stringUnit": {
             "state": "translated",
@@ -5134,6 +5476,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "activé"
+          }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "פעיל"
           }
         },
         "hi": {
