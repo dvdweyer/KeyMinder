@@ -229,7 +229,8 @@ struct PopupRootView: View {
     @ViewBuilder
     private func shortcutsView(_ app: AppShortcuts) -> some View {
         if let model, !app.isEmpty {
-            FilterableShortcutsView(model: model, scrolls: scrolls, onActivate: onActivate)
+            FilterableShortcutsView(model: model, scrolls: scrolls, onActivate: onActivate,
+                                    onOpenSettings: onOpenSettings)
         } else {
             VStack(alignment: .leading, spacing: 10) {
                 HStack(spacing: 8) {
@@ -256,6 +257,7 @@ private struct FilterableShortcutsView: View {
     @Bindable var model: PopupFilterModel
     let scrolls: Bool
     let onActivate: (Shortcut) -> Void
+    var onOpenSettings: () -> Void = {}
     @FocusState private var searchFocused: Bool
 
     var body: some View {
@@ -324,9 +326,21 @@ private struct FilterableShortcutsView: View {
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
             Spacer(minLength: 12)
+            settingsButton
             modifierButtons
             searchField
         }
+    }
+
+    private var settingsButton: some View {
+        Button(action: onOpenSettings) {
+            Image(systemName: "gearshape")
+                .font(.system(size: 11, weight: .medium))
+                .foregroundStyle(.secondary)
+                .frame(width: 22, height: 22)
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("Settings")
     }
 
     private var modifierButtons: some View {
