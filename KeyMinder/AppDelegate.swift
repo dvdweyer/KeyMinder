@@ -11,7 +11,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
-        popup.onGrant = { AccessibilityPermission.requestAccess() }
+        popup.onGrant = { [weak self] in
+            self?.popup.hide()
+            AccessibilityPermission.requestAccess()
+        }
         popup.onOpenSettings = { [weak self] in
             self?.popup.hide()
             SettingsWindowController.show()

@@ -29,15 +29,20 @@ if pgrep -x "KeyMinder" > /dev/null 2>&1; then
 fi
 
 if [[ "${1:-}" == "--deep" ]]; then
-    echo "==> Deep reset: deleting all preferences for $BUNDLE_ID…"
+    echo "==> Deep reset: deleting all preferences for ${BUNDLE_ID}..."
     defaults delete "$BUNDLE_ID" 2>/dev/null || true
 else
-    echo "==> Resetting first-launch flags…"
+    echo "==> Resetting first-launch flags..."
     # didShowWelcome — controls whether Settings opens on launch
-    defaults delete "$BUNDLE_ID" didShowWelcome      2>/dev/null || true
+    defaults delete "$BUNDLE_ID" didShowWelcome           2>/dev/null || true
     # didSetDefaultHotkey + globalHotkey — triggers re-seeding of ⌥⌘K
-    defaults delete "$BUNDLE_ID" didSetDefaultHotkey 2>/dev/null || true
-    defaults delete "$BUNDLE_ID" globalHotkey        2>/dev/null || true
+    defaults delete "$BUNDLE_ID" didSetDefaultHotkey      2>/dev/null || true
+    defaults delete "$BUNDLE_ID" globalHotkey             2>/dev/null || true
+    # Ignore-list state — reset so defaults (disabled, not seeded) are applied fresh
+    defaults delete "$BUNDLE_ID" ignoreListEnabled        2>/dev/null || true
+    defaults delete "$BUNDLE_ID" ignoreListShowWhenFiltering 2>/dev/null || true
+    defaults delete "$BUNDLE_ID" ignoreList               2>/dev/null || true
+    defaults delete "$BUNDLE_ID" didSeedIgnoreList        2>/dev/null || true
 fi
 
 echo "==> Launching $APP_PATH…"

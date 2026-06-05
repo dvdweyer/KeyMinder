@@ -391,7 +391,7 @@ final class PopupController {
 
         // Key handling when the panel itself is key (e.g. the filter field has focus).
         // Esc clears the filter or dismisses; Tab advances/reverses the row selection;
-        // Return activates the selected shortcut; ⌘D toggles the selected row's star.
+        // Return activates the selected shortcut.
         if let localKey = NSEvent.addLocalMonitorForEvents(
             matching: [.keyDown],
             handler: { [weak self] event in
@@ -407,12 +407,9 @@ final class PopupController {
                         self.filterModel?.selectNext()
                     }
                     return nil
-                case 2 where event.modifierFlags.contains(.command): // ⌘D — toggle favourite
-                    if let shortcut = self.filterModel?.selectedShortcut {
-                        self.filterModel?.toggleFavourite(shortcut)
-                        return nil
-                    }
-                    return event
+                // case 2 where event.modifierFlags.contains(.command): // ⌘D — toggle favourite
+                //     Disabled: ⌘ activates the command-key modifier filter before D is read.
+                //     Planned replacement: long-press F (no modifier).
                 case 36, 76: // Return / numpad Enter
                     if let shortcut = self.filterModel?.selectedShortcut {
                         self.activate(shortcut)

@@ -180,20 +180,25 @@ level is hidden unless you pass `--level info`.
   screen containing the mouse cursor (primary), then `NSScreen.main`, then the first
   screen — nil-safe to survive display-reconfiguration races. The panel is always
   centered on that screen. Esc clears a non-empty text filter, then the toggled modifier
-  filter, then the favourites filter, then dismisses. A local key monitor handles Tab
-  (advance row selection) / Shift-Tab (reverse) / Return or numpad Enter (activate
-  selected shortcut) / ⌘D (toggle favourite for the Tab-selected row). Permission-poll
-  timer fires `onPermissionGranted` the moment `AXIsProcessTrusted()` becomes true.
+  filter, then the favourites filter, then dismisses — each press peels back one layer.
+  A local key monitor handles Tab (advance row selection) / Shift-Tab (reverse) / Return
+  or numpad Enter (activate selected shortcut). Permission-poll timer fires
+  `onPermissionGranted` the moment `AXIsProcessTrusted()` becomes true.
   Panel is released (`self.panel = nil`) on hide to free the SwiftUI tree while idle.
   Two `flagsChanged` event monitors (global for when another app is frontmost, local for
   when the popup panel is key) call `handleFlagsChanged(_:)` which writes the currently
   held modifier glyphs to `filterModel.heldModifiers` via `extractModifiers(from:)`.
   On popup open, `NSEvent.modifierFlags` seeds `heldModifiers` so the filter is
-  immediately correct if modifier keys are already held. `measuredContent` computes
+  immediately correct if modifier keys are already held — as a result, triggering the
+  popup via a modifier-key double-tap opens it with that modifier filter active for as
+  long as the key is held. `measuredContent` computes
   `fitsWithoutScrolling = naturalHeight ≤ maxPanelHeight` and passes it to the model.
-  `savedQuery` and `lastAppBundleID` persist the search query in memory across popup
-  toggles for the same app; the query resets when the frontmost app changes.
-  `onOpenSettings` closure is set by `AppDelegate` to hide the popup then open Settings.
+  `savedQuery` and `lastAppBundleID` persist the search query across popup toggles for
+  the same app (closing and reopening restores the typed text); the query resets when
+  the frontmost app changes. `onOpenSettings` closure is set by `AppDelegate` to hide
+  the popup then open Settings. `onGrant` (the onboarding "Grant Access…" button) hides
+  the popup before invoking `AccessibilityPermission.requestAccess()` so the system TCC
+  dialog is not obscured by the popup panel.
 - `UI/Popup/PopupPanel.swift` — non-activating `NSPanel` subclass.
 - `UI/Popup/PopupRootView.swift` — contains all popup SwiftUI types:
   - `PopupFilterModel` (`@Observable @MainActor`) — owned by `PopupController`;
