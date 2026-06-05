@@ -12,7 +12,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
         popup.onGrant = { AccessibilityPermission.requestAccess() }
-        popup.onOpenSettings = { AccessibilityPermission.openSettings() }
+        popup.onOpenSettings = { SettingsWindowController.show() }
         popup.onPermissionGranted = { [weak self] in
             self?.setupDoubleTap()
             self?.presentPopup()
