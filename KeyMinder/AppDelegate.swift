@@ -132,7 +132,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let bundleID = app.bundleIdentifier
         let icon = app.icon
         let includeAll = UserDefaults.standard.showAllMenuItems
-        let ignoredTitles = IgnoreListStore.shared.ignoredTitles(for: bundleID)
+        let ignoreStore = IgnoreListStore.shared
+        let ignoredTitles: Set<String> = (ignoreStore.isEnabled && !ignoreStore.showWhenFiltering)
+            ? ignoreStore.ignoredTitles(for: bundleID)
+            : []
 
         // Cancel the outer coordinator so a stale result never reaches the UI.
         scrapeTask?.cancel()

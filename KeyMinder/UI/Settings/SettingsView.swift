@@ -307,7 +307,7 @@ private struct AdvancedSettingsView: View {
     @State private var showAddGlobalSheet = false
     @State private var showAddAppSheet = false
 
-    private var store: IgnoreListStore { IgnoreListStore.shared }
+    @Bindable private var store = IgnoreListStore.shared
 
     var body: some View {
         ScrollView {
@@ -327,6 +327,16 @@ private struct AdvancedSettingsView: View {
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
+
+                Toggle("Hide ignored commands", isOn: $store.isEnabled)
+
+                if store.isEnabled {
+                    Toggle("Show when filtering", isOn: $store.showWhenFiltering)
+                        .foregroundStyle(.secondary)
+                        .padding(.leading, 16)
+                }
+
+                Divider()
 
                 // Global (all apps) rules
                 Text("All Apps")

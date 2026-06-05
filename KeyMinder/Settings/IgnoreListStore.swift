@@ -8,6 +8,12 @@ final class IgnoreListStore {
     private static let defaultsKey = "ignoreList"
     private static let didSeedKey  = "didSeedIgnoreList"
 
+    var isEnabled: Bool = false {
+        didSet { UserDefaults.standard.set(isEnabled, forKey: "ignoreListEnabled") }
+    }
+    var showWhenFiltering: Bool = false {
+        didSet { UserDefaults.standard.set(showWhenFiltering, forKey: "ignoreListShowWhenFiltering") }
+    }
     var globalTitles: [String]
     var perApp: [String: [String]]
     var appDisplayNames: [String: String]
@@ -17,6 +23,9 @@ final class IgnoreListStore {
     }
 
     private init() {
+        isEnabled        = UserDefaults.standard.bool(forKey: "ignoreListEnabled")
+        showWhenFiltering = UserDefaults.standard.bool(forKey: "ignoreListShowWhenFiltering")
+
         if let data = UserDefaults.standard.data(forKey: Self.defaultsKey),
            let stored = try? JSONDecoder().decode(IgnoreData.self, from: data) {
             globalTitles    = stored.globalTitles

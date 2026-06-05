@@ -90,6 +90,12 @@ final class PopupFilterModel {
 
     private func updateVisibleShortcuts() {
         let appID = app.bundleIdentifier ?? app.appName
+        let ignoreStore = IgnoreListStore.shared
+        // When showWhenFiltering is on the scraper returned all items; hide ignored ones
+        // until the user types a query (then they're intentionally revealed).
+        let hiddenTitles: Set<String> = (ignoreStore.isEnabled && ignoreStore.showWhenFiltering && activeQuery.isEmpty)
+            ? ignoreStore.ignoredTitles(for: app.bundleIdentifier)
+            : []
         var result: [Shortcut] = []
         for column in columns {
             for section in column {
@@ -98,7 +104,8 @@ final class PopupFilterModel {
                         where (!shortcut.keys.isEmpty || showsAllItems)
                             && shortcut.matches(activeQuery)
                             && shortcut.matchesModifierFilter(modifierFilter)
-                            && (!showOnlyFavourites || FavouritesStore.shared.isFavourite(shortcut, appID: appID)) {
+                            && (!showOnlyFavourites || FavouritesStore.shared.isFavourite(shortcut, appID: appID))
+                            && (hiddenTitles.isEmpty || !hiddenTitles.contains(shortcut.title.localizedLowercase)) {
                         result.append(shortcut)
                     }
                 }
@@ -150,10 +157,15 @@ final class PopupFilterModel {
     /// the favourites filter when active).
     var displayableCount: Int {
         let appID = app.bundleIdentifier ?? app.appName
+        let ignoreStore = IgnoreListStore.shared
+        let hiddenTitles: Set<String> = (ignoreStore.isEnabled && ignoreStore.showWhenFiltering)
+            ? ignoreStore.ignoredTitles(for: app.bundleIdentifier)
+            : []
         return app.sections.reduce(0) { total, section in
             total + section.shortcuts.filter {
                 (!$0.keys.isEmpty || showsAllItems) &&
-                (!showOnlyFavourites || FavouritesStore.shared.isFavourite($0, appID: appID))
+                (!showOnlyFavourites || FavouritesStore.shared.isFavourite($0, appID: appID)) &&
+                (hiddenTitles.isEmpty || !hiddenTitles.contains($0.title.localizedLowercase))
             }.count
         }
     }

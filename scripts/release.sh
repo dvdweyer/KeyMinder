@@ -44,7 +44,8 @@ if [[ "$LOCAL_ONLY" == true ]]; then
     echo ""
     echo "--- Installing to /Applications…"
     pkill -x KeyMinder 2>/dev/null || true
-    sleep 0.5
+    while pgrep -x KeyMinder > /dev/null 2>&1; do sleep 0.1; done
+    rm -rf /Applications/KeyMinder.app
     cp -R "$_BUILD_DIR/Build/Products/Debug/KeyMinder.app" /Applications/
     xattr -cr /Applications/KeyMinder.app
     rm -rf "$_BUILD_DIR"
@@ -174,7 +175,8 @@ echo "--- Deploying via rsync…"
 echo ""
 echo "--- Installing to /Applications…"
 pkill -x KeyMinder 2>/dev/null || true
-sleep 0.5
+while pgrep -x KeyMinder > /dev/null 2>&1; do sleep 0.1; done
+rm -rf /Applications/KeyMinder.app
 cp -R "$APP" /Applications/
 xattr -cr /Applications/KeyMinder.app
 
