@@ -25,7 +25,7 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
         let measured = NSHostingController(rootView: SettingsView())
             .sizeThatFits(in: CGSize(width: 420, height: CGFloat.greatestFiniteMagnitude))
             .height.rounded()
-        let contentHeight = min(max(measured, 280), 600)
+        let contentHeight = min(max(measured, 300), 700)
 
         let hosting = NSHostingView(rootView: SettingsView())
         let window = NSWindow(
@@ -37,10 +37,6 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
         window.title = String(localized: "KeyMinder Settings")
         window.contentView = hosting
         window.center()
-        // setFrameAutosaveName is intentionally omitted: the height is computed
-        // dynamically and a previously-saved fixed height (e.g. the old 320 pt)
-        // would be restored by AppKit and override the measured value. Centering
-        // on each open is conventional for a non-resizable settings window.
         super.init(window: window)
         window.delegate = self
     }
@@ -66,14 +62,12 @@ final class SettingsModel {
     private(set) var isRecording:        Bool = false
     private(set) var registrationFailed: Bool = false
 
-    /// Whether KeyMinder is registered as a login item.
     var launchAtLogin: Bool = LoginItemManager.shared.isEnabled {
         didSet {
             guard launchAtLogin != LoginItemManager.shared.isEnabled else { return }
             do {
                 try LoginItemManager.shared.setEnabled(launchAtLogin)
             } catch {
-                // Roll back the toggle if the system call fails.
                 launchAtLogin = LoginItemManager.shared.isEnabled
                 Logger.settings.error("Login item toggle failed: \(error.localizedDescription, privacy: .private)")
             }
@@ -120,12 +114,10 @@ final class SettingsModel {
         guard !isRecording else { return }
         isRecording = true
         registrationFailed = false
-        // Local monitor fires for key events in our own windows (settings panel is key).
         eventMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
             guard let self else { return event }
-            // NSEvent callbacks are always on the main thread; silence the concurrency warning.
             MainActor.assumeIsolated { self.handleKey(event) }
-            return nil  // consume all key events while recording
+            return nil
         }
     }
 
@@ -144,12 +136,10 @@ final class SettingsModel {
     // MARK: Private
 
     private func handleKey(_ event: NSEvent) {
-        // Escape cancels recording.
         if event.keyCode == 53 {
             stopRecording()
             return
         }
-        // Any combo with a strong modifier (⌘/⌥/⌃) is accepted.
         if let newHotkey = GlobalHotkey.from(event: event) {
             if HotkeyManager.shared.register(newHotkey) {
                 hotkey = newHotkey
@@ -159,7 +149,6 @@ final class SettingsModel {
             }
             stopRecording()
         }
-        // Keys with only Shift (or no modifier) are silently ignored; recording continues.
     }
 
     private func removeMonitor() {
@@ -174,6 +163,23 @@ final class SettingsModel {
 
 struct SettingsView: View {
     @State private var model = SettingsModel()
+
+    var body: some View {
+        TabView {
+            GeneralSettingsView(model: model)
+                .tabItem { Label("General", systemImage: "gearshape") }
+            AdvancedSettingsView(model: model)
+                .tabItem { Label("Advanced", systemImage: "slider.horizontal.3") }
+        }
+        .frame(width: 420)
+        .onDisappear { model.stopRecording() }
+    }
+}
+
+// MARK: - GeneralSettingsView
+
+private struct GeneralSettingsView: View {
+    @Bindable var model: SettingsModel
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
@@ -271,17 +277,9 @@ struct SettingsView: View {
                 get: { ts.followsSystemAccent },
                 set: { if $0 { ts.resetToSystem() } else { ts.enableCustom() } }
             ))
-
-            Divider()
-
-            Text("Developer")
-                .font(.headline)
-
-            Toggle("Enable debug logging", isOn: $model.debugLoggingEnabled)
         }
         .padding(20)
-        .frame(width: 420, alignment: .topLeading)   // height: let VStack size to content
-        .onDisappear { model.stopRecording() }
+        .frame(width: 420, alignment: .topLeading)
     }
 
     @ViewBuilder
@@ -302,12 +300,274 @@ struct SettingsView: View {
     }
 }
 
+// MARK: - AdvancedSettingsView
+
+private struct AdvancedSettingsView: View {
+    @Bindable var model: SettingsModel
+    @State private var showAddGlobalSheet = false
+    @State private var showAddAppSheet = false
+
+    private var store: IgnoreListStore { IgnoreListStore.shared }
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 14) {
+
+                Text("Developer")
+                    .font(.headline)
+
+                Toggle("Enable debug logging", isOn: $model.debugLoggingEnabled)
+
+                Divider()
+
+                Text("Ignored Commands")
+                    .font(.headline)
+
+                Text("Commands listed here are hidden from the popup. If a command opens a submenu, the entire submenu is hidden too.")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                // Global (all apps) rules
+                Text("All Apps")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+
+                if store.globalTitles.isEmpty {
+                    Text("No ignored commands")
+                        .font(.subheadline)
+                        .foregroundStyle(.tertiary)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .padding(.vertical, 8)
+                } else {
+                    IgnoreRulesBox(titles: store.globalTitles) { title in
+                        if let idx = store.globalTitles.firstIndex(of: title) {
+                            store.removeGlobal(at: IndexSet(integer: idx))
+                        }
+                    }
+                }
+
+                Button("Add Global Rule…") { showAddGlobalSheet = true }
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+
+                // Per-app rules
+                if !store.sortedAppIDs.isEmpty {
+                    Divider()
+                    Text("App-Specific")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+
+                    ForEach(store.sortedAppIDs, id: \.self) { bundleID in
+                        let titles = store.perApp[bundleID] ?? []
+                        VStack(alignment: .leading, spacing: 6) {
+                            HStack {
+                                Text(store.appDisplayNames[bundleID] ?? bundleID)
+                                    .font(.subheadline)
+                                    .fontWeight(.medium)
+                                Spacer()
+                                Button {
+                                    store.removeApp(bundleID)
+                                } label: {
+                                    Image(systemName: "xmark.circle.fill")
+                                        .foregroundStyle(.secondary)
+                                }
+                                .buttonStyle(.plain)
+                                .help("Remove all rules for this app")
+                            }
+
+                            IgnoreRulesBox(titles: titles) { title in
+                                if let idx = titles.firstIndex(of: title) {
+                                    store.removeRule(bundleID: bundleID, at: IndexSet(integer: idx))
+                                }
+                            }
+                        }
+                    }
+                }
+
+                Button("Add App Rule…") { showAddAppSheet = true }
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+            }
+            .padding(20)
+            .frame(width: 420, alignment: .topLeading)
+        }
+        .sheet(isPresented: $showAddGlobalSheet) {
+            AddGlobalRuleSheet()
+        }
+        .sheet(isPresented: $showAddAppSheet) {
+            AddAppRuleSheet()
+        }
+    }
+}
+
+// MARK: - IgnoreRulesBox
+
+private struct IgnoreRulesBox: View {
+    let titles: [String]
+    let onDelete: (String) -> Void
+
+    var body: some View {
+        VStack(spacing: 0) {
+            ForEach(titles, id: \.self) { title in
+                HStack {
+                    Text(title)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    Button {
+                        onDelete(title)
+                    } label: {
+                        Image(systemName: "minus.circle.fill")
+                            .foregroundStyle(.red)
+                    }
+                    .buttonStyle(.plain)
+                }
+                .padding(.horizontal, 10)
+                .padding(.vertical, 6)
+                if title != titles.last {
+                    Divider().padding(.horizontal, 10)
+                }
+            }
+        }
+        .background(
+            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                .fill(.primary.opacity(0.04))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8, style: .continuous)
+                        .strokeBorder(.primary.opacity(0.1), lineWidth: 1)
+                )
+        )
+    }
+}
+
+// MARK: - AddGlobalRuleSheet
+
+private struct AddGlobalRuleSheet: View {
+    @Environment(\.dismiss) private var dismiss
+    @State private var title = ""
+    @FocusState private var focused: Bool
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("Add Ignored Command")
+                .font(.headline)
+
+            Text("Enter the exact command title to hide from the popup in all apps.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            TextField("Command title", text: $title)
+                .textFieldStyle(.roundedBorder)
+                .focused($focused)
+                .onSubmit { addAndDismiss() }
+
+            HStack {
+                Spacer()
+                Button("Cancel", role: .cancel) { dismiss() }
+                    .keyboardShortcut(.cancelAction)
+                Button("Add") { addAndDismiss() }
+                    .keyboardShortcut(.defaultAction)
+                    .disabled(title.trimmingCharacters(in: .whitespaces).isEmpty)
+            }
+        }
+        .padding(20)
+        .frame(width: 340)
+        .onAppear { focused = true }
+    }
+
+    private func addAndDismiss() {
+        IgnoreListStore.shared.addGlobal(title)
+        dismiss()
+    }
+}
+
+// MARK: - AddAppRuleSheet
+
+private struct AddAppRuleSheet: View {
+    @Environment(\.dismiss) private var dismiss
+    @State private var commandTitle = ""
+    @State private var selectedBundleID: String = ""
+    @FocusState private var titleFocused: Bool
+
+    private var runningApps: [(bundleID: String, name: String)] {
+        NSWorkspace.shared.runningApplications
+            .filter { $0.activationPolicy == .regular && $0.bundleIdentifier != nil && $0.localizedName != nil }
+            .map { (bundleID: $0.bundleIdentifier!, name: $0.localizedName!) }
+            .sorted { $0.name < $1.name }
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("Add App-Specific Rule")
+                .font(.headline)
+
+            Text("Hide a command in one app only.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+
+            if runningApps.isEmpty {
+                Text("No apps are currently running.")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            } else {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("App")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                    Picker("App", selection: $selectedBundleID) {
+                        Text("Select an app…").tag("")
+                        ForEach(runningApps, id: \.bundleID) { app in
+                            Text(app.name).tag(app.bundleID)
+                        }
+                    }
+                    .labelsHidden()
+                    .frame(maxWidth: .infinity)
+                }
+
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("Command title")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                    TextField("Command title", text: $commandTitle)
+                        .textFieldStyle(.roundedBorder)
+                        .focused($titleFocused)
+                        .onSubmit { addAndDismiss() }
+                }
+            }
+
+            HStack {
+                Spacer()
+                Button("Cancel", role: .cancel) { dismiss() }
+                    .keyboardShortcut(.cancelAction)
+                Button("Add") { addAndDismiss() }
+                    .keyboardShortcut(.defaultAction)
+                    .disabled(!canAdd)
+            }
+        }
+        .padding(20)
+        .frame(width: 340)
+        .onAppear {
+            if let first = runningApps.first {
+                selectedBundleID = first.bundleID
+            }
+            titleFocused = true
+        }
+    }
+
+    private var canAdd: Bool {
+        !selectedBundleID.isEmpty && !commandTitle.trimmingCharacters(in: .whitespaces).isEmpty
+    }
+
+    private func addAndDismiss() {
+        guard canAdd else { return }
+        let displayName = runningApps.first { $0.bundleID == selectedBundleID }?.name ?? selectedBundleID
+        IgnoreListStore.shared.addRule(bundleID: selectedBundleID, displayName: displayName, title: commandTitle)
+        dismiss()
+    }
+}
+
 // MARK: - HotkeyBadge
 
 /// Pill-shaped badge that shows the current hotkey or a recording prompt.
 struct HotkeyBadge: View {
-    // Plain var is sufficient: @Observable's fine-grained tracking automatically
-    // observes accesses to model.isRecording and model.hotkey in body.
     var model: SettingsModel
 
     private var badgeForeground: Color {

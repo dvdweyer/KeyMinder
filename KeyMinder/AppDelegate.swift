@@ -132,6 +132,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let bundleID = app.bundleIdentifier
         let icon = app.icon
         let includeAll = UserDefaults.standard.showAllMenuItems
+        let ignoredTitles = IgnoreListStore.shared.ignoredTitles(for: bundleID)
 
         // Cancel the outer coordinator so a stale result never reaches the UI.
         scrapeTask?.cancel()
@@ -151,7 +152,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             guard !Task.isCancelled else { return }
 
             let work = Task.detached(priority: .userInitiated) {
-                MenuScraper.scrape(pid: pid, includeItemsWithoutShortcuts: includeAll)
+                MenuScraper.scrape(pid: pid, includeItemsWithoutShortcuts: includeAll, ignoredTitles: ignoredTitles)
             }
             self.detachedScrapeTask = work
 

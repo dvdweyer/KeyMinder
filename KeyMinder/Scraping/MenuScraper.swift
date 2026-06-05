@@ -13,7 +13,8 @@ enum MenuScraper {
     /// When `includeItemsWithoutShortcuts` is true, leaf menu items that have no
     /// key equivalent are included with an empty `keys` string so the full menu
     /// structure is visible in the popup.
-    static func scrape(pid: pid_t, includeItemsWithoutShortcuts: Bool = false) -> [MenuSection] {
+    static func scrape(pid: pid_t, includeItemsWithoutShortcuts: Bool = false,
+                       ignoredTitles: Set<String> = []) -> [MenuSection] {
         let start = Date()
         let app = AXUIElementCreateApplication(pid)
         // Cap per-request AX round-trips so an unresponsive target never blocks
@@ -30,7 +31,7 @@ enum MenuScraper {
             let title = string(menuBarItem, kAXTitleAttribute) ?? ""
             // A menu bar item owns its drop-down menu as its single child.
             guard let menu = children(menuBarItem).first else { continue }
-            let groups = collectGroups(in: menu, includeAll: includeItemsWithoutShortcuts)
+            let groups = collectGroups(in: menu, includeAll: includeItemsWithoutShortcuts, ignoredTitles: ignoredTitles)
             if !groups.isEmpty {
                 sections.append(MenuSection(title: title, groups: groups))
             }
@@ -49,12 +50,14 @@ enum MenuScraper {
     /// their parent's named group.
     /// When `includeAll` is false (default), only items with a key equivalent are
     /// included. When true, leaf items without shortcuts are also included.
-    private static func collectGroups(in menu: AXUIElement, includeAll: Bool) -> [ShortcutGroup] {
+    private static func collectGroups(in menu: AXUIElement, includeAll: Bool,
+                                      ignoredTitles: Set<String>) -> [ShortcutGroup] {
         var topLevel: [Shortcut] = []
         var named:    [ShortcutGroup] = []
 
         for item in children(menu) {
             guard let title = string(item, kAXTitleAttribute), !title.isEmpty else { continue }
+            guard !ignoredTitles.contains(title.localizedLowercase) else { continue }
 
             let shortcutKeys = ShortcutFormatter.format(
                 cmdChar:    string(item, kAXMenuItemCmdCharAttribute),
@@ -77,7 +80,7 @@ enum MenuScraper {
             // collectShortcutsFlat recurses further but keeps everything in one list,
             // which is the right behaviour for sub-submenus (depth > 2).
             if let submenu {
-                let submenuItems = collectShortcutsFlat(in: submenu, includeAll: includeAll)
+                let submenuItems = collectShortcutsFlat(in: submenu, includeAll: includeAll, ignoredTitles: ignoredTitles)
                 if !submenuItems.isEmpty {
                     named.append(ShortcutGroup(title: title, shortcuts: submenuItems))
                 } else {
@@ -103,12 +106,14 @@ enum MenuScraper {
     /// Recursively collects items within `menu`, flattening any nested submenus
     /// into a single list. Used for submenu contents (depth ≥ 2).
     private static func collectShortcutsFlat(
-        in menu: AXUIElement, includeAll: Bool = false, depth: Int = 0
+        in menu: AXUIElement, includeAll: Bool = false, depth: Int = 0,
+        ignoredTitles: Set<String> = []
     ) -> [Shortcut] {
         guard depth < 10 else { return [] }
         var result: [Shortcut] = []
         for item in children(menu) {
             guard let title = string(item, kAXTitleAttribute), !title.isEmpty else { continue }
+            guard !ignoredTitles.contains(title.localizedLowercase) else { continue }
 
             let shortcutKeys = ShortcutFormatter.format(
                 cmdChar:    string(item, kAXMenuItemCmdCharAttribute),
@@ -126,7 +131,7 @@ enum MenuScraper {
 
             // Flatten sub-submenus.
             if let submenu {
-                let sub = collectShortcutsFlat(in: submenu, includeAll: includeAll, depth: depth + 1)
+                let sub = collectShortcutsFlat(in: submenu, includeAll: includeAll, depth: depth + 1, ignoredTitles: ignoredTitles)
                 if sub.isEmpty {
                     let itemCount = children(submenu).count
                     let hint = itemCount == 0 ? "; likely lazy-populated" : ""
