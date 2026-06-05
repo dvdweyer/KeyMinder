@@ -337,7 +337,7 @@ edit `project.pbxproj`.
 - System-wide shortcuts (Spotlight, Screenshots, …) not implemented yet — planned phase.
 - **"Show when filtering" (Ignored Commands) is unreliable.** Ignored rows do not
   consistently appear dimmed when a matching query is typed. Tracked in
-  `internal/Backlog.md`.
+  `Claude/Backlog.md`.
 - **Lazy-populated submenus are invisible to the scraper.** Apps that use
   `NSMenuDelegate`'s `menuNeedsUpdate:` or `menu:updateItem:atIndex:shouldCancel:`
   only fill submenu items when the menu is about to be *displayed*.  The AX
