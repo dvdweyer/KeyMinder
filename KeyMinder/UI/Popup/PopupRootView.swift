@@ -437,9 +437,16 @@ struct MenuSectionView: View {
         shortcut.matches(query) && shortcut.matchesModifierFilter(modifierFilter)
     }
 
+    private func isIgnoredWhileIdle(_ shortcut: Shortcut) -> Bool {
+        let store = IgnoreListStore.shared
+        guard store.isEnabled && store.showWhenFiltering && query.isEmpty else { return false }
+        return store.ignoredTitles(for: appID).contains(shortcut.title.localizedLowercase)
+    }
+
     /// Whether a row should be rendered at all.
     private func isShown(_ shortcut: Shortcut) -> Bool {
         guard passesGate(shortcut) else { return false }
+        if isIgnoredWhileIdle(shortcut) { return false }
         if showOnlyFavourites && !FavouritesStore.shared.isFavourite(shortcut, appID: appID) { return false }
         return dimMode ? true : matchesFilter(shortcut)
     }
