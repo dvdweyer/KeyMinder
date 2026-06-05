@@ -422,8 +422,8 @@
   <h1>KeyMinder</h1>
   <p>A macOS menu bar app that instantly shows the keyboard shortcuts of whichever app you're currently using.</p>
   <div class="button-row">
-    <a href="KeyMinder_0.1.65.zip" class="btn btn-primary" download>
-      ↓ Download v0.1.65
+    <a href="KeyMinder_0.1.73.zip" class="btn btn-primary" download>
+      ↓ Download v0.1.73
     </a>
     <a href="https://github.com/dvdweyer/KeyMinder" class="btn btn-secondary" target="_blank" rel="noopener">
       View on GitHub
@@ -438,7 +438,8 @@
     <h2>What it does</h2>
     <p>Instead of hunting through menus to find shortcuts, KeyMinder pops up a clean overview of every keyboard shortcut available in the frontmost app — grouped by menu, triggered by a user-defined hotkey or double-tap on the command, option or control key.</p>
     <p>Click any shortcut in the popup to run it immediately. KeyMinder reads menu structures directly via the macOS Accessibility API, so shortcuts are always accurate and up to date for whatever app you're using.</p>
-    <p>You can search for a keyboard shortcut by starting to type its name and then tab there to execute the command directly. Toggle or hold modifier keys (⌃ ⌥ ⇧ ⌘) to filter by exact modifier combination — hold ⌘ to see only Command shortcuts, add ⇧ to narrow to Command-Shift. When all shortcuts fit on screen, non-matching rows dim in place so the layout stays stable. There is even an option to show menu items without keyboard shortcuts — these show only when at least two letters of the command are matched.</p>
+    <p>Search by typing a command name and Tab to it to execute it directly. Toggle or hold modifier keys (⌃ ⌥ ⇧ ⌘) to filter by exact modifier combination. When all shortcuts fit on screen, non-matching rows dim in place so the layout stays stable. There is even an option to show menu items without keyboard shortcuts — these show only when at least two letters of the command are matched.</p>
+    <p>Pin your most-used shortcuts as favourites — hover any row for the star button, or press ⌘D while it's selected — then filter to them instantly with the ★ button in the header. Use Ignored Commands (Settings → Advanced) to suppress noisy menu items globally or per app. A gear button in the popup header opens Settings without closing your workflow.</p>
     <div class="screenshot">
       <picture>
         <source srcset="Safari_Shortcuts_dark-mode.png" media="(prefers-color-scheme: dark)">
@@ -469,7 +470,7 @@
   <div class="section">
     <h2>Install</h2>
     <ol class="steps">
-      <li>Download and unzip <code>KeyMinder_0.1.65.zip</code></li>
+      <li>Download and unzip <code>KeyMinder_0.1.73.zip</code></li>
       <li>Move <code>KeyMinder.app</code> to <code>/Applications</code></li>
       <li>Open KeyMinder — macOS will ask for Accessibility permission</li>
       <li>Grant permission in System Settings → Privacy &amp; Security → Accessibility</li>
@@ -487,13 +488,97 @@
 
     <div class="changelog-entry">
       <div class="changelog-version">
+        <strong>v0.1.73</strong>
+        <span>Jun 5, 2026 — current</span>
+      </div>
+      <ul>
+        <li>Gear button in the popup header opens KeyMinder Settings directly — and closes the popup so it's out of the way</li>
+      </ul>
+    </div>
+
+    <div class="changelog-entry">
+      <div class="changelog-version">
+        <strong>v0.1.72</strong>
+        <span>Jun 5, 2026</span>
+      </div>
+      <ul>
+        <li>Ignored Apps — add any app to a list in Settings → Advanced and KeyMinder will silently skip it when you trigger the popup</li>
+      </ul>
+    </div>
+
+    <div class="changelog-entry">
+      <div class="changelog-version">
+        <strong>v0.1.71</strong>
+        <span>Jun 5, 2026</span>
+      </div>
+      <ul>
+        <li>Ignored Commands now has a master on/off toggle — easily suspend the list without losing it</li>
+        <li>"Show when filtering" — when enabled, ignored entries appear dimmed in the popup whenever your search query matches them</li>
+      </ul>
+    </div>
+
+    <div class="changelog-entry">
+      <div class="changelog-version">
+        <strong>v0.1.70</strong>
+        <span>Jun 5, 2026</span>
+      </div>
+      <ul>
+        <li>Settings reorganized into General and Advanced tabs for a cleaner layout</li>
+        <li>Ignored Commands — suppress named menu items from the popup globally or per app; pre-seeded with common window-management commands (Minimize, Fill, Centre, Move &amp; Resize)</li>
+      </ul>
+    </div>
+
+    <div class="changelog-entry">
+      <div class="changelog-version">
+        <strong>v0.1.69</strong>
+        <span>Jun 4, 2026</span>
+      </div>
+      <ul>
+        <li>Press ⌘D while a shortcut row is Tab-selected to pin or unpin it as a favourite — consistent with the browser bookmarking convention</li>
+      </ul>
+    </div>
+
+    <div class="changelog-entry">
+      <div class="changelog-version">
+        <strong>v0.1.68</strong>
+        <span>Jun 4, 2026</span>
+      </div>
+      <ul>
+        <li>After closing Settings on first launch, a hint popover on the menu-bar icon shows how to trigger the popup — auto-dismisses after 5 seconds</li>
+      </ul>
+    </div>
+
+    <div class="changelog-entry">
+      <div class="changelog-version">
+        <strong>v0.1.67</strong>
+        <span>Jun 4, 2026</span>
+      </div>
+      <ul>
+        <li>Pin favourite shortcuts — hover any row to reveal a star button and click to pin; pinned shortcuts survive popup closes and relaunches</li>
+        <li>A ★ button appears in the popup header whenever the current app has pins — click to filter to favourites only; Esc clears it</li>
+      </ul>
+    </div>
+
+    <div class="changelog-entry">
+      <div class="changelog-version">
+        <strong>v0.1.66</strong>
+        <span>Jun 4, 2026</span>
+      </div>
+      <ul>
+        <li>Search query is remembered when you dismiss and reopen the popup for the same app — no retyping needed</li>
+        <li>Added translations for Hindi, Traditional Chinese, Japanese, Portuguese, Arabic, Danish, Swedish, Norwegian, and Finnish</li>
+      </ul>
+    </div>
+
+    <div class="changelog-entry">
+      <div class="changelog-version">
         <strong>v0.1.65</strong>
-        <span>Jun 4, 2026 — current</span>
+        <span>Jun 4, 2026</span>
       </div>
       <ul>
         <li>Settings window opens automatically on first launch so you can configure your hotkey and double-tap trigger right away</li>
         <li>Full localization support — all user-facing text now adapts to your Mac's system language</li>
-        <li>Translations for German, Dutch, Italian, French, Spanish, Simplified Chinese, Traditional Chinese, Hindi, Japanese, Portuguese, Arabic, Danish, Swedish, Norwegian, Finnish, and Hebrew</li>
+        <li>Translations for German, Dutch, Italian, French, Spanish, Simplified Chinese, and Hebrew</li>
       </ul>
     </div>
 

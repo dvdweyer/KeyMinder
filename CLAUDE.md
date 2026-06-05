@@ -88,8 +88,14 @@ level is hidden unless you pass `--level info`.
   calls `setupDoubleTap()` then `presentPopup()` so the double-tap trigger is armed
   the moment Accessibility is granted without requiring a relaunch.
   `setupSleepWakeObserver()` re-arms the trigger on `NSWorkspace.didWakeNotification`
-  (sleep/wake can invalidate event monitors). `showWelcomePopupIfNeeded()` auto-presents
-  the popup 500 ms after first launch so the user discovers the app immediately.
+  (sleep/wake can invalidate event monitors). `showFirstLaunchSettingsIfNeeded()` opens
+  the Settings window 500 ms after first launch so the user can configure their hotkey
+  before the popup ever appears; guarded by `didShowWelcome`. `onOpenSettings` (set on
+  `PopupController`) hides the popup then calls `SettingsWindowController.show()`.
+  `SettingsWindowController.onFirstClose` is set before the first-launch open so that
+  closing Settings triggers `showHintPopover()`, which displays a popover on the
+  menu-bar icon for 5 seconds hinting how to trigger the popup. The popover is dismissed
+  immediately when the popup opens or the context menu is shown.
   `showAbout()` calls `NSApp.orderFrontStandardAboutPanel` with the version and an
   attributed-string credits block linking to the homepage.
 
@@ -154,6 +160,17 @@ level is hidden unless you pass `--level info`.
   (default `false`); see `Support/Logging.swift` for the UserDefaults extension.
 - `Settings/LoginItemManager.swift` — wraps `SMAppService` to register/unregister
   the app as a login item.
+- `Settings/FavouritesStore.swift` (`@Observable @MainActor`) — singleton; persists
+  pinned shortcuts in `UserDefaults` keyed by app bundle ID + shortcut title + key
+  string. `toggle(_:appBundleID:)` pins or unpins; `isFavourite(_:appBundleID:)` queries.
+  Keys are stable across re-scrapes so pins survive popup closes and relaunches.
+- `Settings/IgnoreListStore.swift` (`@Observable @MainActor`) — singleton; stores the
+  ignored-commands list (`globalTitles`, `perApp`, `appDisplayNames`) and the ignored-apps
+  list (`ignoredApps: [bundleID → displayName]`) in `UserDefaults` as a single `IgnoreData`
+  JSON blob. `isEnabled` / `showWhenFiltering` are separate bool keys. Pre-seeds four
+  global window-management titles on first launch (`didSeedIgnoreList` flag).
+  `ignoredTitles(for:)` merges global + per-app sets for the scraper. `isAppIgnored(_:)`
+  is called by `AppDelegate.presentPopup()` to silently skip ignored apps.
 
 ### UI — Popup
 
@@ -163,9 +180,10 @@ level is hidden unless you pass `--level info`.
   screen containing the mouse cursor (primary), then `NSScreen.main`, then the first
   screen — nil-safe to survive display-reconfiguration races. The panel is always
   centered on that screen. Esc clears a non-empty text filter, then the toggled modifier
-  filter, then dismisses. A local key monitor handles Tab (advance row selection) /
-  Shift-Tab (reverse) / Return or numpad Enter (activate selected shortcut). Permission-
-  poll timer fires `onPermissionGranted` the moment `AXIsProcessTrusted()` becomes true.
+  filter, then the favourites filter, then dismisses. A local key monitor handles Tab
+  (advance row selection) / Shift-Tab (reverse) / Return or numpad Enter (activate
+  selected shortcut) / ⌘D (toggle favourite for the Tab-selected row). Permission-poll
+  timer fires `onPermissionGranted` the moment `AXIsProcessTrusted()` becomes true.
   Panel is released (`self.panel = nil`) on hide to free the SwiftUI tree while idle.
   Two `flagsChanged` event monitors (global for when another app is frontmost, local for
   when the popup panel is key) call `handleFlagsChanged(_:)` which writes the currently
@@ -173,14 +191,19 @@ level is hidden unless you pass `--level info`.
   On popup open, `NSEvent.modifierFlags` seeds `heldModifiers` so the filter is
   immediately correct if modifier keys are already held. `measuredContent` computes
   `fitsWithoutScrolling = naturalHeight ≤ maxPanelHeight` and passes it to the model.
+  `savedQuery` and `lastAppBundleID` persist the search query in memory across popup
+  toggles for the same app; the query resets when the frontmost app changes.
+  `onOpenSettings` closure is set by `AppDelegate` to hide the popup then open Settings.
 - `UI/Popup/PopupPanel.swift` — non-activating `NSPanel` subclass.
 - `UI/Popup/PopupRootView.swift` — contains all popup SwiftUI types:
   - `PopupFilterModel` (`@Observable @MainActor`) — owned by `PopupController`;
     holds the live `query`, fixed `columns` layout, `selectedIndex` for Tab navigation,
-    cached `visibleShortcuts` (recomputed on each query/modifier change), `displayableCount`,
-    `matchCount`, and `showsAllItems` (true when all-entries mode is on and query ≥ 2
-    chars). `selectNext()` / `selectPrevious()` wrap around. Modifier filtering uses two
-    backing stores: `toggledModifiers` (persistent, driven by UI button clicks via
+    cached `visibleShortcuts` (recomputed on each query/modifier/favourites change),
+    `displayableCount`, `matchCount`, and `showsAllItems` (true when all-entries mode is
+    on and query ≥ 2 chars). `showOnlyFavourites: Bool` filters the view to pinned rows
+    only; toggled by the ★ header button and cleared by Esc (after text/modifier filters).
+    `selectNext()` / `selectPrevious()` wrap around. Modifier filtering uses two backing
+    stores: `toggledModifiers` (persistent, driven by UI button clicks via
     `toggleModifier(_:)` / `clearToggledModifiers()`) and `heldModifiers` (ephemeral,
     driven by physical key state set by `PopupController`). The computed `modifierFilter`
     is their union and is used for all filtering. `hasToggledModifiers` lets the Esc
@@ -189,11 +212,13 @@ level is hidden unless you pass `--level info`.
     into dim mode when true.
   - `PopupRootView` — dispatches to `FilterableShortcutsView`, `PopupOnboardingView`,
     or `PopupMessageView`; applies `.regularMaterial` background + border overlay.
-  - `FilterableShortcutsView` — header (app icon, name, count, modifier toggle buttons,
-    auto-focused search field) + scrollable shortcut grid; auto-focuses the filter field
-    on appear; scroll-follows the selected row. Modifier buttons (⌃ ⌥ ⇧ ⌘) are rendered
-    by `ModifierToggle` — filled with `ThemeSettings.shared.keyAccent` when active,
-    outlined when not.
+  - `FilterableShortcutsView` — header (gear button, app icon, name, count, ★ favourites
+    toggle, modifier toggle buttons, auto-focused search field) + scrollable shortcut
+    grid; auto-focuses the filter field on appear; scroll-follows the selected row. The
+    gear button (`settingsButton`) calls `onOpenSettings`. The ★ button appears only when
+    the current app has at least one pinned shortcut and toggles `showOnlyFavourites`.
+    Modifier buttons (⌃ ⌥ ⇧ ⌘) are rendered by `ModifierToggle` — filled with
+    `ThemeSettings.shared.keyAccent` when active, outlined when not.
   - `MenuSectionView` — one section card: section header (`.isHeader` VoiceOver trait)
     + optional `SubGroupHeader` labels for named submenu groups + shortcut rows. In normal
     mode the card is absent when no rows pass the filter. In dim mode (`dimMode: true`)
@@ -203,10 +228,11 @@ level is hidden unless you pass `--level info`.
   - `SubGroupHeader` — compact label above a submenu's items inside a section card.
   - `ShortcutRow` — right-aligned key glyphs + command title; hover highlight and
     tap-to-activate when the row has an `axElement`; VoiceOver label via `spokenKeys(_:)`
-    (e.g. "⇧⌘N" → "Shift Command N"); Tab-selection highlight. When `dimmed: true` both
-    text elements use `Theme.fadedText`, `clickable` is false (no tap, no hover, no
-    `.isButton` trait), and the row is invisible to Tab navigation (it is absent from
-    `visibleShortcuts`).
+    (e.g. "⇧⌘N" → "Shift Command N"); Tab-selection highlight. A star button (☆/★) is
+    revealed on hover and calls `FavouritesStore.shared.toggle(_:appBundleID:)`. When
+    `dimmed: true` both text elements use `Theme.fadedText`, `clickable` is false (no
+    tap, no hover, no `.isButton` trait), and the row is invisible to Tab navigation (it
+    is absent from `visibleShortcuts`).
   - `PopupMessageView` — centered icon-over-text placeholder for empty / no-app states. `text` is `LocalizedStringKey` (not `String`) so string-literal call sites are localized automatically.
 - `UI/Popup/MenuLayout.swift` — layout constants (`columnWidth`, `columnSpacing`,
   `sectionSpacing`, `rowHeight`, `rowSpacing`, `headerHeight`, `subGroupHeaderHeight`)
@@ -232,11 +258,13 @@ level is hidden unless you pass `--level info`.
     (`doubleTapEnabled` + `doubleTapModifier`), `showAllMenuItems` (popup content mode),
     `debugLoggingEnabled` toggle, and `registrationFailed: Bool` (set when Carbon
     rejects a hotkey; cleared on each new recording attempt and on clear).
-  - `SettingsView` — six sections: Global Shortcut (hotkey badge + record/change/clear;
-    shows "Shortcut already in use" when `registrationFailed`), Launch at Login toggle,
-    Double-tap Trigger (enable toggle + modifier picker), Popup Content ("Show all menu
-    entries" toggle), Appearance (colour picker + "Follow system accent colour" toggle,
-    writes to `ThemeSettings`), Developer (debug logging toggle).
+  - `SettingsView` — two tabs: **General** (Global Shortcut with hotkey badge +
+    record/change/clear and "Shortcut already in use" error; Launch at Login toggle;
+    Double-tap Trigger with enable toggle + modifier picker; Popup Content "Show all menu
+    entries" toggle; Appearance colour picker + "Follow system accent colour" toggle
+    writing to `ThemeSettings`) and **Advanced** (Ignored Commands with master enable
+    toggle, "Show when filtering" sub-toggle, global list, per-app list; Ignored Apps
+    list; Developer debug logging toggle).
   - `HotkeyBadge` — pill badge showing current hotkey or recording prompt; `@State`
     owns `SettingsModel`. Uses a `@ViewBuilder` `labelText` property with explicit
     `Text("Type your shortcut…")` / `Text(verbatim: hk.displayString)` / `Text("Not set")`
@@ -302,6 +330,9 @@ edit `project.pbxproj`.
   the AX IPC itself is synchronous C code with no Swift cancellation checkpoints — a
   busy target app can still delay the popup until the 1 s AX timeout fires.
 - System-wide shortcuts (Spotlight, Screenshots, …) not implemented yet — planned phase.
+- **"Show when filtering" (Ignored Commands) is unreliable.** Ignored rows do not
+  consistently appear dimmed when a matching query is typed. Tracked in
+  `internal/Backlog.md`.
 - **Lazy-populated submenus are invisible to the scraper.** Apps that use
   `NSMenuDelegate`'s `menuNeedsUpdate:` or `menu:updateItem:atIndex:shouldCancel:`
   only fill submenu items when the menu is about to be *displayed*.  The AX
