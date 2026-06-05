@@ -133,6 +133,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let icon = app.icon
         let includeAll = UserDefaults.standard.showAllMenuItems
         let ignoreStore = IgnoreListStore.shared
+        guard !ignoreStore.isAppIgnored(bundleID) else { return }
         let ignoredTitles: Set<String> = (ignoreStore.isEnabled && !ignoreStore.showWhenFiltering)
             ? ignoreStore.ignoredTitles(for: bundleID)
             : []

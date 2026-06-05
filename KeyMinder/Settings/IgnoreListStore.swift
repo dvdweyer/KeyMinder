@@ -17,9 +17,14 @@ final class IgnoreListStore {
     var globalTitles: [String]
     var perApp: [String: [String]]
     var appDisplayNames: [String: String]
+    var ignoredApps: [String: String]   // bundleID → displayName
 
     var sortedAppIDs: [String] {
         perApp.keys.sorted { (appDisplayNames[$0] ?? $0) < (appDisplayNames[$1] ?? $1) }
+    }
+
+    var sortedIgnoredAppIDs: [String] {
+        ignoredApps.keys.sorted { (ignoredApps[$0] ?? $0) < (ignoredApps[$1] ?? $1) }
     }
 
     private init() {
@@ -31,10 +36,12 @@ final class IgnoreListStore {
             globalTitles    = stored.globalTitles
             perApp          = stored.perApp
             appDisplayNames = stored.appDisplayNames
+            ignoredApps     = stored.ignoredApps
         } else {
             globalTitles    = []
             perApp          = [:]
             appDisplayNames = [:]
+            ignoredApps     = [:]
         }
 
         if !UserDefaults.standard.bool(forKey: Self.didSeedKey) {
@@ -95,11 +102,27 @@ final class IgnoreListStore {
         save()
     }
 
+    func isAppIgnored(_ bundleID: String?) -> Bool {
+        guard let id = bundleID else { return false }
+        return ignoredApps[id] != nil
+    }
+
+    func addIgnoredApp(bundleID: String, displayName: String) {
+        ignoredApps[bundleID] = displayName
+        save()
+    }
+
+    func removeIgnoredApp(bundleID: String) {
+        ignoredApps.removeValue(forKey: bundleID)
+        save()
+    }
+
     private func save() {
         let data = IgnoreData(
             globalTitles: globalTitles,
             perApp: perApp,
-            appDisplayNames: appDisplayNames
+            appDisplayNames: appDisplayNames,
+            ignoredApps: ignoredApps
         )
         if let encoded = try? JSONEncoder().encode(data) {
             UserDefaults.standard.set(encoded, forKey: Self.defaultsKey)
@@ -113,4 +136,13 @@ private struct IgnoreData: Codable {
     var globalTitles: [String]
     var perApp: [String: [String]]
     var appDisplayNames: [String: String]
+    var ignoredApps: [String: String]
+
+    init(globalTitles: [String], perApp: [String: [String]],
+         appDisplayNames: [String: String], ignoredApps: [String: String] = [:]) {
+        self.globalTitles    = globalTitles
+        self.perApp          = perApp
+        self.appDisplayNames = appDisplayNames
+        self.ignoredApps     = ignoredApps
+    }
 }

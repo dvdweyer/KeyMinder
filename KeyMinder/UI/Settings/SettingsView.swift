@@ -304,6 +304,7 @@ private struct GeneralSettingsView: View {
 
 private struct AdvancedSettingsView: View {
     @Bindable var model: SettingsModel
+    @State private var showAddIgnoredAppSheet = false
     @State private var showAddGlobalSheet = false
     @State private var showAddAppSheet = false
 
@@ -317,6 +318,31 @@ private struct AdvancedSettingsView: View {
                     .font(.headline)
 
                 Toggle("Enable debug logging", isOn: $model.debugLoggingEnabled)
+
+                Divider()
+
+                Text("Ignored Apps")
+                    .font(.headline)
+
+                Text("Apps listed here are skipped entirely — the popup won't open while they're frontmost.")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                if store.sortedIgnoredAppIDs.isEmpty {
+                    Text("No ignored apps")
+                        .font(.subheadline)
+                        .foregroundStyle(.tertiary)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .padding(.vertical, 8)
+                } else {
+                    IgnoredAppsBox(appIDs: store.sortedIgnoredAppIDs, displayNames: store.ignoredApps) { bundleID in
+                        store.removeIgnoredApp(bundleID: bundleID)
+                    }
+                }
+
+                Button("Add App…") { showAddIgnoredAppSheet = true }
+                    .frame(maxWidth: .infinity, alignment: .trailing)
 
                 Divider()
 
@@ -400,12 +426,123 @@ private struct AdvancedSettingsView: View {
             .padding(20)
             .frame(width: 420, alignment: .topLeading)
         }
+        .sheet(isPresented: $showAddIgnoredAppSheet) {
+            AddIgnoredAppSheet()
+        }
         .sheet(isPresented: $showAddGlobalSheet) {
             AddGlobalRuleSheet()
         }
         .sheet(isPresented: $showAddAppSheet) {
             AddAppRuleSheet()
         }
+    }
+}
+
+// MARK: - IgnoredAppsBox
+
+private struct IgnoredAppsBox: View {
+    let appIDs: [String]
+    let displayNames: [String: String]
+    let onDelete: (String) -> Void
+
+    var body: some View {
+        VStack(spacing: 0) {
+            ForEach(appIDs, id: \.self) { bundleID in
+                HStack {
+                    Text(displayNames[bundleID] ?? bundleID)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    Button {
+                        onDelete(bundleID)
+                    } label: {
+                        Image(systemName: "minus.circle.fill")
+                            .foregroundStyle(.red)
+                    }
+                    .buttonStyle(.plain)
+                }
+                .padding(.horizontal, 10)
+                .padding(.vertical, 6)
+                if bundleID != appIDs.last {
+                    Divider().padding(.horizontal, 10)
+                }
+            }
+        }
+        .background(
+            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                .fill(.primary.opacity(0.04))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8, style: .continuous)
+                        .strokeBorder(.primary.opacity(0.1), lineWidth: 1)
+                )
+        )
+    }
+}
+
+// MARK: - AddIgnoredAppSheet
+
+private struct AddIgnoredAppSheet: View {
+    @Environment(\.dismiss) private var dismiss
+    @State private var selectedBundleID: String = ""
+
+    private var runningApps: [(bundleID: String, name: String)] {
+        NSWorkspace.shared.runningApplications
+            .filter { $0.activationPolicy == .regular && $0.bundleIdentifier != nil && $0.localizedName != nil }
+            .filter { IgnoreListStore.shared.ignoredApps[$0.bundleIdentifier!] == nil }
+            .map { (bundleID: $0.bundleIdentifier!, name: $0.localizedName!) }
+            .sorted { $0.name < $1.name }
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("Ignore App")
+                .font(.headline)
+
+            Text("The popup won't open while this app is frontmost.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+
+            if runningApps.isEmpty {
+                Text("No apps to add (all running apps are already ignored).")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            } else {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("App")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                    Picker("App", selection: $selectedBundleID) {
+                        Text("Select an app…").tag("")
+                        ForEach(runningApps, id: \.bundleID) { app in
+                            Text(app.name).tag(app.bundleID)
+                        }
+                    }
+                    .labelsHidden()
+                    .frame(maxWidth: .infinity)
+                }
+            }
+
+            HStack {
+                Spacer()
+                Button("Cancel", role: .cancel) { dismiss() }
+                    .keyboardShortcut(.cancelAction)
+                Button("Add") { addAndDismiss() }
+                    .keyboardShortcut(.defaultAction)
+                    .disabled(selectedBundleID.isEmpty)
+            }
+        }
+        .padding(20)
+        .frame(width: 340)
+        .onAppear {
+            if let first = runningApps.first {
+                selectedBundleID = first.bundleID
+            }
+        }
+    }
+
+    private func addAndDismiss() {
+        guard !selectedBundleID.isEmpty else { return }
+        let displayName = runningApps.first { $0.bundleID == selectedBundleID }?.name ?? selectedBundleID
+        IgnoreListStore.shared.addIgnoredApp(bundleID: selectedBundleID, displayName: displayName)
+        dismiss()
     }
 }
 
