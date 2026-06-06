@@ -69,11 +69,11 @@ enum MenuScraper {
             let submenu = children(item).first
 
             if let keys = shortcutKeys {
-                topLevel.append(Shortcut(title: title, keys: keys, axElement: item))
+                topLevel.append(Shortcut(title: title, keys: keys, axElement: item, isDisabled: false))
             } else if includeAll, submenu == nil {
                 // Leaf item with no shortcut: include with empty keys so the full
                 // menu structure is discoverable.
-                topLevel.append(Shortcut(title: title, keys: "", axElement: item))
+                topLevel.append(Shortcut(title: title, keys: "", axElement: item, isDisabled: false))
             }
 
             // If this item opens a submenu, collect its contents as a named group.
@@ -124,9 +124,9 @@ enum MenuScraper {
             let submenu = children(item).first
 
             if let keys = shortcutKeys {
-                result.append(Shortcut(title: title, keys: keys, axElement: item))
+                result.append(Shortcut(title: title, keys: keys, axElement: item, isDisabled: false))
             } else if includeAll, submenu == nil {
-                result.append(Shortcut(title: title, keys: "", axElement: item))
+                result.append(Shortcut(title: title, keys: "", axElement: item, isDisabled: false))
             }
 
             // Flatten sub-submenus.

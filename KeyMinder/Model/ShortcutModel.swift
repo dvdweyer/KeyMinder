@@ -13,6 +13,9 @@ struct Shortcut: Identifiable, Hashable {
     /// The AX element for this menu item. Used to activate the shortcut
     /// via `AXUIElementPerformAction`. `nil` only for synthetic/test instances.
     let axElement: AXUIElement?
+    /// True for system shortcuts the user has explicitly disabled. Such rows
+    /// are always rendered dimmed and excluded from Tab navigation.
+    let isDisabled: Bool
 
     // AXUIElement is a CFTypeRef (opaque class) and can't participate in
     // automatic Hashable synthesis. Identity is fully determined by the UUID.
@@ -26,6 +29,14 @@ extension Shortcut {
         self.title = title
         self.keys = keys
         self.axElement = nil
+        self.isDisabled = false
+    }
+
+    init(title: String, keys: String, isDisabled: Bool) {
+        self.title = title
+        self.keys = keys
+        self.axElement = nil
+        self.isDisabled = isDisabled
     }
 }
 

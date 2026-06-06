@@ -101,7 +101,8 @@ final class PopupFilterModel {
             for section in column {
                 for group in section.groups {
                     for shortcut in group.shortcuts
-                        where (!shortcut.keys.isEmpty || showsAllItems)
+                        where !shortcut.isDisabled
+                            && (!shortcut.keys.isEmpty || showsAllItems)
                             && shortcut.matches(activeQuery)
                             && shortcut.matchesModifierFilter(modifierFilter)
                             && (!showOnlyFavourites || FavouritesStore.shared.isFavourite(shortcut, appID: appID))
@@ -460,6 +461,10 @@ struct MenuSectionView: View {
     /// Whether a row should be rendered at all.
     private func isShown(_ shortcut: Shortcut) -> Bool {
         guard passesGate(shortcut) else { return false }
+        if shortcut.isDisabled {
+            // Disabled system shortcuts: always shown, text filter only (no modifier/favourites filter).
+            return shortcut.matches(query)
+        }
         if isIgnoredWhileIdle(shortcut) { return false }
         if showOnlyFavourites && !FavouritesStore.shared.isFavourite(shortcut, appID: appID) { return false }
         return dimMode ? true : matchesFilter(shortcut)
@@ -467,7 +472,8 @@ struct MenuSectionView: View {
 
     /// Whether a row should be dimmed (dim mode only; always false in normal mode).
     private func isDimmed(_ shortcut: Shortcut) -> Bool {
-        dimMode && !matchesFilter(shortcut)
+        if shortcut.isDisabled { return true }
+        return dimMode && !matchesFilter(shortcut)
     }
 
     private func groupHasContent(_ group: ShortcutGroup) -> Bool {
