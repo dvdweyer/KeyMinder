@@ -80,6 +80,10 @@ final class SettingsModel {
         didSet { UserDefaults.standard.showAllMenuItems = showAllMenuItems }
     }
 
+    var showSystemShortcuts: Bool = UserDefaults.standard.showSystemShortcuts {
+        didSet { UserDefaults.standard.showSystemShortcuts = showSystemShortcuts }
+    }
+
     var debugLoggingEnabled: Bool = UserDefaults.standard.debugLoggingEnabled {
         didSet { UserDefaults.standard.debugLoggingEnabled = debugLoggingEnabled }
     }
@@ -243,6 +247,8 @@ private struct GeneralSettingsView: View {
                 .fixedSize(horizontal: false, vertical: true)
 
             Toggle("Show all menu entries", isOn: $model.showAllMenuItems)
+
+            Toggle("Show system shortcuts", isOn: $model.showSystemShortcuts)
 
             Divider()
 

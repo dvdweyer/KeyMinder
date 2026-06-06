@@ -127,7 +127,20 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             return
         }
         guard let app = frontmostMonitor.frontmostApp else {
-            popup.show(.noApp)
+            if UserDefaults.standard.showSystemShortcuts,
+               let sys = SystemShortcutsProvider.load() {
+                let icon = NSImage(systemSymbolName: "apple.logo", accessibilityDescription: nil)
+                let shortcuts = AppShortcuts(
+                    appName: String(localized: "System"),
+                    bundleIdentifier: "__system__",
+                    icon: icon,
+                    sections: [sys],
+                    includesItemsWithoutShortcuts: false
+                )
+                popup.show(.shortcuts(shortcuts))
+            } else {
+                popup.show(.noApp)
+            }
             return
         }
 
@@ -171,11 +184,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
             guard !Task.isCancelled else { return }
 
+            var allSections = sections
+            if UserDefaults.standard.showSystemShortcuts,
+               let sys = SystemShortcutsProvider.load() {
+                allSections.append(sys)
+            }
             let shortcuts = AppShortcuts(
                 appName: appName,
                 bundleIdentifier: bundleID,
                 icon: icon,
-                sections: sections,
+                sections: allSections,
                 includesItemsWithoutShortcuts: includeAll
             )
             popup.show(.shortcuts(shortcuts))

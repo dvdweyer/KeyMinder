@@ -183,4 +183,11 @@ extension UserDefaults {
         get { bool(forKey: Self.showAllMenuItemsKey) }
         set { set(newValue, forKey: Self.showAllMenuItemsKey) }
     }
+
+    private static let showSystemShortcutsKey = "showSystemShortcuts"
+
+    var showSystemShortcuts: Bool {
+        get { bool(forKey: Self.showSystemShortcutsKey) }
+        set { set(newValue, forKey: Self.showSystemShortcutsKey) }
+    }
 }
