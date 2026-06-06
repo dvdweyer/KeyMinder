@@ -127,14 +127,26 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             return
         }
         guard let app = frontmostMonitor.frontmostApp else {
-            if UserDefaults.standard.showSystemShortcuts,
-               let sys = SystemShortcutsProvider.load() {
+            var noAppSections: [MenuSection] = []
+            if UserDefaults.standard.showSystemShortcuts, let sys = SystemShortcutsProvider.load() {
+                noAppSections.append(sys)
+            }
+            if UserDefaults.standard.showBackgroundApps {
+                noAppSections.append(contentsOf: BackgroundAppsProvider.load(
+                    excluding: nil,
+                    ignoredTitlesFor: { bid in
+                        let s = IgnoreListStore.shared
+                        return (s.isEnabled && !s.showWhenFiltering) ? s.ignoredTitles(for: bid) : []
+                    }
+                ))
+            }
+            if !noAppSections.isEmpty {
                 let icon = NSImage(systemSymbolName: "apple.logo", accessibilityDescription: nil)
                 let shortcuts = AppShortcuts(
                     appName: String(localized: "System"),
                     bundleIdentifier: "__system__",
                     icon: icon,
-                    sections: [sys],
+                    sections: noAppSections,
                     includesItemsWithoutShortcuts: false
                 )
                 popup.show(.shortcuts(shortcuts))
@@ -188,6 +200,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             if UserDefaults.standard.showSystemShortcuts,
                let sys = SystemShortcutsProvider.load() {
                 allSections.append(sys)
+            }
+            if UserDefaults.standard.showBackgroundApps {
+                let bgSections = BackgroundAppsProvider.load(
+                    excluding: bundleID,
+                    ignoredTitlesFor: { bid in
+                        let s = IgnoreListStore.shared
+                        return (s.isEnabled && !s.showWhenFiltering) ? s.ignoredTitles(for: bid) : []
+                    }
+                )
+                allSections.append(contentsOf: bgSections)
             }
             let shortcuts = AppShortcuts(
                 appName: appName,

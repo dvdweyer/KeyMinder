@@ -84,6 +84,10 @@ final class SettingsModel {
         didSet { UserDefaults.standard.showSystemShortcuts = showSystemShortcuts }
     }
 
+    var showBackgroundApps: Bool = UserDefaults.standard.showBackgroundApps {
+        didSet { UserDefaults.standard.showBackgroundApps = showBackgroundApps }
+    }
+
     var debugLoggingEnabled: Bool = UserDefaults.standard.debugLoggingEnabled {
         didSet { UserDefaults.standard.debugLoggingEnabled = debugLoggingEnabled }
     }
@@ -249,6 +253,8 @@ private struct GeneralSettingsView: View {
             Toggle("Show all menu entries", isOn: $model.showAllMenuItems)
 
             Toggle("Show system shortcuts", isOn: $model.showSystemShortcuts)
+
+            Toggle("Show shortcuts from running apps (experimental)", isOn: $model.showBackgroundApps)
 
             Divider()
 

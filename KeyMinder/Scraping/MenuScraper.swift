@@ -190,4 +190,11 @@ extension UserDefaults {
         get { bool(forKey: Self.showSystemShortcutsKey) }
         set { set(newValue, forKey: Self.showSystemShortcutsKey) }
     }
+
+    private static let showBackgroundAppsKey = "showBackgroundApps"
+
+    var showBackgroundApps: Bool {
+        get { bool(forKey: Self.showBackgroundAppsKey) }
+        set { set(newValue, forKey: Self.showBackgroundAppsKey) }
+    }
 }
