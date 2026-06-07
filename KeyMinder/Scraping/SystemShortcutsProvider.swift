@@ -221,6 +221,12 @@ enum SystemShortcutsProvider {
     /// Queries the Window Server for each known symbolic hotkey ID and builds
     /// the `resolved` dictionary. Returns `nil` when any CGS symbol is absent.
     private static func loadViaCGS() -> [Int: (keys: String, isDisabled: Bool)]? {
+        // Cap to macOS versions whose CGS function signatures have been verified.
+        // On untested future OS versions fall back to the plist parser rather than
+        // risking undefined behaviour from a silent signature change.
+        guard ProcessInfo.processInfo.operatingSystemVersion.majorVersion <= 15 else {
+            return nil
+        }
         guard let mainConnFn = _cgsMainConnFn,
               let getValFn   = _cgsGetHKValFn,
               let isEnabFn   = _cgsIsHKEnabFn

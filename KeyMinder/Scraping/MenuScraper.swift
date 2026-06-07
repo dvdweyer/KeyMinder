@@ -158,7 +158,7 @@ enum MenuScraper {
               CFGetTypeID(raw) == AXUIElementGetTypeID() else { return nil }
         // CF types have no runtime type metadata; as? always succeeds and is rejected
         // by the compiler. The CFGetTypeID guard above is the safety check.
-        return (raw as! AXUIElement)
+        return raw as? AXUIElement
     }
 
     private static func children(_ element: AXUIElement) -> [AXUIElement] {
