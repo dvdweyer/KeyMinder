@@ -2,10 +2,10 @@
 # Release pipeline for KeyMinder.
 #
 # Usage:
-#   release.sh                  — interactive prompt: choose full-deploy, local-only, or both
-#   release.sh --full-deploy    — Release build, notarize, rsync; no local install
+#   release.sh                  — interactive prompt
+#   release.sh --local-deploy   — Release build, notarize, rsync; no local install
+#   release.sh --full-deploy    — Release build, notarize, rsync + install to /Applications
 #   release.sh --local-only     — Debug build + install to /Applications only
-#   release.sh --full-deploy --local-only  — full deploy + install to /Applications
 #
 # Prerequisites (full pipeline):
 #   - Copy scripts/.env.example to scripts/.env and fill in TEAM_ID.
@@ -21,36 +21,36 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 # ── Flags ─────────────────────────────────────────────────────────────────────
-LOCAL_ONLY=false
-FULL_DEPLOY=false
+MODE=""
 
 for arg in "$@"; do
     case "$arg" in
-        --local-only)  LOCAL_ONLY=true ;;
-        --full-deploy) FULL_DEPLOY=true ;;
+        --local-only)   MODE="local-only" ;;
+        --local-deploy) MODE="local-deploy" ;;
+        --full-deploy)  MODE="full-deploy" ;;
         *) echo "error: unknown argument: $arg" >&2; exit 1 ;;
     esac
 done
 
 # ── Interactive prompt (no flags given) ───────────────────────────────────────
-if [[ "$LOCAL_ONLY" == false && "$FULL_DEPLOY" == false ]]; then
+if [[ -z "$MODE" ]]; then
     echo "Which pipeline would you like to run?"
-    echo "  1) full-deploy  — Release build, notarize, rsync (no local install)"
-    echo "  2) local-only   — Debug build, install to /Applications"
-    echo "  3) both         — full deploy + install to /Applications"
+    echo "  1) local-deploy  — Release build, notarize, rsync (no local install)"
+    echo "  2) local-only    — Debug build, install to /Applications"
+    echo "  3) full-deploy   — Release build, notarize, rsync + install to /Applications"
     echo ""
     read -rp "Choice [1/2/3]: " _CHOICE
     echo ""
     case "$_CHOICE" in
-        1) FULL_DEPLOY=true ;;
-        2) LOCAL_ONLY=true ;;
-        3) FULL_DEPLOY=true; LOCAL_ONLY=true ;;
+        1) MODE="local-deploy" ;;
+        2) MODE="local-only" ;;
+        3) MODE="full-deploy" ;;
         *) echo "error: invalid choice '$_CHOICE'" >&2; exit 1 ;;
     esac
 fi
 
 # ── Local-only fast path ───────────────────────────────────────────────────────
-if [[ "$LOCAL_ONLY" == true && "$FULL_DEPLOY" == false ]]; then
+if [[ "$MODE" == "local-only" ]]; then
     echo "==> KeyMinder — local Debug install"
     echo ""
     _BUILD_DIR="/tmp/KeyMinder-debug-$$"
@@ -217,8 +217,8 @@ done
 echo "--- Deploying via rsync…"
 (cd "$(dirname "$DEPLOY_SH")" && bash "$(basename "$DEPLOY_SH")")
 
-# ── Local install (only when requested) ──────────────────────────────────────
-if [[ "$LOCAL_ONLY" == true ]]; then
+# ── Local install (full-deploy only) ─────────────────────────────────────────
+if [[ "$MODE" == "full-deploy" ]]; then
     echo ""
     echo "--- Installing to /Applications…"
     pkill -x KeyMinder 2>/dev/null || true
