@@ -263,7 +263,7 @@ enum SystemShortcutsProvider {
         guard params.count >= 3 else { return nil }
         let (keyChar, virtualKey, nsFlags) = (params[0], params[1], params[2])
         let cmdChar: String? = (keyChar >= 0x20 && keyChar <= 0x7E)
-            UnicodeScalar(keyChar).map { String($0) } : nil
+            ? UnicodeScalar(keyChar).map { String($0) } : nil
         return ShortcutFormatter.format(
             cmdChar: cmdChar,
             virtualKey: virtualKey,

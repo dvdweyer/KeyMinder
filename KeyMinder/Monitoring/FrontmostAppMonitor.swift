@@ -9,8 +9,8 @@ final class FrontmostAppMonitor {
 
     private(set) var frontmostApp: NSRunningApplication?
 
-    // nonisolated(unsafe): only accessed on the main actor in practice;
-    // nonisolated is required because deinit is implicitly nonisolated in Swift.
+    // nonisolated(unsafe): deinit is implicitly nonisolated and needs to
+    // removeObserver; nonisolated alone errors on @Observable var (compiler bug).
     nonisolated(unsafe) private var observer: NSObjectProtocol?
     private let ownPID = ProcessInfo.processInfo.processIdentifier
 

@@ -598,7 +598,11 @@ struct ShortcutRow: View {
         // screen reader speaks "New Conversation, Shift Command N" rather than
         // announcing the raw glyph string "⇧⌘N" and the title separately.
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(shortcut.title), \(spokenKeys(shortcut.keys))")
+        .accessibilityLabel(
+            shortcut.keys.isEmpty
+                ? shortcut.title
+                : "\(shortcut.title), \(spokenKeys(shortcut.keys))"
+        )
         .accessibilityAddTraits(clickable ? .isButton : [])
         .accessibilityAction(named: Text(isFavourite ? "Remove from favourites" : "Add to favourites")) {
             if !dimmed && !appID.isEmpty { onToggleFavourite() }
@@ -667,10 +671,10 @@ private struct FavouritesToggle: View {
 /// - Modifier glyphs: ⌘→Command  ⇧→Shift  ⌥→Option  ⌃→Control
 /// - Special keys:    ↩→Return   ⎋→Escape  ⌫→Delete  ⇥→Tab
 ///                    ↑→Up Arrow ↓→Down Arrow ←→Left Arrow →→Right Arrow
-///                    (space)→Space
+///                    "Space" (word token) → Space
 /// - Fn keys (F followed by digits) are kept intact: "F5", "F12", etc.
 /// - All other characters (letters, digits) are passed through uppercased.
-private func spokenKeys(_ keys: String) -> String {
+func spokenKeys(_ keys: String) -> String {
     let map: [Character: String] = [
         // Modifiers
         "⌘": "Command", "⇧": "Shift", "⌥": "Option", "⌃": "Control",
