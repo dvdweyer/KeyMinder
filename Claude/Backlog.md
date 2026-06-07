@@ -12,6 +12,33 @@ Ignored rows are supposed to appear dimmed when the user types a query that matc
 
 ---
 
+## Interactive onboarding tour
+
+A guided walkthrough that introduces new users to KeyMinder's key features and
+settings — triggered automatically on first launch (after the Accessibility grant)
+or manually via a "Take the tour…" item in the right-click context menu.
+
+Each step would highlight one concept with a brief explanation and, where possible,
+a live demonstration:
+
+1. **Trigger** — show the global hotkey and double-tap option; invite the user to
+   try opening the popup.
+2. **Search** — type-to-filter; modifier key buttons (⌃ ⌥ ⇧ ⌘); dim mode when
+   all shortcuts fit on screen.
+3. **Favourites** — hover a row to reveal the star; ★ header button; Esc to clear.
+4. **Run a command** — click or Tab + Return to activate a shortcut directly.
+5. **System shortcuts** — the dedicated section for Spotlight, Screenshots, etc.
+6. **Settings highlights** — all-entries mode, Ignored Commands, custom accent colour.
+
+**Implementation notes:** a `TourController` owned by `AppDelegate` could drive a
+sequence of lightweight popovers anchored to the menu-bar icon or the popup panel
+itself, advancing on user action or a timeout. The existing `showHintPopover()`
+infrastructure in `AppDelegate` (used after first-launch Settings close) is a
+natural starting point. State tracked in `UserDefaults` (`didCompleteTour: Bool`)
+so it runs once automatically and can be re-triggered on demand.
+
+---
+
 ## Auto-updater
 
 Integrate **Sparkle** so users receive update notifications and can install new
