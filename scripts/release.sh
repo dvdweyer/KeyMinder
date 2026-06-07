@@ -1,13 +1,16 @@
 #!/bin/bash
-# Full release pipeline: archive → sign (Developer ID) → notarize → staple → zip
-# → copy to local website → deploy via rsync → install to /Applications.
+# Release pipeline for KeyMinder.
 #
-# Usage: release.sh [--local-only]
-#   --local-only  Debug build + install to /Applications only; skips notarize/rsync.
+# Usage:
+#   release.sh                  — interactive prompt: choose full-deploy, local-only, or both
+#   release.sh --full-deploy    — Release build, notarize, rsync; no local install
+#   release.sh --local-only     — Debug build + install to /Applications only
+#   release.sh --full-deploy --local-only  — full deploy + install to /Applications
 #
 # Prerequisites (full pipeline):
 #   - Copy scripts/.env.example to scripts/.env and fill in TEAM_ID.
 #   - Run scripts/setup-notarytool.sh once to store keychain credentials.
+#   - Run scripts/setup-sparkle-tools.sh once and add ~/.sparkle-tools/bin to PATH.
 #   - Xcode must be installed at /Applications/Xcode.app.
 #   - The project's Release config must be signed with Developer ID Application.
 set -euo pipefail
@@ -19,15 +22,35 @@ REPO_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 # ── Flags ─────────────────────────────────────────────────────────────────────
 LOCAL_ONLY=false
+FULL_DEPLOY=false
+
 for arg in "$@"; do
     case "$arg" in
-        --local-only) LOCAL_ONLY=true ;;
+        --local-only)  LOCAL_ONLY=true ;;
+        --full-deploy) FULL_DEPLOY=true ;;
         *) echo "error: unknown argument: $arg" >&2; exit 1 ;;
     esac
 done
 
+# ── Interactive prompt (no flags given) ───────────────────────────────────────
+if [[ "$LOCAL_ONLY" == false && "$FULL_DEPLOY" == false ]]; then
+    echo "Which pipeline would you like to run?"
+    echo "  1) full-deploy  — Release build, notarize, rsync (no local install)"
+    echo "  2) local-only   — Debug build, install to /Applications"
+    echo "  3) both         — full deploy + install to /Applications"
+    echo ""
+    read -rp "Choice [1/2/3]: " _CHOICE
+    echo ""
+    case "$_CHOICE" in
+        1) FULL_DEPLOY=true ;;
+        2) LOCAL_ONLY=true ;;
+        3) FULL_DEPLOY=true; LOCAL_ONLY=true ;;
+        *) echo "error: invalid choice '$_CHOICE'" >&2; exit 1 ;;
+    esac
+fi
+
 # ── Local-only fast path ───────────────────────────────────────────────────────
-if [[ "$LOCAL_ONLY" == true ]]; then
+if [[ "$LOCAL_ONLY" == true && "$FULL_DEPLOY" == false ]]; then
     echo "==> KeyMinder — local Debug install"
     echo ""
     _BUILD_DIR="/tmp/KeyMinder-debug-$$"
@@ -194,14 +217,16 @@ done
 echo "--- Deploying via rsync…"
 (cd "$(dirname "$DEPLOY_SH")" && bash "$(basename "$DEPLOY_SH")")
 
-# ── Local install ─────────────────────────────────────────────────────────────
-echo ""
-echo "--- Installing to /Applications…"
-pkill -x KeyMinder 2>/dev/null || true
-while pgrep -x KeyMinder > /dev/null 2>&1; do sleep 0.1; done
-rm -rf /Applications/KeyMinder.app
-cp -R "$APP" /Applications/
-xattr -cr /Applications/KeyMinder.app
+# ── Local install (only when requested) ──────────────────────────────────────
+if [[ "$LOCAL_ONLY" == true ]]; then
+    echo ""
+    echo "--- Installing to /Applications…"
+    pkill -x KeyMinder 2>/dev/null || true
+    while pgrep -x KeyMinder > /dev/null 2>&1; do sleep 0.1; done
+    rm -rf /Applications/KeyMinder.app
+    cp -R "$APP" /Applications/
+    xattr -cr /Applications/KeyMinder.app
+fi
 
 # ── Cleanup ───────────────────────────────────────────────────────────────────
 rm -rf "$BUILD_DIR"
