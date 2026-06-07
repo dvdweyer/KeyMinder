@@ -187,11 +187,11 @@ echo "--- Updating Sparkle appcast…"
 #     https://github.com/sparkle-project/Sparkle/releases/latest/download/Sparkle-2.x.y.tar.xz
 #   tar -xf /tmp/sparkle.tar.xz -C ~/.sparkle-tools --strip-components=1 bin
 # Then add ~/.sparkle-tools/bin to your PATH (or symlink into /usr/local/bin).
-GENERATE_APPCAST=$(command -v generate_appcast 2>/dev/null || true)
-if [[ -z "$GENERATE_APPCAST" ]]; then
-    echo "error: generate_appcast not found in PATH." >&2
-    echo "       Download Sparkle tools from https://github.com/sparkle-project/Sparkle/releases" >&2
-    echo "       and add their bin/ directory to your PATH." >&2
+GENERATE_APPCAST=$(command -v generate_appcast 2>/dev/null \
+    || echo "$HOME/.sparkle-tools/bin/generate_appcast")
+if [[ ! -x "$GENERATE_APPCAST" ]]; then
+    echo "error: generate_appcast not found in PATH or ~/.sparkle-tools/bin." >&2
+    echo "       Run scripts/setup-sparkle-tools.sh to install it." >&2
     exit 1
 fi
 APPCAST="$REPO_DIR/Distribution/appcast.xml"
