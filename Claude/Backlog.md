@@ -6,9 +6,7 @@ Items are rough ideas, not commitments. No priority order.
 
 ## Known Issues
 
-### Ignored Commands — "Show when filtering" unreliable (v0.1.71)
-
-Ignored rows are supposed to appear dimmed when the user types a query that matches them, but the behaviour is inconsistent. Needs investigation into how `showWhenFiltering` interacts with `MenuSectionView`'s dim-mode logic and the `visibleShortcuts` cache in `PopupFilterModel`.
+~~### Ignored Commands — "Show when filtering" unreliable (v0.1.71)~~ **Fixed in v0.1.86.**
 
 ---
 

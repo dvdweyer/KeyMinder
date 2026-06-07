@@ -360,9 +360,6 @@ edit `project.pbxproj`.
 - AX scraping runs on a background `Task.detached`; the main thread is unblocked, but
   the AX IPC itself is synchronous C code with no Swift cancellation checkpoints — a
   busy target app can still delay the popup until the 1 s AX timeout fires.
-- **"Show when filtering" (Ignored Commands) is unreliable.** Ignored rows do not
-  consistently appear dimmed when a matching query is typed. Tracked in
-  `Claude/Backlog.md`.
 - **Lazy-populated submenus are invisible to the scraper.** Apps that use
   `NSMenuDelegate`'s `menuNeedsUpdate:` or `menu:updateItem:atIndex:shouldCancel:`
   only fill submenu items when the menu is about to be *displayed*.  The AX
