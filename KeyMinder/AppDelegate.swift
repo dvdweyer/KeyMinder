@@ -258,7 +258,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc private func showAbout() {
         let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "?"
-        let homepageURL = URL(string: "https://donald.van-de-weyer.net/keyminder.html")!
+        let homepageURL = URL(string: "https://keyminder.app/")!
 
         let credits = NSMutableAttributedString(
             string: "Donald van de Weyer\n",
