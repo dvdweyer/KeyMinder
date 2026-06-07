@@ -31,7 +31,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         setupHotkey()
         setupDoubleTap()
         setupSleepWakeObserver()
-        showFirstLaunchSettingsIfNeeded()
+        showWelcomeIfNeeded()
+        migrateOnboardingTips()
     }
 
     // MARK: - Global hotkey
@@ -287,24 +288,37 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     // MARK: - First-launch setup
 
-    /// On the very first launch, opens Settings so the user can configure their
-    /// preferred hotkey and double-tap trigger before using the app.
-    /// When Settings is closed, a popover hint appears on the menu-bar icon.
+    /// On the very first launch, shows the welcome wizard so the user can grant
+    /// Accessibility access and configure a trigger before seeing the popup.
     /// Subsequent launches are unaffected.
-    private func showFirstLaunchSettingsIfNeeded() {
+    private func showWelcomeIfNeeded() {
         guard !UserDefaults.standard.didShowWelcome else { return }
         UserDefaults.standard.didShowWelcome = true
-        SettingsWindowController.onFirstClose = { [weak self] in
+        WelcomeWindowController.shared.onTryItNow = { [weak self] in
+            self?.presentPopup()
+        }
+        WelcomeWindowController.shared.onDismiss = { [weak self] in
             Task { @MainActor [weak self] in
                 try? await Task.sleep(for: .milliseconds(300))
                 self?.showMenuBarHint()
+                if AXIsProcessTrusted() { self?.presentPopup() }
             }
         }
-        // Defer slightly so the status-bar item is visible before the window
-        // appears (the run loop needs one pass to render the menu-bar icon).
+        // Defer one run-loop pass so the status-bar item is rendered before
+        // the window appears.
         Task { @MainActor in
             try? await Task.sleep(for: .milliseconds(500))
-            SettingsWindowController.show()
+            WelcomeWindowController.shared.show()
+        }
+    }
+
+    /// Existing users (pre-wizard build) already have `didShowWelcome = true`.
+    /// If `popupTipIndex` has never been set, skip all tips for them — the
+    /// tips are designed for users completing the new wizard flow.
+    private func migrateOnboardingTips() {
+        let d = UserDefaults.standard
+        if d.didShowWelcome, d.object(forKey: "popupTipIndex") == nil {
+            d.popupTipIndex = PopupTip.allCases.count
         }
     }
 
