@@ -1,8 +1,8 @@
 # KeyMinder — Security Audit
 
-**Date:** 2026-06-07
+**Date:** 2026-06-07 (last updated 2026-06-07 after v0.1.82)
 **Auditor:** Claude Sonnet 4.6 (automated static analysis)
-**Scope:** Full project, current HEAD (v0.1.79, branch `main`)
+**Scope:** Full project, audited at v0.1.79; all findings resolved by v0.1.82
 **Prior audit:** `Claude/AUDIT_2026-06-01.md` (v0.1.39). Status of all prior findings is tracked explicitly in each section.
 
 ---
@@ -138,7 +138,7 @@ The implementation correctly limits action to keyCode 53, and the narrow time wi
 
 ### Private CGS API (`SystemShortcutsProvider`) — **NEW since v0.1.39**
 
-**Finding N-01 (Low)** `SystemShortcutsProvider.swift:6-24`
+**Finding N-01 (Low) — FIXED in v0.1.81** `SystemShortcutsProvider.swift:6-24`
 
 The file uses `dlopen`/`dlsym` to resolve three undocumented CoreGraphics symbols at module-init time, then casts them via `unsafeBitCast` to typed function pointers:
 
@@ -155,9 +155,7 @@ The three private symbols and their assumed signatures:
 - `CGSGetSymbolicHotKeyValue(Int32, Int32, *UInt16, *UInt32)` → `OSStatus`
 - `CGSIsSymbolicHotKeyEnabled(Int32, Int32)` → `Bool`
 
-These have been stable across many macOS releases, but their stability is not guaranteed by Apple.
-
-**Remediation:** Add a maximum macOS version check (e.g., cap CGS use to macOS 15.x) and fall back to plist parsing for untested versions. Document which macOS versions were validated. Consider filing a Feedback Assistant request for a public API alternative.
+**Fix applied (v0.1.81):** `loadViaCGS()` now returns `nil` immediately when `ProcessInfo.processInfo.operatingSystemVersion.majorVersion > 15`, falling back to the plist parser on untested future macOS versions. Update the cap with each new major macOS release after re-verifying the three function signatures. ✓
 
 ### AX cross-process action (`ShortcutActivator`)
 
@@ -191,39 +189,35 @@ Both are read with `Data(contentsOf:)` + `PropertyListSerialization`, which cann
 
 ### Force cast (`as!`)
 
-**Prior finding F-01 (Low) — still open.** `MenuScraper.swift:161`:
+**Prior finding F-01 (Low) — FIXED in v0.1.81.** `MenuScraper.swift`
 
 ```swift
+// Before
 return (raw as! AXUIElement)
+// After
+return raw as? AXUIElement
 ```
 
-The surrounding `CFGetTypeID` guard makes this crash-impossible in normal operation. The return type is already `AXUIElement?`, so `as?` would be behaviour-equivalent. The force cast is the only `as!` in the codebase.
+The surrounding `CFGetTypeID` guard makes the crash impossible in practice; `as?` is behaviour-equivalent on the success path and eliminates the crash path entirely. ✓
 
-**Finding N-02 (Informational)** `SystemShortcutsProvider.swift:260`:
+**Finding N-02 (Informational) — FIXED in v0.1.82.** `SystemShortcutsProvider.swift`
 
 ```swift
+// Before
 ? String(UnicodeScalar(keyChar)!) : nil
+// After
+UnicodeScalar(keyChar).map { String($0) } : nil
 ```
 
-The ternary guard `keyChar >= 0x20 && keyChar <= 0x7E` ensures only valid printable ASCII scalars reach this line, making the force-unwrap safe. However, if the guard condition were relaxed in a future edit, the crash is silent. Prefer `UnicodeScalar(keyChar).map { String($0) }`.
+The `!` is replaced with `map`, making the nil-on-invalid-scalar path explicit. ✓
 
-**Finding N-03 (Informational)** `PopupRootView.swift:354`:
+**Finding N-03 (Informational) — FIXED in v0.1.82.** `PopupRootView.swift`
 
-```swift
-let ch = item.glyph.first!
-```
+`mods` tuple `glyph` field changed from `String` to `Character`; `item.glyph.first!` removed entirely since no `.first` call is needed. ✓
 
-`mods` is a compile-time constant with non-empty strings (`"⌃"`, `"⌥"`, `"⇧"`, `"⌘"`). `.first` will never be nil. Safe but a code smell if the constant is ever extended with an empty string.
+**Finding N-04 (Informational) — FIXED in v0.1.82.** `SettingsView.swift`
 
-**Finding N-04 (Informational)** `SettingsView.swift:505-506, 656`:
-
-```swift
-.filter { ... && $0.bundleIdentifier != nil && $0.localizedName != nil }
-.filter { IgnoreListStore.shared.ignoredApps[$0.bundleIdentifier!] == nil }
-.map { (bundleID: $0.bundleIdentifier!, name: $0.localizedName!) }
-```
-
-The nil checks in the first filter guard the force unwraps in subsequent closures. `Array.filter` + `.map` on `Array` is strict (not lazy), so the ordering is safe. However, the two-step pattern (nil-check in filter, force-unwrap in map) is fragile if the chain is ever refactored.
+Both `runningApps` computed properties collapsed from a nil-check filter + force-unwrap map into a single `compactMap` with a `guard let` binding. ✓
 
 ### Recursive AX traversal depth limit
 
@@ -266,7 +260,7 @@ CODE_SIGN_IDENTITY = "Apple Development";
 
 ### Force unwraps on security paths
 
-No force unwraps on auth results, crypto outputs, or AX error returns. The four `!` instances documented under Section 5 are all in UI or data-parsing code with surrounding guards. None is on a security-critical path.
+No force unwraps on auth results, crypto outputs, or AX error returns. All four `!` instances documented under Section 5 have been resolved (v0.1.81–v0.1.82). No `as!` or `!` force-unwraps remain in the codebase. ✓
 
 ### `#if DEBUG` security bypasses
 
@@ -279,7 +273,7 @@ None found. ✓
 ### Deprecated / insecure APIs
 
 - `Carbon.HIToolbox` (`RegisterEventHotKey`) — legacy but the only reliable cross-process global hotkey API on macOS without sandboxing. No modern replacement exists. Acceptable.
-- `dlopen`/`dlsym`/`unsafeBitCast` for private CGS APIs — not deprecated, but undocumented and carries signature-stability risk (N-01).
+- `dlopen`/`dlsym`/`unsafeBitCast` for private CGS APIs — not deprecated, but undocumented and carries signature-stability risk (N-01, mitigated by macOS version cap in v0.1.81).
 - No MD5, SHA-1, DES, or other broken cryptographic primitives. ✓
 - No `SecKeychainFind*` (deprecated keychain APIs). ✓
 
@@ -300,86 +294,36 @@ None found. ✓
 | 1. Reconnaissance | — | — | — | — | F-05 *(open)*, TEAM_ID in CLAUDE.md |
 | 2. Dependencies | — | — | — | — | — |
 | 3. Sensitive Data / Secrets | — | — | — | — | F-02 ✓, F-04 ✓ |
-| 4. IPC & Attack Surface | — | — | — | N-01 (CGS sig mismatch) | F-07 ✓ |
-| 5. Data Handling | — | — | — | F-01 *(open)*, F-NEW-1 ✓ | N-02, N-03, N-04 |
+| 4. IPC & Attack Surface | — | — | — | N-01 ✓ v0.1.81 | F-07 ✓ |
+| 5. Data Handling | — | — | — | F-01 ✓ v0.1.81, F-NEW-1 ✓ | N-02 ✓, N-03 ✓, N-04 ✓ v0.1.82 |
 | 6. Network & TLS | — | — | — | — | — |
 | 7. Update & Distribution | — | — | — | — | F-05 *(open)* |
 | 8. Code Quality | — | — | — | — | — |
-| **Total (open)** | **0** | **0** | **0** | **2** | **3** |
+| **Total (open)** | **0** | **0** | **0** | **0** | **1** |
 
-**Legend:** ✓ = fixed since prior audit | *(open)* = carried over from prior audit
+**Legend:** ✓ = fixed | *(open)* = still open
 
 Prior findings closed since v0.1.39: F-02 (Medium), F-04, F-07, F-NEW-1.
-New findings since v0.1.39: N-01 (Low), N-02, N-03, N-04 (all Informational).
+New findings since v0.1.39: N-01 (Low, fixed v0.1.81), N-02/N-03/N-04 (Informational, fixed v0.1.82).
+**One finding remains open:** F-05 (Informational) — Release config signing identity. No functional impact.
 
 ---
 
-## Top-5 Prioritised Remediation List
+## Remediation Status
 
-### 1. N-01 — Private CGS function-signature mismatch (Low)
-**File:** `KeyMinder/Scraping/SystemShortcutsProvider.swift:14-24`
+| ID | Severity | Finding | Status |
+|----|----------|---------|--------|
+| F-01 | Low | Force cast `as! AXUIElement` in `MenuScraper` | ✅ Fixed v0.1.81 |
+| N-01 | Low | Private CGS API signature-mismatch risk | ✅ Fixed v0.1.81 (macOS version cap) |
+| N-02 | Informational | `UnicodeScalar(keyChar)!` in `SystemShortcutsProvider` | ✅ Fixed v0.1.82 |
+| N-03 | Informational | `item.glyph.first!` in `PopupRootView` | ✅ Fixed v0.1.82 |
+| N-04 | Informational | Force-unwrap after nil-check filter in `SettingsView` | ✅ Fixed v0.1.82 |
+| F-05 | Informational | Release config `CODE_SIGN_IDENTITY = "Apple Development"` | ⚠️ Open — no functional impact; export step compensates |
 
-Add a maximum macOS version guard so the CGS path is bypassed on untested future OS versions, falling back to the existing plist parser:
-
-```swift
-private static func loadViaCGS() -> [Int: (keys: String, isDisabled: Bool)]? {
-    // Cap to tested macOS versions; fall back to plist parser on future OS.
-    guard ProcessInfo.processInfo.operatingSystemVersion.majorVersion <= 15 else {
-        return nil
-    }
-    guard let mainConnFn = _cgsMainConnFn, ... else { return nil }
-    ...
-}
-```
-
-Update the cap with each new major macOS release after re-verifying the three function signatures. This eliminates the silent undefined-behaviour risk on an OS version where Apple changes these signatures.
-
-### 2. F-01 — Force cast `as! AXUIElement` (Low)
-**File:** `KeyMinder/Scraping/MenuScraper.swift:161`
-
-Replace the force cast with a conditional cast. The `CFGetTypeID` guard above makes this safe in all realistic cases, but `as?` eliminates the crash path entirely and matches the optional return type:
-
-```swift
-// Before
-return (raw as! AXUIElement)
-// After
-return raw as? AXUIElement
-```
-
-### 3. F-05 — Release config signing identity (Informational)
+### F-05 — Release config signing identity (Informational, open)
 **File:** `KeyMinder.xcodeproj/project.pbxproj`, UUID `3E3EC5A646DA464EBE9375A9` (Release config)
 
 Change both `CODE_SIGN_IDENTITY` lines from `"Apple Development"` to `"Developer ID Application"`. The release script's export step currently compensates for this, but the project config should match the intended distribution identity to avoid confusion and potential breakage if the export step is ever skipped.
-
-### 4. N-02 — Force unwrap on guarded UnicodeScalar (Informational)
-**File:** `KeyMinder/Scraping/SystemShortcutsProvider.swift:260`
-
-```swift
-// Before
-? String(UnicodeScalar(keyChar)!) : nil
-// After
-UnicodeScalar(keyChar).map { String($0) }
-```
-
-Eliminates the `!` and makes the nil-on-invalid-scalar path explicit.
-
-### 5. N-03/N-04 — Force unwraps after nil-check guards (Informational)
-**Files:** `KeyMinder/UI/Popup/PopupRootView.swift:354`, `KeyMinder/UI/Settings/SettingsView.swift:505-506, 656`
-
-For `PopupRootView.swift:354`, the `mods` constant has non-empty strings, so `.first` is always non-nil. This is safe but can be made explicit with `item.glyph.first ?? "?"`.
-
-For `SettingsView.swift:505-506, 656`, collapse the nil-check filter and force-unwrap map into a single `compactMap` to make the intent self-documenting:
-
-```swift
-// Before
-.filter { ... && $0.bundleIdentifier != nil && $0.localizedName != nil }
-.map { (bundleID: $0.bundleIdentifier!, name: $0.localizedName!) }
-// After
-.compactMap { app -> (bundleID: String, name: String)? in
-    guard let id = app.bundleIdentifier, let name = app.localizedName else { return nil }
-    return (bundleID: id, name: name)
-}
-```
 
 ---
 
@@ -396,4 +340,4 @@ For `SettingsView.swift:505-506, 656`, collapse the nil-check filter and force-u
 
 ---
 
-*This document covers a specific point-in-time snapshot (v0.1.79, commit `692b006`). Re-run the audit when significant new features are added — especially any that introduce network calls, XPC services, or new IPC mechanisms.*
+*Audited at v0.1.79 (commit `692b006`); all findings resolved by v0.1.82 (commit `a13a809`) except F-05. Re-run the audit when significant new features are added — especially any that introduce network calls, XPC services, or new IPC mechanisms. Update the CGS version cap in `SystemShortcutsProvider.loadViaCGS()` with each new major macOS release.*
