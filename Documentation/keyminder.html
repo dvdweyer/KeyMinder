@@ -422,8 +422,8 @@
   <h1>KeyMinder</h1>
   <p>A macOS menu bar app that instantly shows the keyboard shortcuts of whichever app you're currently using.</p>
   <div class="button-row">
-    <a href="KeyMinder_0.1.74.zip" class="btn btn-primary" download>
-      ↓ Download v0.1.74
+    <a href="KeyMinder_0.1.83.zip" class="btn btn-primary" download>
+      ↓ Download v0.1.83
     </a>
     <a href="https://github.com/dvdweyer/KeyMinder" class="btn btn-secondary" target="_blank" rel="noopener">
       View on GitHub
@@ -470,7 +470,7 @@
   <div class="section">
     <h2>Install</h2>
     <ol class="steps">
-      <li>Download and unzip <code>KeyMinder_0.1.74.zip</code></li>
+      <li>Download and unzip <code>KeyMinder_0.1.83.zip</code></li>
       <li>Move <code>KeyMinder.app</code> to <code>/Applications</code></li>
       <li>Open KeyMinder — macOS will ask for Accessibility permission</li>
       <li>Grant permission in System Settings → Privacy &amp; Security → Accessibility</li>
@@ -488,8 +488,69 @@
 
     <div class="changelog-entry">
       <div class="changelog-version">
+        <strong>v0.1.83</strong>
+        <span>Jun 7, 2026 — current</span>
+      </div>
+      <ul>
+        <li>Fixed: VoiceOver no longer announces a trailing pause for menu items that have no keyboard shortcut (all-entries mode)</li>
+        <li>Fixed: Space-key shortcuts (e.g. ⌘Space for Spotlight) now spoken correctly by VoiceOver — previously announced as "S P A C E"</li>
+      </ul>
+    </div>
+
+    <div class="changelog-entry">
+      <div class="changelog-version">
+        <strong>v0.1.81–v0.1.82</strong>
+        <span>Jun 7, 2026</span>
+      </div>
+      <ul>
+        <li>Internal stability improvements: removed force-unwraps and hardened private API handling</li>
+      </ul>
+    </div>
+
+    <div class="changelog-entry">
+      <div class="changelog-version">
+        <strong>v0.1.79</strong>
+        <span>Jun 7, 2026</span>
+      </div>
+      <ul>
+        <li>New toggle in Settings → General to hide deactivated system shortcuts from the popup</li>
+      </ul>
+    </div>
+
+    <div class="changelog-entry">
+      <div class="changelog-version">
+        <strong>v0.1.78</strong>
+        <span>Jun 7, 2026</span>
+      </div>
+      <ul>
+        <li>System shortcuts now sourced live from the Window Server — enabled and disabled states always reflect your current System Settings without a relaunch</li>
+      </ul>
+    </div>
+
+    <div class="changelog-entry">
+      <div class="changelog-version">
+        <strong>v0.1.77</strong>
+        <span>Jun 7, 2026</span>
+      </div>
+      <ul>
+        <li>Deactivated system shortcuts shown in a muted state — e.g. a Screenshots shortcut you've turned off in System Settings appears greyed out</li>
+      </ul>
+    </div>
+
+    <div class="changelog-entry">
+      <div class="changelog-version">
+        <strong>v0.1.76</strong>
+        <span>Jun 7, 2026</span>
+      </div>
+      <ul>
+        <li>System shortcuts section — Spotlight, Screenshots, Mission Control, and other macOS system shortcuts now appear in their own section in the popup</li>
+      </ul>
+    </div>
+
+    <div class="changelog-entry">
+      <div class="changelog-version">
         <strong>v0.1.74</strong>
-        <span>Jun 5, 2026 — current</span>
+        <span>Jun 5, 2026</span>
       </div>
       <ul>
         <li>Fixed: Accessibility permission dialog no longer overlaps the popup on small screens</li>

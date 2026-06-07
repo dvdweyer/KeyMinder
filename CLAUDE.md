@@ -119,6 +119,20 @@ level is hidden unless you pass `--level info`.
 - `Scraping/ShortcutFormatter.swift` — decodes the AX modifier mask
   (shift=1, option=2, control=4, no-command=8) plus char/glyph/virtual-key into
   display symbols (⌃⌥⇧⌘ + key).
+- `Scraping/SystemShortcutsProvider.swift` — provides macOS system-wide shortcuts
+  (Spotlight, Screenshots, Mission Control, etc.) as a `MenuSection`. Two data sources
+  are tried in order and merged: (1) `loadViaCGS()` queries the Window Server live using
+  three private CoreGraphics symbols (`CGSMainConnectionID`, `CGSGetSymbolicHotKeyValue`,
+  `CGSIsSymbolicHotKeyEnabled`) resolved at runtime via `dlopen`/`dlsym`; this gives
+  live enabled/disabled state. (2) `loadViaPlist()` parses
+  `~/Library/Preferences/com.apple.symbolichotkeys.plist` and `.GlobalPreferences.plist`
+  (`NSUserKeyEquivalents`) as a fallback when the private API is unavailable.
+  `loadViaCGS()` returns `nil` on macOS versions above 15 (guarded by
+  `operatingSystemVersion.majorVersion > 15`) as a safety cap for untested future OS
+  releases. Each shortcut carries `isDisabled: Bool`; disabled shortcuts are shown
+  greyed-out in the popup when the "Show deactivated system shortcuts" setting is on.
+  The `showSystemShortcuts` and `showDeactivatedSystemShortcuts` `UserDefaults` keys
+  control visibility (both declared as extensions on `UserDefaults` in `MenuScraper.swift`).
 
 ### Model
 
@@ -261,12 +275,14 @@ level is hidden unless you pass `--level info`.
   - `SettingsModel` (`@MainActor @Observable`) — hotkey recording state, UserDefaults
     persistence, `HotkeyManager` registration, login-item toggle, double-tap config
     (`doubleTapEnabled` + `doubleTapModifier`), `showAllMenuItems` (popup content mode),
+    `showSystemShortcuts` / `showDeactivatedSystemShortcuts` (system-shortcuts visibility),
     `debugLoggingEnabled` toggle, and `registrationFailed: Bool` (set when Carbon
     rejects a hotkey; cleared on each new recording attempt and on clear).
   - `SettingsView` — two tabs: **General** (Global Shortcut with hotkey badge +
     record/change/clear and "Shortcut already in use" error; Launch at Login toggle;
     Double-tap Trigger with enable toggle + modifier picker; Popup Content "Show all menu
-    entries" toggle; Appearance colour picker + "Follow system accent colour" toggle
+    entries" toggle + "Show system shortcuts" toggle + "Show deactivated system shortcuts"
+    sub-toggle; Appearance colour picker + "Follow system accent colour" toggle
     writing to `ThemeSettings`) and **Advanced** (Ignored Commands with master enable
     toggle, "Show when filtering" sub-toggle, global list, per-app list; Ignored Apps
     list; Developer debug logging toggle).
@@ -301,6 +317,8 @@ level is hidden unless you pass `--level info`.
 - `KeyMinderTests/PopupFilterModelTests.swift` — filter query, `displayableCount`,
   `matchCount`, `showsAllItems`, Tab navigation, modifier filter (exact-match semantics,
   toggled vs held layers, union, `clearToggledModifiers`, `hasToggledModifiers`).
+- `KeyMinderTests/SpokenKeysTests.swift` — 26 cases for `spokenKeys(_:)`: modifier
+  glyphs, special keys, Space word-token, Fn keys, regular letters and digits.
 
 The Xcode project uses a **file-system-synchronized group** (objectVersion 70):
 new `.swift` files under `KeyMinder/` are picked up automatically — no need to
@@ -334,7 +352,6 @@ edit `project.pbxproj`.
 - AX scraping runs on a background `Task.detached`; the main thread is unblocked, but
   the AX IPC itself is synchronous C code with no Swift cancellation checkpoints — a
   busy target app can still delay the popup until the 1 s AX timeout fires.
-- System-wide shortcuts (Spotlight, Screenshots, …) not implemented yet — planned phase.
 - **"Show when filtering" (Ignored Commands) is unreliable.** Ignored rows do not
   consistently appear dimmed when a matching query is typed. Tracked in
   `Claude/Backlog.md`.

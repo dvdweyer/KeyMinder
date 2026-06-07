@@ -6,6 +6,12 @@ KeyMinder v0.1.79 is a mature, well-structured macOS 14+ menu-bar shortcut viewe
 
 ---
 
+## Status (updated 2026-06-07)
+
+PC-001 → fixed v0.1.80 · PC-002 → fixed v0.1.83 · PC-003 → fixed v0.1.83 · PC-004 → closed (compiler limitation; see note in finding) · PC-005 through PC-010 → open
+
+---
+
 ## Build & Runtime Notes
 
 | | |

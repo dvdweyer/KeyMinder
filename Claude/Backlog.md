@@ -87,17 +87,6 @@ for names + codepoints).
 
 ---
 
-## Favorites / pinned shortcuts
-
-Let users pin shortcuts — either globally (always shown at the top regardless
-of frontmost app) or per-app — so frequently used commands are one glance away
-without searching.
-
-**Notes:** storage in `UserDefaults` keyed by app bundle ID + menu item title.
-Pinned rows would appear in a "Favorites" section above the regular sections.
-
----
-
 ## Export cheat sheet
 
 A button or right-click option to copy the currently visible shortcuts as
@@ -136,16 +125,6 @@ Show hotkeys registered by every running app (Raycast, Alfred, etc.) alongside t
 
 ---
 
-## System-wide shortcuts
-
-Show macOS system shortcuts (Spotlight, Screenshots, Mission Control, etc.)
-in a dedicated section, sourced from
-`com.apple.symbolichotkeys` in `~/Library/Preferences/.GlobalPreferences.plist`.
-
-**Notes:** already listed as a planned phase in CLAUDE.md.
-
----
-
 ## Compact / keys-only mode
 
 A display option that shows only the key badge column (no command title) for
@@ -153,26 +132,3 @@ users who already know what the shortcuts do and want maximum density.
 
 ---
 
-## Localisation
-
-Translate the app UI to common languages. Menu item titles scraped via AX are
-already in the system locale of the target app, so they require no extra work.
-Only the KeyMinder-owned strings (settings labels, onboarding text, context menu
-items, error messages) need translation.
-
-**Notes:** straightforward `Localizable.strings` / `String(localized:)` work.
-Priority locales: French, German, Spanish, Japanese, Simplified Chinese.
-
----
-
-## User-selectable key-highlight colour
-
-The key-badge accent colour is currently hardcoded to green. Allow the user to
-choose a colour in Settings, defaulting to the system accent colour from System
-Settings → Appearance.
-
-**Notes:** system accent colour is readable at runtime via
-`NSColor.controlAccentColor`. The setting would be stored in `UserDefaults` as a
-raw colour (or a sentinel value meaning "follow system"). `Theme.keyAccent` in
-`UI/Popup/Theme.swift` is the single point of change — it already drives all key
-badge fills.

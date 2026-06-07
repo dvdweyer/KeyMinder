@@ -1,8 +1,8 @@
 # KeyMinder — Security Audit
 
-**Date:** 2026-06-07 (last updated 2026-06-07 after v0.1.82)
+**Date:** 2026-06-07 (last updated 2026-06-07 after v0.1.83)
 **Auditor:** Claude Sonnet 4.6 (automated static analysis)
-**Scope:** Full project, audited at v0.1.79; all findings resolved by v0.1.82
+**Scope:** Full project, audited at v0.1.79; all findings resolved by v0.1.83
 **Prior audit:** `Claude/AUDIT_2026-06-01.md` (v0.1.39). Status of all prior findings is tracked explicitly in each section.
 
 ---
@@ -189,16 +189,17 @@ Both are read with `Data(contentsOf:)` + `PropertyListSerialization`, which cann
 
 ### Force cast (`as!`)
 
-**Prior finding F-01 (Low) — FIXED in v0.1.81.** `MenuScraper.swift`
+**Prior finding F-01 (Low) — FIXED in v0.1.81, updated in v0.1.83.** `MenuScraper.swift`
 
 ```swift
-// Before
-return (raw as! AXUIElement)
-// After
+// v0.1.81: removed force cast
 return raw as? AXUIElement
+// v0.1.83: Xcode 26 rejects CF-type conditional casts (as? / as! both error);
+// unsafeBitCast is safe because the CFGetTypeID guard above confirms the type.
+return unsafeBitCast(raw, to: AXUIElement.self)
 ```
 
-The surrounding `CFGetTypeID` guard makes the crash impossible in practice; `as?` is behaviour-equivalent on the success path and eliminates the crash path entirely. ✓
+The `CFGetTypeID` guard makes the unsafe cast safe in practice. `unsafeBitCast` was adopted in v0.1.83 because Xcode 26 (Swift 5 / macOS 26 SDK) promotes "conditional downcast to CoreFoundation type will always succeed" from a warning to an error for both `as?` and `as!`. ✓
 
 **Finding N-02 (Informational) — FIXED in v0.1.82.** `SystemShortcutsProvider.swift`
 
@@ -295,7 +296,7 @@ None found. ✓
 | 2. Dependencies | — | — | — | — | — |
 | 3. Sensitive Data / Secrets | — | — | — | — | F-02 ✓, F-04 ✓ |
 | 4. IPC & Attack Surface | — | — | — | N-01 ✓ v0.1.81 | F-07 ✓ |
-| 5. Data Handling | — | — | — | F-01 ✓ v0.1.81, F-NEW-1 ✓ | N-02 ✓, N-03 ✓, N-04 ✓ v0.1.82 |
+| 5. Data Handling | — | — | — | F-01 ✓ v0.1.81/v0.1.83, F-NEW-1 ✓ | N-02 ✓, N-03 ✓, N-04 ✓ v0.1.82 |
 | 6. Network & TLS | — | — | — | — | — |
 | 7. Update & Distribution | — | — | — | — | F-05 *(open)* |
 | 8. Code Quality | — | — | — | — | — |
@@ -313,7 +314,7 @@ New findings since v0.1.39: N-01 (Low, fixed v0.1.81), N-02/N-03/N-04 (Informati
 
 | ID | Severity | Finding | Status |
 |----|----------|---------|--------|
-| F-01 | Low | Force cast `as! AXUIElement` in `MenuScraper` | ✅ Fixed v0.1.81 |
+| F-01 | Low | Force cast `as! AXUIElement` in `MenuScraper` | ✅ Fixed v0.1.81; `unsafeBitCast` in v0.1.83 (Xcode 26) |
 | N-01 | Low | Private CGS API signature-mismatch risk | ✅ Fixed v0.1.81 (macOS version cap) |
 | N-02 | Informational | `UnicodeScalar(keyChar)!` in `SystemShortcutsProvider` | ✅ Fixed v0.1.82 |
 | N-03 | Informational | `item.glyph.first!` in `PopupRootView` | ✅ Fixed v0.1.82 |
@@ -340,4 +341,4 @@ Change both `CODE_SIGN_IDENTITY` lines from `"Apple Development"` to `"Developer
 
 ---
 
-*Audited at v0.1.79 (commit `692b006`); all findings resolved by v0.1.82 (commit `a13a809`) except F-05. Re-run the audit when significant new features are added — especially any that introduce network calls, XPC services, or new IPC mechanisms. Update the CGS version cap in `SystemShortcutsProvider.loadViaCGS()` with each new major macOS release.*
+*Audited at v0.1.79 (commit `692b006`); all findings resolved by v0.1.83 (commit `3d3e3a9`) except F-05. Re-run the audit when significant new features are added — especially any that introduce network calls, XPC services, or new IPC mechanisms. Update the CGS version cap in `SystemShortcutsProvider.loadViaCGS()` with each new major macOS release.*
