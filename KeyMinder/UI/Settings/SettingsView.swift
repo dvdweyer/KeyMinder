@@ -88,6 +88,10 @@ final class SettingsModel {
         didSet { UserDefaults.standard.showDeactivatedSystemShortcuts = showDeactivatedSystemShortcuts }
     }
 
+    var automaticUpdatesEnabled: Bool = UserDefaults.standard.automaticUpdatesEnabled {
+        didSet { UserDefaults.standard.automaticUpdatesEnabled = automaticUpdatesEnabled }
+    }
+
     var debugLoggingEnabled: Bool = UserDefaults.standard.debugLoggingEnabled {
         didSet { UserDefaults.standard.debugLoggingEnabled = debugLoggingEnabled }
     }
@@ -214,6 +218,8 @@ private struct GeneralSettingsView: View {
             Divider()
 
             Toggle("Launch at Login", isOn: $model.launchAtLogin)
+
+            Toggle("Check for updates automatically", isOn: $model.automaticUpdatesEnabled)
 
             Divider()
 
@@ -730,6 +736,17 @@ private struct AddAppRuleSheet: View {
         let displayName = runningApps.first { $0.bundleID == selectedBundleID }?.name ?? selectedBundleID
         IgnoreListStore.shared.addRule(bundleID: selectedBundleID, displayName: displayName, title: commandTitle)
         dismiss()
+    }
+}
+
+// MARK: - UserDefaults: automatic updates
+
+extension UserDefaults {
+    private static let automaticUpdatesKey = "SUEnableAutomaticChecks"
+
+    var automaticUpdatesEnabled: Bool {
+        get { object(forKey: Self.automaticUpdatesKey) as? Bool ?? true }
+        set { set(newValue, forKey: Self.automaticUpdatesKey) }
     }
 }
 

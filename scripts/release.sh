@@ -156,12 +156,35 @@ echo "--- Re-zipping stapled app…"
 rm "$ZIP"
 ditto -c -k --sequesterRsrc --keepParent "$APP" "$ZIP"
 
+# ── Sparkle appcast ───────────────────────────────────────────────────────────
+echo ""
+echo "--- Updating Sparkle appcast…"
+# generate_appcast must be on PATH. Install from Sparkle's GitHub release tarball:
+#   curl -Lo /tmp/sparkle.tar.xz \
+#     https://github.com/sparkle-project/Sparkle/releases/latest/download/Sparkle-2.x.y.tar.xz
+#   tar -xf /tmp/sparkle.tar.xz -C ~/.sparkle-tools --strip-components=1 bin
+# Then add ~/.sparkle-tools/bin to your PATH (or symlink into /usr/local/bin).
+GENERATE_APPCAST=$(command -v generate_appcast 2>/dev/null || true)
+if [[ -z "$GENERATE_APPCAST" ]]; then
+    echo "error: generate_appcast not found in PATH." >&2
+    echo "       Download Sparkle tools from https://github.com/sparkle-project/Sparkle/releases" >&2
+    echo "       and add their bin/ directory to your PATH." >&2
+    exit 1
+fi
+APPCAST="$REPO_DIR/Distribution/appcast.xml"
+"$GENERATE_APPCAST" "$BUILD_DIR" \
+    --download-url-prefix "https://keyminder.app/" \
+    --maximum-versions 10 \
+    -o "$APPCAST"
+
 # ── Deploy ────────────────────────────────────────────────────────────────────
 echo ""
 echo "--- Copying to website…"
 mkdir -p "$SITE_DIR" "$KEYMINDER_SITE_DIR"
 cp "$ZIP" "$SITE_DIR/"
 cp "$ZIP" "$KEYMINDER_SITE_DIR/"
+cp "$APPCAST" "$SITE_DIR/"
+cp "$APPCAST" "$KEYMINDER_SITE_DIR/"
 cp "$REPO_DIR/Documentation/keyminder.html" "$SITE_DIR/index.html"
 cp "$REPO_DIR/Documentation/keyminder.html" "$KEYMINDER_SITE_DIR/index.html"
 for f in "$REPO_DIR/Documentation/"*.png; do

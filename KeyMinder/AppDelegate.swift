@@ -1,4 +1,5 @@
 import AppKit
+import Sparkle
 import SwiftUI
 
 @MainActor
@@ -6,6 +7,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     let frontmostMonitor = FrontmostAppMonitor()
     private let popup = PopupController()
+    private let updaterController = SPUStandardUpdaterController(
+        startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil
+    )
     private var statusItem: NSStatusItem?
     private var hintPopover: NSPopover?
 
@@ -222,6 +226,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
         let hotkeyInfo = menu.addItem(withTitle: hotkeyTitle, action: nil, keyEquivalent: "")
         hotkeyInfo.isEnabled = false
+
+        let checkUpdates = NSMenuItem(
+            title: String(localized: "Check for Updates…"),
+            action: #selector(SPUStandardUpdaterController.checkForUpdates(_:)),
+            keyEquivalent: ""
+        )
+        checkUpdates.target = updaterController
+        menu.addItem(checkUpdates)
 
         let settings = menu.addItem(withTitle: String(localized: "Settings…"),
                                     action: #selector(openSettings), keyEquivalent: ",")
