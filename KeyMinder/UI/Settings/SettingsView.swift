@@ -84,6 +84,10 @@ final class SettingsModel {
         didSet { UserDefaults.standard.showSystemShortcuts = showSystemShortcuts }
     }
 
+    var showDeactivatedSystemShortcuts: Bool = UserDefaults.standard.showDeactivatedSystemShortcuts {
+        didSet { UserDefaults.standard.showDeactivatedSystemShortcuts = showDeactivatedSystemShortcuts }
+    }
+
     var debugLoggingEnabled: Bool = UserDefaults.standard.debugLoggingEnabled {
         didSet { UserDefaults.standard.debugLoggingEnabled = debugLoggingEnabled }
     }
@@ -249,6 +253,12 @@ private struct GeneralSettingsView: View {
             Toggle("Show all menu entries", isOn: $model.showAllMenuItems)
 
             Toggle("Show system shortcuts", isOn: $model.showSystemShortcuts)
+
+            if model.showSystemShortcuts {
+                Toggle("Show deactivated system shortcuts", isOn: $model.showDeactivatedSystemShortcuts)
+                    .padding(.leading, 20)
+                    .foregroundStyle(.secondary)
+            }
 
             Divider()
 

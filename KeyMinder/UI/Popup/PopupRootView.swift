@@ -462,7 +462,8 @@ struct MenuSectionView: View {
     private func isShown(_ shortcut: Shortcut) -> Bool {
         guard passesGate(shortcut) else { return false }
         if shortcut.isDisabled {
-            // Disabled system shortcuts: always shown, text filter only (no modifier/favourites filter).
+            guard UserDefaults.standard.showDeactivatedSystemShortcuts else { return false }
+            // Disabled system shortcuts: shown with text filter only (no modifier/favourites filter).
             return shortcut.matches(query)
         }
         if isIgnoredWhileIdle(shortcut) { return false }

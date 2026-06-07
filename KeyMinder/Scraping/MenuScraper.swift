@@ -190,4 +190,11 @@ extension UserDefaults {
         get { bool(forKey: Self.showSystemShortcutsKey) }
         set { set(newValue, forKey: Self.showSystemShortcutsKey) }
     }
+
+    private static let showDeactivatedSystemShortcutsKey = "showDeactivatedSystemShortcuts"
+
+    var showDeactivatedSystemShortcuts: Bool {
+        get { bool(forKey: Self.showDeactivatedSystemShortcutsKey) }
+        set { set(newValue, forKey: Self.showDeactivatedSystemShortcutsKey) }
+    }
 }
