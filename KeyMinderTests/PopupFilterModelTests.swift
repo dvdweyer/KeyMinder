@@ -322,4 +322,114 @@ final class PopupFilterModelTests: XCTestCase {
         XCTAssertTrue(model.hasModifierFilter)
         XCTAssertEqual(model.visibleShortcuts.map(\.title), ["Save"])
     }
+
+    // MARK: - showWhenFiltering
+
+    private var savedIgnoreEnabled = false
+    private var savedShowWhenFiltering = false
+    private var savedGlobalTitles: [String] = []
+
+    override func setUp() {
+        super.setUp()
+        savedIgnoreEnabled      = IgnoreListStore.shared.isEnabled
+        savedShowWhenFiltering  = IgnoreListStore.shared.showWhenFiltering
+        savedGlobalTitles       = IgnoreListStore.shared.globalTitles
+    }
+
+    override func tearDown() {
+        IgnoreListStore.shared.isEnabled       = savedIgnoreEnabled
+        IgnoreListStore.shared.showWhenFiltering = savedShowWhenFiltering
+        IgnoreListStore.shared.globalTitles    = savedGlobalTitles
+        super.tearDown()
+    }
+
+    func testVisibleShortcuts_showWhenFiltering_ignoredHiddenWhileIdle() {
+        IgnoreListStore.shared.isEnabled      = true
+        IgnoreListStore.shared.showWhenFiltering = true
+        IgnoreListStore.shared.globalTitles   = ["Minimize"]
+
+        let section = makeSection("Window", shortcuts: [
+            makeShortcut(title: "Minimize",   keys: "⌘M"),
+            makeShortcut(title: "New Window", keys: "⌘N"),
+        ])
+        let model = makeModel(sections: [section])
+        // Empty query: "Minimize" is ignored and must be absent from the navigable set.
+        XCTAssertEqual(model.visibleShortcuts.map(\.title), ["New Window"])
+    }
+
+    func testVisibleShortcuts_showWhenFiltering_ignoredExcludedEvenWhenQueryMatches() {
+        IgnoreListStore.shared.isEnabled      = true
+        IgnoreListStore.shared.showWhenFiltering = true
+        IgnoreListStore.shared.globalTitles   = ["Minimize"]
+
+        let section = makeSection("Window", shortcuts: [
+            makeShortcut(title: "Minimize",   keys: "⌘M"),
+            makeShortcut(title: "New Window", keys: "⌘N"),
+        ])
+        let model = makeModel(sections: [section])
+        model.query = "mini"
+        // "Minimize" matches the query but is always excluded from visibleShortcuts
+        // (shown dimmed in the view, not tab-navigable).
+        XCTAssertEqual(model.visibleShortcuts.map(\.title), [])
+    }
+
+    func testVisibleShortcuts_showWhenFiltering_nonMatchingQueryKeepsIgnoredHidden() {
+        IgnoreListStore.shared.isEnabled      = true
+        IgnoreListStore.shared.showWhenFiltering = true
+        IgnoreListStore.shared.globalTitles   = ["Minimize"]
+
+        let section = makeSection("Window", shortcuts: [
+            makeShortcut(title: "Minimize",   keys: "⌘M"),
+            makeShortcut(title: "New Window", keys: "⌘N"),
+        ])
+        let model = makeModel(sections: [section])
+        model.query = "new"
+        // "Minimize" doesn't match "new" and must stay absent.
+        XCTAssertEqual(model.visibleShortcuts.map(\.title), ["New Window"])
+    }
+
+    func testVisibleShortcuts_showWhenFiltering_disabled_ignoredNotHidden() {
+        IgnoreListStore.shared.isEnabled      = false
+        IgnoreListStore.shared.showWhenFiltering = true
+        IgnoreListStore.shared.globalTitles   = ["Minimize"]
+
+        let section = makeSection("Window", shortcuts: [
+            makeShortcut(title: "Minimize",   keys: "⌘M"),
+            makeShortcut(title: "New Window", keys: "⌘N"),
+        ])
+        let model = makeModel(sections: [section])
+        // Ignore list is off: "Minimize" is treated like any other shortcut.
+        XCTAssertEqual(model.visibleShortcuts.count, 2)
+    }
+
+    func testMatchCount_showWhenFiltering_excludesIgnoredItems() {
+        IgnoreListStore.shared.isEnabled      = true
+        IgnoreListStore.shared.showWhenFiltering = true
+        IgnoreListStore.shared.globalTitles   = ["Minimize"]
+
+        let section = makeSection("Window", shortcuts: [
+            makeShortcut(title: "Minimize",  keys: "⌘M"),
+            makeShortcut(title: "Miniature", keys: "⌘A"),
+            makeShortcut(title: "New Window", keys: "⌘N"),
+        ])
+        let model = makeModel(sections: [section])
+        model.query = "mini"
+        // "Minimize" matches but is ignored; "Miniature" matches and is not ignored.
+        XCTAssertEqual(model.matchCount, 1)
+        XCTAssertEqual(model.visibleShortcuts.map(\.title), ["Miniature"])
+    }
+
+    func testDisplayableCount_showWhenFiltering_excludesIgnoredItems() {
+        IgnoreListStore.shared.isEnabled      = true
+        IgnoreListStore.shared.showWhenFiltering = true
+        IgnoreListStore.shared.globalTitles   = ["Minimize"]
+
+        let section = makeSection("Window", shortcuts: [
+            makeShortcut(title: "Minimize",   keys: "⌘M"),
+            makeShortcut(title: "New Window", keys: "⌘N"),
+        ])
+        let model = makeModel(sections: [section])
+        // "Minimize" is always excluded from the displayable denominator.
+        XCTAssertEqual(model.displayableCount, 1)
+    }
 }

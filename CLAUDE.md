@@ -56,7 +56,7 @@ identity-based and **persists across rebuilds and run locations**. Reset with
   (install once via `scripts/setup-sparkle-tools.sh`).
   - **No flags (interactive)**: prompts to choose a pipeline.
   - **`--remote-only`**: Release build → notarize → rsync. No local install.
-  - **`--full-deploy`**: Same as `--local-deploy`, then installs to `/Applications`.
+  - **`--full-deploy`**: Same as `--remote-only`, then installs to `/Applications`.
   - **`--local-only`**: Debug build → install to `/Applications` only. Skips
     `.env`, version checks, notarization, and rsync. Use for rapid local testing.
 - **Sparkle auto-updater** (v0.1.84+): `Distribution/appcast.xml` is the feed

@@ -91,9 +91,9 @@ final class PopupFilterModel {
     private func updateVisibleShortcuts() {
         let appID = app.bundleIdentifier ?? app.appName
         let ignoreStore = IgnoreListStore.shared
-        // When showWhenFiltering is on the scraper returned all items; hide ignored ones
-        // until the user types a query (then they're intentionally revealed).
-        let hiddenTitles: Set<String> = (ignoreStore.isEnabled && ignoreStore.showWhenFiltering && activeQuery.isEmpty)
+        // When showWhenFiltering is on the scraper returned all items; always exclude
+        // ignored items from the navigable set — they appear dimmed in the view but are non-interactive.
+        let hiddenTitles: Set<String> = (ignoreStore.isEnabled && ignoreStore.showWhenFiltering)
             ? ignoreStore.ignoredTitles(for: app.bundleIdentifier)
             : []
         var result: [Shortcut] = []
@@ -175,12 +175,17 @@ final class PopupFilterModel {
     /// + favourites filter when active).
     var matchCount: Int {
         let appID = app.bundleIdentifier ?? app.appName
+        let ignoreStore = IgnoreListStore.shared
+        let ignoredTitles: Set<String> = (ignoreStore.isEnabled && ignoreStore.showWhenFiltering)
+            ? ignoreStore.ignoredTitles(for: app.bundleIdentifier)
+            : []
         return app.sections.reduce(0) { total, section in
             total + section.shortcuts.filter {
                 (!$0.keys.isEmpty || showsAllItems)
                     && $0.matches(activeQuery)
                     && $0.matchesModifierFilter(modifierFilter)
                     && (!showOnlyFavourites || FavouritesStore.shared.isFavourite($0, appID: appID))
+                    && (ignoredTitles.isEmpty || !ignoredTitles.contains($0.title.localizedLowercase))
             }.count
         }
     }
@@ -453,8 +458,20 @@ struct MenuSectionView: View {
 
     private func isIgnoredWhileIdle(_ shortcut: Shortcut) -> Bool {
         let store = IgnoreListStore.shared
-        guard store.isEnabled && store.showWhenFiltering && query.isEmpty else { return false }
+        guard store.isEnabled && store.showWhenFiltering else { return false }
+        guard store.ignoredTitles(for: appID).contains(shortcut.title.localizedLowercase) else { return false }
+        // Hidden when there is no query, or when the active query does not match —
+        // ignored items are revealed only by a query that specifically finds them.
+        return query.isEmpty || !matchesFilter(shortcut)
+    }
+
+    /// True when a shortcut is in the ignore list AND the current query matches it.
+    /// Such items are shown dimmed to signal they are normally filtered out.
+    private func isRevealedByFilter(_ shortcut: Shortcut) -> Bool {
+        let store = IgnoreListStore.shared
+        guard store.isEnabled && store.showWhenFiltering && !query.isEmpty else { return false }
         return store.ignoredTitles(for: appID).contains(shortcut.title.localizedLowercase)
+            && matchesFilter(shortcut)
     }
 
     /// Whether a row should be rendered at all.
@@ -473,6 +490,7 @@ struct MenuSectionView: View {
     /// Whether a row should be dimmed (dim mode only; always false in normal mode).
     private func isDimmed(_ shortcut: Shortcut) -> Bool {
         if shortcut.isDisabled { return true }
+        if isRevealedByFilter(shortcut) { return true }
         return dimMode && !matchesFilter(shortcut)
     }
 
