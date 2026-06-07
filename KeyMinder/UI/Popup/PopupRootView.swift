@@ -677,7 +677,6 @@ private func spokenKeys(_ keys: String) -> String {
         "⌘": "Command", "⇧": "Shift", "⌥": "Option", "⌃": "Control",
         // Special keys
         "↩": "Return",    "⎋": "Escape", "⌫": "Delete",     "⇥": "Tab",
-        " ": "Space",
         "↑": "Up Arrow",  "↓": "Down Arrow",
         "←": "Left Arrow", "→": "Right Arrow",
     ]
@@ -686,6 +685,13 @@ private func spokenKeys(_ keys: String) -> String {
     var remaining = keys[...]
 
     while let ch = remaining.first {
+        // "Space" is output as the 5-char word by ShortcutFormatter; match it
+        // as a unit before falling through to single-character processing.
+        if remaining.hasPrefix("Space") {
+            tokens.append("Space")
+            remaining = remaining.dropFirst(5)
+            continue
+        }
         remaining = remaining.dropFirst()
 
         if let spoken = map[ch] {
