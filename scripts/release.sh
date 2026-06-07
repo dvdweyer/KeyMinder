@@ -3,7 +3,7 @@
 #
 # Usage:
 #   release.sh                  — interactive prompt
-#   release.sh --local-deploy   — Release build, notarize, rsync; no local install
+#   release.sh --remote-only   — Release build, notarize, rsync; no local install
 #   release.sh --full-deploy    — Release build, notarize, rsync + install to /Applications
 #   release.sh --local-only     — Debug build + install to /Applications only
 #
@@ -26,7 +26,7 @@ MODE=""
 for arg in "$@"; do
     case "$arg" in
         --local-only)   MODE="local-only" ;;
-        --local-deploy) MODE="local-deploy" ;;
+        --remote-only) MODE="remote-only" ;;
         --full-deploy)  MODE="full-deploy" ;;
         *) echo "error: unknown argument: $arg" >&2; exit 1 ;;
     esac
@@ -35,14 +35,14 @@ done
 # ── Interactive prompt (no flags given) ───────────────────────────────────────
 if [[ -z "$MODE" ]]; then
     echo "Which pipeline would you like to run?"
-    echo "  1) local-deploy  — Release build, notarize, rsync (no local install)"
+    echo "  1) remote-only  — Release build, notarize, rsync (no local install)"
     echo "  2) local-only    — Debug build, install to /Applications"
     echo "  3) full-deploy   — Release build, notarize, rsync + install to /Applications"
     echo ""
     read -rp "Choice [1/2/3]: " _CHOICE
     echo ""
     case "$_CHOICE" in
-        1) MODE="local-deploy" ;;
+        1) MODE="remote-only" ;;
         2) MODE="local-only" ;;
         3) MODE="full-deploy" ;;
         *) echo "error: invalid choice '$_CHOICE'" >&2; exit 1 ;;
