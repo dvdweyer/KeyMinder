@@ -49,12 +49,20 @@ identity-based and **persists across rebuilds and run locations**. Reset with
   wall that keeps KeyCue, Shortcat, Bartender, etc. off the Mac App Store.
 - **The shipping path is Developer ID + notarization.** `scripts/release.sh`
   automates the full pipeline: archive → export (Developer ID) → notarize →
-  staple → re-zip → copy to local site dirs → rsync deploy → install to
-  `/Applications`. Run it from the repo root; it reads `TEAM_ID` from
-  `scripts/.env` (not checked in) and the notarytool keychain profile `KeyMinder`
-  (set up once via `scripts/setup-notarytool.sh`).
+  staple → re-zip → update Sparkle appcast → copy to local site dirs → rsync
+  deploy. Run it from the repo root; it reads `TEAM_ID` from `scripts/.env`
+  (not checked in) and the notarytool keychain profile `KeyMinder` (set up once
+  via `scripts/setup-notarytool.sh`). `generate_appcast` must be on `PATH`
+  (install once via `scripts/setup-sparkle-tools.sh`).
+  - **No flags (interactive)**: prompts to choose a pipeline.
+  - **`--local-deploy`**: Release build → notarize → rsync. No local install.
+  - **`--full-deploy`**: Same as `--local-deploy`, then installs to `/Applications`.
   - **`--local-only`**: Debug build → install to `/Applications` only. Skips
     `.env`, version checks, notarization, and rsync. Use for rapid local testing.
+- **Sparkle auto-updater** (v0.1.84+): `Distribution/appcast.xml` is the feed
+  served at `https://keyminder.app/appcast.xml`. Each release run regenerates it
+  via `generate_appcast`. The Ed25519 private key lives in the macOS Keychain
+  (never in the repo); the public key is in `Info.plist` → `SUPublicEDKey`.
 - Release config already has **Hardened Runtime on** (required for notarization).
   There is **no entitlements file**, so the app is non-sandboxed — correct for
   this path.

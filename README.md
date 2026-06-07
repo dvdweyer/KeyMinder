@@ -8,6 +8,8 @@ Instead of hunting through menus to find shortcuts, KeyMinder pops up a clean ov
 
 Pin frequently used shortcuts as favourites (hover a row for the star button) and filter to them instantly with the ★ header button. Suppress noisy commands globally or per-app with Ignored Commands in Settings → Advanced. Use the gear button in the popup header to jump straight to Settings.
 
+KeyMinder checks for updates automatically and notifies you when a new version is available. Use "Check for Updates…" in the right-click context menu to check manually.
+
 ## Requirements
 
 - macOS 14 (Sonoma) or later
