@@ -1,14 +1,46 @@
+import Darwin
 import Foundation
 
-/// Reads macOS system-wide shortcuts from `com.apple.symbolichotkeys.plist`
-/// and returns them as a `MenuSection` ready to append to the popup.
+// MARK: - Private CGS bindings (loaded dynamically; fall back gracefully if removed)
+
+private let _cgsHandle: UnsafeMutableRawPointer? =
+    dlopen("/System/Library/Frameworks/CoreGraphics.framework/CoreGraphics",
+           RTLD_LAZY | RTLD_NOLOAD)
+
+private typealias _CGSMainConnFn   = @convention(c) () -> Int32
+private typealias _CGSGetHKValFn   = @convention(c) (Int32, Int32, UnsafeMutablePointer<UInt16>, UnsafeMutablePointer<UInt32>) -> OSStatus
+private typealias _CGSIsHKEnabFn   = @convention(c) (Int32, Int32) -> Bool
+
+private let _cgsMainConnFn: _CGSMainConnFn? = _cgsHandle
+    .flatMap { dlsym($0, "CGSMainConnectionID") }
+    .map { unsafeBitCast($0, to: _CGSMainConnFn.self) }
+
+private let _cgsGetHKValFn: _CGSGetHKValFn? = _cgsHandle
+    .flatMap { dlsym($0, "CGSGetSymbolicHotKeyValue") }
+    .map { unsafeBitCast($0, to: _CGSGetHKValFn.self) }
+
+private let _cgsIsHKEnabFn: _CGSIsHKEnabFn? = _cgsHandle
+    .flatMap { dlsym($0, "CGSIsSymbolicHotKeyEnabled") }
+    .map { unsafeBitCast($0, to: _CGSIsHKEnabFn.self) }
+
+// MARK: -
+
+/// Reads macOS system-wide shortcuts from the Window Server (live state) or
+/// `com.apple.symbolichotkeys.plist` as fallback, and returns them as a
+/// `MenuSection` ready to append to the popup.
 enum SystemShortcutsProvider {
 
     // MARK: - Public API
 
     /// Loads system shortcuts and user-defined application shortcuts.
-    /// Returns `nil` when the plist is missing or produces no displayable shortcuts.
+    /// Queries the Window Server directly when the private CGS APIs are available;
+    /// falls back to plist parsing otherwise.
+    /// Returns `nil` when no displayable shortcuts can be resolved.
     static func load() -> MenuSection? {
+        if let resolved = loadViaCGS() {
+            return buildSection(resolved: resolved)
+        }
+
         let plistURL = FileManager.default
             .homeDirectoryForCurrentUser
             .appendingPathComponent("Library/Preferences/com.apple.symbolichotkeys.plist")
@@ -184,6 +216,40 @@ enum SystemShortcutsProvider {
         return result
     }
 
+    // MARK: - CGS live loader
+
+    /// Queries the Window Server for each known symbolic hotkey ID and builds
+    /// the `resolved` dictionary. Returns `nil` when any CGS symbol is absent.
+    private static func loadViaCGS() -> [Int: (keys: String, isDisabled: Bool)]? {
+        guard let mainConnFn = _cgsMainConnFn,
+              let getValFn   = _cgsGetHKValFn,
+              let isEnabFn   = _cgsIsHKEnabFn
+        else { return nil }
+
+        let cid = mainConnFn()
+        var resolved: [Int: (keys: String, isDisabled: Bool)] = [:]
+        let allIDs = Set(enabledByDefault.keys).union(disabledByDefault.keys)
+
+        for id in allIDs {
+            var keyCode: UInt16 = 0
+            var carbonMods: UInt32 = 0
+            let status = getValFn(cid, Int32(id), &keyCode, &carbonMods)
+            guard status == noErr, keyCode != 0xFFFF else { continue }
+
+            let axMods = axModifiers(fromCarbonFlags: carbonMods)
+            guard let keys = ShortcutFormatter.format(
+                cmdChar: nil,
+                virtualKey: Int(keyCode),
+                glyph: nil,
+                modifiers: axMods
+            ) else { continue }
+
+            resolved[id] = (keys, !isEnabFn(cid, Int32(id)))
+        }
+
+        return resolved.isEmpty ? nil : resolved
+    }
+
     // MARK: - Parameter formatter
 
     /// Converts a `[keyChar, virtualKey, nsFlags]` triple into a display string.
@@ -208,6 +274,17 @@ enum SystemShortcutsProvider {
         if nsFlags & 0x80000  != 0 { ax |= 2 }   // option
         if nsFlags & 0x40000  != 0 { ax |= 4 }   // control
         if nsFlags & 0x100000 == 0 { ax |= 8 }   // no-command
+        return ax
+    }
+
+    /// Converts Carbon modifier flags (cmdKey=0x0100, shiftKey=0x0200, optionKey=0x0800,
+    /// controlKey=0x1000) to the AX modifier bit format used by `ShortcutFormatter`.
+    private static func axModifiers(fromCarbonFlags c: UInt32) -> Int {
+        var ax = 0
+        if c & 0x0200 != 0 { ax |= 1 }   // shiftKey
+        if c & 0x0800 != 0 { ax |= 2 }   // optionKey
+        if c & 0x1000 != 0 { ax |= 4 }   // controlKey
+        if c & 0x0100 == 0 { ax |= 8 }   // no cmdKey
         return ax
     }
 
