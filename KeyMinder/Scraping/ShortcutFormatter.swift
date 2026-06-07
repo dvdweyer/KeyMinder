@@ -1,8 +1,41 @@
+import AppKit
 import Foundation
 
 /// Converts the raw key-equivalent attributes reported by the Accessibility API
 /// into a human-readable shortcut string such as "⇧⌘N" or "⌃→".
 enum ShortcutFormatter {
+
+    /// Builds a shortcut string from an NSEvent — used to match a key press
+    /// against the `Shortcut.keys` strings in the visible shortcuts list.
+    static func keys(from event: NSEvent) -> String? {
+        keys(keyCode: event.keyCode,
+             modifierFlags: event.modifierFlags,
+             charactersIgnoringModifiers: event.charactersIgnoringModifiers)
+    }
+
+    /// Testable overload: accepts raw values rather than an NSEvent.
+    static func keys(keyCode: UInt16,
+                     modifierFlags: NSEvent.ModifierFlags,
+                     charactersIgnoringModifiers: String?) -> String? {
+        var mods = ""
+        if modifierFlags.contains(.control) { mods += "⌃" }
+        if modifierFlags.contains(.option)  { mods += "⌥" }
+        if modifierFlags.contains(.shift)   { mods += "⇧" }
+        if modifierFlags.contains(.command) { mods += "⌘" }
+
+        // Special keys (arrows, F-keys, Return, Delete, etc.) via hardware key code.
+        if let sym = virtualKeyMap[Int(keyCode)] {
+            return mods + sym
+        }
+        // Regular printable characters via the layout-adjusted unmodified character.
+        guard let chars = charactersIgnoringModifiers,
+              let scalar = chars.unicodeScalars.first else { return nil }
+        let v = scalar.value
+        if v >= 0xF700, let sym = functionKeyMap[v] { return mods + sym }
+        if v == 0x20 { return mods + "Space" }
+        if v >= 0x21 && v <= 0x7E { return mods + chars.uppercased() }
+        return nil
+    }
 
     /// Returns a formatted shortcut, or `nil` if the menu item has no key equivalent.
     static func format(cmdChar: String?, virtualKey: Int?, glyph: Int?, modifiers: Int) -> String? {

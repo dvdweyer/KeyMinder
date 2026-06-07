@@ -417,6 +417,14 @@ final class PopupController {
                     }
                     return event
                 default:
+                    // Chord invocation: ⌘ or ⌃ held + exactly one visible shortcut
+                    // matches the key combo → invoke it directly.
+                    let flags = event.modifierFlags
+                    if (flags.contains(.command) || flags.contains(.control)),
+                       let shortcut = self.matchShortcutEvent(event) {
+                        self.activate(shortcut)
+                        return nil
+                    }
                     return event
                 }
             }
@@ -453,6 +461,19 @@ final class PopupController {
             guard let self, let app, app.processIdentifier != self.ownPID else { return }
             MainActor.assumeIsolated { self.hide() }
         }
+    }
+
+    /// Returns the unique visible shortcut whose `keys` string matches the key
+    /// event, or `nil` when zero or multiple shortcuts match. Only shortcuts with
+    /// an AX element (i.e. actionable) are considered.
+    private func matchShortcutEvent(_ event: NSEvent) -> Shortcut? {
+        guard let model = filterModel,
+              let keysStr = ShortcutFormatter.keys(from: event),
+              !keysStr.isEmpty else { return nil }
+        let candidates = model.visibleShortcuts.filter {
+            $0.keys == keysStr && $0.axElement != nil
+        }
+        return candidates.count == 1 ? candidates[0] : nil
     }
 
     /// Dismisses the popup and fires the AX press action for `shortcut`.

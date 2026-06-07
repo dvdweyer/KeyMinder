@@ -258,11 +258,82 @@ final class ShortcutFormatterTests: XCTestCase {
         XCTAssertNil(ShortcutFormatter.format(cmdChar: "", virtualKey: nil, glyph: nil, modifiers: 0))
     }
 
+    // MARK: - keys(keyCode:modifierFlags:) — NSEvent-based matching
+
+    func testKeysFromEvent_commandLetter() {
+        // keyCode 1 = 's' on standard keyboard; charactersIgnoringModifiers = "s"
+        XCTAssertEqual(keys(keyCode: 1, flags: .command, chars: "s"), "⌘S")
+    }
+
+    func testKeysFromEvent_shiftCommand() {
+        XCTAssertEqual(keys(keyCode: 45, flags: [.shift, .command], chars: "n"), "⇧⌘N")
+    }
+
+    func testKeysFromEvent_controlLetter() {
+        XCTAssertEqual(keys(keyCode: 8, flags: .control, chars: "c"), "⌃C")
+    }
+
+    func testKeysFromEvent_optionCommandLetter() {
+        XCTAssertEqual(keys(keyCode: 3, flags: [.option, .command], chars: "f"), "⌥⌘F")
+    }
+
+    func testKeysFromEvent_controlOptionShiftCommand() {
+        XCTAssertEqual(keys(keyCode: 40, flags: [.control, .option, .shift, .command], chars: "k"), "⌃⌥⇧⌘K")
+    }
+
+    func testKeysFromEvent_upArrow() {
+        // keyCode 0x7E = up arrow; in virtualKeyMap → takes priority over chars
+        XCTAssertEqual(keys(keyCode: 0x7E, flags: .command, chars: nil), "⌘↑")
+    }
+
+    func testKeysFromEvent_downArrow() {
+        XCTAssertEqual(keys(keyCode: 0x7D, flags: .command, chars: nil), "⌘↓")
+    }
+
+    func testKeysFromEvent_leftArrow() {
+        XCTAssertEqual(keys(keyCode: 0x7B, flags: .command, chars: nil), "⌘←")
+    }
+
+    func testKeysFromEvent_rightArrow() {
+        XCTAssertEqual(keys(keyCode: 0x7C, flags: .command, chars: nil), "⌘→")
+    }
+
+    func testKeysFromEvent_F5() {
+        XCTAssertEqual(keys(keyCode: 0x60, flags: .command, chars: nil), "⌘F5")
+    }
+
+    func testKeysFromEvent_space() {
+        XCTAssertEqual(keys(keyCode: 0x31, flags: .command, chars: nil), "⌘Space")
+    }
+
+    func testKeysFromEvent_delete() {
+        XCTAssertEqual(keys(keyCode: 0x33, flags: .command, chars: nil), "⌘⌫")
+    }
+
+    func testKeysFromEvent_noModifiers_returnsNonEmptyString() {
+        // Bare letter with no modifiers — should still produce a string (e.g. "S")
+        XCTAssertEqual(keys(keyCode: 1, flags: [], chars: "s"), "S")
+    }
+
+    func testKeysFromEvent_unknownKeyCode_noChars_returnsNil() {
+        XCTAssertNil(keys(keyCode: 0xFF, flags: .command, chars: nil))
+    }
+
+    func testKeysFromEvent_digit() {
+        XCTAssertEqual(keys(keyCode: 18, flags: .command, chars: "1"), "⌘1")
+    }
+
     // MARK: - Helpers
 
     /// Shorthand for calling format with only cmdChar + modifiers.
     private func format(cmdChar: String, modifiers: Int) -> String? {
         ShortcutFormatter.format(cmdChar: cmdChar, virtualKey: nil, glyph: nil, modifiers: modifiers)
+    }
+
+    /// Shorthand for `keys(keyCode:modifierFlags:charactersIgnoringModifiers:)`.
+    private func keys(keyCode: UInt16, flags: NSEvent.ModifierFlags, chars: String?) -> String? {
+        ShortcutFormatter.keys(keyCode: keyCode, modifierFlags: flags,
+                               charactersIgnoringModifiers: chars)
     }
 
     /// Returns the single-character String for a Unicode scalar in the NSEvent
