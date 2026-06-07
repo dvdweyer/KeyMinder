@@ -1,10 +1,17 @@
-<?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle"
-     xmlns:dc="http://purl.org/dc/elements/1.1/">
-  <channel>
-    <title>KeyMinder</title>
-    <link>https://keyminder.app</link>
-    <language>en</language>
-    <!-- Items are populated by generate_appcast during the release pipeline. -->
-  </channel>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" xmlns:dc="http://purl.org/dc/elements/1.1/" version="2.0">
+    <channel>
+        <title>KeyMinder</title>
+        <link>https://keyminder.app</link>
+        <language>en</language>
+        <!-- Items are populated by generate_appcast during the release pipeline. -->
+        <item>
+            <title>0.1.84</title>
+            <pubDate>Sun, 07 Jun 2026 10:06:44 +0200</pubDate>
+            <sparkle:version>160</sparkle:version>
+            <sparkle:shortVersionString>0.1.84</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://keyminder.app/KeyMinder_0.1.84.zip" length="2987255" type="application/octet-stream"/>
+        </item>
+    </channel>
 </rss>
