@@ -501,9 +501,12 @@ private struct AddIgnoredAppSheet: View {
 
     private var runningApps: [(bundleID: String, name: String)] {
         NSWorkspace.shared.runningApplications
-            .filter { $0.activationPolicy == .regular && $0.bundleIdentifier != nil && $0.localizedName != nil }
-            .filter { IgnoreListStore.shared.ignoredApps[$0.bundleIdentifier!] == nil }
-            .map { (bundleID: $0.bundleIdentifier!, name: $0.localizedName!) }
+            .compactMap { app -> (bundleID: String, name: String)? in
+                guard app.activationPolicy == .regular,
+                      let id = app.bundleIdentifier, let name = app.localizedName,
+                      IgnoreListStore.shared.ignoredApps[id] == nil else { return nil }
+                return (bundleID: id, name: name)
+            }
             .sorted { $0.name < $1.name }
     }
 
@@ -652,8 +655,11 @@ private struct AddAppRuleSheet: View {
 
     private var runningApps: [(bundleID: String, name: String)] {
         NSWorkspace.shared.runningApplications
-            .filter { $0.activationPolicy == .regular && $0.bundleIdentifier != nil && $0.localizedName != nil }
-            .map { (bundleID: $0.bundleIdentifier!, name: $0.localizedName!) }
+            .compactMap { app -> (bundleID: String, name: String)? in
+                guard app.activationPolicy == .regular,
+                      let id = app.bundleIdentifier, let name = app.localizedName else { return nil }
+                return (bundleID: id, name: name)
+            }
             .sorted { $0.name < $1.name }
     }
 

@@ -345,15 +345,14 @@ private struct FilterableShortcutsView: View {
     }
 
     private var modifierButtons: some View {
-        let mods: [(glyph: String, label: String)] = [
+        let mods: [(glyph: Character, label: String)] = [
             ("⌃", "Control"), ("⌥", "Option"), ("⇧", "Shift"), ("⌘", "Command"),
         ]
         let appID = model.app.bundleIdentifier ?? model.app.appName
         return HStack(spacing: 3) {
             ForEach(mods, id: \.glyph) { item in
-                let ch = item.glyph.first!
-                ModifierToggle(glyph: ch, isActive: model.modifierFilter.contains(ch)) {
-                    model.toggleModifier(ch)
+                ModifierToggle(glyph: item.glyph, isActive: model.modifierFilter.contains(item.glyph)) {
+                    model.toggleModifier(item.glyph)
                 }
                 .accessibilityLabel(item.label)
             }
