@@ -20,7 +20,7 @@ struct WelcomeView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            StepDotsView(current: step.rawValue, total: WelcomeStep.allCases.count)
+            StepDotsView(current: currentStepIndex, total: steps.count)
                 .padding(.top, 28)
 
             ZStack {
@@ -116,6 +116,18 @@ struct WelcomeView: View {
         }
     }
 
+    // MARK: Step list (dynamic — permission skipped when already granted)
+
+    private var steps: [WelcomeStep] {
+        permissionGranted
+            ? WelcomeStep.allCases.filter { $0 != .permission }
+            : WelcomeStep.allCases
+    }
+
+    private var currentStepIndex: Int {
+        steps.firstIndex(of: step) ?? 0
+    }
+
     // MARK: Transitions
 
     private var slideTransition: AnyTransition {
@@ -126,18 +138,20 @@ struct WelcomeView: View {
     }
 
     private func advance() {
-        guard let next = WelcomeStep(rawValue: step.rawValue + 1) else {
+        let idx = currentStepIndex
+        guard idx + 1 < steps.count else {
             onDismiss()
             return
         }
         goingForward = true
-        withAnimation(.easeInOut(duration: 0.22)) { step = next }
+        withAnimation(.easeInOut(duration: 0.22)) { step = steps[idx + 1] }
     }
 
     private func retreat() {
-        guard let prev = WelcomeStep(rawValue: step.rawValue - 1) else { return }
+        let idx = currentStepIndex
+        guard idx > 0 else { return }
         goingForward = false
-        withAnimation(.easeInOut(duration: 0.22)) { step = prev }
+        withAnimation(.easeInOut(duration: 0.22)) { step = steps[idx - 1] }
     }
 }
 

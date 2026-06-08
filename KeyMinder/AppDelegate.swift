@@ -32,7 +32,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         setupDoubleTap()
         setupSleepWakeObserver()
         showWelcomeIfNeeded()
-        migrateOnboardingTips()
     }
 
     // MARK: - Global hotkey
@@ -292,8 +291,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     /// Accessibility access and configure a trigger before seeing the popup.
     /// Subsequent launches are unaffected.
     private func showWelcomeIfNeeded() {
-        guard !UserDefaults.standard.didShowWelcome else { return }
-        UserDefaults.standard.didShowWelcome = true
+        guard !UserDefaults.standard.didShowOnboardingWizard else { return }
+        UserDefaults.standard.didShowOnboardingWizard = true
         WelcomeWindowController.shared.onTryItNow = { [weak self] in
             self?.presentPopup()
         }
@@ -309,16 +308,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         Task { @MainActor in
             try? await Task.sleep(for: .milliseconds(500))
             WelcomeWindowController.shared.show()
-        }
-    }
-
-    /// Existing users (pre-wizard build) already have `didShowWelcome = true`.
-    /// If `popupTipIndex` has never been set, skip all tips for them — the
-    /// tips are designed for users completing the new wizard flow.
-    private func migrateOnboardingTips() {
-        let d = UserDefaults.standard
-        if d.didShowWelcome, d.object(forKey: "popupTipIndex") == nil {
-            d.popupTipIndex = PopupTip.allCases.count
         }
     }
 
@@ -344,15 +333,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 }
 
-// MARK: - UserDefaults: first-launch flag
+// MARK: - UserDefaults: onboarding flag
 
 private extension UserDefaults {
-    private static let didShowWelcomeKey = "didShowWelcome"
+    private static let didShowOnboardingWizardKey = "didShowOnboardingWizard"
 
-    /// `true` after the welcome popup has been shown at least once.
-    var didShowWelcome: Bool {
-        get { bool(forKey: Self.didShowWelcomeKey) }
-        set { set(newValue, forKey: Self.didShowWelcomeKey) }
+    /// `true` once the welcome wizard has been shown. Uses a distinct key from
+    /// the legacy `didShowWelcome` (which was set by the old Settings-on-launch
+    /// flow) so that all existing users see the new wizard on first upgrade.
+    var didShowOnboardingWizard: Bool {
+        get { bool(forKey: Self.didShowOnboardingWizardKey) }
+        set { set(newValue, forKey: Self.didShowOnboardingWizardKey) }
     }
 }
 
