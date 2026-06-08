@@ -109,6 +109,12 @@ level is hidden unless you pass `--level info`.
   immediately when the popup opens or the context menu is shown.
   `showAbout()` calls `NSApp.orderFrontStandardAboutPanel` with the version and an
   attributed-string credits block linking to the homepage.
+  `updaterController` (`SPUStandardUpdaterController`, lazy) drives the Sparkle
+  auto-updater; it is passed `updaterDelegate` (`UpdaterDelegate`, a small
+  `NSObject` conforming to `SPUUpdaterDelegate`) which returns `false` from
+  `updaterShouldPromptForPermissionToCheckForUpdates(_:)` — suppressing Sparkle's
+  own first-run dialog so the onboarding wizard's Step D is the single place the
+  "Check for Updates Automatically" preference is set.
 
 ### Monitoring & Accessibility
 

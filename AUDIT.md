@@ -1,8 +1,8 @@
 # KeyMinder — Security Audit
 
-**Date:** 2026-06-07 (last updated 2026-06-07 after v0.1.83)
+**Date:** 2026-06-07 (last updated 2026-06-08 after v0.1.90)
 **Auditor:** Claude Sonnet 4.6 (automated static analysis)
-**Scope:** Full project, audited at v0.1.79; all findings resolved by v0.1.83
+**Scope:** Full project, audited at v0.1.79; all findings resolved by v0.1.83 except where noted; Sparkle sections updated at v0.1.90
 **Prior audit:** `Claude/AUDIT_2026-06-01.md` (v0.1.39). Status of all prior findings is tracked explicitly in each section.
 
 ---
@@ -47,10 +47,11 @@ No runtime exceptions in Hardened Runtime (no JIT, no unsigned executable memory
 
 ## 2. Dependency Audit
 
-**Zero third-party dependencies.** The project uses only Apple system frameworks:
+**One third-party dependency:** Sparkle 2.9.2 (SPM, `https://github.com/sparkle-project/Sparkle`). All other dependencies are Apple system frameworks:
 
-| Framework | Purpose |
-|-----------|---------|
+| Framework / Library | Purpose |
+|---------------------|---------|
+| **Sparkle 2.9.2** | Auto-updater (`SPUStandardUpdaterController`) |
 | AppKit / SwiftUI | UI |
 | ApplicationServices | Accessibility API (`AXUIElement*`) |
 | Carbon.HIToolbox | Global hotkey (`RegisterEventHotKey`) |
@@ -59,11 +60,11 @@ No runtime exceptions in Hardened Runtime (no JIT, no unsigned executable memory
 | os | Unified logging (`Logger`) |
 | Darwin | `dlopen`, `dlsym` for private CGS symbol resolution |
 
-No SPM `Package.swift`, Podfile, or Cartfile. No binary blobs, pre-built XCFrameworks, or vendored `.a`/`.dylib` files.
+No Podfile or Cartfile. No binary blobs, pre-built XCFrameworks, or vendored `.a`/`.dylib` files beyond the Sparkle XCFramework fetched by SPM.
 
-**CVE exposure:** None — no third-party libraries to audit.
+**CVE exposure:** Sparkle 2.x uses Ed25519 signatures to verify update packages before installation; update feeds are fetched over HTTPS. The project pins Sparkle at 2.9.2 via `Package.resolved`. Review release notes on Sparkle version bumps.
 
-**Auto-updater:** None. No Sparkle or similar framework. No code is downloaded or executed at runtime.
+**Auto-updater:** Sparkle 2.9.2 (added v0.1.84). `SPUStandardUpdaterController` is instantiated in `AppDelegate` with a custom `UpdaterDelegate` that suppresses Sparkle's own first-run permission dialog (v0.1.90) — the onboarding wizard handles this preference instead. The Ed25519 signing key lives in the macOS Keychain (never in the repo); the public key is embedded in `Info.plist → SUPublicEDKey`. Update packages are downloaded and verified by Sparkle before installation; no app code executes during the update process.
 
 ---
 
@@ -242,7 +243,7 @@ This section has **no actionable findings**.
 
 ## 7. Update & Distribution Mechanism
 
-**No auto-updater.** No Sparkle, Squirrel, or custom update mechanism. Users update manually by downloading from the project website.
+**Auto-updater: Sparkle 2.9.2** (added v0.1.84). `SPUStandardUpdaterController` fetches `https://keyminder.app/appcast.xml` and verifies each update package with Ed25519 before installation. The signing key is stored in the macOS Keychain and never leaves the developer machine; the public key is embedded in `Info.plist → SUPublicEDKey`. No app code is involved in the download or verification — Sparkle handles this entirely. The "Check for Updates Automatically" user preference is written to `SUEnableAutomaticChecks` in `UserDefaults`; Sparkle reads this key directly.
 
 **Distribution path:** Developer ID + Hardened Runtime + `xcrun notarytool` (documented in `CLAUDE.md` and `scripts/release.sh`). Hardened Runtime is correctly enabled on both Debug and Release configs. ✓
 
