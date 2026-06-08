@@ -302,6 +302,7 @@ private struct FilterableShortcutsView: View {
     let onActivate: (Shortcut) -> Void
     var onOpenSettings: () -> Void = {}
     @FocusState private var searchFocused: Bool
+    @State private var copied = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -376,9 +377,32 @@ private struct FilterableShortcutsView: View {
                 .foregroundStyle(.secondary)
             Spacer(minLength: 12)
             settingsButton
+            exportButton
             modifierButtons
             searchField
         }
+    }
+
+    private var exportButton: some View {
+        Button {
+            let md = ShortcutExporter.markdown(for: model.app)
+            NSPasteboard.general.clearContents()
+            NSPasteboard.general.setString(md, forType: .string)
+            copied = true
+            Task {
+                try? await Task.sleep(for: .seconds(1.5))
+                copied = false
+            }
+        } label: {
+            Image(systemName: copied ? "checkmark" : "square.and.arrow.up")
+                .font(.system(size: 11, weight: .medium))
+                .foregroundStyle(copied ? ThemeSettings.shared.keyAccent : .secondary)
+                .frame(width: 22, height: 22)
+                .animation(.easeInOut(duration: 0.15), value: copied)
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("Copy shortcuts as Markdown")
+        .help("Copy shortcuts as Markdown")
     }
 
     private var settingsButton: some View {

@@ -10,43 +10,7 @@ Items are rough ideas, not commitments. No priority order.
 
 ---
 
-## Interactive onboarding tour
-
-A guided walkthrough that introduces new users to KeyMinder's key features and
-settings — triggered automatically on first launch (after the Accessibility grant)
-or manually via a "Take the tour…" item in the right-click context menu.
-
-Each step would highlight one concept with a brief explanation and, where possible,
-a live demonstration:
-
-1. **Trigger** — show the global hotkey and double-tap option; invite the user to
-   try opening the popup.
-2. **Search** — type-to-filter; modifier key buttons (⌃ ⌥ ⇧ ⌘); dim mode when
-   all shortcuts fit on screen.
-3. **Favourites** — hover a row to reveal the star; ★ header button; Esc to clear.
-4. **Run a command** — click or Tab + Return to activate a shortcut directly.
-5. **System shortcuts** — the dedicated section for Spotlight, Screenshots, etc.
-6. **Settings highlights** — all-entries mode, Ignored Commands, custom accent colour.
-
-**Implementation notes:** a `TourController` owned by `AppDelegate` could drive a
-sequence of lightweight popovers anchored to the menu-bar icon or the popup panel
-itself, advancing on user action or a timeout. The existing `showHintPopover()`
-infrastructure in `AppDelegate` (used after first-launch Settings close) is a
-natural starting point. State tracked in `UserDefaults` (`didCompleteTour: Bool`)
-so it runs once automatically and can be re-triggered on demand.
-
----
-
-## Auto-updater
-
-Integrate **Sparkle** so users receive update notifications and can install new
-versions without manually downloading a DMG. Sparkle is the de-facto standard
-for Developer ID-distributed macOS apps and supports delta updates,
-release notes in the update sheet, and silent background checks.
-
-**Notes:** requires hosting an `appcast.xml` alongside the DMG; the release
-script would need to generate and sign the appcast entry. Sparkle's XPC
-service model is compatible with Hardened Runtime.
+~~## Auto-updater~~ **Shipped in v0.1.84 (Sparkle).**
 
 ---
 
@@ -109,28 +73,6 @@ by name or category, then copy to clipboard or insert at the cursor.
 **Notes:** could share UI infrastructure with the emoji search above. The
 Unicode character database can be bundled as a compact lookup table (~2 MB
 for names + codepoints).
-
----
-
-## Export cheat sheet
-
-A button or right-click option to copy the currently visible shortcuts as
-**Markdown** or plain text — useful for documentation, onboarding teammates,
-or printing a reference card.
-
-**Notes:** straightforward serialization of `AppShortcuts`; could also
-support PDF via `WKWebView` print-to-PDF.
-
----
-
-## Shortcut conflict detector
-
-Highlight (with a warning icon or color) any shortcut that appears more than
-once in the frontmost app's menu — a common source of confusion when
-third-party plugins or app updates silently duplicate a binding.
-
-**Notes:** conflicts are detectable purely from the already-scraped
-`AppShortcuts` data; no additional AX calls needed.
 
 ---
 
