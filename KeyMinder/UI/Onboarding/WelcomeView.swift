@@ -11,12 +11,30 @@ enum WelcomeStep: Int, CaseIterable {
 
 struct WelcomeView: View {
     var onTryItNow: () -> Void
-    var onDismiss:  () -> Void
+    var onComplete: () -> Void
+    var onQuit:     () -> Void
 
-    @State private var step: WelcomeStep = .intro
-    @State private var goingForward = true
-    @State private var model = SettingsModel()
-    @State private var permissionGranted = AXIsProcessTrusted()
+    @State private var step: WelcomeStep
+    @State private var goingForward: Bool
+    @State private var model: SettingsModel
+    @State private var permissionGranted: Bool
+
+    init(onTryItNow: @escaping () -> Void,
+         onComplete: @escaping () -> Void,
+         onQuit:     @escaping () -> Void) {
+        self.onTryItNow = onTryItNow
+        self.onComplete = onComplete
+        self.onQuit     = onQuit
+        let trusted = AXIsProcessTrusted()
+        let saved   = UserDefaults.standard.onboardingResumeStep
+            .flatMap { WelcomeStep(rawValue: $0) } ?? .intro
+        _permissionGranted = State(initialValue: trusted)
+        // If the saved step was the permission step but permission is now
+        // already granted, open at the trigger step instead.
+        _step          = State(initialValue: saved == .permission && trusted ? .trigger : saved)
+        _goingForward  = State(initialValue: true)
+        _model         = State(initialValue: SettingsModel())
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -40,6 +58,9 @@ struct WelcomeView: View {
                 .padding(.vertical, 16)
         }
         .frame(width: 420, height: 460)
+        .onChange(of: step) { _, newStep in
+            UserDefaults.standard.onboardingResumeStep = newStep.rawValue
+        }
         .onChange(of: permissionGranted) { _, granted in
             guard granted, step == .permission else { return }
             // Auto-advance after a short pause so the user sees the green
@@ -84,7 +105,7 @@ struct WelcomeView: View {
             Spacer()
 
             if step == .intro {
-                Button("Skip setup", action: onDismiss)
+                Button("Quit KeyMinder", action: onQuit)
                     .buttonStyle(.plain)
                     .foregroundStyle(.tertiary)
                     .font(.subheadline)
@@ -110,7 +131,7 @@ struct WelcomeView: View {
                 .buttonStyle(.borderedProminent)
                 .keyboardShortcut(.defaultAction)
         case .loginItem:
-            Button("Done", action: onDismiss)
+            Button("Done", action: onComplete)
                 .buttonStyle(.borderedProminent)
                 .keyboardShortcut(.defaultAction)
         }
@@ -140,7 +161,7 @@ struct WelcomeView: View {
     private func advance() {
         let idx = currentStepIndex
         guard idx + 1 < steps.count else {
-            onDismiss()
+            onComplete()
             return
         }
         goingForward = true
@@ -374,41 +395,60 @@ private struct WelcomeTriggerStep: View {
     }
 }
 
-// MARK: - Step D: Login item
+// MARK: - Step D: Login item + updates
 
 private struct WelcomeLoginStep: View {
     @Bindable var model: SettingsModel
 
     var body: some View {
-        VStack(spacing: 22) {
+        VStack(spacing: 18) {
             Image(systemName: "checkmark.seal.fill")
                 .font(.system(size: 52))
                 .foregroundStyle(.green)
                 .padding(.top, 4)
 
             VStack(spacing: 8) {
-                Text("One last thing")
+                Text("Almost there")
                     .font(.title2).fontWeight(.semibold)
 
-                Text("Would you like KeyMinder to launch automatically when you log in?")
+                Text("Set up your last preferences before you start.")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
             }
 
-            Toggle(isOn: $model.launchAtLogin) {
-                VStack(alignment: .leading, spacing: 3) {
-                    Text("Launch at Login")
-                        .fontWeight(.medium)
-                    Text("KeyMinder will be ready in your menu bar whenever you need it.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
+            preferenceCard {
+                Toggle(isOn: $model.launchAtLogin) {
+                    WelcomePrefLabel(
+                        title: "Launch at Login",
+                        caption: "KeyMinder will be ready in your menu bar whenever you need it."
+                    )
                 }
             }
+
+            preferenceCard {
+                Toggle(isOn: $model.automaticUpdatesEnabled) {
+                    WelcomePrefLabel(
+                        title: "Check for Updates Automatically",
+                        caption: "KeyMinder will notify you when a new version is available."
+                    )
+                }
+            }
+
+            Text("You can change these any time in Settings → General.")
+                .font(.caption)
+                .foregroundStyle(.tertiary)
+        }
+    }
+
+    private func preferenceCard<Content: View>(
+        @ViewBuilder _ content: () -> Content
+    ) -> some View {
+        content()
             .toggleStyle(.switch)
             .padding(14)
+            .frame(maxWidth: .infinity, alignment: .leading)
             .background(
                 RoundedRectangle(cornerRadius: 10, style: .continuous)
                     .fill(.primary.opacity(0.04))
@@ -417,10 +457,20 @@ private struct WelcomeLoginStep: View {
                             .strokeBorder(.primary.opacity(0.1), lineWidth: 1)
                     )
             )
+    }
+}
 
-            Text("You can change this any time in Settings → General.")
+private struct WelcomePrefLabel: View {
+    let title: LocalizedStringKey
+    let caption: LocalizedStringKey
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 3) {
+            Text(title).fontWeight(.medium)
+            Text(caption)
                 .font(.caption)
-                .foregroundStyle(.tertiary)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
         }
     }
 }
@@ -459,6 +509,20 @@ private struct WelcomeBullet: View {
             Text(text)
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
+        }
+    }
+}
+
+// MARK: - UserDefaults: onboarding resume step
+
+extension UserDefaults {
+    private static let onboardingResumeStepKey = "onboardingResumeStep"
+
+    var onboardingResumeStep: Int? {
+        get { object(forKey: Self.onboardingResumeStepKey) as? Int }
+        set {
+            if let v = newValue { set(v, forKey: Self.onboardingResumeStepKey) }
+            else { removeObject(forKey: Self.onboardingResumeStepKey) }
         }
     }
 }

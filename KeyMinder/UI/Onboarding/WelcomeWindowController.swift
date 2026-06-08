@@ -6,12 +6,15 @@ final class WelcomeWindowController: NSWindowController {
 
     static let shared = WelcomeWindowController()
 
-    /// Fires when the wizard closes for any reason: Done, Skip, or the title-bar ✕.
-    var onDismiss: (() -> Void)?
+    /// Fires when the wizard is completed (Done on the last step).
+    /// AppDelegate uses this to mark the wizard as done and open the popup.
+    var onComplete: (() -> Void)?
 
     /// Fires when the user taps "Try it now" in the trigger step.
-    /// AppDelegate wires this to `presentPopup()`.
     var onTryItNow: (() -> Void)?
+
+    private var wizardCompleted = false
+    private var isTerminating   = false
 
     private init() {
         let window = NSWindow(
@@ -31,9 +34,19 @@ final class WelcomeWindowController: NSWindowController {
     required init?(coder: NSCoder) { fatalError() }
 
     func show() {
+        wizardCompleted = false
+        isTerminating   = false
         let rootView = WelcomeView(
             onTryItNow: { [weak self] in self?.onTryItNow?() },
-            onDismiss:  { [weak self] in self?.window?.close() }
+            onComplete: { [weak self] in
+                self?.wizardCompleted = true
+                self?.window?.close()
+            },
+            onQuit: { [weak self] in
+                guard let self, !self.isTerminating else { return }
+                self.isTerminating = true
+                NSApp.terminate(nil)
+            }
         )
         window?.contentView = NSHostingView(rootView: rootView)
         window?.center()
@@ -44,7 +57,13 @@ final class WelcomeWindowController: NSWindowController {
 
 extension WelcomeWindowController: NSWindowDelegate {
     func windowWillClose(_ notification: Notification) {
-        onDismiss?()
-        onDismiss = nil
+        if wizardCompleted {
+            onComplete?()
+            onComplete = nil
+        } else if !isTerminating {
+            // Closed via the title-bar ✕ — treat as quit.
+            isTerminating = true
+            NSApp.terminate(nil)
+        }
     }
 }

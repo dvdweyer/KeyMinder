@@ -292,11 +292,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     /// Subsequent launches are unaffected.
     private func showWelcomeIfNeeded() {
         guard !UserDefaults.standard.didShowOnboardingWizard else { return }
-        UserDefaults.standard.didShowOnboardingWizard = true
         WelcomeWindowController.shared.onTryItNow = { [weak self] in
             self?.presentPopup()
         }
-        WelcomeWindowController.shared.onDismiss = { [weak self] in
+        WelcomeWindowController.shared.onComplete = { [weak self] in
+            UserDefaults.standard.didShowOnboardingWizard = true
+            UserDefaults.standard.onboardingResumeStep = nil
             Task { @MainActor [weak self] in
                 try? await Task.sleep(for: .milliseconds(300))
                 self?.showMenuBarHint()
