@@ -2,14 +2,25 @@ import AppKit
 import Sparkle
 import SwiftUI
 
+// Suppresses Sparkle's built-in first-run "check automatically?" dialog so the
+// onboarding wizard (WelcomeLoginStep) is the single place this preference is set.
+private final class UpdaterDelegate: NSObject, SPUUpdaterDelegate {
+    func updaterShouldPromptForPermissionToCheckForUpdates(_ updater: SPUUpdater) -> Bool {
+        return false
+    }
+}
+
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
 
     let frontmostMonitor = FrontmostAppMonitor()
     private let popup = PopupController()
-    private let updaterController = SPUStandardUpdaterController(
-        startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil
-    )
+    private let updaterDelegate = UpdaterDelegate()
+    private lazy var updaterController: SPUStandardUpdaterController = {
+        SPUStandardUpdaterController(
+            startingUpdater: true, updaterDelegate: updaterDelegate, userDriverDelegate: nil
+        )
+    }()
     private var statusItem: NSStatusItem?
     private var hintPopover: NSPopover?
 
