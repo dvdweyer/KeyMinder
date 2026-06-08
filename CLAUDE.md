@@ -96,13 +96,16 @@ level is hidden unless you pass `--level info`.
   calls `setupDoubleTap()` then `presentPopup()` so the double-tap trigger is armed
   the moment Accessibility is granted without requiring a relaunch.
   `setupSleepWakeObserver()` re-arms the trigger on `NSWorkspace.didWakeNotification`
-  (sleep/wake can invalidate event monitors). `showFirstLaunchSettingsIfNeeded()` opens
-  the Settings window 500 ms after first launch so the user can configure their hotkey
-  before the popup ever appears; guarded by `didShowWelcome`. `onOpenSettings` (set on
-  `PopupController`) hides the popup then calls `SettingsWindowController.show()`.
-  `SettingsWindowController.onFirstClose` is set before the first-launch open so that
-  closing Settings triggers `showHintPopover()`, which displays a popover on the
-  menu-bar icon for 5 seconds hinting how to trigger the popup. The popover is dismissed
+  (sleep/wake can invalidate event monitors). `showWelcomeIfNeeded()` shows the welcome
+  wizard 500 ms after the very first launch, guarded by `didShowOnboardingWizard` (a
+  distinct flag from the legacy `didShowWelcome`, so all existing users see the wizard
+  once on upgrade). On completion the wizard sets `didShowOnboardingWizard = true`,
+  clears `onboardingResumeStep`, calls `showMenuBarHint()`, and opens the popup on the
+  frontmost app. Closing or quitting the wizard without completing it quits KeyMinder
+  and saves the current step to `onboardingResumeStep` so the next launch resumes from
+  the same point. `onOpenSettings` (set on `PopupController`) hides the popup then calls
+  `SettingsWindowController.show()`. `showMenuBarHint()` displays a 5-second popover on
+  the menu-bar icon after wizard completion hinting how to trigger the popup; dismissed
   immediately when the popup opens or the context menu is shown.
   `showAbout()` calls `NSApp.orderFrontStandardAboutPanel` with the version and an
   attributed-string credits block linking to the homepage.
@@ -204,7 +207,9 @@ level is hidden unless you pass `--level info`.
   centered on that screen. Esc clears a non-empty text filter, then the toggled modifier
   filter, then the favourites filter, then dismisses — each press peels back one layer.
   A local key monitor handles Tab (advance row selection) / Shift-Tab (reverse) / Return
-  or numpad Enter (activate selected shortcut). Permission-poll timer fires
+  or numpad Enter (activate selected shortcut) / chord invocation (⌘ or ⌃ held + key:
+  if exactly one visible shortcut matches via `matchShortcutEvent(_:)`, it is activated
+  directly without dismissing the popup). Permission-poll timer fires
   `onPermissionGranted` the moment `AXIsProcessTrusted()` becomes true.
   Panel is released (`self.panel = nil`) on hide to free the SwiftUI tree while idle.
   Two `flagsChanged` event monitors (global for when another app is frontmost, local for
@@ -236,16 +241,24 @@ level is hidden unless you pass `--level info`.
     is their union and is used for all filtering. `hasToggledModifiers` lets the Esc
     handler clear only persistent state (held keys self-clear on release).
     `fitsWithoutScrolling` (set once at init by the controller) switches `MenuSectionView`
-    into dim mode when true.
+    into dim mode when true. `tipIndex: Int` (backed by `UserDefaults.popupTipIndex`)
+    tracks which onboarding tip has been shown; `currentTip: PopupTip?` returns the next
+    unshown tip; `advanceTip()` increments the index and persists it.
+  - `PopupTip` — enum with three cases (`modifierFilter`, `search`, `favourites`); each
+    carries a `text: LocalizedStringKey` shown in the banner.
   - `PopupRootView` — dispatches to `FilterableShortcutsView`, `PopupOnboardingView`,
     or `PopupMessageView`; applies `.regularMaterial` background + border overlay.
   - `FilterableShortcutsView` — header (gear button, app icon, name, count, ★ favourites
-    toggle, modifier toggle buttons, auto-focused search field) + scrollable shortcut
-    grid; auto-focuses the filter field on appear; scroll-follows the selected row. The
-    gear button (`settingsButton`) calls `onOpenSettings`. The ★ button appears only when
-    the current app has at least one pinned shortcut and toggles `showOnlyFavourites`.
-    Modifier buttons (⌃ ⌥ ⇧ ⌘) are rendered by `ModifierToggle` — filled with
-    `ThemeSettings.shared.keyAccent` when active, outlined when not.
+    toggle, modifier toggle buttons, auto-focused search field) + optional `TipBannerView`
+    (shown when `model.currentTip` is non-nil; dismissing calls `model.advanceTip()`) +
+    scrollable shortcut grid; auto-focuses the filter field on appear; scroll-follows the
+    selected row. The gear button (`settingsButton`) calls `onOpenSettings`. The ★ button
+    appears only when the current app has at least one pinned shortcut and toggles
+    `showOnlyFavourites`. Modifier buttons (⌃ ⌥ ⇧ ⌘) are rendered by `ModifierToggle` —
+    filled with `ThemeSettings.shared.keyAccent` when active, outlined when not.
+  - `TipBannerView` — dismissible tip strip (lightbulb icon + text + ✕ button) rendered
+    between header and shortcut grid; accented border, accent background tint, fade-out
+    transition on dismiss.
   - `MenuSectionView` — one section card: section header (`.isHeader` VoiceOver trait)
     + optional `SubGroupHeader` labels for named submenu groups + shortcut rows. In normal
     mode the card is absent when no rows pass the filter. In dim mode (`dimMode: true`)
@@ -270,8 +283,37 @@ level is hidden unless you pass `--level info`.
 - `UI/Popup/Theme.swift` — spacing constants and two semantic colours: `fadedText`
   (low-contrast, used for dimmed rows; light grey / dark grey adaptive) and
   `sectionHeaderFill`. The key-badge accent colour has moved to `ThemeSettings`.
-- `UI/Popup/PopupOnboardingView.swift` — onboarding screen shown before Accessibility
-  is granted.
+- `UI/Popup/PopupOnboardingView.swift` — fallback onboarding screen shown inside the
+  popup when Accessibility was not yet granted during the welcome wizard (or if the
+  wizard was skipped).
+
+### UI — Onboarding
+
+- `UI/Onboarding/WelcomeWindowController.swift` — singleton `NSWindowController`
+  (420 × 460 pt, `.titled | .closable`). `show()` installs `WelcomeView` as an
+  `NSHostingView`, centres the window, and resets `wizardCompleted` / `isTerminating`
+  flags. `var onComplete: (() -> Void)?` fires via `windowWillClose` when the user
+  clicks Done on the last step — wired by `AppDelegate` to persist completion flags
+  and open the popup. `var onTryItNow: (() -> Void)?` is wired to
+  `AppDelegate.presentPopup()`. Closing the window at any step (title-bar ✕ or the
+  "Quit KeyMinder" button on step A) calls `NSApp.terminate(nil)`; the `isTerminating`
+  guard prevents a double-terminate if `windowWillClose` fires during the quit sequence.
+- `UI/Onboarding/WelcomeView.swift` — 4-step wizard root view (`WelcomeStep` enum:
+  `intro`, `permission`, `trigger`, `loginItem`). The custom `init` restores the saved
+  step from `UserDefaults.onboardingResumeStep`; if the saved step was `.permission`
+  but Accessibility is now trusted, it advances directly to `.trigger`. The `steps`
+  computed property filters `.permission` out when `permissionGranted` is true so dot
+  indicators and navigation reflect the real step count (3 or 4). `.onChange(of: step)`
+  writes the current raw value to `onboardingResumeStep`; `.onChange(of: permissionGranted)`
+  auto-advances 800 ms after the grant. Slide transitions use a `goingForward: Bool`
+  flag to choose trailing/leading insertion edges. Subviews: `WelcomeIntroStep` (icon
+  + feature bullets; "Quit KeyMinder" button calls `onQuit`), `WelcomePermissionStep`
+  (lock icon animates open on grant; polls `AXIsProcessTrusted()` every 500 ms via
+  `.task`), `WelcomeTriggerStep` (`@Bindable SettingsModel`; `HotkeyBadge` + recording
+  buttons; double-tap enable toggle + modifier picker; "Try it now" box calls
+  `onTryItNow` and shows a 3-second confirmation), `WelcomeLoginStep` (`@Bindable
+  SettingsModel`; Launch at Login toggle + Check for Updates Automatically toggle in
+  preference cards; Done calls `onComplete`).
 
 ### UI — Settings
 
@@ -284,8 +326,11 @@ level is hidden unless you pass `--level info`.
     persistence, `HotkeyManager` registration, login-item toggle, double-tap config
     (`doubleTapEnabled` + `doubleTapModifier`), `showAllMenuItems` (popup content mode),
     `showSystemShortcuts` / `showDeactivatedSystemShortcuts` (system-shortcuts visibility),
-    `debugLoggingEnabled` toggle, and `registrationFailed: Bool` (set when Carbon
-    rejects a hotkey; cleared on each new recording attempt and on clear).
+    `automaticUpdatesEnabled` (Sparkle `SUEnableAutomaticChecks` key), `debugLoggingEnabled`
+    toggle, and `registrationFailed: Bool` (set when Carbon rejects a hotkey; cleared on
+    each new recording attempt and on clear). `SettingsModel` is reused inside
+    `WelcomeView` for the trigger and login-item steps so settings edited in the wizard
+    are immediately persisted via the same `didSet` observers.
   - `SettingsView` — two tabs: **General** (Global Shortcut with hotkey badge +
     record/change/clear and "Shortcut already in use" error; Launch at Login toggle;
     Double-tap Trigger with enable toggle + modifier picker; Popup Content "Show all menu

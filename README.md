@@ -35,7 +35,7 @@ Open `KeyMinder.xcodeproj` in Xcode and press ⌘R. Xcode 15 or later required.
 
 ## Installing a development build
 
-After building, copy to `/Applications` before granting Accessibility permission — macOS TCC does not register apps run from DerivedData or `/tmp`:
+After building, copy to `/Applications` before granting Accessibility permission — macOS TCC does not register apps run from DerivedData or `/tmp`. On first launch a welcome wizard guides you through granting Accessibility access and choosing a trigger:
 
 ```bash
 cp -R /tmp/KeyMinder-build/Build/Products/Debug/KeyMinder.app /Applications/
