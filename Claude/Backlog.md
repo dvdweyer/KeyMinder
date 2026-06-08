@@ -37,21 +37,6 @@ macOS does not expose a direct API to pre-populate the Add Shortcut sheet.
 
 ---
 
-## Invoke command by pressing its shortcut keys in the popup
-
-While the popup is open, pressing the exact shortcut for a visible command
-(e.g. ⌘S) could fire the command in the target app rather than modifying the
-search field.
-
-**Notes:** the modifier-filter and search field already intercept key events,
-so the implementation needs to distinguish "shortcut chord" from "search
-input". Proposal: if the key event matches exactly one visible shortcut
-*and* the search field is empty, treat it as an invocation; otherwise let it
-fall through to the field. The existing `AXUIElementPerformAction` path in
-`ShortcutActivator` would handle the actual dispatch.
-
----
-
 ## Emoji search
 
 A dedicated search mode (or a separate popup trigger) that lets the user
