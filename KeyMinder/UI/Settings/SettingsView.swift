@@ -130,6 +130,8 @@ final class SettingsModel {
         guard !isRecording else { return }
         isRecording = true
         registrationFailed = false
+        HotkeyManager.shared.unregister()
+        DoubleTapTrigger.shared.stop()
         eventMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
             guard let self else { return event }
             MainActor.assumeIsolated { self.handleKey(event) }
@@ -140,6 +142,8 @@ final class SettingsModel {
     func stopRecording() {
         isRecording = false
         removeMonitor()
+        if let hk = hotkey { HotkeyManager.shared.register(hk) }
+        applyDoubleTap()
     }
 
     func clear() {
