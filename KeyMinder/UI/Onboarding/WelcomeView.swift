@@ -126,6 +126,7 @@ struct WelcomeView: View {
             Button("Next", action: advance)
                 .buttonStyle(.borderedProminent)
                 .keyboardShortcut(.defaultAction)
+                .disabled(!permissionGranted)
         case .trigger:
             Button("Next", action: advance)
                 .buttonStyle(.borderedProminent)
