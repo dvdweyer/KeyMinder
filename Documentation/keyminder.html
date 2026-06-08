@@ -420,32 +420,32 @@
 
 <header>
   <h1>KeyMinder</h1>
-  <p>A macOS menu bar app that instantly shows the keyboard shortcuts of whichever app you're currently using.</p>
+  <p data-de="Eine macOS-Menüleisten-App, die sofort die Tastenkürzel der aktiven App anzeigt.">A macOS menu bar app that instantly shows the keyboard shortcuts of whichever app you're currently using.</p>
   <div class="button-row">
-    <a href="KeyMinder_0.1.95.zip" class="btn btn-primary" download>
+    <a href="KeyMinder_0.1.95.zip" class="btn btn-primary" download data-de="↓ v0.1.95 herunterladen">
       ↓ Download v0.1.95
     </a>
     <a href="https://github.com/dvdweyer/KeyMinder" class="btn btn-secondary" target="_blank" rel="noopener">
       View on GitHub
     </a>
   </div>
-  <p class="download-note">Chrome may warn about this download — the app is notarized by Apple. Click the warning → <em>Keep</em> to proceed.</p>
+  <p class="download-note" data-de-html="Chrome zeigt möglicherweise eine Warnung an – die App ist von Apple notarisiert. Klicken Sie auf die Warnung → &lt;em&gt;Behalten&lt;/em&gt;, um fortzufahren.">Chrome may warn about this download — the app is notarized by Apple. Click the warning → <em>Keep</em> to proceed.</p>
 </header>
 
 <main>
 
   <div class="section">
-    <h2>What it does</h2>
-    <p>Instead of hunting through menus to find shortcuts, KeyMinder pops up a clean overview of every keyboard shortcut available in the frontmost app — grouped by menu, triggered by a user-defined hotkey or double-tap on the command, option or control key.</p>
-    <p>Click any shortcut in the popup to run it immediately. KeyMinder reads menu structures directly via the macOS Accessibility API, so shortcuts are always accurate and up to date for whatever app you're using.</p>
-    <p>Search by typing a command name and Tab to it to execute it directly. Toggle or hold modifier keys (⌃ ⌥ ⇧ ⌘) to filter by exact modifier combination. When all shortcuts fit on screen, non-matching rows dim in place so the layout stays stable. There is even an option to show menu items without keyboard shortcuts — these show only when at least two letters of the command are matched.</p>
-    <p>Pin your most-used shortcuts as favourites — hover any row for the star button — then filter to them instantly with the ★ button in the header. Use Ignored Commands (Settings → Advanced) to suppress noisy menu items globally or per app. A gear button in the popup header opens Settings without closing your workflow.</p>
+    <h2 data-de="Was es kann">What it does</h2>
+    <p data-de="Anstatt Menüs nach Tastenkürzeln zu durchsuchen, zeigt KeyMinder eine übersichtliche Zusammenfassung aller verfügbaren Tastenkürzel der aktiven App – geordnet nach Menü, ausgelöst durch eine benutzerdefinierte Tastenkombination oder durch schnelles doppeltes Drücken der Befehl-, Wahl- oder Steuerungstaste.">Instead of hunting through menus to find shortcuts, KeyMinder pops up a clean overview of every keyboard shortcut available in the frontmost app — grouped by menu, triggered by a user-defined hotkey or double-tap on the command, option or control key.</p>
+    <p data-de="Klicken Sie auf ein Tastenkürzel im Popup, um es sofort auszuführen. KeyMinder liest Menüstrukturen direkt über die macOS-Bedienungshilfen-API – die Tastenkürzel sind daher immer korrekt und aktuell, egal welche App Sie verwenden.">Click any shortcut in the popup to run it immediately. KeyMinder reads menu structures directly via the macOS Accessibility API, so shortcuts are always accurate and up to date for whatever app you're using.</p>
+    <p data-de="Suchen Sie durch Eintippen eines Befehlsnamens und springen Sie mit Tab dorthin, um ihn direkt auszuführen. Aktivieren oder halten Sie Modifiziertasten (⌃ ⌥ ⇧ ⌘), um nach einer genauen Tastenkombination zu filtern. Passen alle Tastenkürzel auf den Bildschirm, werden nicht übereinstimmende Zeilen abgedunkelt statt ausgeblendet – das Layout bleibt stabil. Es gibt sogar eine Option, Menüeinträge ohne Tastenkürzel anzuzeigen – diese erscheinen nur, wenn mindestens zwei Buchstaben des Befehls eingegeben wurden.">Search by typing a command name and Tab to it to execute it directly. Toggle or hold modifier keys (⌃ ⌥ ⇧ ⌘) to filter by exact modifier combination. When all shortcuts fit on screen, non-matching rows dim in place so the layout stays stable. There is even an option to show menu items without keyboard shortcuts — these show only when at least two letters of the command are matched.</p>
+    <p data-de="Heften Sie Ihre meistgenutzten Tastenkürzel als Favoriten an – bewegen Sie den Mauszeiger über eine Zeile, um den Stern-Button zu sehen –, und filtern Sie sofort mit dem ★-Button in der Kopfzeile. Nutzen Sie Ignorierte Befehle (Einstellungen → Erweitert), um störende Menüeinträge global oder per App auszublenden. Ein Zahnrad-Button in der Popup-Kopfzeile öffnet die Einstellungen, ohne Ihren Workflow zu unterbrechen.">Pin your most-used shortcuts as favourites — hover any row for the star button — then filter to them instantly with the ★ button in the header. Use Ignored Commands (Settings → Advanced) to suppress noisy menu items globally or per app. A gear button in the popup header opens Settings without closing your workflow.</p>
     <div class="screenshot">
       <picture>
         <source srcset="Safari_Shortcuts_dark-mode.png" media="(prefers-color-scheme: dark)">
         <img src="Safari_Shortcuts_light-mode.png" alt="KeyMinder showing Safari keyboard shortcuts grouped by menu" id="screenshotThumb">
       </picture>
-      <p class="screenshot-hint">Click to enlarge</p>
+      <p class="screenshot-hint" data-de="Zum Vergrößern klicken">Click to enlarge</p>
     </div>
   </div>
 
@@ -458,33 +458,33 @@
   </div>
 
   <div class="section">
-    <h2>Requirements</h2>
+    <h2 data-de="Systemvoraussetzungen">Requirements</h2>
     <div class="req-grid">
-      <div class="req-item"><div class="req-dot"></div>macOS 14 (Sonoma) or later</div>
-      <div class="req-item"><div class="req-dot"></div>Accessibility permission</div>
-      <div class="req-item"><div class="req-dot"></div>Apple Silicon or Intel</div>
-      <div class="req-item"><div class="req-dot"></div>No App Store required</div>
+      <div class="req-item"><div class="req-dot"></div><span data-de="macOS 14 (Sonoma) oder neuer">macOS 14 (Sonoma) or later</span></div>
+      <div class="req-item"><div class="req-dot"></div><span data-de="Bedienungshilfen-Berechtigung">Accessibility permission</span></div>
+      <div class="req-item"><div class="req-dot"></div><span data-de="Apple Silicon oder Intel">Apple Silicon or Intel</span></div>
+      <div class="req-item"><div class="req-dot"></div><span data-de="Kein App Store erforderlich">No App Store required</span></div>
     </div>
   </div>
 
   <div class="section">
-    <h2>Install</h2>
+    <h2 data-de="Installation">Install</h2>
     <ol class="steps">
-      <li>Download and unzip <code>KeyMinder_0.1.95.zip</code></li>
-      <li>Move <code>KeyMinder.app</code> to <code>/Applications</code></li>
-      <li>Open KeyMinder — a welcome wizard guides you through setup</li>
-      <li>Follow the wizard to grant Accessibility permission and choose your trigger</li>
+      <li data-de-html="&lt;code&gt;KeyMinder_0.1.95.zip&lt;/code&gt; herunterladen und entpacken">Download and unzip <code>KeyMinder_0.1.95.zip</code></li>
+      <li data-de-html="&lt;code&gt;KeyMinder.app&lt;/code&gt; nach &lt;code&gt;/Applications&lt;/code&gt; verschieben">Move <code>KeyMinder.app</code> to <code>/Applications</code></li>
+      <li data-de="KeyMinder öffnen – ein Einrichtungsassistent führt Sie durch die Konfiguration">Open KeyMinder — a welcome wizard guides you through setup</li>
+      <li data-de="Dem Assistenten folgen, Bedienungshilfen-Berechtigung erteilen und Auslöser festlegen">Follow the wizard to grant Accessibility permission and choose your trigger</li>
     </ol>
   </div>
 
   <div class="section">
-    <h2>Why not on the App Store?</h2>
-    <p>KeyMinder uses the Accessibility API to read other apps' menus. This is fundamentally incompatible with the App Store's mandatory App Sandbox — no entitlement exists to re-open this capability inside the sandbox.</p>
-    <p>The same constraint applies to similar tools such as KeyCue and Shortcat. KeyMinder is distributed as a notarized Developer ID build and is fully open source.</p>
+    <h2 data-de="Warum nicht im App Store?">Why not on the App Store?</h2>
+    <p data-de="KeyMinder verwendet die Bedienungshilfen-API, um die Menüs anderer Apps zu lesen. Dies ist grundlegend unvereinbar mit der für den App Store verpflichtenden App-Sandbox – es gibt keine Berechtigung, diese Funktionalität innerhalb der Sandbox zu ermöglichen.">KeyMinder uses the Accessibility API to read other apps' menus. This is fundamentally incompatible with the App Store's mandatory App Sandbox — no entitlement exists to re-open this capability inside the sandbox.</p>
+    <p data-de="Dieselbe Einschränkung gilt für ähnliche Tools wie KeyCue und Shortcat. KeyMinder wird als notarisierter Developer-ID-Build vertrieben und ist vollständig Open Source.">The same constraint applies to similar tools such as KeyCue and Shortcat. KeyMinder is distributed as a notarized Developer ID build and is fully open source.</p>
   </div>
 
   <div class="section">
-    <h2>What's new</h2>
+    <h2 data-de="Neuigkeiten">What's new</h2>
 
     <div class="changelog-entry">
       <div class="changelog-version">
@@ -953,6 +953,24 @@
 <footer>
   <p>MIT License &nbsp;·&nbsp; <a href="https://github.com/dvdweyer/KeyMinder" target="_blank" rel="noopener">github.com/dvdweyer/KeyMinder</a></p>
 </footer>
+
+<script>
+  // Apply German translations if the browser's preferred language is German.
+  // data-de  → replaces textContent (safe, no HTML parsing).
+  // data-de-html → replaces innerHTML (for elements that contain inline tags).
+  (function () {
+    var langs = navigator.languages && navigator.languages.length
+      ? navigator.languages : [navigator.language || ''];
+    if (!langs.some(function (l) { return l.startsWith('de'); })) return;
+    document.documentElement.lang = 'de';
+    document.querySelectorAll('[data-de]').forEach(function (el) {
+      el.textContent = el.getAttribute('data-de');
+    });
+    document.querySelectorAll('[data-de-html]').forEach(function (el) {
+      el.innerHTML = el.getAttribute('data-de-html');
+    });
+  })();
+</script>
 
 <script>
   const lightbox  = document.getElementById('lightbox');
