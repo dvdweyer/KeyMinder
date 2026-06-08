@@ -5,7 +5,7 @@ import SwiftUI
 // Suppresses Sparkle's built-in first-run "check automatically?" dialog so the
 // onboarding wizard (WelcomeLoginStep) is the single place this preference is set.
 private final class UpdaterDelegate: NSObject, SPUUpdaterDelegate {
-    func updaterShouldPromptForPermissionToCheckForUpdates(_ updater: SPUUpdater) -> Bool {
+    func updaterShouldPromptForPermissionToCheck(forUpdates updater: SPUUpdater) -> Bool {
         return false
     }
 }
