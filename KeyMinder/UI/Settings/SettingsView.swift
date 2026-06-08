@@ -96,6 +96,10 @@ final class SettingsModel {
         didSet { UserDefaults.standard.debugLoggingEnabled = debugLoggingEnabled }
     }
 
+    var showConflictIndicator: Bool = UserDefaults.standard.showConflictIndicator {
+        didSet { UserDefaults.standard.showConflictIndicator = showConflictIndicator }
+    }
+
     var doubleTapEnabled: Bool = UserDefaults.standard.doubleTapEnabled {
         didSet {
             UserDefaults.standard.doubleTapEnabled = doubleTapEnabled
@@ -340,6 +344,16 @@ private struct AdvancedSettingsView: View {
                     .font(.headline)
 
                 Toggle("Enable debug logging", isOn: $model.debugLoggingEnabled)
+
+                HStack(alignment: .firstTextBaseline, spacing: 8) {
+                    Toggle("Show conflict indicator", isOn: $model.showConflictIndicator)
+                    Text("experimental")
+                        .font(.caption)
+                        .foregroundStyle(Color.orange)
+                        .padding(.horizontal, 5)
+                        .padding(.vertical, 2)
+                        .background(Color.orange.opacity(0.12), in: RoundedRectangle(cornerRadius: 4))
+                }
 
                 Divider()
 

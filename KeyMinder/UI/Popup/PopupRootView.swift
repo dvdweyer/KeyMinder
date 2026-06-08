@@ -191,8 +191,10 @@ final class PopupFilterModel {
     }
 
     /// Key strings assigned to two or more shortcuts in this app — forwarded
-    /// directly from the model for use in `MenuSectionView`.
-    var conflictingKeys: Set<String> { app.conflictingKeys }
+    /// to `MenuSectionView` to flag conflicted rows. Empty when the setting is off.
+    var conflictingKeys: Set<String> {
+        UserDefaults.standard.showConflictIndicator ? app.conflictingKeys : []
+    }
 
     // MARK: Onboarding tips
 

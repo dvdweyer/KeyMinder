@@ -197,4 +197,11 @@ extension UserDefaults {
         get { bool(forKey: Self.showDeactivatedSystemShortcutsKey) }
         set { set(newValue, forKey: Self.showDeactivatedSystemShortcutsKey) }
     }
+
+    private static let showConflictIndicatorKey = "showConflictIndicator"
+
+    var showConflictIndicator: Bool {
+        get { bool(forKey: Self.showConflictIndicatorKey) }
+        set { set(newValue, forKey: Self.showConflictIndicatorKey) }
+    }
 }
