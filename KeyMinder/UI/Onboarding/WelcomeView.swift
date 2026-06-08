@@ -4,7 +4,7 @@ import SwiftUI
 // MARK: - WelcomeStep
 
 enum WelcomeStep: Int, CaseIterable {
-    case intro, trigger, loginItem, permission
+    case intro, permission, trigger, loginItem
 }
 
 // MARK: - WelcomeView
@@ -59,12 +59,12 @@ struct WelcomeView: View {
         switch step {
         case .intro:
             WelcomeIntroStep()
+        case .permission:
+            WelcomePermissionStep(granted: $permissionGranted)
         case .trigger:
             WelcomeTriggerStep(model: model, onTryItNow: onTryItNow)
         case .loginItem:
             WelcomeLoginStep(model: model)
-        case .permission:
-            WelcomePermissionStep(granted: $permissionGranted)
         }
     }
 
@@ -101,15 +101,15 @@ struct WelcomeView: View {
             Button("Get started", action: advance)
                 .buttonStyle(.borderedProminent)
                 .keyboardShortcut(.defaultAction)
+        case .permission:
+            Button("Next", action: advance)
+                .buttonStyle(.borderedProminent)
+                .keyboardShortcut(.defaultAction)
         case .trigger:
             Button("Next", action: advance)
                 .buttonStyle(.borderedProminent)
                 .keyboardShortcut(.defaultAction)
         case .loginItem:
-            Button("Next", action: advance)
-                .buttonStyle(.borderedProminent)
-                .keyboardShortcut(.defaultAction)
-        case .permission:
             Button("Done", action: onDismiss)
                 .buttonStyle(.borderedProminent)
                 .keyboardShortcut(.defaultAction)
