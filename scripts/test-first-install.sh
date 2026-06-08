@@ -3,14 +3,14 @@
 # Quits the app if running but does NOT relaunch it.
 #
 # Usage:
-#   scripts/test-first-install.sh           — resets first-launch flags only
-#                                             (hotkey, double-tap, appearance, and
-#                                             other settings are preserved)
+#   scripts/test-first-install.sh           — resets first-launch flags only;
+#                                             user settings (double-tap, appearance,
+#                                             popup content toggles) are preserved
 #   scripts/test-first-install.sh --deep    — wipes ALL preferences and resets
-#                                             the Accessibility permission grant,
+#                                             Accessibility + Input Monitoring grants,
 #                                             fully mimicking a fresh install
 #
-# Note: Accessibility reset (--deep) calls tccutil for the app's bundle ID only;
+# Note: Permission resets (--deep) call tccutil for the app's bundle ID only;
 # no sudo required on macOS 14+.
 
 set -euo pipefail
@@ -30,15 +30,27 @@ if [[ "${1:-}" == "--deep" ]]; then
 
     echo "==> Resetting Accessibility permission…"
     if tccutil reset Accessibility "$BUNDLE_ID" 2>/dev/null; then
-        echo "    Permission reset — app will need to re-request access on next launch."
+        echo "    Accessibility reset."
     else
         echo "    tccutil failed (try with sudo, or reset manually via System Settings → Privacy & Security → Accessibility)."
     fi
+
+    # Input Monitoring (kTCCServiceListenEvent) covers NSEvent.addGlobalMonitorForEvents
+    # used by the double-tap trigger; a fresh install has this ungranted too.
+    echo "==> Resetting Input Monitoring permission…"
+    if tccutil reset ListenEvent "$BUNDLE_ID" 2>/dev/null; then
+        echo "    Input Monitoring reset."
+    else
+        echo "    tccutil failed (try with sudo, or reset manually via System Settings → Privacy & Security → Input Monitoring)."
+    fi
 else
     echo "==> Resetting first-launch flags…"
-    # didShowWelcome — controls whether the welcome wizard opens on launch
-    defaults delete "$BUNDLE_ID" didShowWelcome              2>/dev/null || true
-    # didSetDefaultHotkey + globalHotkey — triggers re-seeding of ⌥⌘K
+    # Onboarding wizard
+    defaults delete "$BUNDLE_ID" didShowOnboardingWizard     2>/dev/null || true
+    defaults delete "$BUNDLE_ID" onboardingResumeStep        2>/dev/null || true
+    # Popup onboarding tips (PopupFilterModel.tipIndex)
+    defaults delete "$BUNDLE_ID" popupTipIndex               2>/dev/null || true
+    # Hotkey — resets to factory default (⌥⌘K) on next launch
     defaults delete "$BUNDLE_ID" didSetDefaultHotkey         2>/dev/null || true
     defaults delete "$BUNDLE_ID" globalHotkey                2>/dev/null || true
     # Ignore-list state — reset so defaults (disabled, not seeded) are applied fresh

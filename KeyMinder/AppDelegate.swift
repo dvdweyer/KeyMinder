@@ -311,6 +311,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             UserDefaults.standard.onboardingResumeStep = nil
             Task { @MainActor [weak self] in
                 try? await Task.sleep(for: .milliseconds(300))
+                // Reinstall event monitors now that Accessibility is granted.
+                // setupDoubleTap() at launch ran before the grant and got nil
+                // monitors; this is the first opportunity to install them properly.
+                self?.setupDoubleTap()
                 self?.showMenuBarHint()
                 if AXIsProcessTrusted() { self?.presentPopup() }
             }

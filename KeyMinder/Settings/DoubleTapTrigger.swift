@@ -111,6 +111,9 @@ final class DoubleTapTrigger {
                 self?.tapState = .idle
             }
         }
+        if flagsMonitor == nil {
+            Logger.hotkey.error("DoubleTapTrigger: flagsMonitor is nil — Accessibility not yet granted")
+        }
         Logger.hotkey.info("DoubleTapTrigger: watching \(self.watched.rawValue, privacy: .public)")
     }
 
