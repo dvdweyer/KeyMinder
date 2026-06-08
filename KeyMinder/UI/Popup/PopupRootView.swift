@@ -189,6 +189,37 @@ final class PopupFilterModel {
             }.count
         }
     }
+
+    // MARK: Onboarding tips
+
+    /// Index of the next tip to show. Backed by @Observable so the view
+    /// re-renders automatically when `advanceTip()` is called.
+    private(set) var tipIndex: Int = UserDefaults.standard.popupTipIndex
+
+    /// The tip to display, or nil when all tips have been seen.
+    var currentTip: PopupTip? { PopupTip(rawValue: tipIndex) }
+
+    /// Dismisses the current tip and persists the new index.
+    func advanceTip() {
+        tipIndex += 1
+        UserDefaults.standard.popupTipIndex = tipIndex
+    }
+}
+
+// MARK: - PopupTip
+
+enum PopupTip: Int, CaseIterable {
+    case modifierFilter = 0
+    case search         = 1
+    case favourites     = 2
+
+    var text: LocalizedStringKey {
+        switch self {
+        case .modifierFilter: "Filter by modifier — click ⌃ ⌥ ⇧ ⌘ to narrow the list"
+        case .search:         "Start typing to search across all shortcuts"
+        case .favourites:     "Star any shortcut ★ to pin it — tap ★ in the header to see only favourites"
+        }
+    }
 }
 
 /// Root SwiftUI view hosted inside the floating panel. Renders the scraped
@@ -269,6 +300,11 @@ private struct FilterableShortcutsView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             header
+            if let tip = model.currentTip {
+                TipBannerView(tip: tip) {
+                    withAnimation { model.advanceTip() }
+                }
+            }
             contentView
         }
         // Auto-focus the field so the user can type immediately. Deferred to the
@@ -731,4 +767,56 @@ func spokenKeys(_ keys: String) -> String {
     }
 
     return tokens.joined(separator: " ")
+}
+
+// MARK: - TipBannerView
+
+private struct TipBannerView: View {
+    let tip: PopupTip
+    let onDismiss: () -> Void
+
+    var body: some View {
+        HStack(spacing: 8) {
+            Image(systemName: "lightbulb")
+                .font(.caption)
+                .foregroundStyle(ThemeSettings.shared.keyAccent)
+
+            Text(tip.text)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            Spacer(minLength: 0)
+
+            Button(action: onDismiss) {
+                Image(systemName: "xmark")
+                    .font(.caption2.weight(.semibold))
+                    .foregroundStyle(.tertiary)
+            }
+            .buttonStyle(.plain)
+            .help("Dismiss tip")
+        }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 7)
+        .background(
+            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                .fill(ThemeSettings.shared.keyAccent.opacity(0.08))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8, style: .continuous)
+                        .strokeBorder(ThemeSettings.shared.keyAccent.opacity(0.2), lineWidth: 1)
+                )
+        )
+        .transition(.opacity.animation(.easeOut(duration: 0.15)))
+    }
+}
+
+// MARK: - UserDefaults: popup tip index
+
+extension UserDefaults {
+    private static let popupTipIndexKey = "popupTipIndex"
+
+    var popupTipIndex: Int {
+        get { integer(forKey: Self.popupTipIndexKey) }
+        set { set(newValue, forKey: Self.popupTipIndexKey) }
+    }
 }

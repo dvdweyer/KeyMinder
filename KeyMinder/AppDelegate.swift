@@ -31,7 +31,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         setupHotkey()
         setupDoubleTap()
         setupSleepWakeObserver()
-        showFirstLaunchSettingsIfNeeded()
+        showWelcomeIfNeeded()
     }
 
     // MARK: - Global hotkey
@@ -287,24 +287,28 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     // MARK: - First-launch setup
 
-    /// On the very first launch, opens Settings so the user can configure their
-    /// preferred hotkey and double-tap trigger before using the app.
-    /// When Settings is closed, a popover hint appears on the menu-bar icon.
+    /// On the very first launch, shows the welcome wizard so the user can grant
+    /// Accessibility access and configure a trigger before seeing the popup.
     /// Subsequent launches are unaffected.
-    private func showFirstLaunchSettingsIfNeeded() {
-        guard !UserDefaults.standard.didShowWelcome else { return }
-        UserDefaults.standard.didShowWelcome = true
-        SettingsWindowController.onFirstClose = { [weak self] in
+    private func showWelcomeIfNeeded() {
+        guard !UserDefaults.standard.didShowOnboardingWizard else { return }
+        WelcomeWindowController.shared.onTryItNow = { [weak self] in
+            self?.presentPopup()
+        }
+        WelcomeWindowController.shared.onComplete = { [weak self] in
+            UserDefaults.standard.didShowOnboardingWizard = true
+            UserDefaults.standard.onboardingResumeStep = nil
             Task { @MainActor [weak self] in
                 try? await Task.sleep(for: .milliseconds(300))
                 self?.showMenuBarHint()
+                if AXIsProcessTrusted() { self?.presentPopup() }
             }
         }
-        // Defer slightly so the status-bar item is visible before the window
-        // appears (the run loop needs one pass to render the menu-bar icon).
+        // Defer one run-loop pass so the status-bar item is rendered before
+        // the window appears.
         Task { @MainActor in
             try? await Task.sleep(for: .milliseconds(500))
-            SettingsWindowController.show()
+            WelcomeWindowController.shared.show()
         }
     }
 
@@ -330,15 +334,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 }
 
-// MARK: - UserDefaults: first-launch flag
+// MARK: - UserDefaults: onboarding flag
 
 private extension UserDefaults {
-    private static let didShowWelcomeKey = "didShowWelcome"
+    private static let didShowOnboardingWizardKey = "didShowOnboardingWizard"
 
-    /// `true` after the welcome popup has been shown at least once.
-    var didShowWelcome: Bool {
-        get { bool(forKey: Self.didShowWelcomeKey) }
-        set { set(newValue, forKey: Self.didShowWelcomeKey) }
+    /// `true` once the welcome wizard has been shown. Uses a distinct key from
+    /// the legacy `didShowWelcome` (which was set by the old Settings-on-launch
+    /// flow) so that all existing users see the new wizard on first upgrade.
+    var didShowOnboardingWizard: Bool {
+        get { bool(forKey: Self.didShowOnboardingWizardKey) }
+        set { set(newValue, forKey: Self.didShowOnboardingWizardKey) }
     }
 }
 
