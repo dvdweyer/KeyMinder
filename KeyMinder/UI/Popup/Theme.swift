@@ -17,6 +17,9 @@ enum Theme {
             : NSColor(white: 0.72, alpha: 1)   // light mode: light grey
     })
 
+    /// Amber colour used for the conflict-warning icon on duplicate key bindings.
+    static let conflictAccent = Color.orange
+
     static let keyColumnWidth: CGFloat = 86
     static let cornerRadius: CGFloat = 16
     static let contentPadding: CGFloat = 16

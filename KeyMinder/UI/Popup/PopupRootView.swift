@@ -190,6 +190,10 @@ final class PopupFilterModel {
         }
     }
 
+    /// Key strings assigned to two or more shortcuts in this app — forwarded
+    /// directly from the model for use in `MenuSectionView`.
+    var conflictingKeys: Set<String> { app.conflictingKeys }
+
     // MARK: Onboarding tips
 
     /// Index of the next tip to show. Backed by @Observable so the view
@@ -343,6 +347,7 @@ private struct FilterableShortcutsView: View {
                                         modifierFilter: model.modifierFilter,
                                         showOnlyFavourites: model.showOnlyFavourites,
                                         appID: model.app.bundleIdentifier ?? model.app.appName,
+                                        conflictingKeys: model.conflictingKeys,
                                         dimMode: model.fitsWithoutScrolling,
                                         selectedShortcutID: model.selectedShortcut?.id,
                                         onActivate: onActivate,
@@ -478,6 +483,8 @@ struct MenuSectionView: View {
     var showOnlyFavourites: Bool = false
     /// App identifier for favourites lookup. Empty string disables star buttons.
     var appID: String = ""
+    /// Key strings that appear in two or more shortcuts — used to flag conflicted rows.
+    var conflictingKeys: Set<String> = []
     /// When true, non-matching rows are dimmed instead of hidden (stable layout).
     var dimMode: Bool = false
     var selectedShortcutID: UUID? = nil
@@ -562,6 +569,7 @@ struct MenuSectionView: View {
                                             appID: appID,
                                             selected: selectedShortcutID == shortcut.id,
                                             dimmed: isDimmed(shortcut),
+                                            isConflicted: !shortcut.keys.isEmpty && conflictingKeys.contains(shortcut.keys),
                                             onActivate: onActivate,
                                             onToggleFavourite: { onToggleFavourite(shortcut) })
                             }
@@ -604,6 +612,8 @@ struct ShortcutRow: View {
     var selected: Bool = false
     /// True when the row is shown but does not match the active filter (dim mode).
     var dimmed: Bool = false
+    /// True when this key binding is shared by two or more commands in the same app.
+    var isConflicted: Bool = false
     var onActivate: (Shortcut) -> Void = { _ in }
     var onToggleFavourite: () -> Void = {}
 
@@ -617,10 +627,18 @@ struct ShortcutRow: View {
 
     var body: some View {
         HStack(spacing: 8) {
-            Text(shortcut.keys)
-                .font(.system(size: 12, weight: .medium, design: .rounded))
-                .foregroundStyle(dimmed ? Theme.fadedText : ThemeSettings.shared.keyAccent)
-                .frame(width: Theme.keyColumnWidth, alignment: .trailing)
+            HStack(spacing: 3) {
+                if isConflicted && !dimmed {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .font(.system(size: 8, weight: .bold))
+                        .foregroundStyle(Theme.conflictAccent)
+                        .help("This shortcut is assigned to multiple commands")
+                }
+                Text(shortcut.keys)
+                    .font(.system(size: 12, weight: .medium, design: .rounded))
+                    .foregroundStyle(dimmed ? Theme.fadedText : ThemeSettings.shared.keyAccent)
+            }
+            .frame(width: Theme.keyColumnWidth, alignment: .trailing)
             Text(shortcut.title)
                 .font(.system(size: 12))
                 .foregroundStyle(dimmed ? Theme.fadedText : Color.primary)

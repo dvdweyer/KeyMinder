@@ -137,4 +137,14 @@ extension AppShortcuts {
             total + section.shortcuts.reduce(0) { $0 + ($1.matches(query) ? 1 : 0) }
         }
     }
+
+    /// Key strings that are assigned to two or more shortcuts in this app.
+    /// Empty key strings (all-entries mode items with no binding) are excluded.
+    var conflictingKeys: Set<String> {
+        var tally: [String: Int] = [:]
+        for shortcut in sections.flatMap(\.shortcuts) where !shortcut.keys.isEmpty {
+            tally[shortcut.keys, default: 0] += 1
+        }
+        return Set(tally.filter { $0.value > 1 }.keys)
+    }
 }
