@@ -1,5 +1,4 @@
 import SwiftUI
-import UniformTypeIdentifiers
 
 /// Holds the live filter state for one presentation of the shortcuts popup.
 /// Owned by `PopupController` so the controller can read/clear the query (for
@@ -303,7 +302,6 @@ private struct FilterableShortcutsView: View {
     let onActivate: (Shortcut) -> Void
     var onOpenSettings: () -> Void = {}
     @FocusState private var searchFocused: Bool
-    @State private var copied = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -385,52 +383,19 @@ private struct FilterableShortcutsView: View {
     }
 
     private var exportButton: some View {
-        Button(action: exportShortcuts) {
-            Image(systemName: copied ? "checkmark" : "square.and.arrow.up")
+        let sheet = ShortcutCheatSheet(
+            appName: model.app.appName,
+            markdown: ShortcutExporter.markdown(for: model.app)
+        )
+        return ShareLink(item: sheet, preview: SharePreview("\(model.app.appName) Shortcuts")) {
+            Image(systemName: "square.and.arrow.up")
                 .font(.system(size: 11, weight: .medium))
-                .foregroundStyle(copied ? ThemeSettings.shared.keyAccent : .secondary)
+                .foregroundStyle(.secondary)
                 .frame(width: 22, height: 22)
-                .animation(.easeInOut(duration: 0.15), value: copied)
         }
         .buttonStyle(.plain)
         .accessibilityLabel("Export shortcuts")
         .help("Export shortcuts")
-    }
-
-    private func exportShortcuts() {
-        let md = ShortcutExporter.markdown(for: model.app)
-
-        let alert = NSAlert()
-        alert.messageText = "Export \(model.app.appName) Shortcuts"
-        alert.informativeText = "Save as a Markdown file, or copy to the clipboard."
-        alert.addButton(withTitle: "Save as File…")
-        alert.addButton(withTitle: "Copy to Clipboard")
-        alert.addButton(withTitle: "Cancel")
-
-        switch alert.runModal() {
-        case .alertFirstButtonReturn:
-            let panel = NSSavePanel()
-            panel.allowedContentTypes = [UTType(filenameExtension: "md") ?? .plainText]
-            panel.nameFieldStringValue = "\(model.app.appName) Shortcuts.md"
-            panel.canCreateDirectories = true
-            guard panel.runModal() == .OK, let url = panel.url else { return }
-            try? md.write(to: url, atomically: true, encoding: .utf8)
-            flashCopied()
-        case .alertSecondButtonReturn:
-            NSPasteboard.general.clearContents()
-            NSPasteboard.general.setString(md, forType: .string)
-            flashCopied()
-        default:
-            break
-        }
-    }
-
-    private func flashCopied() {
-        copied = true
-        Task {
-            try? await Task.sleep(for: .seconds(1.5))
-            copied = false
-        }
     }
 
     private var settingsButton: some View {
