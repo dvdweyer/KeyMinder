@@ -442,8 +442,8 @@
     <p data-de="Heften Sie Ihre meistgenutzten Tastenkürzel als Favoriten an – bewegen Sie den Mauszeiger über eine Zeile, um den Stern-Button zu sehen –, und filtern Sie sofort mit dem ★-Button in der Kopfzeile. Nutzen Sie Ignorierte Befehle (Einstellungen → Erweitert), um störende Menüeinträge global oder per App auszublenden. Ein Zahnrad-Button in der Popup-Kopfzeile öffnet die Einstellungen, ohne Ihren Workflow zu unterbrechen.">Pin your most-used shortcuts as favourites — hover any row for the star button — then filter to them instantly with the ★ button in the header. Use Ignored Commands (Settings → Advanced) to suppress noisy menu items globally or per app. A gear button in the popup header opens Settings without closing your workflow.</p>
     <div class="screenshot">
       <picture>
-        <source srcset="Safari_Shortcuts_dark-mode.png" media="(prefers-color-scheme: dark)">
-        <img src="Safari_Shortcuts_light-mode.png" alt="KeyMinder showing Safari keyboard shortcuts grouped by menu" id="screenshotThumb">
+        <source srcset="KeyMinder_v0.1.101_DarkMode.png" media="(prefers-color-scheme: dark)">
+        <img src="KeyMinder_v0.1.101_LightMode.png" alt="KeyMinder showing Safari keyboard shortcuts grouped by menu" id="screenshotThumb">
       </picture>
       <p class="screenshot-hint" data-de="Zum Vergrößern klicken">Click to enlarge</p>
     </div>
@@ -453,7 +453,7 @@
   <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Screenshot full size">
     <div class="lightbox-inner">
       <button class="lightbox-close" id="lightboxClose" aria-label="Close">&#x2715;</button>
-      <img id="lightboxImg" src="Safari_Shortcuts_light-mode.png" alt="KeyMinder showing Safari keyboard shortcuts grouped by menu">
+      <img id="lightboxImg" src="KeyMinder_v0.1.101_LightMode.png" alt="KeyMinder showing Safari keyboard shortcuts grouped by menu">
     </div>
   </div>
 
@@ -1020,7 +1020,7 @@
   const darkMQ    = window.matchMedia('(prefers-color-scheme: dark)');
 
   function screenshotSrc() {
-    return darkMQ.matches ? 'Safari_Shortcuts_dark-mode.png' : 'Safari_Shortcuts_light-mode.png';
+    return darkMQ.matches ? 'KeyMinder_v0.1.101_DarkMode.png' : 'KeyMinder_v0.1.101_LightMode.png';
   }
 
   function open()  { lbImg.src = screenshotSrc(); lightbox.classList.add('open');    document.body.style.overflow = 'hidden'; }
