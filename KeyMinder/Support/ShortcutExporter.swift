@@ -1,6 +1,4 @@
 import Foundation
-import UniformTypeIdentifiers
-import CoreTransferable
 
 enum ShortcutExporter {
     /// Returns a Markdown-formatted cheat sheet for all keyed shortcuts in `app`.
@@ -24,18 +22,5 @@ enum ShortcutExporter {
         }
         if lines.last == "" { lines.removeLast() }
         return lines.joined(separator: "\n")
-    }
-}
-
-/// A Markdown cheat sheet that can be shared via the system share sheet.
-struct ShortcutCheatSheet: Transferable {
-    let appName: String
-    let markdown: String
-
-    static var transferRepresentation: some TransferRepresentation {
-        DataRepresentation(exportedContentType: UTType(filenameExtension: "md") ?? .plainText) { sheet in
-            Data(sheet.markdown.utf8)
-        }
-        .suggestedFileName { "\($0.appName) Shortcuts.md" }
     }
 }

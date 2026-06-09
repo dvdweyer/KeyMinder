@@ -302,6 +302,7 @@ private struct FilterableShortcutsView: View {
     let onActivate: (Shortcut) -> Void
     var onOpenSettings: () -> Void = {}
     @FocusState private var searchFocused: Bool
+    @State private var shareAnchor: NSView?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -383,19 +384,26 @@ private struct FilterableShortcutsView: View {
     }
 
     private var exportButton: some View {
-        let sheet = ShortcutCheatSheet(
-            appName: model.app.appName,
-            markdown: ShortcutExporter.markdown(for: model.app)
-        )
-        return ShareLink(item: sheet, preview: SharePreview("\(model.app.appName) Shortcuts")) {
+        Button(action: showSharePicker) {
             Image(systemName: "square.and.arrow.up")
                 .font(.system(size: 11, weight: .medium))
                 .foregroundStyle(.secondary)
                 .frame(width: 22, height: 22)
         }
         .buttonStyle(.plain)
+        .background(ViewAnchorCapture(anchor: $shareAnchor))
         .accessibilityLabel("Export shortcuts")
         .help("Export shortcuts")
+    }
+
+    private func showSharePicker() {
+        guard let shareAnchor else { return }
+        let md = ShortcutExporter.markdown(for: model.app)
+        let tmp = FileManager.default.temporaryDirectory
+            .appendingPathComponent("\(model.app.appName) Shortcuts.md")
+        try? md.write(to: tmp, atomically: true, encoding: .utf8)
+        let picker = NSSharingServicePicker(items: [tmp])
+        picker.show(relativeTo: shareAnchor.bounds, of: shareAnchor, preferredEdge: .minY)
     }
 
     private var settingsButton: some View {
@@ -845,6 +853,21 @@ private struct TipBannerView: View {
         )
         .transition(.opacity.animation(.easeOut(duration: 0.15)))
     }
+}
+
+// MARK: - NSView anchor capture
+
+/// Zero-size NSViewRepresentable used to capture an NSView reference for
+/// anchoring AppKit pickers (NSSharingServicePicker) from a SwiftUI view
+/// inside a non-activating panel, where ShareLink does not function.
+private struct ViewAnchorCapture: NSViewRepresentable {
+    @Binding var anchor: NSView?
+    func makeNSView(context: Context) -> NSView {
+        let v = NSView()
+        DispatchQueue.main.async { anchor = v }
+        return v
+    }
+    func updateNSView(_ nsView: NSView, context: Context) {}
 }
 
 // MARK: - UserDefaults: popup tip index
