@@ -414,8 +414,16 @@ private struct FilterableShortcutsView: View {
             panel.nameFieldStringValue = "\(model.app.appName) Shortcuts.md"
             panel.canCreateDirectories = true
             guard panel.runModal() == .OK, let url = panel.url else { return }
-            try? md.write(to: url, atomically: true, encoding: .utf8)
-            flashCopied()
+            do {
+                try md.write(to: url, atomically: true, encoding: .utf8)
+                flashCopied()
+            } catch {
+                let errAlert = NSAlert()
+                errAlert.messageText = "Save Failed"
+                errAlert.informativeText = error.localizedDescription
+                errAlert.alertStyle = .warning
+                errAlert.runModal()
+            }
         case .alertSecondButtonReturn:
             NSPasteboard.general.clearContents()
             NSPasteboard.general.setString(md, forType: .string)
