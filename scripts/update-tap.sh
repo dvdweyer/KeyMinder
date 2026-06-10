@@ -17,6 +17,11 @@ sed -i '' \
     -e "s/  sha256 \"[^\"]*\"/  sha256 \"$SHA256\"/" \
     "$CASK_SRC"
 
+if ! grep -qF "version \"$VERSION\"" "$CASK_SRC" || ! grep -qF "sha256 \"$SHA256\"" "$CASK_SRC"; then
+    echo "error: sed substitution failed — cask file format may have changed." >&2
+    exit 1
+fi
+
 echo "--- Updated $CASK_SRC → $VERSION"
 
 if [[ -z "${TAP_REPO_DIR:-}" ]]; then
@@ -32,6 +37,10 @@ fi
 mkdir -p "$TAP_REPO_DIR/Casks"
 cp "$CASK_SRC" "$TAP_REPO_DIR/Casks/keyminder.rb"
 git -C "$TAP_REPO_DIR" add Casks/keyminder.rb
-git -C "$TAP_REPO_DIR" commit -m "feat: bump keyminder to $VERSION"
-git -C "$TAP_REPO_DIR" push
-echo "--- Pushed tap → dvdweyer/homebrew-keyminder"
+if git -C "$TAP_REPO_DIR" diff --cached --quiet; then
+    echo "    (tap already at $VERSION, nothing to push)"
+else
+    git -C "$TAP_REPO_DIR" commit -m "feat: bump keyminder to $VERSION"
+    git -C "$TAP_REPO_DIR" push
+    echo "--- Pushed tap → dvdweyer/homebrew-keyminder"
+fi

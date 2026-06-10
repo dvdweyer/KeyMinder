@@ -67,7 +67,13 @@ if [[ "$MODE" == "local-only" ]]; then
     echo ""
     echo "--- Installing to /Applications…"
     pkill -x KeyMinder 2>/dev/null || true
-    while pgrep -x KeyMinder > /dev/null 2>&1; do sleep 0.1; done
+    _kw=0
+    while pgrep -x KeyMinder > /dev/null 2>&1; do
+        sleep 0.1; _kw=$(( _kw + 1 ))
+        if (( _kw >= 50 )); then
+            echo "warning: KeyMinder still running after 5 s; continuing anyway." >&2; break
+        fi
+    done
     rm -rf /Applications/KeyMinder.app
     cp -R "$_BUILD_DIR/Build/Products/Debug/KeyMinder.app" /Applications/
     xattr -cr /Applications/KeyMinder.app
@@ -82,6 +88,12 @@ SITE_DIR="$HOME/Public/Sites/app.keyminder"
 DEPLOY_SH="$HOME/Public/Sites/deploy.sh"
 NOTARYTOOL_PROFILE="KeyMinder"
 BUILD_DIR="/tmp/KeyMinder-release-$$"
+trap 'rm -rf "$BUILD_DIR"' EXIT
+
+if [[ ! -f "$DEPLOY_SH" ]]; then
+    echo "error: $DEPLOY_SH not found. Aborting before build starts." >&2
+    exit 1
+fi
 
 # ── Config ────────────────────────────────────────────────────────────────────
 ENV_FILE="$SCRIPT_DIR/.env"
@@ -104,6 +116,12 @@ VERSION=$(grep 'MARKETING_VERSION' \
 
 if [[ -z "$VERSION" ]]; then
     echo "error: could not read MARKETING_VERSION from project.pbxproj" >&2
+    exit 1
+fi
+
+if ! git -C "$REPO_DIR" tag | grep -qxF "v${VERSION}"; then
+    echo "error: git tag v${VERSION} not found. Tag before releasing:" >&2
+    echo "       git tag v${VERSION} && git push origin v${VERSION}" >&2
     exit 1
 fi
 
@@ -178,7 +196,6 @@ xcrun stapler staple "$APP"
 echo "--- Re-zipping stapled app…"
 rm "$ZIP"
 ditto -c -k --sequesterRsrc --keepParent "$APP" "$ZIP"
-ZIP_SHA256=$(shasum -a 256 "$ZIP" | awk '{print $1}')
 
 # ── DMG ───────────────────────────────────────────────────────────────────────
 echo ""
@@ -257,7 +274,13 @@ if [[ "$MODE" == "full-deploy" ]]; then
     echo ""
     echo "--- Installing to /Applications…"
     pkill -x KeyMinder 2>/dev/null || true
-    while pgrep -x KeyMinder > /dev/null 2>&1; do sleep 0.1; done
+    _kw=0
+    while pgrep -x KeyMinder > /dev/null 2>&1; do
+        sleep 0.1; _kw=$(( _kw + 1 ))
+        if (( _kw >= 50 )); then
+            echo "warning: KeyMinder still running after 5 s; continuing anyway." >&2; break
+        fi
+    done
     rm -rf /Applications/KeyMinder.app
     cp -R "$APP" /Applications/
     xattr -cr /Applications/KeyMinder.app
@@ -267,6 +290,15 @@ fi
 echo ""
 echo "--- Updating Homebrew cask…"
 TAP_REPO_DIR="${TAP_REPO_DIR:-}" bash "$SCRIPT_DIR/update-tap.sh" "$VERSION" "$DMG_SHA256"
+
+# ── Commit release artifacts back to repo ────────────────────────────────────
+echo ""
+echo "--- Committing release artifacts…"
+git -C "$REPO_DIR" add Distribution/appcast.xml Distribution/Casks/keyminder.rb
+if ! git -C "$REPO_DIR" diff --cached --quiet; then
+    git -C "$REPO_DIR" commit -m "chore: release artifacts for v${VERSION} (appcast, cask)"
+    git -C "$REPO_DIR" push
+fi
 
 # ── Cleanup ───────────────────────────────────────────────────────────────────
 rm -rf "$BUILD_DIR"
