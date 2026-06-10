@@ -110,8 +110,8 @@ fi
 
 # ── QC: webpage must reference the same version ───────────────────────────────
 HTML="$REPO_DIR/Documentation/Website/keyminder.html"
-HTML_VERSION=$(grep -o 'href="KeyMinder_[0-9.]*\.zip"' "$HTML" | head -1 \
-    | sed 's/href="KeyMinder_//; s/\.zip"//')
+HTML_VERSION=$(grep -o 'href="KeyMinder_[0-9.]*\.dmg"' "$HTML" | head -1 \
+    | sed 's/href="KeyMinder_//; s/\.dmg"//')
 if [[ "$HTML_VERSION" != "$VERSION" ]]; then
     echo "error: keyminder.html download link points to v${HTML_VERSION} but project is v${VERSION}" >&2
     echo "       Update the href, button text, install step, and changelog in Documentation/Website/keyminder.html" >&2
@@ -122,6 +122,7 @@ ARCHIVE="$BUILD_DIR/KeyMinder.xcarchive"
 EXPORT_DIR="$BUILD_DIR/export"
 APP="$EXPORT_DIR/KeyMinder.app"
 ZIP="$BUILD_DIR/KeyMinder_${VERSION}.zip"
+DMG="$BUILD_DIR/KeyMinder_${VERSION}.dmg"
 
 echo "==> KeyMinder $VERSION"
 echo ""
@@ -180,6 +181,30 @@ rm "$ZIP"
 ditto -c -k --sequesterRsrc --keepParent "$APP" "$ZIP"
 ZIP_SHA256=$(shasum -a 256 "$ZIP" | awk '{print $1}')
 
+# ── DMG ───────────────────────────────────────────────────────────────────────
+echo ""
+echo "--- Creating DMG…"
+DMG_STAGING="$BUILD_DIR/dmg_staging"
+mkdir -p "$DMG_STAGING"
+cp -R "$APP" "$DMG_STAGING/"
+ln -s /Applications "$DMG_STAGING/Applications"
+hdiutil create \
+    -volname "KeyMinder" \
+    -srcfolder "$DMG_STAGING" \
+    -ov \
+    -format UDZO \
+    "$DMG"
+rm -rf "$DMG_STAGING"
+
+echo "--- Notarizing DMG…"
+xcrun notarytool submit "$DMG" \
+    --keychain-profile "$NOTARYTOOL_PROFILE" \
+    --wait
+
+echo "--- Stapling DMG…"
+xcrun stapler staple "$DMG"
+DMG_SHA256=$(shasum -a 256 "$DMG" | awk '{print $1}')
+
 # ── Sparkle appcast ───────────────────────────────────────────────────────────
 echo ""
 echo "--- Updating Sparkle appcast…"
@@ -196,7 +221,10 @@ if [[ ! -x "$GENERATE_APPCAST" ]]; then
     exit 1
 fi
 APPCAST="$REPO_DIR/Distribution/appcast.xml"
-"$GENERATE_APPCAST" "$BUILD_DIR" \
+APPCAST_ASSETS="$BUILD_DIR/appcast_assets"
+mkdir -p "$APPCAST_ASSETS"
+cp "$ZIP" "$APPCAST_ASSETS/"
+"$GENERATE_APPCAST" "$APPCAST_ASSETS" \
     --download-url-prefix "https://keyminder.app/" \
     --maximum-versions 10 \
     -o "$APPCAST"
@@ -207,6 +235,8 @@ echo "--- Copying to website…"
 mkdir -p "$SITE_DIR" "$KEYMINDER_SITE_DIR"
 cp "$ZIP" "$SITE_DIR/"
 cp "$ZIP" "$KEYMINDER_SITE_DIR/"
+cp "$DMG" "$SITE_DIR/"
+cp "$DMG" "$KEYMINDER_SITE_DIR/"
 cp "$APPCAST" "$SITE_DIR/"
 cp "$APPCAST" "$KEYMINDER_SITE_DIR/"
 cp "$REPO_DIR/Documentation/Website/keyminder.html" "$SITE_DIR/index.html"
@@ -235,7 +265,7 @@ fi
 # ── Homebrew tap ─────────────────────────────────────────────────────────────
 echo ""
 echo "--- Updating Homebrew cask…"
-TAP_REPO_DIR="${TAP_REPO_DIR:-}" bash "$SCRIPT_DIR/update-tap.sh" "$VERSION" "$ZIP_SHA256"
+TAP_REPO_DIR="${TAP_REPO_DIR:-}" bash "$SCRIPT_DIR/update-tap.sh" "$VERSION" "$DMG_SHA256"
 
 # ── Cleanup ───────────────────────────────────────────────────────────────────
 rm -rf "$BUILD_DIR"
