@@ -36,16 +36,21 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
             .sizeThatFits(in: CGSize(width: 420, height: CGFloat.greatestFiniteMagnitude)).height
         let popupRaw = NSHostingController(rootView: PopupSettingsView(model: m))
             .sizeThatFits(in: CGSize(width: 420, height: CGFloat.greatestFiniteMagnitude)).height
-        let ignoredRaw = NSHostingController(rootView: IgnoredSettingsView())
-            .sizeThatFits(in: CGSize(width: 420, height: CGFloat.greatestFiniteMagnitude)).height
+        // Add 24 pt buffer: sizeThatFits slightly underestimates due to rounding
+        // and the ScrollView wrapper's inset overhead.
+        let ignoredRaw = NSHostingController(rootView: IgnoredSettingsBody(
+                showAddIgnoredAppSheet: .constant(false),
+                showAddGlobalSheet: .constant(false),
+                showAddAppSheet: .constant(false)
+            )).sizeThatFits(in: CGSize(width: 420, height: CGFloat.greatestFiniteMagnitude)).height + 24
         let developerRaw = NSHostingController(rootView: DeveloperSettingsView(model: m))
             .sizeThatFits(in: CGSize(width: 420, height: CGFloat.greatestFiniteMagnitude)).height
 
-        // Derive the tab-bar overhead from the full TabView measurement.
+        // Derive the picker+divider overhead: SettingsView() shows General (tab 0) by
+        // default, so fullRaw − genRaw gives the exact picker + divider height.
         let fullRaw = NSHostingController(rootView: SettingsView())
             .sizeThatFits(in: CGSize(width: 420, height: CGFloat.greatestFiniteMagnitude)).height
-        let tallest = max(genRaw, max(popupRaw, max(ignoredRaw, developerRaw)))
-        let tabBarH = max(fullRaw - tallest, 44)
+        let tabBarH = max(fullRaw - genRaw, 44)
 
         tabHeights = [
             min(genRaw      + tabBarH, screenH).rounded(),
@@ -223,6 +228,49 @@ final class SettingsModel {
     }
 }
 
+// MARK: - TabPickerView
+
+/// Icon-only segmented control backed by NSSegmentedControl.
+/// Each segment shows only its SF Symbol; the tab label appears as a tooltip on hover.
+private struct TabPickerView: NSViewRepresentable {
+    struct Tab {
+        let label: String
+        let systemImage: String
+    }
+
+    let tabs: [Tab]
+    @Binding var selection: Int
+
+    func makeNSView(context: Context) -> NSSegmentedControl {
+        let images = tabs.compactMap {
+            NSImage(systemSymbolName: $0.systemImage, accessibilityDescription: $0.label)
+        }
+        let ctrl = NSSegmentedControl(images: images,
+                                      trackingMode: .selectOne,
+                                      target: context.coordinator,
+                                      action: #selector(Coordinator.changed(_:)))
+        for (i, tab) in tabs.enumerated() {
+            ctrl.setToolTip(tab.label, forSegment: i)
+        }
+        ctrl.selectedSegment = selection
+        return ctrl
+    }
+
+    func updateNSView(_ ctrl: NSSegmentedControl, context: Context) {
+        if ctrl.selectedSegment != selection { ctrl.selectedSegment = selection }
+    }
+
+    func makeCoordinator() -> Coordinator { Coordinator(self) }
+
+    final class Coordinator: NSObject {
+        var parent: TabPickerView
+        init(_ parent: TabPickerView) { self.parent = parent }
+        @objc func changed(_ sender: NSSegmentedControl) {
+            parent.selection = sender.selectedSegment
+        }
+    }
+}
+
 // MARK: - SettingsView
 
 struct SettingsView: View {
@@ -230,24 +278,35 @@ struct SettingsView: View {
     @State private var model = SettingsModel()
     @State private var selectedTab = 0
 
+    fileprivate static let tabs: [TabPickerView.Tab] = [
+        .init(label: "General",   systemImage: "gearshape"),
+        .init(label: "Popup",     systemImage: "list.bullet.rectangle.portrait"),
+        .init(label: "Ignored",   systemImage: "eye.slash"),
+        .init(label: "Developer", systemImage: "hammer"),
+    ]
+
     var body: some View {
-        TabView(selection: $selectedTab) {
-            GeneralSettingsView(model: model)
-                .tabItem { Label("General", systemImage: "gearshape") }
-                .tag(0)
-            PopupSettingsView(model: model)
-                .tabItem { Label("Popup", systemImage: "list.bullet.rectangle.portrait") }
-                .tag(1)
-            IgnoredSettingsView()
-                .tabItem { Label("Ignored", systemImage: "eye.slash") }
-                .tag(2)
-            DeveloperSettingsView(model: model)
-                .tabItem { Label("Developer", systemImage: "hammer") }
-                .tag(3)
+        VStack(spacing: 0) {
+            TabPickerView(tabs: Self.tabs, selection: $selectedTab)
+                .padding(.horizontal, 10)
+                .padding(.top, 12)
+                .padding(.bottom, 8)
+            Divider()
+            tabContent
         }
         .frame(width: 420)
         .onChange(of: selectedTab) { _, tab in onTabChange(tab) }
         .onDisappear { model.stopRecording() }
+    }
+
+    @ViewBuilder
+    private var tabContent: some View {
+        switch selectedTab {
+        case 0: GeneralSettingsView(model: model)
+        case 1: PopupSettingsView(model: model)
+        case 2: IgnoredSettingsView()
+        default: DeveloperSettingsView(model: model)
+        }
     }
 }
 
@@ -410,117 +469,133 @@ private struct IgnoredSettingsView: View {
     @State private var showAddGlobalSheet = false
     @State private var showAddAppSheet = false
 
-    @Bindable private var store = IgnoreListStore.shared
-
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 14) {
-
-                Text("Ignored Apps")
-                    .font(.headline)
-
-                Text("Apps listed here are skipped entirely — the popup won't open while they're frontmost.")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
-
-                if store.sortedIgnoredAppIDs.isEmpty {
-                    Text("No ignored apps")
-                        .font(.subheadline)
-                        .foregroundStyle(.tertiary)
-                        .frame(maxWidth: .infinity, alignment: .center)
-                        .padding(.vertical, 8)
-                } else {
-                    IgnoredAppsBox(appIDs: store.sortedIgnoredAppIDs, displayNames: store.ignoredApps) { bundleID in
-                        store.removeIgnoredApp(bundleID: bundleID)
-                    }
-                }
-
-                Button("Add App…") { showAddIgnoredAppSheet = true }
-                    .frame(maxWidth: .infinity, alignment: .trailing)
-
-                Divider()
-
-                Text("Ignored Commands")
-                    .font(.headline)
-
-                Text("Commands listed here are hidden from the popup. If a command opens a submenu, the entire submenu is hidden too.")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
-
-                Toggle("Hide ignored commands", isOn: $store.isEnabled)
-
-                if store.isEnabled {
-                    Toggle("Show when filtering", isOn: $store.showWhenFiltering)
-                        .foregroundStyle(.secondary)
-                        .padding(.leading, 16)
-                }
-
-                Divider()
-
-                Text("All Apps")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-
-                if store.globalTitles.isEmpty {
-                    Text("No ignored commands")
-                        .font(.subheadline)
-                        .foregroundStyle(.tertiary)
-                        .frame(maxWidth: .infinity, alignment: .center)
-                        .padding(.vertical, 8)
-                } else {
-                    IgnoreRulesBox(titles: store.globalTitles) { title in
-                        if let idx = store.globalTitles.firstIndex(of: title) {
-                            store.removeGlobal(at: IndexSet(integer: idx))
-                        }
-                    }
-                }
-
-                Button("Add Global Rule…") { showAddGlobalSheet = true }
-                    .frame(maxWidth: .infinity, alignment: .trailing)
-
-                if !store.sortedAppIDs.isEmpty {
-                    Divider()
-                    Text("App-Specific")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-
-                    ForEach(store.sortedAppIDs, id: \.self) { bundleID in
-                        let titles = store.perApp[bundleID] ?? []
-                        VStack(alignment: .leading, spacing: 6) {
-                            HStack {
-                                Text(store.appDisplayNames[bundleID] ?? bundleID)
-                                    .font(.subheadline)
-                                    .fontWeight(.medium)
-                                Spacer()
-                                Button {
-                                    store.removeApp(bundleID)
-                                } label: {
-                                    Image(systemName: "xmark.circle.fill")
-                                        .foregroundStyle(.secondary)
-                                }
-                                .buttonStyle(.plain)
-                                .help("Remove all rules for this app")
-                            }
-                            IgnoreRulesBox(titles: titles) { title in
-                                if let idx = titles.firstIndex(of: title) {
-                                    store.removeRule(bundleID: bundleID, at: IndexSet(integer: idx))
-                                }
-                            }
-                        }
-                    }
-                }
-
-                Button("Add App Rule…") { showAddAppSheet = true }
-                    .frame(maxWidth: .infinity, alignment: .trailing)
-            }
-            .padding(20)
-            .frame(width: 420, alignment: .topLeading)
+            IgnoredSettingsBody(
+                showAddIgnoredAppSheet: $showAddIgnoredAppSheet,
+                showAddGlobalSheet: $showAddGlobalSheet,
+                showAddAppSheet: $showAddAppSheet
+            )
         }
         .sheet(isPresented: $showAddIgnoredAppSheet) { AddIgnoredAppSheet() }
         .sheet(isPresented: $showAddGlobalSheet) { AddGlobalRuleSheet() }
         .sheet(isPresented: $showAddAppSheet) { AddAppRuleSheet() }
+    }
+}
+
+/// Inner content of the Ignored tab — extracted without ScrollView so
+/// SettingsWindowController can measure its natural height reliably.
+private struct IgnoredSettingsBody: View {
+    @Binding var showAddIgnoredAppSheet: Bool
+    @Binding var showAddGlobalSheet: Bool
+    @Binding var showAddAppSheet: Bool
+
+    @Bindable private var store = IgnoreListStore.shared
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 14) {
+
+            Text("Ignored Apps")
+                .font(.headline)
+
+            Text("Apps listed here are skipped entirely — the popup won't open while they're frontmost.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            if store.sortedIgnoredAppIDs.isEmpty {
+                Text("No ignored apps")
+                    .font(.subheadline)
+                    .foregroundStyle(.tertiary)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(.vertical, 8)
+            } else {
+                IgnoredAppsBox(appIDs: store.sortedIgnoredAppIDs, displayNames: store.ignoredApps) { bundleID in
+                    store.removeIgnoredApp(bundleID: bundleID)
+                }
+            }
+
+            Button("Add App…") { showAddIgnoredAppSheet = true }
+                .frame(maxWidth: .infinity, alignment: .trailing)
+
+            Divider()
+
+            Text("Ignored Commands")
+                .font(.headline)
+
+            Text("Commands listed here are hidden from the popup. If a command opens a submenu, the entire submenu is hidden too.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            Toggle("Hide ignored commands", isOn: $store.isEnabled)
+
+            if store.isEnabled {
+                Toggle("Show when filtering", isOn: $store.showWhenFiltering)
+                    .foregroundStyle(.secondary)
+                    .padding(.leading, 16)
+            }
+
+            Divider()
+
+            Text("All Apps")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+
+            if store.globalTitles.isEmpty {
+                Text("No ignored commands")
+                    .font(.subheadline)
+                    .foregroundStyle(.tertiary)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(.vertical, 8)
+            } else {
+                IgnoreRulesBox(titles: store.globalTitles) { title in
+                    if let idx = store.globalTitles.firstIndex(of: title) {
+                        store.removeGlobal(at: IndexSet(integer: idx))
+                    }
+                }
+            }
+
+            Button("Add Global Rule…") { showAddGlobalSheet = true }
+                .frame(maxWidth: .infinity, alignment: .trailing)
+
+            if !store.sortedAppIDs.isEmpty {
+                Divider()
+                Text("App-Specific")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+
+                ForEach(store.sortedAppIDs, id: \.self) { bundleID in
+                    let titles = store.perApp[bundleID] ?? []
+                    VStack(alignment: .leading, spacing: 6) {
+                        HStack {
+                            Text(store.appDisplayNames[bundleID] ?? bundleID)
+                                .font(.subheadline)
+                                .fontWeight(.medium)
+                            Spacer()
+                            Button {
+                                store.removeApp(bundleID)
+                            } label: {
+                                Image(systemName: "xmark.circle.fill")
+                                    .foregroundStyle(.secondary)
+                            }
+                            .buttonStyle(.plain)
+                            .help("Remove all rules for this app")
+                        }
+                        IgnoreRulesBox(titles: titles) { title in
+                            if let idx = titles.firstIndex(of: title) {
+                                store.removeRule(bundleID: bundleID, at: IndexSet(integer: idx))
+                            }
+                        }
+                    }
+                }
+            }
+
+            Button("Add App Rule…") { showAddAppSheet = true }
+                .frame(maxWidth: .infinity, alignment: .trailing)
+        }
+        .padding(20)
+        .frame(width: 420, alignment: .topLeading)
     }
 }
 
