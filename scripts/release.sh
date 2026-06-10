@@ -78,8 +78,7 @@ if [[ "$MODE" == "local-only" ]]; then
     exit 0
 fi
 
-SITE_DIR="$HOME/Public/Sites/donald.van-de-weyer.net/keyminder"
-KEYMINDER_SITE_DIR="$HOME/Public/Sites/keyminder.app"
+SITE_DIR="$HOME/Public/Sites/app.keyminder"
 DEPLOY_SH="$HOME/Public/Sites/deploy.sh"
 NOTARYTOOL_PROFILE="KeyMinder"
 BUILD_DIR="/tmp/KeyMinder-release-$$"
@@ -232,24 +231,20 @@ cp "$ZIP" "$APPCAST_ASSETS/"
 # ── Deploy ────────────────────────────────────────────────────────────────────
 echo ""
 echo "--- Copying to website…"
-mkdir -p "$SITE_DIR" "$KEYMINDER_SITE_DIR"
+mkdir -p "$SITE_DIR"
 cp "$ZIP" "$SITE_DIR/"
-cp "$ZIP" "$KEYMINDER_SITE_DIR/"
 cp "$DMG" "$SITE_DIR/"
-cp "$DMG" "$KEYMINDER_SITE_DIR/"
 cp "$APPCAST" "$SITE_DIR/"
-cp "$APPCAST" "$KEYMINDER_SITE_DIR/"
 cp "$REPO_DIR/Documentation/Website/keyminder.html" "$SITE_DIR/index.html"
-cp "$REPO_DIR/Documentation/Website/keyminder.html" "$KEYMINDER_SITE_DIR/index.html"
 for f in "$REPO_DIR/Documentation/Website/"*.png; do
-    [[ -e "$f" ]] && cp "$f" "$SITE_DIR/" && cp "$f" "$KEYMINDER_SITE_DIR/"
+    [[ -e "$f" ]] && cp "$f" "$SITE_DIR/"
 done
 for f in sitemap.xml robots.txt .htaccess; do
-    [[ -e "$REPO_DIR/Documentation/Website/$f" ]] && cp "$REPO_DIR/Documentation/Website/$f" "$SITE_DIR/" && cp "$REPO_DIR/Documentation/Website/$f" "$KEYMINDER_SITE_DIR/"
+    [[ -e "$REPO_DIR/Documentation/Website/$f" ]] && cp "$REPO_DIR/Documentation/Website/$f" "$SITE_DIR/"
 done
 
 echo "--- Pruning ZIP/DMG files older than 5 days…"
-find "$SITE_DIR" "$KEYMINDER_SITE_DIR" \
+find "$SITE_DIR" \
     \( -name "*.zip" -o -name "*.dmg" \) \
     -mtime +5 \
     -print -delete
