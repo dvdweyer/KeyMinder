@@ -205,6 +205,12 @@ Googlebot cannot read.
 
 ---
 
+### AlternativeTo related apps follow-up
+
+Suggested KeyMinder as alternative on CheatSheet, ShowMeYourHotKeys, Paletro, and KeyCombiner pages on Jun 10, 2026. Check back Jun 11 to confirm the suggestions were approved and are visible.
+
+---
+
 ### Submit to Mac app directories
 
 Manual/one-off tasks (not in-app), but worth tracking here so they don't fall
