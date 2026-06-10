@@ -59,11 +59,15 @@ enum MenuScraper {
             guard let title = string(item, kAXTitleAttribute), !title.isEmpty else { continue }
             guard !ignoredTitles.contains(title.localizedLowercase) else { continue }
 
+            let rawChar     = string(item, kAXMenuItemCmdCharAttribute)
+            let rawVKey     = int(item,    kAXMenuItemCmdVirtualKeyAttribute)
+            let rawGlyph    = int(item,    kAXMenuItemCmdGlyphAttribute)
+            let rawMods     = int(item,    kAXMenuItemCmdModifiersAttribute)
             let shortcutKeys = ShortcutFormatter.format(
-                cmdChar:    string(item, kAXMenuItemCmdCharAttribute),
-                virtualKey: int(item,    kAXMenuItemCmdVirtualKeyAttribute),
-                glyph:      int(item,    kAXMenuItemCmdGlyphAttribute),
-                modifiers:  int(item,    kAXMenuItemCmdModifiersAttribute) ?? 0
+                cmdChar:    rawChar,
+                virtualKey: rawVKey,
+                glyph:      rawGlyph,
+                modifiers:  rawMods ?? 0
             )
             // Read children once: nil means a leaf item, non-nil means a submenu container.
             let submenu = children(item).first
@@ -74,6 +78,14 @@ enum MenuScraper {
                 // Leaf item with no shortcut: include with empty keys so the full
                 // menu structure is discoverable.
                 topLevel.append(Shortcut(title: title, keys: "", axElement: item, isDisabled: false))
+            }
+
+            if shortcutKeys == nil, submenu == nil, UserDefaults.standard.debugLoggingEnabled {
+                let c = rawChar.map { "'\($0)'" } ?? "nil"
+                let v = rawVKey.map(String.init) ?? "nil"
+                let g = rawGlyph.map(String.init) ?? "nil"
+                let m = rawMods.map(String.init) ?? "nil"
+                Logger.scraper.debug("No shortcut for '\(title, privacy: .private)': char=\(c, privacy: .private) vkey=\(v, privacy: .private) glyph=\(g, privacy: .private) mods=\(m, privacy: .private)")
             }
 
             // If this item opens a submenu, collect its contents as a named group.
