@@ -149,6 +149,10 @@ final class SettingsModel {
         didSet { UserDefaults.standard.showConflictIndicator = showConflictIndicator }
     }
 
+    var wrapLongSections: Bool = UserDefaults.standard.wrapLongSections {
+        didSet { UserDefaults.standard.wrapLongSections = wrapLongSections }
+    }
+
     var doubleTapEnabled: Bool = UserDefaults.standard.doubleTapEnabled {
         didSet {
             UserDefaults.standard.doubleTapEnabled = doubleTapEnabled
@@ -456,6 +460,15 @@ private struct PopupSettingsView: View {
                     .padding(.leading, 20)
                     .foregroundStyle(.secondary)
             }
+
+            Divider()
+
+            Toggle("Wrap long menus across columns", isOn: $model.wrapLongSections)
+
+            Text("A long menu that doesn't fit in one column continues in the next, with the menu name repeated.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
         }
         .padding(20)
         .frame(width: 420, alignment: .topLeading)

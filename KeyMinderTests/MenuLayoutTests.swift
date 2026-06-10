@@ -226,3 +226,97 @@ final class MenuLayoutDistributeTests: XCTestCase {
         XCTAssertEqual(result[0][0].title, "Heavy")
     }
 }
+
+// MARK: - MenuLayout.split tests
+
+final class MenuLayoutSplitTests: XCTestCase {
+
+    // MARK: Pass-through
+
+    func testSplit_shortSection_notSplit() {
+        let section = MenuSection.fixture(title: "File", count: 3)
+        let maxH = MenuLayout.height(of: section) + 1
+        let result = MenuLayout.split([section], maxHeight: maxH)
+        XCTAssertEqual(result.count, 1)
+        XCTAssertEqual(result[0].id, section.id)
+    }
+
+    func testSplit_emptySections_returnsEmpty() {
+        XCTAssertTrue(MenuLayout.split([], maxHeight: 500).isEmpty)
+    }
+
+    func testSplit_maxHeightTooSmall_returnsOriginal() {
+        // maxHeight ≤ headerHeight — guard returns early, nothing is split
+        let section = MenuSection.fixture(title: "Edit", count: 5)
+        let result = MenuLayout.split([section], maxHeight: MenuLayout.headerHeight - 1)
+        XCTAssertEqual(result.count, 1)
+    }
+
+    // MARK: Splitting
+
+    func testSplit_tallSection_producesMultiplePieces() {
+        // 20 shortcuts — tall enough that a small maxHeight forces a split
+        let section = MenuSection.fixture(title: "Bearbeiten", count: 20)
+        let maxH = MenuLayout.height(of: MenuSection.fixture(title: "Bearbeiten", count: 8))
+        let result = MenuLayout.split([section], maxHeight: maxH)
+        XCTAssertGreaterThan(result.count, 1)
+    }
+
+    func testSplit_allPiecesShareTitle() {
+        let section = MenuSection.fixture(title: "Edit", count: 30)
+        let maxH = MenuLayout.height(of: MenuSection.fixture(title: "Edit", count: 10))
+        let result = MenuLayout.split([section], maxHeight: maxH)
+        XCTAssertTrue(result.allSatisfy { $0.title == "Edit" })
+    }
+
+    func testSplit_allShortcutsPreserved() {
+        let section = MenuSection.fixture(title: "Edit", count: 25)
+        let maxH = MenuLayout.height(of: MenuSection.fixture(title: "Edit", count: 8))
+        let result = MenuLayout.split([section], maxHeight: maxH)
+        let allShortcuts = result.flatMap { $0.shortcuts }
+        XCTAssertEqual(allShortcuts.count, 25)
+    }
+
+    func testSplit_eachPieceFitsWithinMaxHeight() {
+        let section = MenuSection.fixture(title: "Edit", count: 30)
+        let maxH = MenuLayout.height(of: MenuSection.fixture(title: "Edit", count: 10))
+        let result = MenuLayout.split([section], maxHeight: maxH)
+        for piece in result {
+            XCTAssertLessThanOrEqual(MenuLayout.height(of: piece), maxH + 0.001,
+                                     "Piece '\(piece.title)' height \(MenuLayout.height(of: piece)) exceeds maxH \(maxH)")
+        }
+    }
+
+    func testSplit_multipleGroups_splitsAtGroupBoundaries() {
+        // Two named groups, each just under half of maxH; together they exceed maxH
+        let groupH = MenuLayout.height(of: MenuSection.fixture(title: "T", groups: [("G", 5)]))
+        let maxH = groupH * 1.5   // two groups together exceed this
+        let section = MenuSection.fixture(title: "Edit", groups: [("G1", 5), ("G2", 5)])
+        let result = MenuLayout.split([section], maxHeight: maxH)
+        // Each group ends up in its own piece
+        XCTAssertEqual(result.count, 2)
+        XCTAssertEqual(result[0].groups.count, 1)
+        XCTAssertEqual(result[1].groups.count, 1)
+    }
+
+    func testSplit_preservesOrderAcrossPieces() {
+        let section = MenuSection.fixture(title: "Edit", count: 20)
+        let maxH = MenuLayout.height(of: MenuSection.fixture(title: "Edit", count: 7))
+        let result = MenuLayout.split([section], maxHeight: maxH)
+        let originalTitles = section.shortcuts.map(\.title)
+        let splitTitles = result.flatMap { $0.shortcuts.map(\.title) }
+        XCTAssertEqual(splitTitles, originalTitles)
+    }
+
+    func testSplit_shortSectionsMixed_onlyTallOnesSplit() {
+        let short = MenuSection.fixture(title: "Help", count: 2)
+        let tall  = MenuSection.fixture(title: "Edit", count: 30)
+        let maxH  = MenuLayout.height(of: MenuSection.fixture(title: "Edit", count: 10))
+        let result = MenuLayout.split([short, tall], maxHeight: maxH)
+        // "Help" (2 items) is short → not split; "Edit" (30 items) → split
+        let helpPieces = result.filter { $0.title == "Help" }
+        let editPieces = result.filter { $0.title == "Edit" }
+        XCTAssertEqual(helpPieces.count, 1)
+        XCTAssertGreaterThan(editPieces.count, 1)
+    }
+}

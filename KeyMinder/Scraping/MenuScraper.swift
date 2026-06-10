@@ -223,4 +223,11 @@ extension UserDefaults {
         get { bool(forKey: Self.showConflictIndicatorKey) }
         set { set(newValue, forKey: Self.showConflictIndicatorKey) }
     }
+
+    private static let wrapLongSectionsKey = "wrapLongSections"
+
+    var wrapLongSections: Bool {
+        get { bool(forKey: Self.wrapLongSectionsKey) }
+        set { set(newValue, forKey: Self.wrapLongSectionsKey) }
+    }
 }

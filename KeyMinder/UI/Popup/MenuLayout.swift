@@ -38,6 +38,76 @@ enum MenuLayout {
             + CGFloat(gaps)            * rowSpacing
     }
 
+    // MARK: - Section splitting
+
+    /// Splits sections that exceed `maxHeight` into continuation pieces with the
+    /// same title, so the section header is repeated when a long menu wraps into
+    /// the next column. Sections at or below `maxHeight` are returned unchanged.
+    static func split(_ sections: [MenuSection], maxHeight: CGFloat) -> [MenuSection] {
+        guard maxHeight > headerHeight else { return sections }
+        return sections.flatMap { section in
+            height(of: section) <= maxHeight ? [section] : splitSection(section, maxHeight: maxHeight)
+        }
+    }
+
+    /// Splits one oversized section into pieces, each ≤ `maxHeight`, by greedily
+    /// packing whole groups. When a single group exceeds `maxHeight` its shortcuts
+    /// are split further, repeating the group title on the continuation piece.
+    private static func splitSection(_ section: MenuSection, maxHeight: CGFloat) -> [MenuSection] {
+        var result: [MenuSection] = []
+        var pieceGroups: [ShortcutGroup] = []
+
+        for group in section.groups {
+            let candidate = pieceGroups + [group]
+            if height(of: MenuSection(title: section.title, groups: candidate)) <= maxHeight {
+                pieceGroups = candidate
+            } else if height(of: MenuSection(title: section.title, groups: [group])) > maxHeight {
+                // Even alone this group exceeds maxHeight — flush current piece,
+                // then split the group's shortcuts into sub-chunks.
+                if !pieceGroups.isEmpty {
+                    result.append(MenuSection(title: section.title, groups: pieceGroups))
+                    pieceGroups = []
+                }
+                let chunks = splitGroup(group, sectionTitle: section.title, maxHeight: maxHeight)
+                for chunk in chunks.dropLast() {
+                    result.append(MenuSection(title: section.title, groups: [chunk]))
+                }
+                if let last = chunks.last { pieceGroups = [last] }
+            } else {
+                // Group fits alone but not with current piece — flush and start fresh.
+                result.append(MenuSection(title: section.title, groups: pieceGroups))
+                pieceGroups = [group]
+            }
+        }
+        if !pieceGroups.isEmpty {
+            result.append(MenuSection(title: section.title, groups: pieceGroups))
+        }
+        return result.isEmpty ? [section] : result
+    }
+
+    /// Splits a group's shortcuts into the largest sub-sequences that each fit
+    /// within `maxHeight` when the group is the sole content of a section.
+    private static func splitGroup(_ group: ShortcutGroup, sectionTitle: String,
+                                   maxHeight: CGFloat) -> [ShortcutGroup] {
+        var chunks: [ShortcutGroup] = []
+        var current: [Shortcut] = []
+        for shortcut in group.shortcuts {
+            let test = current + [shortcut]
+            let testH = height(of: MenuSection(title: sectionTitle,
+                                               groups: [ShortcutGroup(title: group.title, shortcuts: test)]))
+            if testH <= maxHeight {
+                current = test
+            } else {
+                if !current.isEmpty { chunks.append(ShortcutGroup(title: group.title, shortcuts: current)) }
+                current = [shortcut]
+            }
+        }
+        if !current.isEmpty { chunks.append(ShortcutGroup(title: group.title, shortcuts: current)) }
+        return chunks.isEmpty ? [group] : chunks
+    }
+
+    // MARK: - Column distribution
+
     /// Partitions sections into at most `columns` contiguous slices (preserving
     /// menu-bar order) so the tallest column is as short as possible — the
     /// classic "split an ordered array into k parts minimising the largest part

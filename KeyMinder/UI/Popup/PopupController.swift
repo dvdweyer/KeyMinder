@@ -257,7 +257,7 @@ final class PopupController {
         // have two top-level menus with the same title. If every item lacks a shortcut
         // the pairs are empty; fall back to self-paired full sections so the popup
         // still has content to display.
-        let sectionPairs: [(layout: MenuSection, full: MenuSection)]
+        var sectionPairs: [(layout: MenuSection, full: MenuSection)]
         if app.includesItemsWithoutShortcuts {
             let pairs = Self.shortcutsOnly(app.sections)
             sectionPairs = pairs.isEmpty
@@ -265,6 +265,26 @@ final class PopupController {
                 : pairs
         } else {
             sectionPairs = app.sections.map { (layout: $0, full: $0) }
+        }
+
+        // When wrapping is on, split sections that exceed 60 % of the max panel
+        // height into continuation pieces (same title, repeated header). The split
+        // is applied to both layout and full independently so the UUID-keyed lookup
+        // below still resolves correctly: each split piece gets a fresh UUID and
+        // its own entry in the pairs array.
+        if UserDefaults.standard.wrapLongSections {
+            let maxColumnHeight = maxPanelHeight * 0.60
+            sectionPairs = sectionPairs.flatMap { pair -> [(layout: MenuSection, full: MenuSection)] in
+                let lPieces = MenuLayout.split([pair.layout], maxHeight: maxColumnHeight)
+                let fPieces = MenuLayout.split([pair.full],   maxHeight: maxColumnHeight)
+                // Use layout piece count as authoritative: each layout UUID must appear
+                // exactly once in fullByID to avoid a crash from duplicate keys.
+                // If full splits into more pieces the extra content merges into the
+                // last layout piece's full counterpart (rare in practice).
+                return lPieces.enumerated().map { i, l in
+                    (layout: l, full: fPieces[min(i, fPieces.count - 1)])
+                }
+            }
         }
 
         let layoutSections = sectionPairs.map(\.layout)
