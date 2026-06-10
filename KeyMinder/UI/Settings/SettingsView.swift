@@ -446,14 +446,27 @@ private struct PopupSettingsView: View {
                     .padding(.leading, 20)
                     .foregroundStyle(.secondary)
 
-                Text("In apps with many menu entries (e.g., browser history), the popup may take several seconds to appear.")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .padding(.leading, 20)
+                HStack(alignment: .top, spacing: 6) {
+                    Text("⚠️")
+                        .font(.caption)
+                    (Text("In apps with many menu entries (e.g., browser history), the popup may take ")
+                        + Text("several seconds").bold()
+                        + Text(" to appear."))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .padding(10)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(Color.orange.opacity(0.08), in: RoundedRectangle(cornerRadius: 6))
+                .overlay(RoundedRectangle(cornerRadius: 6).strokeBorder(Color.orange.opacity(0.25), lineWidth: 1))
+                .padding(.leading, 20)
             }
 
-            Toggle("Show system shortcuts", isOn: $model.showSystemShortcuts)
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                Toggle("Show system shortcuts", isOn: $model.showSystemShortcuts)
+                ExperimentalBadge()
+            }
 
             if model.showSystemShortcuts {
                 Toggle("Show deactivated system shortcuts", isOn: $model.showDeactivatedSystemShortcuts)
@@ -463,7 +476,10 @@ private struct PopupSettingsView: View {
 
             Divider()
 
-            Toggle("Wrap long menus across columns", isOn: $model.wrapLongSections)
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                Toggle("Wrap long menus across columns", isOn: $model.wrapLongSections)
+                ExperimentalBadge()
+            }
 
             Text("A long menu that doesn't fit in one column continues in the next, with the menu name repeated.")
                 .font(.caption)
@@ -472,6 +488,19 @@ private struct PopupSettingsView: View {
         }
         .padding(20)
         .frame(width: 420, alignment: .topLeading)
+    }
+}
+
+// MARK: - ExperimentalBadge
+
+private struct ExperimentalBadge: View {
+    var body: some View {
+        Text("experimental")
+            .font(.caption)
+            .foregroundStyle(Color.orange)
+            .padding(.horizontal, 5)
+            .padding(.vertical, 2)
+            .background(Color.orange.opacity(0.12), in: RoundedRectangle(cornerRadius: 4))
     }
 }
 
@@ -627,12 +656,7 @@ private struct DeveloperSettingsView: View {
 
             HStack(alignment: .firstTextBaseline, spacing: 8) {
                 Toggle("Show conflict indicator", isOn: $model.showConflictIndicator)
-                Text("experimental")
-                    .font(.caption)
-                    .foregroundStyle(Color.orange)
-                    .padding(.horizontal, 5)
-                    .padding(.vertical, 2)
-                    .background(Color.orange.opacity(0.12), in: RoundedRectangle(cornerRadius: 4))
+                ExperimentalBadge()
             }
         }
         .padding(20)
