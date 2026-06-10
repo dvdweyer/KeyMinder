@@ -2,7 +2,8 @@
 # Pre-deploy preparation for KeyMinder.
 #
 # Run this BEFORE scripts/release.sh. It:
-#   1. Extracts localization strings (Debug build → updates Localizable.xcstrings)
+#   1. Translates any missing strings in Localizable.xcstrings via the Claude API
+#      (requires ANTHROPIC_API_KEY in the environment or in scripts/.env)
 #   2. Updates version references in Documentation/Website/keyminder.html
 #   3. Updates the version string in Distribution/Casks/keyminder.rb
 #   4. Commits any modified files
@@ -10,8 +11,8 @@
 #   6. Pushes the branch and tags to GitHub
 #
 # Flags:
-#   --skip-build   Skip the localization-extraction build (faster if strings are unchanged)
-#   --no-push      Do everything except the final git push (dry-run / offline)
+#   --skip-translations   Skip the translation step
+#   --no-push             Do everything except the final git push (dry-run / offline)
 set -euo pipefail
 
 export DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer
@@ -20,13 +21,13 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 # ── Flags ─────────────────────────────────────────────────────────────────────
-SKIP_BUILD=false
+SKIP_TRANSLATIONS=false
 NO_PUSH=false
 
 for arg in "$@"; do
     case "$arg" in
-        --skip-build) SKIP_BUILD=true ;;
-        --no-push)    NO_PUSH=true ;;
+        --skip-translations) SKIP_TRANSLATIONS=true ;;
+        --no-push)           NO_PUSH=true ;;
         *) echo "error: unknown argument: $arg" >&2; exit 1 ;;
     esac
 done
@@ -44,22 +45,12 @@ fi
 echo "==> KeyMinder pre-deploy — v${VERSION}"
 echo ""
 
-# ── 1. Localization strings ───────────────────────────────────────────────────
-if [[ "$SKIP_BUILD" == true ]]; then
-    echo "--- Localization build skipped (--skip-build)."
+# ── 1. Translations ───────────────────────────────────────────────────────────
+if [[ "$SKIP_TRANSLATIONS" == true ]]; then
+    echo "--- Translation step skipped (--skip-translations)."
 else
-    echo "--- Extracting localization strings (Debug build)…"
-    _LOC_DIR="/tmp/KeyMinder-loc-$$"
-    mkdir -p "$_LOC_DIR"
-    xcodebuild build \
-        -project "$REPO_DIR/KeyMinder.xcodeproj" \
-        -scheme KeyMinder \
-        -configuration Debug \
-        -derivedDataPath "$_LOC_DIR" \
-        -allowProvisioningUpdates \
-        2>&1 | grep -E "^(Build succeeded|error:|BUILD SUCCEEDED|BUILD FAILED)" || true
-    rm -rf "$_LOC_DIR"
-    echo "    Done."
+    echo "--- Translating missing strings in Localizable.xcstrings…"
+    python3 "$SCRIPT_DIR/translate-missing.py"
 fi
 
 # ── 2. Documentation — keyminder.html ────────────────────────────────────────
