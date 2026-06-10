@@ -180,6 +180,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let bundleID = app.bundleIdentifier
         let icon = app.icon
         let includeAll = UserDefaults.standard.showAllMenuItems
+        let maxSubmenuSize: Int? = (includeAll && UserDefaults.standard.hideLargeSubmenus) ? 5 : nil
         let ignoreStore = IgnoreListStore.shared
         guard !ignoreStore.isAppIgnored(bundleID) else { return }
         let ignoredTitles: [String] = (ignoreStore.isEnabled && !ignoreStore.showWhenFiltering)
@@ -204,7 +205,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             guard !Task.isCancelled else { return }
 
             let work = Task.detached(priority: .userInitiated) {
-                MenuScraper.scrape(pid: pid, includeItemsWithoutShortcuts: includeAll, ignoredTitles: ignoredTitles)
+                MenuScraper.scrape(pid: pid, includeItemsWithoutShortcuts: includeAll, ignoredTitles: ignoredTitles, maxShortcutFreeSubmenuSize: maxSubmenuSize)
             }
             self.detachedScrapeTask = work
 

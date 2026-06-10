@@ -14,7 +14,8 @@ enum MenuScraper {
     /// key equivalent are included with an empty `keys` string so the full menu
     /// structure is visible in the popup.
     static func scrape(pid: pid_t, includeItemsWithoutShortcuts: Bool = false,
-                       ignoredTitles: [String] = []) -> [MenuSection] {
+                       ignoredTitles: [String] = [],
+                       maxShortcutFreeSubmenuSize: Int? = nil) -> [MenuSection] {
         let start = Date()
         let app = AXUIElementCreateApplication(pid)
         // Cap per-request AX round-trips so an unresponsive target never blocks
@@ -31,7 +32,7 @@ enum MenuScraper {
             let title = string(menuBarItem, kAXTitleAttribute) ?? ""
             // A menu bar item owns its drop-down menu as its single child.
             guard let menu = children(menuBarItem).first else { continue }
-            let groups = collectGroups(in: menu, includeAll: includeItemsWithoutShortcuts, ignoredTitles: ignoredTitles)
+            let groups = collectGroups(in: menu, includeAll: includeItemsWithoutShortcuts, ignoredTitles: ignoredTitles, maxShortcutFreeSubmenuSize: maxShortcutFreeSubmenuSize)
             if !groups.isEmpty {
                 sections.append(MenuSection(title: title, groups: groups))
             }
@@ -51,7 +52,8 @@ enum MenuScraper {
     /// When `includeAll` is false (default), only items with a key equivalent are
     /// included. When true, leaf items without shortcuts are also included.
     private static func collectGroups(in menu: AXUIElement, includeAll: Bool,
-                                      ignoredTitles: [String]) -> [ShortcutGroup] {
+                                      ignoredTitles: [String],
+                                      maxShortcutFreeSubmenuSize: Int? = nil) -> [ShortcutGroup] {
         var topLevel: [Shortcut] = []
         var named:    [ShortcutGroup] = []
 
@@ -93,9 +95,7 @@ enum MenuScraper {
             // which is the right behaviour for sub-submenus (depth > 2).
             if let submenu {
                 let submenuItems = collectShortcutsFlat(in: submenu, includeAll: includeAll, ignoredTitles: ignoredTitles)
-                if !submenuItems.isEmpty {
-                    named.append(ShortcutGroup(title: title, shortcuts: submenuItems))
-                } else {
+                if submenuItems.isEmpty {
                     // Log empty submenus so we can quantify how often lazy population
                     // hides shortcuts.  itemCount == 0 strongly suggests the submenu
                     // is populated lazily (NSMenu's menuNeedsUpdate: fires only when
@@ -103,6 +103,13 @@ enum MenuScraper {
                     let itemCount = children(submenu).count
                     let hint = itemCount == 0 ? "; likely lazy-populated" : ""
                     Logger.scraper.info("Submenu '\(title, privacy: .private)' yielded 0 items (\(itemCount, privacy: .public) child items\(hint, privacy: .private))")
+                } else if let limit = maxShortcutFreeSubmenuSize,
+                          submenuItems.count > limit,
+                          submenuItems.allSatisfy({ $0.keys.isEmpty }) {
+                    // Skip large shortcut-free submenus (e.g. browser history) to
+                    // prevent them from flooding the popup in all-entries mode.
+                } else {
+                    named.append(ShortcutGroup(title: title, shortcuts: submenuItems))
                 }
             }
         }
@@ -201,6 +208,13 @@ extension UserDefaults {
     var requireFilterForAllMenuItems: Bool {
         get { bool(forKey: Self.requireFilterForAllMenuItemsKey) }
         set { set(newValue, forKey: Self.requireFilterForAllMenuItemsKey) }
+    }
+
+    private static let hideLargeSubmenusKey = "hideLargeSubmenus"
+
+    var hideLargeSubmenus: Bool {
+        get { bool(forKey: Self.hideLargeSubmenusKey) }
+        set { set(newValue, forKey: Self.hideLargeSubmenusKey) }
     }
 
     private static let showSystemShortcutsKey = "showSystemShortcuts"

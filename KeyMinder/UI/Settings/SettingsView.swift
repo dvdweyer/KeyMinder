@@ -129,6 +129,10 @@ final class SettingsModel {
         didSet { UserDefaults.standard.requireFilterForAllMenuItems = requireFilterForAllMenuItems }
     }
 
+    var hideLargeSubmenus: Bool = UserDefaults.standard.hideLargeSubmenus {
+        didSet { UserDefaults.standard.hideLargeSubmenus = hideLargeSubmenus }
+    }
+
     var showSystemShortcuts: Bool = UserDefaults.standard.showSystemShortcuts {
         didSet { UserDefaults.standard.showSystemShortcuts = showSystemShortcuts }
     }
@@ -450,6 +454,10 @@ private struct PopupSettingsView: View {
 
             if model.showAllMenuItems {
                 Toggle("Only show when searching", isOn: $model.requireFilterForAllMenuItems)
+                    .padding(.leading, 20)
+                    .foregroundStyle(.secondary)
+
+                Toggle("Hide large submenus without shortcuts", isOn: $model.hideLargeSubmenus)
                     .padding(.leading, 20)
                     .foregroundStyle(.secondary)
 
