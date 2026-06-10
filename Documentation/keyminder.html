@@ -3,7 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KeyMinder</title>
+<title>KeyMinder — macOS Keyboard Shortcut Viewer</title>
+<meta name="description" content="KeyMinder is a free macOS menu bar app that instantly shows keyboard shortcuts for whichever app you're using — grouped by menu, searchable, and clickable.">
+<link rel="canonical" href="https://keyminder.app/">
+<link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
+
+<!-- Open Graph -->
+<meta property="og:type"        content="website">
+<meta property="og:url"         content="https://keyminder.app/">
+<meta property="og:title"       content="KeyMinder — macOS Keyboard Shortcut Viewer">
+<meta property="og:description" content="Free macOS menu bar app. See every keyboard shortcut for the frontmost app — grouped by menu, searchable, clickable. macOS 14+.">
+
+<!-- Twitter/X card -->
+<meta name="twitter:card"        content="summary_large_image">
+<meta name="twitter:title"       content="KeyMinder — macOS Keyboard Shortcut Viewer">
+<meta name="twitter:description" content="Free macOS menu bar app. See every keyboard shortcut for the frontmost app — grouped by menu, searchable, clickable.">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -280,6 +294,18 @@
 
   .changelog-entry:last-child { border-bottom: none; }
 
+  .changelog-more {
+    font-size: 13px;
+    color: #aaa;
+    cursor: pointer;
+    padding: 0.75rem 0;
+    list-style: none;
+    user-select: none;
+    display: block;
+  }
+
+  .changelog-more:hover { color: #777; }
+
   .changelog-version {
     display: flex;
     align-items: baseline;
@@ -411,16 +437,44 @@
     .changelog-entry ul li { color: #888; }
     .changelog-entry ul li::before { color: #444; }
 
+    .changelog-more { color: #555; }
+    .changelog-more:hover { color: #888; }
+
     footer { color: #555; }
     footer a { color: #888; }
   }
 </style>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "KeyMinder",
+  "operatingSystem": "macOS 14 or later",
+  "applicationCategory": "UtilitiesApplication",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "description": "A macOS menu bar app that instantly shows the keyboard shortcuts of whichever app you're currently using, grouped by menu.",
+  "url": "https://keyminder.app/",
+  "downloadUrl": "https://keyminder.app/KeyMinder_0.1.101.zip",
+  "softwareVersion": "0.1.101",
+  "license": "https://opensource.org/licenses/MIT",
+  "author": {
+    "@type": "Person",
+    "name": "Donald van de Weyer",
+    "url": "https://github.com/dvdweyer"
+  }
+}
+</script>
 </head>
 <body>
 
 <header>
   <h1>KeyMinder</h1>
-  <p data-de="Eine macOS-Menüleisten-App, die sofort die Tastenkürzel der aktiven App anzeigt.">A macOS menu bar app that instantly shows the keyboard shortcuts of whichever app you're currently using.</p>
+  <p data-de="Eine macOS-Menüleisten-App, die sofort die Tastenkürzel der aktiven App anzeigt. Kostenlos und Open Source. Für tastaturorientierte Mac-Nutzer.">A macOS menu bar app that instantly shows the keyboard shortcuts of whichever app you're currently using. Free and open source. Built for keyboard-driven Mac users.</p>
   <div class="button-row">
     <a href="KeyMinder_0.1.101.zip" class="btn btn-primary" download data-de="↓ v0.1.101 herunterladen">
       ↓ Download v0.1.101
@@ -429,7 +483,7 @@
       View on GitHub
     </a>
   </div>
-  <p class="download-note" data-de-html="Chrome zeigt möglicherweise eine Warnung an – die App ist von Apple notarisiert. Klicken Sie auf die Warnung → &lt;em&gt;Behalten&lt;/em&gt;, um fortzufahren.">Chrome may warn about this download — the app is notarized by Apple. Click the warning → <em>Keep</em> to proceed.</p>
+  <p class="download-note" data-de-html="Von Apple notarisiert – auf Malware geprüft und freigegeben. Falls Chrome die Datei markiert, klicken Sie auf die Warnung → &lt;em&gt;Behalten&lt;/em&gt;.">Notarized by Apple — scanned and cleared for distribution. If Chrome flags the download, click the warning → <em>Keep</em>.</p>
 </header>
 
 <main>
@@ -437,7 +491,7 @@
   <div class="section">
     <h2 data-de="Was es kann">What it does</h2>
     <p data-de="Anstatt Menüs nach Tastenkürzeln zu durchsuchen, zeigt KeyMinder eine übersichtliche Zusammenfassung aller verfügbaren Tastenkürzel der aktiven App – geordnet nach Menü, ausgelöst durch eine benutzerdefinierte Tastenkombination oder durch schnelles doppeltes Drücken der Befehl-, Wahl- oder Steuerungstaste.">Instead of hunting through menus to find shortcuts, KeyMinder pops up a clean overview of every keyboard shortcut available in the frontmost app — grouped by menu, triggered by a user-defined hotkey or double-tap on the command, option or control key.</p>
-    <p data-de="Klicken Sie auf ein Tastenkürzel im Popup, um es sofort auszuführen. KeyMinder liest Menüstrukturen direkt über die macOS-Bedienungshilfen-API – die Tastenkürzel sind daher immer korrekt und aktuell, egal welche App Sie verwenden.">Click any shortcut in the popup to run it immediately. KeyMinder reads menu structures directly via the macOS Accessibility API, so shortcuts are always accurate and up to date for whatever app you're using.</p>
+    <p data-de="Klicken Sie auf ein Tastenkürzel im Popup, um es sofort auszuführen. KeyMinder liest Menüstrukturen direkt über die macOS-Bedienungshilfen-API – das Systemfeature, das Apps ermöglicht, Menüs und UI-Elemente anderer Apps auszulesen – die Tastenkürzel sind daher immer korrekt und aktuell, egal welche App Sie verwenden.">Click any shortcut in the popup to run it immediately. KeyMinder reads menu structures directly via the macOS Accessibility API — the system feature that lets apps read menus and UI elements from other apps — so shortcuts are always accurate and up to date for whatever app you're using.</p>
     <p data-de="Suchen Sie durch Eintippen eines Befehlsnamens und springen Sie mit Tab dorthin, um ihn direkt auszuführen. Aktivieren oder halten Sie Modifiziertasten (⌃ ⌥ ⇧ ⌘), um nach einer genauen Tastenkombination zu filtern. Passen alle Tastenkürzel auf den Bildschirm, werden nicht übereinstimmende Zeilen abgedunkelt statt ausgeblendet – das Layout bleibt stabil. Es gibt sogar eine Option, Menüeinträge ohne Tastenkürzel anzuzeigen – diese erscheinen nur, wenn mindestens zwei Buchstaben des Befehls eingegeben wurden.">Search by typing a command name and Tab to it to execute it directly. Toggle or hold modifier keys (⌃ ⌥ ⇧ ⌘) to filter by exact modifier combination. When all shortcuts fit on screen, non-matching rows dim in place so the layout stays stable. There is even an option to show menu items without keyboard shortcuts — these show only when at least two letters of the command are matched.</p>
     <p data-de="Heften Sie Ihre meistgenutzten Tastenkürzel als Favoriten an – bewegen Sie den Mauszeiger über eine Zeile, um den Stern-Button zu sehen –, und filtern Sie sofort mit dem ★-Button in der Kopfzeile. Nutzen Sie Ignorierte Befehle (Einstellungen → Erweitert), um störende Menüeinträge global oder per App auszublenden. Ein Zahnrad-Button in der Popup-Kopfzeile öffnet die Einstellungen, ohne Ihren Workflow zu unterbrechen.">Pin your most-used shortcuts as favourites — hover any row for the star button — then filter to them instantly with the ★ button in the header. Use Ignored Commands (Settings → Advanced) to suppress noisy menu items globally or per app. A gear button in the popup header opens Settings without closing your workflow.</p>
     <div class="screenshot">
@@ -480,7 +534,12 @@
   <div class="section">
     <h2 data-de="Warum nicht im App Store?">Why not on the App Store?</h2>
     <p data-de="KeyMinder verwendet die Bedienungshilfen-API, um die Menüs anderer Apps zu lesen. Dies ist grundlegend unvereinbar mit der für den App Store verpflichtenden App-Sandbox – es gibt keine Berechtigung, diese Funktionalität innerhalb der Sandbox zu ermöglichen.">KeyMinder uses the Accessibility API to read other apps' menus. This is fundamentally incompatible with the App Store's mandatory App Sandbox — no entitlement exists to re-open this capability inside the sandbox.</p>
-    <p data-de="Dieselbe Einschränkung gilt für ähnliche Tools wie KeyCue und Shortcat. KeyMinder wird als notarisierter Developer-ID-Build vertrieben und ist vollständig Open Source.">The same constraint applies to similar tools such as KeyCue and Shortcat. KeyMinder is distributed as a notarized Developer ID build and is fully open source.</p>
+    <p data-de="Dieselbe Einschränkung gilt für alle ähnlichen Tools. KeyMinder wird als notarisierter Developer-ID-Build vertrieben und ist vollständig Open Source.">The same constraint applies to all similar tools. KeyMinder is distributed as a <abbr title="Apple has scanned and approved this build for safe distribution outside the App Store">notarized</abbr> Developer ID build and is fully open source.</p>
+  </div>
+
+  <div class="section">
+    <h2 data-de="Datenschutz">Privacy</h2>
+    <p data-de="KeyMinder läuft vollständig auf Ihrem Mac. Es werden keine Daten über Sie oder die von Ihnen verwendeten Apps erfasst, übertragen oder gespeichert. Keine Analysen, kein Tracking, kein Konto erforderlich. Der Auto-Updater prüft keyminder.app/appcast.xml auf neue Versionen; dabei werden keine personenbezogenen Daten übermittelt.">KeyMinder runs entirely on your Mac. It does not collect, transmit, or store any data about you or the apps you use. No analytics, no tracking, no account required. The auto-updater checks <code>keyminder.app/appcast.xml</code> for new versions; no personal information is sent in that request.</p>
   </div>
 
   <div class="section">
@@ -538,6 +597,9 @@
         <li>Fixed: Next button in the wizard's permission step is now disabled until Accessibility access is actually granted</li>
       </ul>
     </div>
+
+    <details>
+      <summary class="changelog-more">Show earlier releases ▸</summary>
 
     <div class="changelog-entry">
       <div class="changelog-version">
@@ -985,13 +1047,14 @@
         <li>Popup shown automatically on first launch for discoverability</li>
       </ul>
     </div>
+    </details>
 
   </div>
 
 </main>
 
 <footer>
-  <p>MIT License &nbsp;·&nbsp; <a href="https://github.com/dvdweyer/KeyMinder" target="_blank" rel="noopener">github.com/dvdweyer/KeyMinder</a></p>
+  <p>By <a href="https://github.com/dvdweyer" target="_blank" rel="noopener">Donald van de Weyer</a> &nbsp;·&nbsp; MIT License &nbsp;·&nbsp; <a href="https://github.com/dvdweyer/KeyMinder" target="_blank" rel="noopener">github.com/dvdweyer/KeyMinder</a></p>
 </footer>
 
 <script>

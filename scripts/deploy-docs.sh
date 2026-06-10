@@ -15,6 +15,9 @@ cp "$REPO_DIR/Documentation/keyminder.html" "$KEYMINDER_SITE_DIR/index.html"
 for f in "$REPO_DIR/Documentation/"*.png; do
     [[ -e "$f" ]] && cp "$f" "$SITE_DIR/" && cp "$f" "$KEYMINDER_SITE_DIR/"
 done
+for f in sitemap.xml robots.txt; do
+    [[ -e "$REPO_DIR/Documentation/$f" ]] && cp "$REPO_DIR/Documentation/$f" "$SITE_DIR/" && cp "$REPO_DIR/Documentation/$f" "$KEYMINDER_SITE_DIR/"
+done
 for f in "$SITE_DIR/"*.zip; do
     [[ -e "$f" ]] && cp "$f" "$KEYMINDER_SITE_DIR/"
 done
