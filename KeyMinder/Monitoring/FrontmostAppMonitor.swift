@@ -9,9 +9,7 @@ final class FrontmostAppMonitor {
 
     private(set) var frontmostApp: NSRunningApplication?
 
-    // nonisolated(unsafe): deinit is implicitly nonisolated and needs to
-    // removeObserver; nonisolated alone errors on @Observable var (compiler bug).
-    nonisolated(unsafe) private var observer: NSObjectProtocol?
+    @ObservationIgnored nonisolated(unsafe) private var observer: NSObjectProtocol?
     private let ownPID = ProcessInfo.processInfo.processIdentifier
 
     init() {

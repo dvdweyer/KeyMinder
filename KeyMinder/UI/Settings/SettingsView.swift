@@ -21,7 +21,7 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
 
     static func show() {
         if instance == nil { instance = SettingsWindowController() }
-        NSRunningApplication.current.activate(options: [.activateIgnoringOtherApps])
+        NSApp.activate()
         instance?.window?.makeKeyAndOrderFront(nil)
         instance?.window?.orderFrontRegardless()
     }
