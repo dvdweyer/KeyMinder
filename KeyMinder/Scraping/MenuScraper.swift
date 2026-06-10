@@ -14,7 +14,7 @@ enum MenuScraper {
     /// key equivalent are included with an empty `keys` string so the full menu
     /// structure is visible in the popup.
     static func scrape(pid: pid_t, includeItemsWithoutShortcuts: Bool = false,
-                       ignoredTitles: Set<String> = []) -> [MenuSection] {
+                       ignoredTitles: [String] = []) -> [MenuSection] {
         let start = Date()
         let app = AXUIElementCreateApplication(pid)
         // Cap per-request AX round-trips so an unresponsive target never blocks
@@ -51,13 +51,13 @@ enum MenuScraper {
     /// When `includeAll` is false (default), only items with a key equivalent are
     /// included. When true, leaf items without shortcuts are also included.
     private static func collectGroups(in menu: AXUIElement, includeAll: Bool,
-                                      ignoredTitles: Set<String>) -> [ShortcutGroup] {
+                                      ignoredTitles: [String]) -> [ShortcutGroup] {
         var topLevel: [Shortcut] = []
         var named:    [ShortcutGroup] = []
 
         for item in children(menu) {
             guard let title = string(item, kAXTitleAttribute), !title.isEmpty else { continue }
-            guard !ignoredTitles.contains(title.localizedLowercase) else { continue }
+            guard !IgnoreListStore.isIgnored(title: title, patterns: ignoredTitles) else { continue }
 
             let rawChar     = string(item, kAXMenuItemCmdCharAttribute)
             let rawVKey     = int(item,    kAXMenuItemCmdVirtualKeyAttribute)
@@ -119,13 +119,13 @@ enum MenuScraper {
     /// into a single list. Used for submenu contents (depth ≥ 2).
     private static func collectShortcutsFlat(
         in menu: AXUIElement, includeAll: Bool = false, depth: Int = 0,
-        ignoredTitles: Set<String> = []
+        ignoredTitles: [String] = []
     ) -> [Shortcut] {
         guard depth < 10 else { return [] }
         var result: [Shortcut] = []
         for item in children(menu) {
             guard let title = string(item, kAXTitleAttribute), !title.isEmpty else { continue }
-            guard !ignoredTitles.contains(title.localizedLowercase) else { continue }
+            guard !IgnoreListStore.isIgnored(title: title, patterns: ignoredTitles) else { continue }
 
             let shortcutKeys = ShortcutFormatter.format(
                 cmdChar:    string(item, kAXMenuItemCmdCharAttribute),

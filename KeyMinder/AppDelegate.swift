@@ -8,6 +8,10 @@ private final class UpdaterDelegate: NSObject, SPUUpdaterDelegate {
     func updaterShouldPromptForPermissionToCheck(forUpdates updater: SPUUpdater) -> Bool {
         return false
     }
+
+    func allowedChannels(for updater: SPUUpdater) -> Set<String> {
+        UserDefaults.standard.receiveBetaUpdates ? ["beta"] : []
+    }
 }
 
 @MainActor
@@ -44,18 +48,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         setupDoubleTap()
         setupSleepWakeObserver()
         showWelcomeIfNeeded()
-        configureBetaChannel()
         betaChannelObserver = NotificationCenter.default.addObserver(
             forName: .receiveBetaUpdatesChanged,
             object: nil,
             queue: .main
         ) { [weak self] _ in
-            MainActor.assumeIsolated { self?.configureBetaChannel() }
+            MainActor.assumeIsolated {
+                self?.updaterController.updater.resetUpdateCycleAfterShortDelay()
+            }
         }
-    }
-
-    private func configureBetaChannel() {
-        updaterController.updater.channel = UserDefaults.standard.receiveBetaUpdates ? "beta" : nil
     }
 
     // MARK: - Global hotkey
@@ -181,7 +182,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let includeAll = UserDefaults.standard.showAllMenuItems
         let ignoreStore = IgnoreListStore.shared
         guard !ignoreStore.isAppIgnored(bundleID) else { return }
-        let ignoredTitles: Set<String> = (ignoreStore.isEnabled && !ignoreStore.showWhenFiltering)
+        let ignoredTitles: [String] = (ignoreStore.isEnabled && !ignoreStore.showWhenFiltering)
             ? ignoreStore.ignoredTitles(for: bundleID)
             : []
 

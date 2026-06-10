@@ -32,19 +32,19 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
 
         // Measure each tab independently (no-ScrollView tabs give exact heights;
         // the Ignored tab has a ScrollView so it gets capped at screenH via min()).
+        // Add 24 pt buffer to all tabs: sizeThatFits slightly underestimates due to
+        // rounding, padding inset overhead, and ScrollView wrapper costs.
         let genRaw = NSHostingController(rootView: GeneralSettingsView(model: m))
-            .sizeThatFits(in: CGSize(width: 420, height: CGFloat.greatestFiniteMagnitude)).height
+            .sizeThatFits(in: CGSize(width: 420, height: CGFloat.greatestFiniteMagnitude)).height + 24
         let popupRaw = NSHostingController(rootView: PopupSettingsView(model: m))
-            .sizeThatFits(in: CGSize(width: 420, height: CGFloat.greatestFiniteMagnitude)).height
-        // Add 24 pt buffer: sizeThatFits slightly underestimates due to rounding
-        // and the ScrollView wrapper's inset overhead.
+            .sizeThatFits(in: CGSize(width: 420, height: CGFloat.greatestFiniteMagnitude)).height + 24
         let ignoredRaw = NSHostingController(rootView: IgnoredSettingsBody(
                 showAddIgnoredAppSheet: .constant(false),
                 showAddGlobalSheet: .constant(false),
                 showAddAppSheet: .constant(false)
             )).sizeThatFits(in: CGSize(width: 420, height: CGFloat.greatestFiniteMagnitude)).height + 24
         let developerRaw = NSHostingController(rootView: DeveloperSettingsView(model: m))
-            .sizeThatFits(in: CGSize(width: 420, height: CGFloat.greatestFiniteMagnitude)).height
+            .sizeThatFits(in: CGSize(width: 420, height: CGFloat.greatestFiniteMagnitude)).height + 24
 
         // Derive the picker+divider overhead: SettingsView() shows General (tab 0) by
         // default, so fullRaw − genRaw gives the exact picker + divider height.
@@ -804,8 +804,20 @@ private struct IgnoreRulesBox: View {
         VStack(spacing: 0) {
             ForEach(titles, id: \.self) { title in
                 HStack {
+                    let isWildcard = title.contains("*") || title.contains("?")
                     Text(title)
+                        .font(isWildcard ? .body.monospaced() : .body)
                         .frame(maxWidth: .infinity, alignment: .leading)
+                    if isWildcard {
+                        Text("wildcard")
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                            .padding(.horizontal, 5)
+                            .padding(.vertical, 2)
+                            .background(
+                                Capsule().fill(.primary.opacity(0.07))
+                            )
+                    }
                     Button {
                         onDelete(title)
                     } label: {
@@ -844,7 +856,7 @@ private struct AddGlobalRuleSheet: View {
             Text("Add Ignored Command")
                 .font(.headline)
 
-            Text("Enter the exact command title to hide from the popup in all apps.")
+            Text("Enter a command title to hide from the popup in all apps. Use * as a wildcard — e.g. *Window* hides any command containing "Window".")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -897,9 +909,10 @@ private struct AddAppRuleSheet: View {
             Text("Add App-Specific Rule")
                 .font(.headline)
 
-            Text("Hide a command in one app only.")
+            Text("Hide a command in one app only. Use * as a wildcard — e.g. *Window* hides any command containing "Window".")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
 
             if runningApps.isEmpty {
                 Text("No apps are currently running.")

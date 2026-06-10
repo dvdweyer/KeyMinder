@@ -51,14 +51,26 @@ final class IgnoreListStore {
         }
     }
 
-    /// Returns the lowercased set of titles to suppress for a given app.
-    /// Includes global titles plus any app-specific ones.
-    func ignoredTitles(for bundleID: String?) -> Set<String> {
-        var result = Set(globalTitles.map { $0.localizedLowercase })
+    /// Returns the patterns (exact titles or `*`/`?` wildcard globs) to suppress
+    /// for a given app. Includes global patterns plus any app-specific ones.
+    func ignoredTitles(for bundleID: String?) -> [String] {
+        var result = globalTitles
         if let id = bundleID {
-            (perApp[id] ?? []).forEach { result.insert($0.localizedLowercase) }
+            result.append(contentsOf: perApp[id] ?? [])
         }
         return result
+    }
+
+    /// Returns true when `title` matches any pattern in `patterns`.
+    /// Patterns without `*` or `?` are matched case- and diacritic-insensitively.
+    /// Patterns containing `*` or `?` use glob semantics via NSPredicate LIKE[cd].
+    static func isIgnored(title: String, patterns: [String]) -> Bool {
+        for pattern in patterns {
+            if NSPredicate(format: "SELF LIKE[cd] %@", pattern).evaluate(with: title) {
+                return true
+            }
+        }
+        return false
     }
 
     func addGlobal(_ title: String) {
