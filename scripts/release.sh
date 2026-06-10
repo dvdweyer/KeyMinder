@@ -253,7 +253,7 @@ cp "$ZIP" "$SITE_DIR/"
 cp "$DMG" "$SITE_DIR/"
 cp "$APPCAST" "$SITE_DIR/"
 cp "$REPO_DIR/Documentation/Website/keyminder.html" "$SITE_DIR/index.html"
-for f in "$REPO_DIR/Documentation/Website/"*.png; do
+for f in "$REPO_DIR/Documentation/Website/"*.png "$REPO_DIR/Documentation/Website/"*.ico; do
     [[ -e "$f" ]] && cp "$f" "$SITE_DIR/"
 done
 for f in sitemap.xml robots.txt .htaccess; do

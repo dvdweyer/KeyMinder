@@ -169,6 +169,30 @@ context.
 
 ---
 
+### German SEO / hreflang
+
+The German translation on the website is applied at runtime via JavaScript
+(`data-de` attributes), so Googlebot — which crawls without a language preference
+— only ever sees the English content. German-speaking users searching in German
+will not find a localized result.
+
+**Fix options (mutually exclusive):**
+
+1. **Separate URL** — serve a static `/de/` page with the German content baked in
+   and add `<link rel="alternate" hreflang="de" href="https://keyminder.app/de/">` /
+   `hreflang="en"` annotations on both pages. Most work; best SEO outcome.
+2. **Server-side language negotiation** — detect `Accept-Language: de` at the
+   CDN/server layer and serve pre-rendered German HTML at the same URL with a
+   `Vary: Accept-Language` response header. Moderate effort; single URL.
+3. **Accept the limitation** — German SEO is not currently a priority; leave the
+   JS-only approach in place.
+
+**Notes:** `hreflang` tags without a corresponding Google-crawlable page are
+ignored, so option 3 is preferable to adding annotations that point at pages
+Googlebot cannot read.
+
+---
+
 ### Submit to Mac app directories
 
 Manual/one-off tasks (not in-app), but worth tracking here so they don't fall
