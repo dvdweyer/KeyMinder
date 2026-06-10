@@ -15,33 +15,73 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
     /// the first-launch open so it can trigger the post-setup hint.
     static var onFirstClose: (() -> Void)? = nil
 
+    /// Pre-measured natural heights for each tab (0=General, 1=Popup, 2=Ignored, 3=Developer),
+    /// capped at 85 % of the available screen height.
+    private var tabHeights: [CGFloat] = [0, 0, 0, 0]
+
     static func show() {
         if instance == nil { instance = SettingsWindowController() }
-        NSApp.activate(ignoringOtherApps: true)
+        NSRunningApplication.current.activate(options: [.activateIgnoringOtherApps])
         instance?.window?.makeKeyAndOrderFront(nil)
+        instance?.window?.orderFrontRegardless()
     }
 
     private init() {
-        let measured = NSHostingController(rootView: SettingsView())
-            .sizeThatFits(in: CGSize(width: 420, height: CGFloat.greatestFiniteMagnitude))
-            .height.rounded()
-        let contentHeight = min(max(measured, 300), 700)
+        let screenH = (NSScreen.main?.visibleFrame.height ?? 900) * 0.85
+        let m = SettingsModel()
 
-        let hosting = NSHostingView(rootView: SettingsView())
+        // Measure each tab independently (no-ScrollView tabs give exact heights;
+        // the Ignored tab has a ScrollView so it gets capped at screenH via min()).
+        let genRaw = NSHostingController(rootView: GeneralSettingsView(model: m))
+            .sizeThatFits(in: CGSize(width: 420, height: CGFloat.greatestFiniteMagnitude)).height
+        let popupRaw = NSHostingController(rootView: PopupSettingsView(model: m))
+            .sizeThatFits(in: CGSize(width: 420, height: CGFloat.greatestFiniteMagnitude)).height
+        let ignoredRaw = NSHostingController(rootView: IgnoredSettingsView())
+            .sizeThatFits(in: CGSize(width: 420, height: CGFloat.greatestFiniteMagnitude)).height
+        let developerRaw = NSHostingController(rootView: DeveloperSettingsView(model: m))
+            .sizeThatFits(in: CGSize(width: 420, height: CGFloat.greatestFiniteMagnitude)).height
+
+        // Derive the tab-bar overhead from the full TabView measurement.
+        let fullRaw = NSHostingController(rootView: SettingsView())
+            .sizeThatFits(in: CGSize(width: 420, height: CGFloat.greatestFiniteMagnitude)).height
+        let tallest = max(genRaw, max(popupRaw, max(ignoredRaw, developerRaw)))
+        let tabBarH = max(fullRaw - tallest, 44)
+
+        tabHeights = [
+            min(genRaw      + tabBarH, screenH).rounded(),
+            min(popupRaw    + tabBarH, screenH).rounded(),
+            min(ignoredRaw  + tabBarH, screenH).rounded(),
+            min(developerRaw + tabBarH, screenH).rounded()
+        ]
+
         let window = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 420, height: contentHeight),
+            contentRect: NSRect(x: 0, y: 0, width: 420, height: tabHeights[0]),
             styleMask:   [.titled, .closable],
             backing:     .buffered,
             defer:       false
         )
         window.title = String(localized: "KeyMinder Settings")
-        window.contentView = hosting
         window.center()
         super.init(window: window)
         window.delegate = self
+        window.contentView = NSHostingView(rootView: SettingsView(onTabChange: { [weak self] tab in
+            self?.resize(to: tab)
+        }))
     }
 
     required init?(coder: NSCoder) { nil }
+
+    private func resize(to tab: Int) {
+        guard let w = window, tab < tabHeights.count else { return }
+        let newH = tabHeights[tab]
+        var f = w.frame
+        f.origin.y -= newH - f.height   // keep top of window fixed
+        f.size.height = newH
+        NSAnimationContext.runAnimationGroup { ctx in
+            ctx.duration = 0.18
+            w.animator().setFrame(f, display: true)
+        }
+    }
 
     func windowWillClose(_ notification: Notification) {
         Self.instance = nil
@@ -78,6 +118,10 @@ final class SettingsModel {
 
     var showAllMenuItems: Bool = UserDefaults.standard.showAllMenuItems {
         didSet { UserDefaults.standard.showAllMenuItems = showAllMenuItems }
+    }
+
+    var requireFilterForAllMenuItems: Bool = UserDefaults.standard.requireFilterForAllMenuItems {
+        didSet { UserDefaults.standard.requireFilterForAllMenuItems = requireFilterForAllMenuItems }
     }
 
     var showSystemShortcuts: Bool = UserDefaults.standard.showSystemShortcuts {
@@ -182,16 +226,27 @@ final class SettingsModel {
 // MARK: - SettingsView
 
 struct SettingsView: View {
+    var onTabChange: (Int) -> Void = { _ in }
     @State private var model = SettingsModel()
+    @State private var selectedTab = 0
 
     var body: some View {
-        TabView {
+        TabView(selection: $selectedTab) {
             GeneralSettingsView(model: model)
                 .tabItem { Label("General", systemImage: "gearshape") }
-            AdvancedSettingsView(model: model)
-                .tabItem { Label("Advanced", systemImage: "slider.horizontal.3") }
+                .tag(0)
+            PopupSettingsView(model: model)
+                .tabItem { Label("Popup", systemImage: "list.bullet.rectangle.portrait") }
+                .tag(1)
+            IgnoredSettingsView()
+                .tabItem { Label("Ignored", systemImage: "eye.slash") }
+                .tag(2)
+            DeveloperSettingsView(model: model)
+                .tabItem { Label("Developer", systemImage: "hammer") }
+                .tag(3)
         }
         .frame(width: 420)
+        .onChange(of: selectedTab) { _, tab in onTabChange(tab) }
         .onDisappear { model.stopRecording() }
     }
 }
@@ -256,26 +311,6 @@ private struct GeneralSettingsView: View {
 
             Divider()
 
-            Text("Popup Content")
-                .font(.headline)
-
-            Text("Show all menu entries, not just those with keyboard shortcuts, to help discover available actions.")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-                .fixedSize(horizontal: false, vertical: true)
-
-            Toggle("Show all menu entries", isOn: $model.showAllMenuItems)
-
-            Toggle("Show system shortcuts", isOn: $model.showSystemShortcuts)
-
-            if model.showSystemShortcuts {
-                Toggle("Show deactivated system shortcuts", isOn: $model.showDeactivatedSystemShortcuts)
-                    .padding(.leading, 20)
-                    .foregroundStyle(.secondary)
-            }
-
-            Divider()
-
             Text("Appearance")
                 .font(.headline)
 
@@ -330,10 +365,47 @@ private struct GeneralSettingsView: View {
     }
 }
 
-// MARK: - AdvancedSettingsView
+// MARK: - PopupSettingsView
 
-private struct AdvancedSettingsView: View {
+private struct PopupSettingsView: View {
     @Bindable var model: SettingsModel
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 14) {
+
+            Text("Popup Content")
+                .font(.headline)
+
+            Toggle("Show all menu entries", isOn: $model.showAllMenuItems)
+
+            if model.showAllMenuItems {
+                Toggle("Only show when searching", isOn: $model.requireFilterForAllMenuItems)
+                    .padding(.leading, 20)
+                    .foregroundStyle(.secondary)
+
+                Text("In apps with many menu entries (e.g., browser history), the popup may take several seconds to appear.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.leading, 20)
+            }
+
+            Toggle("Show system shortcuts", isOn: $model.showSystemShortcuts)
+
+            if model.showSystemShortcuts {
+                Toggle("Show deactivated system shortcuts", isOn: $model.showDeactivatedSystemShortcuts)
+                    .padding(.leading, 20)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .padding(20)
+        .frame(width: 420, alignment: .topLeading)
+    }
+}
+
+// MARK: - IgnoredSettingsView
+
+private struct IgnoredSettingsView: View {
     @State private var showAddIgnoredAppSheet = false
     @State private var showAddGlobalSheet = false
     @State private var showAddAppSheet = false
@@ -343,23 +415,6 @@ private struct AdvancedSettingsView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 14) {
-
-                Text("Developer")
-                    .font(.headline)
-
-                Toggle("Enable debug logging", isOn: $model.debugLoggingEnabled)
-
-                HStack(alignment: .firstTextBaseline, spacing: 8) {
-                    Toggle("Show conflict indicator", isOn: $model.showConflictIndicator)
-                    Text("experimental")
-                        .font(.caption)
-                        .foregroundStyle(Color.orange)
-                        .padding(.horizontal, 5)
-                        .padding(.vertical, 2)
-                        .background(Color.orange.opacity(0.12), in: RoundedRectangle(cornerRadius: 4))
-                }
-
-                Divider()
 
                 Text("Ignored Apps")
                     .font(.headline)
@@ -404,7 +459,6 @@ private struct AdvancedSettingsView: View {
 
                 Divider()
 
-                // Global (all apps) rules
                 Text("All Apps")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
@@ -426,7 +480,6 @@ private struct AdvancedSettingsView: View {
                 Button("Add Global Rule…") { showAddGlobalSheet = true }
                     .frame(maxWidth: .infinity, alignment: .trailing)
 
-                // Per-app rules
                 if !store.sortedAppIDs.isEmpty {
                     Divider()
                     Text("App-Specific")
@@ -450,7 +503,6 @@ private struct AdvancedSettingsView: View {
                                 .buttonStyle(.plain)
                                 .help("Remove all rules for this app")
                             }
-
                             IgnoreRulesBox(titles: titles) { title in
                                 if let idx = titles.firstIndex(of: title) {
                                     store.removeRule(bundleID: bundleID, at: IndexSet(integer: idx))
@@ -466,15 +518,37 @@ private struct AdvancedSettingsView: View {
             .padding(20)
             .frame(width: 420, alignment: .topLeading)
         }
-        .sheet(isPresented: $showAddIgnoredAppSheet) {
-            AddIgnoredAppSheet()
+        .sheet(isPresented: $showAddIgnoredAppSheet) { AddIgnoredAppSheet() }
+        .sheet(isPresented: $showAddGlobalSheet) { AddGlobalRuleSheet() }
+        .sheet(isPresented: $showAddAppSheet) { AddAppRuleSheet() }
+    }
+}
+
+// MARK: - DeveloperSettingsView
+
+private struct DeveloperSettingsView: View {
+    @Bindable var model: SettingsModel
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 14) {
+
+            Text("Developer")
+                .font(.headline)
+
+            Toggle("Enable debug logging", isOn: $model.debugLoggingEnabled)
+
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                Toggle("Show conflict indicator", isOn: $model.showConflictIndicator)
+                Text("experimental")
+                    .font(.caption)
+                    .foregroundStyle(Color.orange)
+                    .padding(.horizontal, 5)
+                    .padding(.vertical, 2)
+                    .background(Color.orange.opacity(0.12), in: RoundedRectangle(cornerRadius: 4))
+            }
         }
-        .sheet(isPresented: $showAddGlobalSheet) {
-            AddGlobalRuleSheet()
-        }
-        .sheet(isPresented: $showAddAppSheet) {
-            AddAppRuleSheet()
-        }
+        .padding(20)
+        .frame(width: 420, alignment: .topLeading)
     }
 }
 

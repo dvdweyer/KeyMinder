@@ -196,6 +196,13 @@ extension UserDefaults {
         set { set(newValue, forKey: Self.showAllMenuItemsKey) }
     }
 
+    private static let requireFilterForAllMenuItemsKey = "requireFilterForAllMenuItems"
+
+    var requireFilterForAllMenuItems: Bool {
+        get { bool(forKey: Self.requireFilterForAllMenuItemsKey) }
+        set { set(newValue, forKey: Self.requireFilterForAllMenuItemsKey) }
+    }
+
     private static let showSystemShortcutsKey = "showSystemShortcuts"
 
     var showSystemShortcuts: Bool {

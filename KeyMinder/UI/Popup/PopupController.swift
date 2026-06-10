@@ -283,9 +283,9 @@ final class PopupController {
             col.compactMap { fullByID[$0.id] }
         }
 
-        // Height is measured with an empty query, so showsAllItems is false and
-        // no-shortcut rows are absent from the layout — giving the compact
-        // shortcuts-only height.
+        // Height is measured with an empty query. When "Only show when searching" is
+        // off, showsAllItems is true here too — the measurement correctly captures the
+        // taller all-entries height. When it is on, no-shortcut rows are absent.
         let placeholderModel = PopupFilterModel(app: app, columns: displayColumns)
         let measureView = rootView(content, model: placeholderModel, width: width,
                                    height: nil, scrolls: false)

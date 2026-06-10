@@ -149,10 +149,11 @@ final class PopupFilterModel {
     /// only physical keys are held (those clear themselves on release).
     var hasToggledModifiers: Bool { !toggledModifiers.isEmpty }
 
-    /// True when non-shortcut items should be visible: all-entries mode is on
-    /// and the user has typed at least two characters in the filter.
+    /// True when non-shortcut items should be visible: all-entries mode is on,
+    /// and either the filter requirement is off or 2+ characters have been typed.
     var showsAllItems: Bool {
-        app.includesItemsWithoutShortcuts && activeQuery.count >= 2
+        app.includesItemsWithoutShortcuts &&
+            (!UserDefaults.standard.requireFilterForAllMenuItems || activeQuery.count >= 2)
     }
 
     /// Count of items currently displayable (passing the keys/showsAllItems gate and
