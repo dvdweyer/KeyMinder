@@ -210,11 +210,9 @@ Googlebot cannot read.
 Manual/one-off tasks (not in-app), but worth tracking here so they don't fall
 through the cracks:
 
-- [MacMenuBar.com](https://macmenubar.com) — submit form for menu-bar apps.
-- [OpenAlternative.to](https://openalternative.to) — open-source alternatives
-  directory; submit via their GitHub repo.
-- [Awesome macOS](https://github.com/iCHAIT/awesome-macOS) — PR to add
-  KeyMinder under "Productivity".
+- ~~[MacMenuBar.com](https://macmenubar.com)~~ — submitted Jun 10, 2026. Check back in a few days for listing confirmation.
+- [OpenAlternative.co](https://openalternative.co) — submitted Jun 10, 2026; in queue (~10 months). Paid skip-the-queue option declined.
+- ~~[Awesome macOS](https://github.com/iCHAIT/awesome-macOS)~~ — PR #867 opened Jun 10, 2026. Repo is lightly maintained; may take time or never merge.
 - [Setapp blog / newsletter](https://setapp.com) — not a distribution channel,
   but a potential editorial mention.
 
