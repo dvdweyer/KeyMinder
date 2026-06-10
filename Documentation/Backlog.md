@@ -169,6 +169,18 @@ context.
 
 ---
 
+### JSON-LD `aggregateRating` (Google Rich Results — optional)
+
+Google's Rich Results Test flags `aggregateRating` as an optional missing field on
+the `SoftwareApplication` schema. Adding it would display a star rating in search
+results, but requires real ratings data (ratingValue, ratingCount, bestRating) from
+an actual platform — fabricating it violates Google's structured data policies.
+
+**When actionable:** once KeyMinder has a listing with user ratings on AlternativeTo,
+Product Hunt, or similar, pull the aggregate score into the JSON-LD.
+
+---
+
 ### German SEO / hreflang
 
 The German translation on the website is applied at runtime via JavaScript
