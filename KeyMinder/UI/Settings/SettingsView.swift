@@ -145,6 +145,13 @@ final class SettingsModel {
         didSet { UserDefaults.standard.debugLoggingEnabled = debugLoggingEnabled }
     }
 
+    var receiveBetaUpdates: Bool = UserDefaults.standard.receiveBetaUpdates {
+        didSet {
+            UserDefaults.standard.receiveBetaUpdates = receiveBetaUpdates
+            NotificationCenter.default.post(name: .receiveBetaUpdatesChanged, object: nil)
+        }
+    }
+
     var showConflictIndicator: Bool = UserDefaults.standard.showConflictIndicator {
         didSet { UserDefaults.standard.showConflictIndicator = showConflictIndicator }
     }
@@ -649,6 +656,18 @@ private struct DeveloperSettingsView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
 
+            Text("Updates")
+                .font(.headline)
+
+            Toggle("Receive beta releases", isOn: $model.receiveBetaUpdates)
+
+            Text("Get early access to new features before the public release. Beta builds may be less stable.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            Divider()
+
             Text("Developer")
                 .font(.headline)
 
@@ -943,7 +962,7 @@ private struct AddAppRuleSheet: View {
     }
 }
 
-// MARK: - UserDefaults: automatic updates
+// MARK: - UserDefaults: automatic updates + beta channel
 
 extension UserDefaults {
     private static let automaticUpdatesKey = "SUEnableAutomaticChecks"
@@ -952,6 +971,17 @@ extension UserDefaults {
         get { object(forKey: Self.automaticUpdatesKey) as? Bool ?? true }
         set { set(newValue, forKey: Self.automaticUpdatesKey) }
     }
+
+    private static let receiveBetaUpdatesKey = "receiveBetaUpdates"
+
+    var receiveBetaUpdates: Bool {
+        get { bool(forKey: Self.receiveBetaUpdatesKey) }
+        set { set(newValue, forKey: Self.receiveBetaUpdatesKey) }
+    }
+}
+
+extension Notification.Name {
+    static let receiveBetaUpdatesChanged = Notification.Name("org.afaik.KeyMinder.receiveBetaUpdatesChanged")
 }
 
 // MARK: - HotkeyBadge

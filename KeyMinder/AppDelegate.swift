@@ -23,6 +23,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }()
     private var statusItem: NSStatusItem?
     private var hintPopover: NSPopover?
+    private var betaChannelObserver: NSObjectProtocol?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
@@ -43,6 +44,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         setupDoubleTap()
         setupSleepWakeObserver()
         showWelcomeIfNeeded()
+        configureBetaChannel()
+        betaChannelObserver = NotificationCenter.default.addObserver(
+            forName: .receiveBetaUpdatesChanged,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            MainActor.assumeIsolated { self?.configureBetaChannel() }
+        }
+    }
+
+    private func configureBetaChannel() {
+        updaterController.updater.channel = UserDefaults.standard.receiveBetaUpdates ? "beta" : nil
     }
 
     // MARK: - Global hotkey

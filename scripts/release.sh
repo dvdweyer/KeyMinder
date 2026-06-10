@@ -6,6 +6,7 @@
 #   release.sh --remote-only   — Release build, notarize, rsync; no local install
 #   release.sh --full-deploy    — Release build, notarize, rsync + install to /Applications
 #   release.sh --local-only     — Debug build + install to /Applications only
+#   release.sh --beta           — Release build, notarize, rsync (beta channel, ZIP only)
 #
 # Prerequisites (full pipeline):
 #   - Copy scripts/.env.example to scripts/.env and fill in TEAM_ID.
@@ -28,6 +29,7 @@ for arg in "$@"; do
         --local-only)   MODE="local-only" ;;
         --remote-only) MODE="remote-only" ;;
         --full-deploy)  MODE="full-deploy" ;;
+        --beta)         MODE="beta" ;;
         *) echo "error: unknown argument: $arg" >&2; exit 1 ;;
     esac
 done
@@ -38,13 +40,15 @@ if [[ -z "$MODE" ]]; then
     echo "  1) remote-only  — Release build, notarize, rsync (no local install)"
     echo "  2) local-only    — Debug build, install to /Applications"
     echo "  3) full-deploy   — Release build, notarize, rsync + install to /Applications"
+    echo "  4) beta          — Release build, notarize, rsync (beta channel, ZIP only)"
     echo ""
-    read -rp "Choice [1/2/3]: " _CHOICE
+    read -rp "Choice [1/2/3/4]: " _CHOICE
     echo ""
     case "$_CHOICE" in
         1) MODE="remote-only" ;;
         2) MODE="local-only" ;;
         3) MODE="full-deploy" ;;
+        4) MODE="beta" ;;
         *) echo "error: invalid choice '$_CHOICE'" >&2; exit 1 ;;
     esac
 fi
@@ -125,14 +129,16 @@ if ! git -C "$REPO_DIR" tag | grep -qxF "v${VERSION}"; then
     exit 1
 fi
 
-# ── QC: webpage must reference the same version ───────────────────────────────
-HTML="$REPO_DIR/Documentation/Website/keyminder.html"
-HTML_VERSION=$(grep -o 'href="KeyMinder_[0-9.]*\.zip"' "$HTML" | head -1 \
-    | sed 's/href="KeyMinder_//; s/\.zip"//')
-if [[ "$HTML_VERSION" != "$VERSION" ]]; then
-    echo "error: keyminder.html download link points to v${HTML_VERSION} but project is v${VERSION}" >&2
-    echo "       Update the href, button text, install step, and changelog in Documentation/Website/keyminder.html" >&2
-    exit 1
+# ── QC: webpage must reference the same version (stable only) ─────────────────
+if [[ "$MODE" != "beta" ]]; then
+    HTML="$REPO_DIR/Documentation/Website/keyminder.html"
+    HTML_VERSION=$(grep -o 'href="KeyMinder_[0-9.]*\.zip"' "$HTML" | head -1 \
+        | sed 's/href="KeyMinder_//; s/\.zip"//')
+    if [[ "$HTML_VERSION" != "$VERSION" ]]; then
+        echo "error: keyminder.html download link points to v${HTML_VERSION} but project is v${VERSION}" >&2
+        echo "       Update the href, button text, install step, and changelog in Documentation/Website/keyminder.html" >&2
+        exit 1
+    fi
 fi
 
 ARCHIVE="$BUILD_DIR/KeyMinder.xcarchive"
@@ -141,7 +147,11 @@ APP="$EXPORT_DIR/KeyMinder.app"
 ZIP="$BUILD_DIR/KeyMinder_${VERSION}.zip"
 DMG="$BUILD_DIR/KeyMinder_${VERSION}.dmg"
 
-echo "==> KeyMinder $VERSION"
+if [[ "$MODE" == "beta" ]]; then
+    echo "==> KeyMinder $VERSION (beta)"
+else
+    echo "==> KeyMinder $VERSION"
+fi
 echo ""
 
 # ── Build ─────────────────────────────────────────────────────────────────────
@@ -197,29 +207,31 @@ echo "--- Re-zipping stapled app…"
 rm "$ZIP"
 ditto -c -k --sequesterRsrc --keepParent "$APP" "$ZIP"
 
-# ── DMG ───────────────────────────────────────────────────────────────────────
-echo ""
-echo "--- Creating DMG…"
-DMG_STAGING="$BUILD_DIR/dmg_staging"
-mkdir -p "$DMG_STAGING"
-cp -R "$APP" "$DMG_STAGING/"
-ln -s /Applications "$DMG_STAGING/Applications"
-hdiutil create \
-    -volname "KeyMinder" \
-    -srcfolder "$DMG_STAGING" \
-    -ov \
-    -format UDZO \
-    "$DMG"
-rm -rf "$DMG_STAGING"
+# ── DMG (stable only) ─────────────────────────────────────────────────────────
+if [[ "$MODE" != "beta" ]]; then
+    echo ""
+    echo "--- Creating DMG…"
+    DMG_STAGING="$BUILD_DIR/dmg_staging"
+    mkdir -p "$DMG_STAGING"
+    cp -R "$APP" "$DMG_STAGING/"
+    ln -s /Applications "$DMG_STAGING/Applications"
+    hdiutil create \
+        -volname "KeyMinder" \
+        -srcfolder "$DMG_STAGING" \
+        -ov \
+        -format UDZO \
+        "$DMG"
+    rm -rf "$DMG_STAGING"
 
-echo "--- Notarizing DMG…"
-xcrun notarytool submit "$DMG" \
-    --keychain-profile "$NOTARYTOOL_PROFILE" \
-    --wait
+    echo "--- Notarizing DMG…"
+    xcrun notarytool submit "$DMG" \
+        --keychain-profile "$NOTARYTOOL_PROFILE" \
+        --wait
 
-echo "--- Stapling DMG…"
-xcrun stapler staple "$DMG"
-DMG_SHA256=$(shasum -a 256 "$DMG" | awk '{print $1}')
+    echo "--- Stapling DMG…"
+    xcrun stapler staple "$DMG"
+    DMG_SHA256=$(shasum -a 256 "$DMG" | awk '{print $1}')
+fi
 
 # ── Sparkle appcast ───────────────────────────────────────────────────────────
 echo ""
@@ -240,25 +252,35 @@ APPCAST="$REPO_DIR/Distribution/appcast.xml"
 APPCAST_ASSETS="$BUILD_DIR/appcast_assets"
 mkdir -p "$APPCAST_ASSETS"
 cp "$ZIP" "$APPCAST_ASSETS/"
-"$GENERATE_APPCAST" "$APPCAST_ASSETS" \
-    --download-url-prefix "https://keyminder.app/" \
-    --maximum-versions 10 \
-    -o "$APPCAST"
+if [[ "$MODE" == "beta" ]]; then
+    "$GENERATE_APPCAST" "$APPCAST_ASSETS" \
+        --download-url-prefix "https://keyminder.app/" \
+        --maximum-versions 3 \
+        --channel beta \
+        -o "$APPCAST"
+else
+    "$GENERATE_APPCAST" "$APPCAST_ASSETS" \
+        --download-url-prefix "https://keyminder.app/" \
+        --maximum-versions 10 \
+        -o "$APPCAST"
+fi
 
 # ── Deploy ────────────────────────────────────────────────────────────────────
 echo ""
 echo "--- Copying to website…"
 mkdir -p "$SITE_DIR"
 cp "$ZIP" "$SITE_DIR/"
-cp "$DMG" "$SITE_DIR/"
 cp "$APPCAST" "$SITE_DIR/"
-cp "$REPO_DIR/Documentation/Website/keyminder.html" "$SITE_DIR/index.html"
-for f in "$REPO_DIR/Documentation/Website/"*.png "$REPO_DIR/Documentation/Website/"*.ico; do
-    [[ -e "$f" ]] && cp "$f" "$SITE_DIR/"
-done
-for f in sitemap.xml robots.txt .htaccess; do
-    [[ -e "$REPO_DIR/Documentation/Website/$f" ]] && cp "$REPO_DIR/Documentation/Website/$f" "$SITE_DIR/"
-done
+if [[ "$MODE" != "beta" ]]; then
+    cp "$DMG" "$SITE_DIR/"
+    cp "$REPO_DIR/Documentation/Website/keyminder.html" "$SITE_DIR/index.html"
+    for f in "$REPO_DIR/Documentation/Website/"*.png "$REPO_DIR/Documentation/Website/"*.ico; do
+        [[ -e "$f" ]] && cp "$f" "$SITE_DIR/"
+    done
+    for f in sitemap.xml robots.txt .htaccess; do
+        [[ -e "$REPO_DIR/Documentation/Website/$f" ]] && cp "$REPO_DIR/Documentation/Website/$f" "$SITE_DIR/"
+    done
+fi
 
 echo "--- Pruning ZIP/DMG files older than 5 days…"
 find "$SITE_DIR" \
@@ -286,22 +308,36 @@ if [[ "$MODE" == "full-deploy" ]]; then
     xattr -cr /Applications/KeyMinder.app
 fi
 
-# ── Homebrew tap ─────────────────────────────────────────────────────────────
-echo ""
-echo "--- Updating Homebrew cask…"
-TAP_REPO_DIR="${TAP_REPO_DIR:-}" bash "$SCRIPT_DIR/update-tap.sh" "$VERSION" "$DMG_SHA256"
+# ── Homebrew tap (stable only) ────────────────────────────────────────────────
+if [[ "$MODE" != "beta" ]]; then
+    echo ""
+    echo "--- Updating Homebrew cask…"
+    TAP_REPO_DIR="${TAP_REPO_DIR:-}" bash "$SCRIPT_DIR/update-tap.sh" "$VERSION" "$DMG_SHA256"
+fi
 
 # ── Commit release artifacts back to repo ────────────────────────────────────
 echo ""
 echo "--- Committing release artifacts…"
-git -C "$REPO_DIR" add Distribution/appcast.xml Distribution/Casks/keyminder.rb
-if ! git -C "$REPO_DIR" diff --cached --quiet; then
-    git -C "$REPO_DIR" commit -m "chore: release artifacts for v${VERSION} (appcast, cask)"
-    git -C "$REPO_DIR" push
+if [[ "$MODE" == "beta" ]]; then
+    git -C "$REPO_DIR" add Distribution/appcast.xml
+    if ! git -C "$REPO_DIR" diff --cached --quiet; then
+        git -C "$REPO_DIR" commit -m "chore: beta appcast for v${VERSION}"
+        git -C "$REPO_DIR" push
+    fi
+else
+    git -C "$REPO_DIR" add Distribution/appcast.xml Distribution/Casks/keyminder.rb
+    if ! git -C "$REPO_DIR" diff --cached --quiet; then
+        git -C "$REPO_DIR" commit -m "chore: release artifacts for v${VERSION} (appcast, cask)"
+        git -C "$REPO_DIR" push
+    fi
 fi
 
 # ── Cleanup ───────────────────────────────────────────────────────────────────
 rm -rf "$BUILD_DIR"
 
 echo ""
-echo "==> Done — KeyMinder $VERSION is live."
+if [[ "$MODE" == "beta" ]]; then
+    echo "==> Done — KeyMinder $VERSION (beta) is live."
+else
+    echo "==> Done — KeyMinder $VERSION is live."
+fi
