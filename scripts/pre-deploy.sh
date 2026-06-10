@@ -125,7 +125,7 @@ if [[ -n "$(git -C "$REPO_DIR" status --porcelain)" ]]; then
     git -C "$REPO_DIR" status --short >&2
     echo ""
     read -rp "Continue anyway? [y/N] " _CONT
-    [[ "${_CONT,,}" == "y" ]] || { echo "Aborted." >&2; exit 1; }
+    [[ "$_CONT" == "y" || "$_CONT" == "Y" ]] || { echo "Aborted." >&2; exit 1; }
 fi
 
 # ── 5. Tag check ──────────────────────────────────────────────────────────────
@@ -138,7 +138,7 @@ else
     echo "warning: tag v${VERSION} does not exist." >&2
     echo ""
     read -rp "Create tag v${VERSION} now? [y/N] " _TAG
-    if [[ "${_TAG,,}" == "y" ]]; then
+    if [[ "$_TAG" == "y" || "$_TAG" == "Y" ]]; then
         git -C "$REPO_DIR" tag "v${VERSION}"
         echo "    Tagged v${VERSION}."
     else
