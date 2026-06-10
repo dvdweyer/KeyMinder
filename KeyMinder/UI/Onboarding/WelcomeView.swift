@@ -57,7 +57,7 @@ struct WelcomeView: View {
                 .padding(.horizontal, 32)
                 .padding(.vertical, 16)
         }
-        .frame(width: 420, height: 460)
+        .frame(width: 420, height: 490)
         .onChange(of: step) { _, newStep in
             UserDefaults.standard.onboardingResumeStep = newStep.rawValue
         }
@@ -437,9 +437,18 @@ private struct WelcomeLoginStep: View {
                 }
             }
 
-            Text("You can change these any time in Settings → General.")
+            VStack(spacing: 4) {
+                Text("You can change these any time in Settings → General.")
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
+                HStack(spacing: 0) {
+                    Text("Found a bug or have a suggestion? ")
+                        .foregroundStyle(.secondary)
+                    Link("keyview@afaik.org ↗",
+                         destination: URL(string: "mailto:keyview@afaik.org")!)
+                }
                 .font(.caption)
-                .foregroundStyle(.tertiary)
+            }
         }
     }
 

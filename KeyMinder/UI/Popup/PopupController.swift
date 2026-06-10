@@ -56,6 +56,10 @@ final class PopupController {
             stopPermissionPoll()
         }
 
+        if case .shortcuts = content {
+            UserDefaults.standard.popupOpenCount += 1
+        }
+
         let panel = panel ?? makePanel()
         self.panel = panel
 

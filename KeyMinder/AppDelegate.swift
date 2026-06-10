@@ -284,6 +284,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             ]
         )
         credits.append(linkText)
+        credits.append(NSAttributedString(
+            string: "\nFeedback: ",
+            attributes: [.font: NSFont.systemFont(ofSize: NSFont.smallSystemFontSize)]
+        ))
+        let feedbackURL = URL(string: "mailto:keyview@afaik.org")!
+        credits.append(NSAttributedString(
+            string: "keyview@afaik.org",
+            attributes: [
+                .font: NSFont.systemFont(ofSize: NSFont.smallSystemFontSize),
+                .link: feedbackURL,
+                .foregroundColor: NSColor.linkColor,
+            ]
+        ))
 
         NSApp.orderFrontStandardAboutPanel(options: [
             .applicationVersion: version,

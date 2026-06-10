@@ -18,7 +18,7 @@ final class WelcomeWindowController: NSWindowController {
 
     private init() {
         let window = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 420, height: 460),
+            contentRect: NSRect(x: 0, y: 0, width: 420, height: 490),
             styleMask:   [.titled, .closable],
             backing:     .buffered,
             defer:       false

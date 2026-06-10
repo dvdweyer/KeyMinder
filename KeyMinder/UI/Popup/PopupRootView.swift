@@ -211,6 +211,22 @@ final class PopupFilterModel {
         tipIndex += 1
         UserDefaults.standard.popupTipIndex = tipIndex
     }
+
+    // MARK: Growth nudges
+
+    /// The nudge to display, or nil when not yet triggered or already dismissed.
+    /// Only shown after all onboarding tips have been seen.
+    var currentNudge: PopupNudge? {
+        guard currentTip == nil,
+              UserDefaults.standard.popupOpenCount >= 10,
+              !UserDefaults.standard.didPromptGitHubStar else { return nil }
+        return .githubStar
+    }
+
+    /// Marks the current nudge as dismissed.
+    func dismissNudge() {
+        UserDefaults.standard.didPromptGitHubStar = true
+    }
 }
 
 // MARK: - PopupTip
@@ -227,6 +243,16 @@ enum PopupTip: Int, CaseIterable {
         case .favourites:     "Star any shortcut ★ to pin it — tap ★ in the header to see only favourites"
         }
     }
+}
+
+// MARK: - PopupNudge
+
+enum PopupNudge {
+    case githubStar
+
+    var text: LocalizedStringKey { "Enjoying KeyMinder? Star it on GitHub ↗" }
+    var icon: String { "star" }
+    var url: URL { URL(string: "https://github.com/dvdweyer/KeyMinder")! }
 }
 
 /// Root SwiftUI view hosted inside the floating panel. Renders the scraped
@@ -311,6 +337,10 @@ private struct FilterableShortcutsView: View {
             if let tip = model.currentTip {
                 TipBannerView(tip: tip) {
                     withAnimation { model.advanceTip() }
+                }
+            } else if let nudge = model.currentNudge {
+                NudgeBannerView(nudge: nudge) {
+                    withAnimation { model.dismissNudge() }
                 }
             }
             contentView
@@ -890,6 +920,54 @@ private struct TipBannerView: View {
     }
 }
 
+// MARK: - NudgeBannerView
+
+private struct NudgeBannerView: View {
+    let nudge: PopupNudge
+    let onDismiss: () -> Void
+    @Environment(\.openURL) private var openURL
+
+    var body: some View {
+        HStack(spacing: 8) {
+            Image(systemName: nudge.icon)
+                .font(.caption)
+                .foregroundStyle(ThemeSettings.shared.keyAccent)
+
+            Button {
+                openURL(nudge.url)
+                onDismiss()
+            } label: {
+                Text(nudge.text)
+                    .font(.caption)
+                    .foregroundStyle(.link)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .buttonStyle(.plain)
+
+            Spacer(minLength: 0)
+
+            Button(action: onDismiss) {
+                Image(systemName: "xmark")
+                    .font(.caption2.weight(.semibold))
+                    .foregroundStyle(.tertiary)
+            }
+            .buttonStyle(.plain)
+            .help("Dismiss")
+        }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 7)
+        .background(
+            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                .fill(ThemeSettings.shared.keyAccent.opacity(0.08))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8, style: .continuous)
+                        .strokeBorder(ThemeSettings.shared.keyAccent.opacity(0.2), lineWidth: 1)
+                )
+        )
+        .transition(.opacity.animation(.easeOut(duration: 0.15)))
+    }
+}
+
 // MARK: - UserDefaults: popup tip index
 
 extension UserDefaults {
@@ -898,5 +976,19 @@ extension UserDefaults {
     var popupTipIndex: Int {
         get { integer(forKey: Self.popupTipIndexKey) }
         set { set(newValue, forKey: Self.popupTipIndexKey) }
+    }
+}
+
+// MARK: - UserDefaults: growth nudges
+
+extension UserDefaults {
+    var popupOpenCount: Int {
+        get { integer(forKey: "popupOpenCount") }
+        set { set(newValue, forKey: "popupOpenCount") }
+    }
+
+    var didPromptGitHubStar: Bool {
+        get { bool(forKey: "didPromptGitHubStar") }
+        set { set(newValue, forKey: "didPromptGitHubStar") }
     }
 }
