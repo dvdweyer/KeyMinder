@@ -1,5 +1,5 @@
 #!/bin/bash
-# Watches Documentation/ and auto-deploys on every save.
+# Watches Documentation/Website/ and auto-deploys on every save.
 # Run this in a terminal while editing keyminder.html.
 set -euo pipefail
 
