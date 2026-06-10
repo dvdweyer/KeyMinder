@@ -94,7 +94,7 @@ final class PopupFilterModel {
         let ignoreStore = IgnoreListStore.shared
         // When showWhenFiltering is on the scraper returned all items; always exclude
         // ignored items from the navigable set — they appear dimmed in the view but are non-interactive.
-        let hiddenTitles: Set<String> = (ignoreStore.isEnabled && ignoreStore.showWhenFiltering)
+        let hiddenPatterns: [String] = (ignoreStore.isEnabled && ignoreStore.showWhenFiltering)
             ? ignoreStore.ignoredTitles(for: app.bundleIdentifier)
             : []
         var result: [Shortcut] = []
@@ -107,7 +107,7 @@ final class PopupFilterModel {
                             && shortcut.matches(activeQuery)
                             && shortcut.matchesModifierFilter(modifierFilter)
                             && (!showOnlyFavourites || FavouritesStore.shared.isFavourite(shortcut, appID: appID))
-                            && (hiddenTitles.isEmpty || !hiddenTitles.contains(shortcut.title.localizedLowercase)) {
+                            && (hiddenPatterns.isEmpty || !IgnoreListStore.isIgnored(title: shortcut.title, patterns: hiddenPatterns)) {
                         result.append(shortcut)
                     }
                 }
@@ -161,14 +161,14 @@ final class PopupFilterModel {
     var displayableCount: Int {
         let appID = app.bundleIdentifier ?? app.appName
         let ignoreStore = IgnoreListStore.shared
-        let hiddenTitles: Set<String> = (ignoreStore.isEnabled && ignoreStore.showWhenFiltering)
+        let hiddenPatterns: [String] = (ignoreStore.isEnabled && ignoreStore.showWhenFiltering)
             ? ignoreStore.ignoredTitles(for: app.bundleIdentifier)
             : []
         return app.sections.reduce(0) { total, section in
             total + section.shortcuts.filter {
                 (!$0.keys.isEmpty || showsAllItems) &&
                 (!showOnlyFavourites || FavouritesStore.shared.isFavourite($0, appID: appID)) &&
-                (hiddenTitles.isEmpty || !hiddenTitles.contains($0.title.localizedLowercase))
+                (hiddenPatterns.isEmpty || !IgnoreListStore.isIgnored(title: $0.title, patterns: hiddenPatterns))
             }.count
         }
     }
@@ -178,7 +178,7 @@ final class PopupFilterModel {
     var matchCount: Int {
         let appID = app.bundleIdentifier ?? app.appName
         let ignoreStore = IgnoreListStore.shared
-        let ignoredTitles: Set<String> = (ignoreStore.isEnabled && ignoreStore.showWhenFiltering)
+        let ignoredPatterns: [String] = (ignoreStore.isEnabled && ignoreStore.showWhenFiltering)
             ? ignoreStore.ignoredTitles(for: app.bundleIdentifier)
             : []
         return app.sections.reduce(0) { total, section in
@@ -187,7 +187,7 @@ final class PopupFilterModel {
                     && $0.matches(activeQuery)
                     && $0.matchesModifierFilter(modifierFilter)
                     && (!showOnlyFavourites || FavouritesStore.shared.isFavourite($0, appID: appID))
-                    && (ignoredTitles.isEmpty || !ignoredTitles.contains($0.title.localizedLowercase))
+                    && (ignoredPatterns.isEmpty || !IgnoreListStore.isIgnored(title: $0.title, patterns: ignoredPatterns))
             }.count
         }
     }
@@ -595,7 +595,7 @@ struct MenuSectionView: View {
     private func isIgnoredWhileIdle(_ shortcut: Shortcut) -> Bool {
         let store = IgnoreListStore.shared
         guard store.isEnabled && store.showWhenFiltering else { return false }
-        guard store.ignoredTitles(for: appID).contains(shortcut.title.localizedLowercase) else { return false }
+        guard IgnoreListStore.isIgnored(title: shortcut.title, patterns: store.ignoredTitles(for: appID)) else { return false }
         // Hidden when there is no query, or when the active query does not match —
         // ignored items are revealed only by a query that specifically finds them.
         return query.isEmpty || !matchesFilter(shortcut)
@@ -606,7 +606,7 @@ struct MenuSectionView: View {
     private func isRevealedByFilter(_ shortcut: Shortcut) -> Bool {
         let store = IgnoreListStore.shared
         guard store.isEnabled && store.showWhenFiltering && !query.isEmpty else { return false }
-        return store.ignoredTitles(for: appID).contains(shortcut.title.localizedLowercase)
+        return IgnoreListStore.isIgnored(title: shortcut.title, patterns: store.ignoredTitles(for: appID))
             && matchesFilter(shortcut)
     }
 

@@ -64,7 +64,7 @@ final class IgnoreListStore {
     /// Returns true when `title` matches any pattern in `patterns`.
     /// Patterns without `*` or `?` are matched case- and diacritic-insensitively.
     /// Patterns containing `*` or `?` use glob semantics via NSPredicate LIKE[cd].
-    static func isIgnored(title: String, patterns: [String]) -> Bool {
+    nonisolated static func isIgnored(title: String, patterns: [String]) -> Bool {
         for pattern in patterns {
             if NSPredicate(format: "SELF LIKE[cd] %@", pattern).evaluate(with: title) {
                 return true
