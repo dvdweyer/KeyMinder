@@ -248,6 +248,12 @@ for f in sitemap.xml robots.txt .htaccess; do
     [[ -e "$REPO_DIR/Documentation/Website/$f" ]] && cp "$REPO_DIR/Documentation/Website/$f" "$SITE_DIR/" && cp "$REPO_DIR/Documentation/Website/$f" "$KEYMINDER_SITE_DIR/"
 done
 
+echo "--- Pruning ZIP/DMG files older than 5 days…"
+find "$SITE_DIR" "$KEYMINDER_SITE_DIR" \
+    \( -name "*.zip" -o -name "*.dmg" \) \
+    -mtime +5 \
+    -print -delete
+
 echo "--- Deploying via rsync…"
 (cd "$(dirname "$DEPLOY_SH")" && bash "$(basename "$DEPLOY_SH")")
 
