@@ -864,7 +864,7 @@ private struct AddGlobalRuleSheet: View {
             Text("Add Ignored Command")
                 .font(.headline)
 
-            Text("Enter a command title to hide from the popup in all apps. Use * as a wildcard — e.g. *Window* hides any command containing "Window".")
+            Text("Enter a command title to hide from the popup in all apps. Use * as a wildcard — e.g. *Window* hides any command containing 'Window'.")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -917,7 +917,7 @@ private struct AddAppRuleSheet: View {
             Text("Add App-Specific Rule")
                 .font(.headline)
 
-            Text("Hide a command in one app only. Use * as a wildcard — e.g. *Window* hides any command containing "Window".")
+            Text("Hide a command in one app only. Use * as a wildcard — e.g. *Window* hides any command containing 'Window'.")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
