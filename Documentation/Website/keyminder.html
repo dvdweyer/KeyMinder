@@ -64,6 +64,52 @@
     color: #888;
   }
 
+  .brew-row {
+    margin-top: 0.9rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .brew-label {
+    font-size: 12px;
+    color: #aaa;
+  }
+
+  .brew-block {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: #f0f0e8;
+    border-radius: 8px;
+    padding: 7px 10px 7px 14px;
+  }
+
+  .brew-block code {
+    background: none;
+    padding: 0;
+    font-size: 13px;
+    color: #333;
+    white-space: nowrap;
+  }
+
+  .brew-copy {
+    flex-shrink: 0;
+    background: none;
+    border: 0.5px solid #ccc;
+    border-radius: 5px;
+    padding: 3px 9px;
+    font-size: 12px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    cursor: pointer;
+    color: #555;
+    transition: background 0.12s, color 0.12s, border-color 0.12s;
+  }
+
+  .brew-copy:hover { background: rgba(0,0,0,0.06); }
+  .brew-copy.copied { color: #1a7f40; border-color: #1a7f40; }
+
   .btn {
     display: inline-flex;
     align-items: center;
@@ -363,6 +409,8 @@
   @media (max-width: 480px) {
     .req-grid { grid-template-columns: 1fr; }
     header h1 { font-size: 1.7rem; }
+    .brew-block { flex-direction: column; gap: 8px; text-align: center; }
+    .brew-block code { white-space: normal; word-break: break-all; }
   }
 
   @media (prefers-color-scheme: dark) {
@@ -379,6 +427,15 @@
     header p { color: #999; }
 
     .download-note { color: #666; }
+
+    .brew-label { color: #555; }
+
+    .brew-block { background: #262624; }
+    .brew-block code { color: #bbb; }
+
+    .brew-copy { border-color: #444; color: #888; }
+    .brew-copy:hover { background: rgba(255,255,255,0.06); }
+    .brew-copy.copied { color: #34d069; border-color: #34d069; }
 
     .btn-primary {
       background: #e8e8e3;
@@ -486,6 +543,13 @@
     </a>
   </div>
   <p class="download-note" data-de-html="Von Apple notarisiert – auf Malware geprüft und freigegeben. Falls Chrome die Datei markiert, klicken Sie auf die Warnung → &lt;em&gt;Behalten&lt;/em&gt;.">Notarized by Apple — scanned and cleared for distribution. If Chrome flags the download, click the warning → <em>Keep</em>.</p>
+  <div class="brew-row">
+    <span class="brew-label">or via Homebrew</span>
+    <div class="brew-block">
+      <code>brew install --cask dvdweyer/keyminder/keyminder</code>
+      <button class="brew-copy" aria-label="Copy install command">Copy</button>
+    </div>
+  </div>
 </header>
 
 <main>
@@ -1078,6 +1142,17 @@
 </script>
 
 <script>
+  document.querySelectorAll('.brew-copy').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var cmd = btn.previousElementSibling.textContent;
+      navigator.clipboard.writeText(cmd).then(function () {
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(function () { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1800);
+      });
+    });
+  });
+
   const lightbox  = document.getElementById('lightbox');
   const thumb     = document.getElementById('screenshotThumb');
   const closeBtn  = document.getElementById('lightboxClose');
