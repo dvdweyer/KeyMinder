@@ -8,6 +8,20 @@ Items are rough ideas, not commitments. No priority order.
 
 ~~### Ignored Commands — "Show when filtering" unreliable (v0.1.71)~~ **Fixed in v0.1.86.**
 
+### DMG download saves as .man in Safari
+
+Safari maps the server's `Content-Type: application/x-troff-man` response to
+a `.man` file extension via macOS UTI. Root cause: Cloudflare cached the wrong
+MIME type before the `.htaccess` fix (`AddType`/`ForceType application/octet-stream`)
+was deployed. Chrome and Firefox ignore the Content-Type for downloads and use
+the URL filename, so they are unaffected.
+
+A `.htaccess` fix and a Cloudflare Cache Rule (bypass cache for `*.dmg`) are
+already in place. Purging the Cloudflare cache for the specific URL did not
+resolve it for Safari. The website download link has been reverted to ZIP in
+the meantime. Needs further investigation — possibly a Cloudflare Transform
+Rule to override the response Content-Type header at the edge.
+
 ---
 
 ~~## Auto-updater~~ **Shipped in v0.1.84 (Sparkle).**
