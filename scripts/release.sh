@@ -178,6 +178,7 @@ xcrun stapler staple "$APP"
 echo "--- Re-zipping stapled app…"
 rm "$ZIP"
 ditto -c -k --sequesterRsrc --keepParent "$APP" "$ZIP"
+ZIP_SHA256=$(shasum -a 256 "$ZIP" | awk '{print $1}')
 
 # ── Sparkle appcast ───────────────────────────────────────────────────────────
 echo ""
@@ -230,6 +231,11 @@ if [[ "$MODE" == "full-deploy" ]]; then
     cp -R "$APP" /Applications/
     xattr -cr /Applications/KeyMinder.app
 fi
+
+# ── Homebrew tap ─────────────────────────────────────────────────────────────
+echo ""
+echo "--- Updating Homebrew cask…"
+TAP_REPO_DIR="${TAP_REPO_DIR:-}" bash "$SCRIPT_DIR/update-tap.sh" "$VERSION" "$ZIP_SHA256"
 
 # ── Cleanup ───────────────────────────────────────────────────────────────────
 rm -rf "$BUILD_DIR"
