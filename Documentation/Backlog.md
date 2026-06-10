@@ -166,6 +166,14 @@ through the cracks:
 
 ---
 
+## Homebrew Cask distribution
+
+Distribute KeyMinder via a [Homebrew Cask](https://github.com/Homebrew/homebrew-cask) so users can install and update with `brew install --cask keyminder`.
+
+**Notes:** requires a notarized `.dmg` or `.zip` artifact at a stable URL (the Sparkle release zip already qualifies). Submit a PR to `homebrew/homebrew-cask` with a `keyminder.rb` cask definition pointing at the GitHub release asset. Version bumps can be automated via a GitHub Action that updates the cask SHA256 and URL on each release. Alternatively, host a tap (`dvdweyer/homebrew-keyminder`) for faster iteration before upstreaming to the main cask repo.
+
+---
+
 ## Tip jar / support link
 
 Add a **"Support KeyMinder"** item to the right-click context menu (and/or
