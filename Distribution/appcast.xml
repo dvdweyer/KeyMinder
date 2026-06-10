@@ -6,6 +6,14 @@
         <language>en</language>
         <!-- Items are populated by generate_appcast during the release pipeline. -->
         <item>
+            <title>0.1.106</title>
+            <pubDate>Wed, 10 Jun 2026 11:46:53 +0200</pubDate>
+            <sparkle:version>228</sparkle:version>
+            <sparkle:shortVersionString>0.1.106</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://keyminder.app/KeyMinder_0.1.106.zip" length="3157628" type="application/octet-stream" sparkle:edSignature="JwIWwkBWzGBS8rH9Ma+4T3/Q/swXCSoSOaVVFGqtIGiS+Yis+jDcikZp5C9ifskwYjuwcw6nVSFFS9ljYy5YCg=="/>
+        </item>
+        <item>
             <title>0.1.105</title>
             <pubDate>Wed, 10 Jun 2026 10:42:34 +0200</pubDate>
             <sparkle:version>224</sparkle:version>
@@ -76,14 +84,6 @@
             <sparkle:shortVersionString>0.1.86</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
             <enclosure url="https://keyminder.app/KeyMinder_0.1.86.zip" length="2987996" type="application/octet-stream" sparkle:edSignature="2hNGXkHh+ijbNAnFg31aMxL9S9Hj0laytQTUTys3TsKtsVeFtarS7TbTJqf/gNmlrDu/GLlwe2hHl3UQFELxCQ=="/>
-        </item>
-        <item>
-            <title>0.1.85</title>
-            <pubDate>Sun, 07 Jun 2026 10:33:40 +0200</pubDate>
-            <sparkle:version>163</sparkle:version>
-            <sparkle:shortVersionString>0.1.85</sparkle:shortVersionString>
-            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
-            <enclosure url="https://keyminder.app/KeyMinder_0.1.85.zip" length="2987277" type="application/octet-stream" sparkle:edSignature="mpsQdU7SlhFcldytSBtKHr4LeWl7H7TQ6fd5Hn+upzn7KkfRfWOfhKJjmwqj7alv7uexFDJUrfiA6BhUd0ZQDw=="/>
         </item>
     </channel>
 </rss>
