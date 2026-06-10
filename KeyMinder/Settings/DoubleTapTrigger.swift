@@ -193,7 +193,7 @@ extension UserDefaults {
     var doubleTapModifier: DoubleTapModifier {
         get {
             guard let raw = string(forKey: Self.dtModifierKey),
-                  let mod = DoubleTapModifier(rawValue: raw) else { return .command }
+                  let mod = DoubleTapModifier(rawValue: raw) else { return .option }
             return mod
         }
         set { set(newValue.rawValue, forKey: Self.dtModifierKey) }
