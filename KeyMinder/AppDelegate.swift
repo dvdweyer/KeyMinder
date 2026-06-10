@@ -288,9 +288,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             string: "\nFeedback: ",
             attributes: [.font: NSFont.systemFont(ofSize: NSFont.smallSystemFontSize)]
         ))
-        let feedbackURL = URL(string: "mailto:keyview@afaik.org")!
+        let feedbackURL = URL(string: "mailto:keyminder@afaik.org")!
         credits.append(NSAttributedString(
-            string: "keyview@afaik.org",
+            string: "keyminder@afaik.org",
             attributes: [
                 .font: NSFont.systemFont(ofSize: NSFont.smallSystemFontSize),
                 .link: feedbackURL,

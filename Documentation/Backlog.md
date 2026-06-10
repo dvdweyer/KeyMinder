@@ -93,7 +93,7 @@ users who already know what the shortcuts do and want maximum density.
 
 ~~### Star on GitHub~~ **Shipped in v0.1.106** — banner after 10 popup opens.
 
-~~### In-app feedback channel~~ **Shipped in v0.1.106** — mailto:keyview@afaik.org in About panel, onboarding wizard last step, and website footer.
+~~### In-app feedback channel~~ **Shipped in v0.1.106** — mailto:keyminder@afaik.org in About panel, onboarding wizard last step, and website footer.
 
 A small set of in-app prompts that appear after the user has had a chance to
 form a habit with KeyMinder. Goal: surface discovery actions to engaged users
