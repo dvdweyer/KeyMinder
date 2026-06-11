@@ -1,6 +1,6 @@
 cask "keyminder" do
-  version "1.0.111"
-  sha256 "0d523cbacea5df3718d8c9b5228704f97de957a8ab0226c0138f265c65c2bb42"
+  version "1.0.115"
+  sha256 "b56e4f0b5e3fe5eed672db44811d13371cfeae0e79230b33267cc674664d7199"
 
   url "https://keyminder.app/KeyMinder_#{version}.dmg"
   name "KeyMinder"
