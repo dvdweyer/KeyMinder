@@ -8,6 +8,7 @@ import Observation
 final class FrontmostAppMonitor {
 
     private(set) var frontmostApp: NSRunningApplication?
+    var onAppChanged: ((NSRunningApplication) -> Void)?
 
     @ObservationIgnored nonisolated(unsafe) private var observer: NSObjectProtocol?
     private let ownPID = ProcessInfo.processInfo.processIdentifier
@@ -35,5 +36,6 @@ final class FrontmostAppMonitor {
     private func update(_ app: NSRunningApplication?) {
         guard let app, app.processIdentifier != ownPID else { return }
         frontmostApp = app
+        onAppChanged?(app)
     }
 }

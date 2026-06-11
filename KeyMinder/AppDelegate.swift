@@ -14,6 +14,22 @@ private final class UpdaterDelegate: NSObject, SPUUpdaterDelegate {
     }
 }
 
+private struct PrecacheKey: Equatable {
+    let pid: pid_t
+    let includeAll: Bool
+    let ignoredTitles: [String]
+    let maxSubmenuSize: Int?
+}
+
+private struct MenuCache {
+    let key: PrecacheKey
+    let sections: [MenuSection]
+    let storedAt: Date
+    static let ttl: TimeInterval = 20
+    var isExpired: Bool { Date().timeIntervalSince(storedAt) > Self.ttl }
+    func matches(_ k: PrecacheKey) -> Bool { !isExpired && key == k }
+}
+
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
 
@@ -42,6 +58,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         popup.onPermissionGranted = { [weak self] in
             self?.setupDoubleTap()
             self?.presentPopup()
+        }
+        frontmostMonitor.onAppChanged = { [weak self] app in
+            self?.precacheMenus(for: app)
         }
         setupStatusItem()
         setupHotkey()
@@ -144,8 +163,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     /// can await it before starting a new traversal — `MenuScraper.scrape` is
     /// synchronous C AX IPC with no Swift cancellation checkpoints, so cancelling
     /// the outer task does not stop an in-flight scrape. Awaiting it first ensures
-    /// at most one AX traversal runs at any time.
+    /// at most one AX traversal runs at any time. Also used for pre-cache tasks
+    /// started on app switch (at .utility priority).
     private var detachedScrapeTask: Task<[MenuSection], Never>?
+    /// Params the current `detachedScrapeTask` was started with (nil for user-triggered scrapes).
+    private var preCacheKey: PrecacheKey?
+    /// Most-recent completed scrape result; checked before starting a fresh scrape.
+    private var menuCache: MenuCache?
 
     /// Scrapes the frontmost app's menus off the main thread, then presents
     /// the popup with the result. The panel does not appear until data is ready.
@@ -187,30 +211,42 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             ? ignoreStore.ignoredTitles(for: bundleID)
             : []
 
+        let cacheKey = PrecacheKey(pid: pid, includeAll: includeAll,
+                                   ignoredTitles: ignoredTitles, maxSubmenuSize: maxSubmenuSize)
+
         // Cancel the outer coordinator so a stale result never reaches the UI.
         scrapeTask?.cancel()
 
         scrapeTask = Task {
-            // If an AX traversal is already in flight, let it finish before
-            // starting a new one — we can't cancel the synchronous C IPC, so
-            // starting another would create concurrent traversals of the same app.
-            // The result is discarded; we only wait to serialise access.
+            // Drain any in-flight AX traversal before starting a new one.
+            // If it was a pre-cache for exactly this invocation, keep the result.
             if let previous = self.detachedScrapeTask {
-                _ = await previous.value
+                let drained = await previous.value
                 self.detachedScrapeTask = nil
+                if self.preCacheKey == cacheKey {
+                    self.menuCache = MenuCache(key: cacheKey, sections: drained, storedAt: Date())
+                }
+                self.preCacheKey = nil
             }
 
             // If we were cancelled while draining (another presentPopup fired),
             // stop here — the newer task will handle the scrape.
             guard !Task.isCancelled else { return }
 
-            let work = Task.detached(priority: .userInitiated) {
-                MenuScraper.scrape(pid: pid, includeItemsWithoutShortcuts: includeAll, ignoredTitles: ignoredTitles, maxShortcutFreeSubmenuSize: maxSubmenuSize)
+            // Use the cache if it's fresh and matches this invocation's settings.
+            let sections: [MenuSection]
+            if let hit = self.menuCache, hit.matches(cacheKey) {
+                sections = hit.sections
+            } else {
+                let work = Task.detached(priority: .userInitiated) {
+                    MenuScraper.scrape(pid: pid, includeItemsWithoutShortcuts: includeAll,
+                                       ignoredTitles: ignoredTitles, maxShortcutFreeSubmenuSize: maxSubmenuSize)
+                }
+                self.detachedScrapeTask = work
+                sections = await work.value
+                self.detachedScrapeTask = nil
+                self.menuCache = MenuCache(key: cacheKey, sections: sections, storedAt: Date())
             }
-            self.detachedScrapeTask = work
-
-            let sections = await work.value
-            self.detachedScrapeTask = nil
 
             guard !Task.isCancelled else { return }
 
@@ -227,6 +263,38 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 includesItemsWithoutShortcuts: includeAll
             )
             popup.show(.shortcuts(shortcuts))
+        }
+    }
+
+    // MARK: - Pre-cache
+
+    /// Starts a background AX scrape at .utility priority when an app becomes
+    /// frontmost, so the result is ready (or nearly ready) when the user invokes
+    /// the popup. Stores the result in `menuCache`; `presentPopup()` skips the
+    /// scrape entirely on a cache hit.
+    private func precacheMenus(for app: NSRunningApplication) {
+        guard AccessibilityPermission.isTrusted else { return }
+        let ignoreStore = IgnoreListStore.shared
+        guard !ignoreStore.isAppIgnored(app.bundleIdentifier) else { return }
+
+        let pid = app.processIdentifier
+        let includeAll = UserDefaults.standard.showAllMenuItems
+        let maxSubmenuSize: Int? = (includeAll && UserDefaults.standard.hideLargeSubmenus) ? 5 : nil
+        let ignoredTitles: [String] = ignoreStore.isEnabled && !ignoreStore.showWhenFiltering
+            ? ignoreStore.ignoredTitles(for: app.bundleIdentifier) : []
+        let key = PrecacheKey(pid: pid, includeAll: includeAll,
+                              ignoredTitles: ignoredTitles, maxSubmenuSize: maxSubmenuSize)
+
+        // Evict cache from the previous app.
+        if menuCache?.key.pid != pid { menuCache = nil }
+
+        // Nothing to do if a fresh cache already exists or a task is running.
+        if menuCache?.matches(key) == true || detachedScrapeTask != nil { return }
+
+        preCacheKey = key
+        detachedScrapeTask = Task.detached(priority: .utility) {
+            MenuScraper.scrape(pid: pid, includeItemsWithoutShortcuts: includeAll,
+                               ignoredTitles: ignoredTitles, maxShortcutFreeSubmenuSize: maxSubmenuSize)
         }
     }
 
