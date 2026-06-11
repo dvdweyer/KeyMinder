@@ -58,11 +58,11 @@ enum MenuScraper {
         var named:    [ShortcutGroup] = []
 
         for item in children(menu) {
-            if string(item, kAXRoleAttribute) == "AXSeparator" {
+            let title = string(item, kAXTitleAttribute) ?? ""
+            if title.isEmpty {
                 topLevel.append(.separator())
                 continue
             }
-            guard let title = string(item, kAXTitleAttribute), !title.isEmpty else { continue }
             guard !IgnoreListStore.isIgnored(title: title, patterns: ignoredTitles) else { continue }
 
             let rawChar     = string(item, kAXMenuItemCmdCharAttribute)
@@ -135,11 +135,11 @@ enum MenuScraper {
         guard depth < 10 else { return [] }
         var result: [Shortcut] = []
         for item in children(menu) {
-            if string(item, kAXRoleAttribute) == "AXSeparator" {
+            let title = string(item, kAXTitleAttribute) ?? ""
+            if title.isEmpty {
                 result.append(.separator())
                 continue
             }
-            guard let title = string(item, kAXTitleAttribute), !title.isEmpty else { continue }
             guard !IgnoreListStore.isIgnored(title: title, patterns: ignoredTitles) else { continue }
 
             let shortcutKeys = ShortcutFormatter.format(
