@@ -16,6 +16,8 @@ struct Shortcut: Identifiable, Hashable {
     /// True for system shortcuts the user has explicitly disabled. Such rows
     /// are always rendered dimmed and excluded from Tab navigation.
     let isDisabled: Bool
+    /// True when this item represents an NSMenu separator rule (no title, no key).
+    var isSeparator: Bool = false
 
     // AXUIElement is a CFTypeRef (opaque class) and can't participate in
     // automatic Hashable synthesis. Identity is fully determined by the UUID.
@@ -30,6 +32,7 @@ extension Shortcut {
         self.keys = keys
         self.axElement = nil
         self.isDisabled = false
+        self.isSeparator = false
     }
 
     init(title: String, keys: String, isDisabled: Bool) {
@@ -37,6 +40,11 @@ extension Shortcut {
         self.keys = keys
         self.axElement = nil
         self.isDisabled = isDisabled
+        self.isSeparator = false
+    }
+
+    static func separator() -> Shortcut {
+        Shortcut(title: "", keys: "", axElement: nil, isDisabled: false, isSeparator: true)
     }
 }
 
@@ -75,9 +83,9 @@ struct AppShortcuts {
     /// True when the scrape included items without key equivalents (all-entries mode).
     let includesItemsWithoutShortcuts: Bool
 
-    var isEmpty: Bool { sections.allSatisfy { $0.shortcuts.isEmpty } }
+    var isEmpty: Bool { sections.allSatisfy { $0.shortcuts.allSatisfy(\.isSeparator) } }
 
-    var totalCount: Int { sections.reduce(0) { $0 + $1.shortcuts.count } }
+    var totalCount: Int { sections.reduce(0) { $0 + $1.shortcuts.filter { !$0.isSeparator }.count } }
 }
 
 /// What the popup should display.
@@ -96,23 +104,24 @@ enum PopupContent {
 /// these helpers report match state rather than filtering the data.
 extension Shortcut {
     func matches(_ query: String) -> Bool {
+        if isSeparator { return false }
         // Empty query matches everything — `localizedStandardContains("")` returns
         // false (Foundation does not treat an empty needle as "found anywhere"),
         // so we guard explicitly. The view layers already short-circuit on
         // `!query.isEmpty` before calling this, so the guard is defence-in-depth.
-        query.isEmpty
+        return query.isEmpty
             || title.localizedStandardContains(query)
             || keys.localizedStandardContains(query)
     }
 
     /// The set of modifier glyphs present in this shortcut's key string.
     var modifiers: Set<Character> {
-        Set(keys.filter { Self.modifierGlyphs.contains($0) })
+        isSeparator ? [] : Set(keys.filter { Self.modifierGlyphs.contains($0) })
     }
 
     /// True when `mods` is empty (no filter) or exactly equals this shortcut's modifier set.
     func matchesModifierFilter(_ mods: Set<Character>) -> Bool {
-        mods.isEmpty || modifiers == mods
+        !isSeparator && (mods.isEmpty || modifiers == mods)
     }
 
     static let modifierGlyphs: Set<Character> = ["⌃", "⌥", "⇧", "⌘"]

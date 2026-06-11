@@ -12,6 +12,8 @@ enum MenuLayout {
     /// Estimated height of a sub-group label (submenu title, smaller than the
     /// section header). Includes its built-in top padding (~6 pt) + text row.
     static let subGroupHeaderHeight: CGFloat = 22
+    /// Estimated height of one separator rule (1 pt line + top/bottom padding).
+    static let separatorHeight: CGFloat = 9
 
     /// Estimated rendered height of one section card.
     ///
@@ -23,18 +25,23 @@ enum MenuLayout {
     static func height(of section: MenuSection) -> CGFloat {
         var namedGroupCount = 0
         var totalShortcuts  = 0
+        var totalSeparators = 0
         for group in section.groups {
             if group.title != nil { namedGroupCount += 1 }
-            totalShortcuts += group.shortcuts.count
+            for s in group.shortcuts {
+                if s.isSeparator { totalSeparators += 1 }
+                else             { totalShortcuts  += 1 }
+            }
         }
         // Elements inside the VStack:
-        //   1 section header + namedGroupCount sub-headers + totalShortcuts rows
-        let elementCount = 1 + namedGroupCount + totalShortcuts
+        //   1 section header + namedGroupCount sub-headers + totalShortcuts rows + totalSeparators rules
+        let elementCount = 1 + namedGroupCount + totalShortcuts + totalSeparators
         let gaps = max(0, elementCount - 1)
 
         return headerHeight
             + CGFloat(namedGroupCount) * subGroupHeaderHeight
             + CGFloat(totalShortcuts)  * rowHeight
+            + CGFloat(totalSeparators) * separatorHeight
             + CGFloat(gaps)            * rowSpacing
     }
 

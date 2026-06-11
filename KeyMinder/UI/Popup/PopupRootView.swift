@@ -166,6 +166,7 @@ final class PopupFilterModel {
             : []
         return app.sections.reduce(0) { total, section in
             total + section.shortcuts.filter {
+                !$0.isSeparator &&
                 (!$0.keys.isEmpty || showsAllItems) &&
                 (!showOnlyFavourites || FavouritesStore.shared.isFavourite($0, appID: appID)) &&
                 (hiddenPatterns.isEmpty || !IgnoreListStore.isIgnored(title: $0.title, patterns: hiddenPatterns))
@@ -612,6 +613,11 @@ struct MenuSectionView: View {
 
     /// Whether a row should be rendered at all.
     private func isShown(_ shortcut: Shortcut) -> Bool {
+        if shortcut.isSeparator {
+            // Separators are structural: shown in dim mode always, or when no filter is active.
+            return dimMode || (query.trimmingCharacters(in: .whitespaces).isEmpty
+                               && modifierFilter.isEmpty && !showOnlyFavourites)
+        }
         guard passesGate(shortcut) else { return false }
         if shortcut.isDisabled {
             guard UserDefaults.standard.showDeactivatedSystemShortcuts else { return false }
@@ -625,13 +631,31 @@ struct MenuSectionView: View {
 
     /// Whether a row should be dimmed (dim mode only; always false in normal mode).
     private func isDimmed(_ shortcut: Shortcut) -> Bool {
+        if shortcut.isSeparator { return false }
         if shortcut.isDisabled { return true }
         if isRevealedByFilter(shortcut) { return true }
         return dimMode && !matchesFilter(shortcut)
     }
 
     private func groupHasContent(_ group: ShortcutGroup) -> Bool {
-        group.shortcuts.contains { isShown($0) }
+        group.shortcuts.contains { !$0.isSeparator && isShown($0) }
+    }
+
+    /// Removes leading, trailing, and consecutive separators from an already-filtered list.
+    private func cleanSeparators(_ items: [Shortcut]) -> [Shortcut] {
+        var result: [Shortcut] = []
+        var lastWasSeparator = true
+        for item in items {
+            if item.isSeparator {
+                if !lastWasSeparator { result.append(item) }
+                lastWasSeparator = true
+            } else {
+                result.append(item)
+                lastWasSeparator = false
+            }
+        }
+        if result.last?.isSeparator == true { result.removeLast() }
+        return result
     }
 
     private var hasVisibleContent: Bool {
@@ -656,8 +680,11 @@ struct MenuSectionView: View {
                         if let groupTitle = group.title {
                             SubGroupHeader(title: groupTitle)
                         }
-                        ForEach(group.shortcuts) { shortcut in
-                            if isShown(shortcut) {
+                        let items = cleanSeparators(group.shortcuts.filter { isShown($0) })
+                        ForEach(items) { shortcut in
+                            if shortcut.isSeparator {
+                                Divider().padding(.horizontal, 8)
+                            } else {
                                 ShortcutRow(shortcut: shortcut,
                                             appID: appID,
                                             selected: selectedShortcutID == shortcut.id,
