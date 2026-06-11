@@ -289,7 +289,7 @@ find "$SITE_DIR" \
     -print -delete
 
 echo "--- Deploying via rsync…"
-(cd "$(dirname "$DEPLOY_SH")" && bash "$(basename "$DEPLOY_SH")")
+(cd "$(dirname "$DEPLOY_SH")" && bash "$(basename "$DEPLOY_SH")" app.keyminder)
 
 # ── Local install (full-deploy only) ─────────────────────────────────────────
 if [[ "$MODE" == "full-deploy" ]]; then
