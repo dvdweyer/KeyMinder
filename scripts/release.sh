@@ -175,12 +175,17 @@ cat > "$EXPORT_OPTIONS" << EOF
 EOF
 
 echo "--- Archiving…"
+_ARCHIVE_EXTRA_SETTINGS=()
+if [[ "$MODE" == "beta" ]]; then
+    _ARCHIVE_EXTRA_SETTINGS+=(KM_RELEASE_CHANNEL=beta)
+fi
 xcodebuild archive \
     -project "$REPO_DIR/KeyMinder.xcodeproj" \
     -scheme KeyMinder \
     -configuration Release \
     -archivePath "$ARCHIVE" \
-    -allowProvisioningUpdates
+    -allowProvisioningUpdates \
+    "${_ARCHIVE_EXTRA_SETTINGS[@]+"${_ARCHIVE_EXTRA_SETTINGS[@]}"}"
 
 echo ""
 echo "--- Exporting (Developer ID)…"

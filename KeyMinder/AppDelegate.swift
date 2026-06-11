@@ -352,6 +352,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc private func showAbout() {
         let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "?"
+        let channel = Bundle.main.object(forInfoDictionaryKey: "KMReleaseChannel") as? String ?? ""
+        let displayVersion = channel.isEmpty ? version : "\(version)-\(channel)"
         let homepageURL = URL(string: "https://keyminder.app/")!
 
         let credits = NSMutableAttributedString(
@@ -382,7 +384,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         ))
 
         NSApp.orderFrontStandardAboutPanel(options: [
-            .applicationVersion: version,
+            .applicationVersion: displayVersion,
             .credits: credits,
         ])
         NSApp.activate(ignoringOtherApps: true)
