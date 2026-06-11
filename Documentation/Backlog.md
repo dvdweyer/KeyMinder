@@ -8,23 +8,34 @@ Items are rough ideas, not commitments. No priority order.
 
 ~~### Ignored Commands — "Show when filtering" unreliable (v0.1.71)~~ **Fixed in v0.1.86.**
 
-### DMG download saves as .man in Safari
-
-Safari maps the server's `Content-Type: application/x-troff-man` response to
-a `.man` file extension via macOS UTI. Root cause: Cloudflare cached the wrong
-MIME type before the `.htaccess` fix (`AddType`/`ForceType application/octet-stream`)
-was deployed. Chrome and Firefox ignore the Content-Type for downloads and use
-the URL filename, so they are unaffected.
-
-A `.htaccess` fix and a Cloudflare Cache Rule (bypass cache for `*.dmg`) are
-already in place. Purging the Cloudflare cache for the specific URL did not
-resolve it for Safari. The website download link has been reverted to ZIP in
-the meantime. Needs further investigation — possibly a Cloudflare Transform
-Rule to override the response Content-Type header at the edge.
-
 ---
 
 ~~## Auto-updater~~ **Shipped in v0.1.84 (Sparkle).**
+
+---
+
+## Alternative menu-bar icon (⌘ symbol)
+
+Let the user choose between the current app icon and the **⌘ Place of Interest Sign** (U+2318) as the menu-bar status item image. Could be offered as a picker in the onboarding trigger step or in Settings → General → Appearance.
+
+**Notes:** render the symbol via `NSImage(systemSymbolName:)` or by drawing the Unicode character into an `NSImage` at the appropriate template size; set `isTemplate = true` so macOS handles light/dark tinting automatically.
+
+---
+
+## Show Dock icon when Settings or About window is open
+
+Temporarily switch `LSUIElement` behaviour to show a Dock icon (and thus an app menu) while a Settings or About window is open, then revert to agent/accessory mode when both are closed.
+
+**Notes:** toggle via `NSApp.setActivationPolicy(.regular)` on window open and `.setActivationPolicy(.accessory)` on window close. The Dock icon appears and disappears dynamically — no `Info.plist` change needed at runtime. Watch for edge cases where both windows are open simultaneously (only revert when the last one closes).
+
+---
+
+## Tip jar / support link
+
+Add a **"Support KeyMinder"** item to the right-click context menu (and/or
+the About panel) that opens a Ko-fi, GitHub Sponsors, or similar page.
+
+**Notes:** no in-app payment processing needed — just a URL open.
 
 ---
 
@@ -90,10 +101,6 @@ users who already know what the shortcuts do and want maximum density.
 ---
 
 ## Growth / community nudges
-
-~~### Star on GitHub~~ **Shipped in v0.1.106** — banner after 10 popup opens.
-
-~~### In-app feedback channel~~ **Shipped in v0.1.106** — mailto:keyminder@afaik.org in About panel, onboarding wizard last step, and website footer.
 
 A small set of in-app prompts that appear after the user has had a chance to
 form a habit with KeyMinder. Goal: surface discovery actions to engaged users
@@ -169,75 +176,18 @@ context.
 
 ---
 
-### JSON-LD `aggregateRating` (Google Rich Results — optional)
-
-Google's Rich Results Test flags `aggregateRating` as an optional missing field on
-the `SoftwareApplication` schema. Adding it would display a star rating in search
-results, but requires real ratings data (ratingValue, ratingCount, bestRating) from
-an actual platform — fabricating it violates Google's structured data policies.
-
-**When actionable:** once KeyMinder has a listing with user ratings on AlternativeTo,
-Product Hunt, or similar, pull the aggregate score into the JSON-LD.
-
----
-
-### German SEO / hreflang
-
-The German translation on the website is applied at runtime via JavaScript
-(`data-de` attributes), so Googlebot — which crawls without a language preference
-— only ever sees the English content. German-speaking users searching in German
-will not find a localized result.
-
-**Fix options (mutually exclusive):**
-
-1. **Separate URL** — serve a static `/de/` page with the German content baked in
-   and add `<link rel="alternate" hreflang="de" href="https://keyminder.app/de/">` /
-   `hreflang="en"` annotations on both pages. Most work; best SEO outcome.
-2. **Server-side language negotiation** — detect `Accept-Language: de` at the
-   CDN/server layer and serve pre-rendered German HTML at the same URL with a
-   `Vary: Accept-Language` response header. Moderate effort; single URL.
-3. **Accept the limitation** — German SEO is not currently a priority; leave the
-   JS-only approach in place.
-
-**Notes:** `hreflang` tags without a corresponding Google-crawlable page are
-ignored, so option 3 is preferable to adding annotations that point at pages
-Googlebot cannot read.
-
----
-
-### AlternativeTo related apps follow-up
-
-Suggested KeyMinder as alternative on CheatSheet, ShowMeYourHotKeys, Paletro, and KeyCombiner pages on Jun 10, 2026. Check back Jun 11 to confirm the suggestions were approved and are visible.
-
----
-
 ### Submit to Mac app directories
 
 Manual/one-off tasks (not in-app), but worth tracking here so they don't fall
 through the cracks:
 
-- ~~[MacMenuBar.com](https://macmenubar.com)~~ — submitted Jun 10, 2026. Check back in a few days for listing confirmation.
-- [OpenAlternative.co](https://openalternative.co) — submitted Jun 10, 2026; in queue (~10 months). Paid skip-the-queue option declined.
-- ~~[Awesome macOS](https://github.com/iCHAIT/awesome-macOS)~~ — PR #867 opened Jun 10, 2026. Repo is lightly maintained; may take time or never merge.
+- [MacMenuBar.com](https://macmenubar.com) — submit form for menu-bar apps.
+- [OpenAlternative.to](https://openalternative.to) — open-source alternatives
+  directory; submit via their GitHub repo.
+- [Awesome macOS](https://github.com/iCHAIT/awesome-macOS) — PR to add
+  KeyMinder under "Productivity".
 - [Setapp blog / newsletter](https://setapp.com) — not a distribution channel,
   but a potential editorial mention.
-
----
-
-~~## Homebrew Cask distribution~~ **Shipped — `brew install --cask dvdweyer/keyminder/keyminder`.**
-
-~~Distribute KeyMinder via a [Homebrew Cask](https://github.com/Homebrew/homebrew-cask) so users can install and update with `brew install --cask keyminder`.~~
-
-~~**Notes:** requires a notarized `.dmg` or `.zip` artifact at a stable URL (the Sparkle release zip already qualifies). Submit a PR to `homebrew/homebrew-cask` with a `keyminder.rb` cask definition pointing at the GitHub release asset. Version bumps can be automated via a GitHub Action that updates the cask SHA256 and URL on each release. Alternatively, host a tap (`dvdweyer/homebrew-keyminder`) for faster iteration before upstreaming to the main cask repo.~~
-
----
-
-## Tip jar / support link
-
-Add a **"Support KeyMinder"** item to the right-click context menu (and/or
-the About panel) that opens a Ko-fi, GitHub Sponsors, or similar page.
-
-**Notes:** no in-app payment processing needed — just a URL open.
 
 ---
 
