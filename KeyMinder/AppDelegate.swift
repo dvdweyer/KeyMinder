@@ -274,16 +274,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     /// scrape entirely on a cache hit.
     private func precacheMenus(for app: NSRunningApplication) {
         guard AccessibilityPermission.isTrusted else { return }
+        guard !UserDefaults.standard.showAllMenuItems else { return }
         let ignoreStore = IgnoreListStore.shared
         guard !ignoreStore.isAppIgnored(app.bundleIdentifier) else { return }
 
         let pid = app.processIdentifier
-        let includeAll = UserDefaults.standard.showAllMenuItems
-        let maxSubmenuSize: Int? = (includeAll && UserDefaults.standard.hideLargeSubmenus) ? 5 : nil
         let ignoredTitles: [String] = ignoreStore.isEnabled && !ignoreStore.showWhenFiltering
             ? ignoreStore.ignoredTitles(for: app.bundleIdentifier) : []
-        let key = PrecacheKey(pid: pid, includeAll: includeAll,
-                              ignoredTitles: ignoredTitles, maxSubmenuSize: maxSubmenuSize)
+        let key = PrecacheKey(pid: pid, includeAll: false,
+                              ignoredTitles: ignoredTitles, maxSubmenuSize: nil)
 
         // Evict cache from the previous app.
         if menuCache?.key.pid != pid { menuCache = nil }
@@ -293,8 +292,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         preCacheKey = key
         detachedScrapeTask = Task.detached(priority: .utility) {
-            MenuScraper.scrape(pid: pid, includeItemsWithoutShortcuts: includeAll,
-                               ignoredTitles: ignoredTitles, maxShortcutFreeSubmenuSize: maxSubmenuSize)
+            MenuScraper.scrape(pid: pid, ignoredTitles: ignoredTitles)
         }
     }
 
