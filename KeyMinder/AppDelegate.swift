@@ -383,11 +383,25 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             ]
         ))
 
+        let windowsBefore = Set(NSApp.windows)
         NSApp.orderFrontStandardAboutPanel(options: [
             .applicationVersion: displayVersion,
             .credits: credits,
         ])
         NSApp.activate(ignoringOtherApps: true)
+
+        if let aboutWindow = NSApp.windows.first(where: { !windowsBefore.contains($0) }) {
+            DockIconManager.shared.windowOpened()
+            var observer: NSObjectProtocol?
+            observer = NotificationCenter.default.addObserver(
+                forName: NSWindow.willCloseNotification,
+                object: aboutWindow,
+                queue: .main
+            ) { _ in
+                MainActor.assumeIsolated { DockIconManager.shared.windowClosed() }
+                NotificationCenter.default.removeObserver(observer!)
+            }
+        }
     }
 
     @objc private func grantAccess() { AccessibilityPermission.requestAccess() }

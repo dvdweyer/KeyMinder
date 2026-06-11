@@ -20,10 +20,12 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
     private var tabHeights: [CGFloat] = [0, 0, 0, 0]
 
     static func show() {
-        if instance == nil { instance = SettingsWindowController() }
+        let isNew = instance == nil
+        if isNew { instance = SettingsWindowController() }
         NSApp.activate()
         instance?.window?.makeKeyAndOrderFront(nil)
         instance?.window?.orderFrontRegardless()
+        if isNew { DockIconManager.shared.windowOpened() }
     }
 
     private init() {
@@ -92,6 +94,7 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
         Self.instance = nil
         Self.onFirstClose?()
         Self.onFirstClose = nil
+        DockIconManager.shared.windowClosed()
     }
 }
 
