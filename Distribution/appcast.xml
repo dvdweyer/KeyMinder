@@ -8,7 +8,6 @@
         <item>
             <title>1.0.118</title>
             <pubDate>Thu, 11 Jun 2026 22:08:33 +0200</pubDate>
-            <sparkle:channel>beta</sparkle:channel>
             <sparkle:version>284</sparkle:version>
             <sparkle:shortVersionString>1.0.118</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
