@@ -113,6 +113,14 @@ This keeps the popup compact and familiar at a glance while still letting users 
 
 ---
 
+## Quiz mode
+
+A learning mode where KeyMinder tests the user on keyboard shortcuts for the frontmost app. Shows a command name and asks the user to type the correct key combination, or shows a key combination and asks them to name the command.
+
+**Notes:** quiz data comes from the same AX scrape as the popup — no new data source needed. Could be triggered from the right-click context menu or a dedicated hotkey. Score and streak tracking per app (keyed by bundle ID) in `UserDefaults`. Wrong answers could highlight the correct shortcut in the normal popup view before returning to the quiz. Scope is intentionally narrow: quiz the current app only, not a global shortcut database.
+
+---
+
 ## Compact / keys-only mode
 
 A display option that shows only the key badge column (no command title) for
