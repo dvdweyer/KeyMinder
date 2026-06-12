@@ -123,8 +123,9 @@ A learning mode where KeyMinder tests the user on keyboard shortcuts for the fro
 
 ## Compact / keys-only mode
 
-A display option that shows only the key badge column (no command title) for
-users who already know what the shortcuts do and want maximum density.
+A display option that hides the command title and shows only the key badge (e.g. `⇧⌘N`) for each shortcut. Aimed at users who already know what their shortcuts do and just need a quick reminder of the exact key combination — a cheat sheet reduced to pure glyphs.
+
+The narrower rows allow more shortcuts on screen before scrolling, and the reduced popup width takes up less screen real estate. Could also enable more columns in the multi-column layout before the panel reaches the screen edge.
 
 ---
 
