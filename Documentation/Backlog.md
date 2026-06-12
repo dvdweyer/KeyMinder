@@ -14,6 +14,16 @@ Items are rough ideas, not commitments. No priority order.
 
 ---
 
+## Option-key alternate menu items
+
+In macOS, holding Option swaps certain menu items for alternates (e.g. "Close" → "Close All", "Get Info" → "Show Inspector"). Showing this live behaviour in the KeyMinder popup would be a useful differentiator.
+
+**Investigation result (2026-06-12, v1.0.118):** not buildable via the AX API without unacceptable side effects. `kAXChildrenAttribute` does not include hidden alternate items when menus are closed — confirmed across Safari, Finder, and Xcode with debug logging enabled. The AX bridge only exposes alternates while the menu is open and being tracked by NSMenu's menu manager. The only way to force this is to physically open each menu via `kAXPressAction`, which flashes menus on screen and is intentionally excluded.
+
+**If Apple widens the AX API in a future macOS release** (e.g. a `kAXAlternateMenuItems` attribute or equivalent), revisit. Until then, the feature is blocked at the platform level.
+
+---
+
 ## Alternative menu-bar icon (⌘ symbol)
 
 Let the user choose between the current app icon and the **⌘ Place of Interest Sign** (U+2318) as the menu-bar status item image. Could be offered as a picker in the onboarding trigger step or in Settings → General → Appearance.
@@ -90,6 +100,16 @@ Show hotkeys registered by every running app (Raycast, Alfred, etc.) alongside t
 2. **Passive `CGEventTap` observation** — register a listen-only tap on `kCGKeyDownMask`. Combos consumed before the tap sees them can be inferred as taken. Generalises without per-app knowledge; requires Accessibility (already granted). Limitation: only surfaces shortcuts that are actually pressed during a session — incomplete at first launch.
 
 **Hard limitation either way:** Carbon stores only keyCode + modifiers in the Window Server, not the action label. We can show "⌥Space" but not "Show Raycast". App name as group title is the best we can do unless a lookup table is maintained for known apps.
+
+---
+
+## Show only visible menu items until filtering starts
+
+In the current popup, all menu items (including those without shortcuts) are shown immediately when "Show all menu entries" is on. Instead, default to showing only items that have a keyboard shortcut assigned — the same set as today's normal mode — and only expand to all items once the user starts typing in the search field.
+
+This keeps the popup compact and familiar at a glance while still letting users discover unbound commands the moment they search.
+
+**Notes:** `PopupFilterModel.showsAllItems` already gates the all-entries display on `query.count >= 2`; the new behaviour would make `showsAllItems` require both that flag *and* a non-empty query (rather than just `>= 2` chars). The toggle in Settings would become "Show all menu entries when searching" to match the new semantics. The `includeItemsWithoutShortcuts` flag passed to `MenuScraper` could be deferred until the first keystroke to avoid scraping unbound items unnecessarily.
 
 ---
 
