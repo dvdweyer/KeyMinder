@@ -42,6 +42,7 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
             .sizeThatFits(in: CGSize(width: 420, height: CGFloat.greatestFiniteMagnitude)).height + 24
         let ignoredRaw = NSHostingController(rootView: IgnoredSettingsBody(
                 showAddIgnoredAppSheet: .constant(false),
+                showAddMenuSheet: .constant(false),
                 showAddGlobalSheet: .constant(false),
                 showAddAppSheet: .constant(false)
             )).sizeThatFits(in: CGSize(width: 420, height: CGFloat.greatestFiniteMagnitude)).height + 24
@@ -526,6 +527,7 @@ private struct ExperimentalBadge: View {
 
 private struct IgnoredSettingsView: View {
     @State private var showAddIgnoredAppSheet = false
+    @State private var showAddMenuSheet = false
     @State private var showAddGlobalSheet = false
     @State private var showAddAppSheet = false
 
@@ -533,11 +535,13 @@ private struct IgnoredSettingsView: View {
         ScrollView {
             IgnoredSettingsBody(
                 showAddIgnoredAppSheet: $showAddIgnoredAppSheet,
+                showAddMenuSheet: $showAddMenuSheet,
                 showAddGlobalSheet: $showAddGlobalSheet,
                 showAddAppSheet: $showAddAppSheet
             )
         }
         .sheet(isPresented: $showAddIgnoredAppSheet) { AddIgnoredAppSheet() }
+        .sheet(isPresented: $showAddMenuSheet) { AddIgnoredMenuSheet() }
         .sheet(isPresented: $showAddGlobalSheet) { AddGlobalRuleSheet() }
         .sheet(isPresented: $showAddAppSheet) { AddAppRuleSheet() }
     }
@@ -547,6 +551,7 @@ private struct IgnoredSettingsView: View {
 /// SettingsWindowController can measure its natural height reliably.
 private struct IgnoredSettingsBody: View {
     @Binding var showAddIgnoredAppSheet: Bool
+    @Binding var showAddMenuSheet: Bool
     @Binding var showAddGlobalSheet: Bool
     @Binding var showAddAppSheet: Bool
 
@@ -576,6 +581,33 @@ private struct IgnoredSettingsBody: View {
             }
 
             Button("Add App…") { showAddIgnoredAppSheet = true }
+                .frame(maxWidth: .infinity, alignment: .trailing)
+
+            Divider()
+
+            Text("Ignored Menus")
+                .font(.headline)
+
+            Text("Menus listed here are hidden from the popup. The Apple menu () is ignored by default.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            if store.ignoredMenuTitles.isEmpty {
+                Text("No ignored menus")
+                    .font(.subheadline)
+                    .foregroundStyle(.tertiary)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(.vertical, 8)
+            } else {
+                IgnoreRulesBox(titles: store.ignoredMenuTitles) { title in
+                    if let idx = store.ignoredMenuTitles.firstIndex(of: title) {
+                        store.removeIgnoredMenu(at: IndexSet(integer: idx))
+                    }
+                }
+            }
+
+            Button("Add Menu…") { showAddMenuSheet = true }
                 .frame(maxWidth: .infinity, alignment: .trailing)
 
             Divider()
@@ -801,6 +833,48 @@ private struct AddIgnoredAppSheet: View {
         guard !selectedBundleID.isEmpty else { return }
         let displayName = runningApps.first { $0.bundleID == selectedBundleID }?.name ?? selectedBundleID
         IgnoreListStore.shared.addIgnoredApp(bundleID: selectedBundleID, displayName: displayName)
+        dismiss()
+    }
+}
+
+// MARK: - AddIgnoredMenuSheet
+
+private struct AddIgnoredMenuSheet: View {
+    @Environment(\.dismiss) private var dismiss
+    @State private var title = ""
+    @FocusState private var focused: Bool
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("Ignore Menu")
+                .font(.headline)
+
+            Text("Enter the menu name exactly as it appears in the menu bar (e.g. \"File\", \"View\", \"Help\"). The Apple menu is identified by \"Apple\".")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            TextField("Menu name", text: $title)
+                .textFieldStyle(.roundedBorder)
+                .focused($focused)
+                .onSubmit { addAndDismiss() }
+
+            HStack {
+                Spacer()
+                Button("Cancel", role: .cancel) { dismiss() }
+                    .keyboardShortcut(.cancelAction)
+                Button("Add") { addAndDismiss() }
+                    .keyboardShortcut(.defaultAction)
+                    .disabled(title.trimmingCharacters(in: .whitespaces).isEmpty)
+            }
+        }
+        .padding(20)
+        .frame(width: 340)
+        .onAppear { focused = true }
+    }
+
+    private func addAndDismiss() {
+        IgnoreListStore.shared.addIgnoredMenu(title)
         dismiss()
     }
 }

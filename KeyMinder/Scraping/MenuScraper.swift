@@ -15,6 +15,7 @@ enum MenuScraper {
     /// structure is visible in the popup.
     static func scrape(pid: pid_t, includeItemsWithoutShortcuts: Bool = false,
                        ignoredTitles: [String] = [],
+                       ignoredMenuTitles: [String] = [],
                        maxShortcutFreeSubmenuSize: Int? = nil) -> [MenuSection] {
         let start = Date()
         let app = AXUIElementCreateApplication(pid)
@@ -30,6 +31,7 @@ enum MenuScraper {
         var sections: [MenuSection] = []
         for menuBarItem in children(menuBar) {
             let title = string(menuBarItem, kAXTitleAttribute) ?? ""
+            guard !IgnoreListStore.isIgnored(title: title, patterns: ignoredMenuTitles) else { continue }
             // A menu bar item owns its drop-down menu as its single child.
             guard let menu = children(menuBarItem).first else { continue }
             let groups = collectGroups(in: menu, includeAll: includeItemsWithoutShortcuts, ignoredTitles: ignoredTitles, maxShortcutFreeSubmenuSize: maxShortcutFreeSubmenuSize)

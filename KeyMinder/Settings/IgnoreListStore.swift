@@ -5,8 +5,9 @@ import SwiftUI
 final class IgnoreListStore {
     static let shared = IgnoreListStore()
 
-    private static let defaultsKey = "ignoreList"
-    private static let didSeedKey  = "didSeedIgnoreList"
+    private static let defaultsKey       = "ignoreList"
+    private static let didSeedKey        = "didSeedIgnoreList"
+    private static let didSeedMenusKey   = "didSeedIgnoredMenus"
 
     var isEnabled: Bool = false {
         didSet { UserDefaults.standard.set(isEnabled, forKey: "ignoreListEnabled") }
@@ -18,6 +19,7 @@ final class IgnoreListStore {
     var perApp: [String: [String]]
     var appDisplayNames: [String: String]
     var ignoredApps: [String: String]   // bundleID → displayName
+    var ignoredMenuTitles: [String]     // top-level menu names to skip entirely
 
     var sortedAppIDs: [String] {
         perApp.keys.sorted { (appDisplayNames[$0] ?? $0) < (appDisplayNames[$1] ?? $1) }
@@ -33,20 +35,28 @@ final class IgnoreListStore {
 
         if let data = UserDefaults.standard.data(forKey: Self.defaultsKey),
            let stored = try? JSONDecoder().decode(IgnoreData.self, from: data) {
-            globalTitles    = stored.globalTitles
-            perApp          = stored.perApp
-            appDisplayNames = stored.appDisplayNames
-            ignoredApps     = stored.ignoredApps
+            globalTitles      = stored.globalTitles
+            perApp            = stored.perApp
+            appDisplayNames   = stored.appDisplayNames
+            ignoredApps       = stored.ignoredApps
+            ignoredMenuTitles = stored.ignoredMenuTitles
         } else {
-            globalTitles    = []
-            perApp          = [:]
-            appDisplayNames = [:]
-            ignoredApps     = [:]
+            globalTitles      = []
+            perApp            = [:]
+            appDisplayNames   = [:]
+            ignoredApps       = [:]
+            ignoredMenuTitles = []
         }
 
         if !UserDefaults.standard.bool(forKey: Self.didSeedKey) {
             globalTitles = ["Minimize", "Fill", "Centre", "Move & Resize"]
             UserDefaults.standard.set(true, forKey: Self.didSeedKey)
+            save()
+        }
+
+        if !UserDefaults.standard.bool(forKey: Self.didSeedMenusKey) {
+            ignoredMenuTitles = ["Apple"]
+            UserDefaults.standard.set(true, forKey: Self.didSeedMenusKey)
             save()
         }
     }
@@ -129,12 +139,25 @@ final class IgnoreListStore {
         save()
     }
 
+    func addIgnoredMenu(_ title: String) {
+        let trimmed = title.trimmingCharacters(in: .whitespaces)
+        guard !trimmed.isEmpty, !ignoredMenuTitles.contains(trimmed) else { return }
+        ignoredMenuTitles.append(trimmed)
+        save()
+    }
+
+    func removeIgnoredMenu(at offsets: IndexSet) {
+        ignoredMenuTitles.remove(atOffsets: offsets)
+        save()
+    }
+
     private func save() {
         let data = IgnoreData(
             globalTitles: globalTitles,
             perApp: perApp,
             appDisplayNames: appDisplayNames,
-            ignoredApps: ignoredApps
+            ignoredApps: ignoredApps,
+            ignoredMenuTitles: ignoredMenuTitles
         )
         if let encoded = try? JSONEncoder().encode(data) {
             UserDefaults.standard.set(encoded, forKey: Self.defaultsKey)
@@ -149,12 +172,26 @@ private struct IgnoreData: Codable {
     var perApp: [String: [String]]
     var appDisplayNames: [String: String]
     var ignoredApps: [String: String]
+    var ignoredMenuTitles: [String]
 
     init(globalTitles: [String], perApp: [String: [String]],
-         appDisplayNames: [String: String], ignoredApps: [String: String] = [:]) {
-        self.globalTitles    = globalTitles
-        self.perApp          = perApp
-        self.appDisplayNames = appDisplayNames
-        self.ignoredApps     = ignoredApps
+         appDisplayNames: [String: String], ignoredApps: [String: String] = [:],
+         ignoredMenuTitles: [String] = []) {
+        self.globalTitles     = globalTitles
+        self.perApp           = perApp
+        self.appDisplayNames  = appDisplayNames
+        self.ignoredApps      = ignoredApps
+        self.ignoredMenuTitles = ignoredMenuTitles
+    }
+
+    // Custom decoder so that JSON written before `ignoredMenuTitles`/`ignoredApps`
+    // were added decodes gracefully instead of throwing.
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        globalTitles      = try c.decode([String].self,            forKey: .globalTitles)
+        perApp            = try c.decode([String: [String]].self,  forKey: .perApp)
+        appDisplayNames   = try c.decode([String: String].self,    forKey: .appDisplayNames)
+        ignoredApps       = try c.decodeIfPresent([String: String].self, forKey: .ignoredApps) ?? [:]
+        ignoredMenuTitles = try c.decodeIfPresent([String].self,   forKey: .ignoredMenuTitles) ?? []
     }
 }

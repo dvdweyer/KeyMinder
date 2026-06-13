@@ -18,6 +18,7 @@ private struct PrecacheKey: Equatable {
     let pid: pid_t
     let includeAll: Bool
     let ignoredTitles: [String]
+    let ignoredMenuTitles: [String]
     let maxSubmenuSize: Int?
 }
 
@@ -210,9 +211,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let ignoredTitles: [String] = (ignoreStore.isEnabled && !ignoreStore.showWhenFiltering)
             ? ignoreStore.ignoredTitles(for: bundleID)
             : []
+        let ignoredMenuTitles = ignoreStore.ignoredMenuTitles
 
         let cacheKey = PrecacheKey(pid: pid, includeAll: includeAll,
-                                   ignoredTitles: ignoredTitles, maxSubmenuSize: maxSubmenuSize)
+                                   ignoredTitles: ignoredTitles, ignoredMenuTitles: ignoredMenuTitles,
+                                   maxSubmenuSize: maxSubmenuSize)
 
         // Cancel the outer coordinator so a stale result never reaches the UI.
         scrapeTask?.cancel()
@@ -240,7 +243,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             } else {
                 let work = Task.detached(priority: .userInitiated) {
                     MenuScraper.scrape(pid: pid, includeItemsWithoutShortcuts: includeAll,
-                                       ignoredTitles: ignoredTitles, maxShortcutFreeSubmenuSize: maxSubmenuSize)
+                                       ignoredTitles: ignoredTitles, ignoredMenuTitles: ignoredMenuTitles,
+                                       maxShortcutFreeSubmenuSize: maxSubmenuSize)
                 }
                 self.detachedScrapeTask = work
                 sections = await work.value
@@ -281,8 +285,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let pid = app.processIdentifier
         let ignoredTitles: [String] = ignoreStore.isEnabled && !ignoreStore.showWhenFiltering
             ? ignoreStore.ignoredTitles(for: app.bundleIdentifier) : []
+        let ignoredMenuTitles = ignoreStore.ignoredMenuTitles
         let key = PrecacheKey(pid: pid, includeAll: false,
-                              ignoredTitles: ignoredTitles, maxSubmenuSize: nil)
+                              ignoredTitles: ignoredTitles, ignoredMenuTitles: ignoredMenuTitles,
+                              maxSubmenuSize: nil)
 
         // Evict cache from the previous app.
         if menuCache?.key.pid != pid { menuCache = nil }
@@ -292,7 +298,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         preCacheKey = key
         detachedScrapeTask = Task.detached(priority: .utility) {
-            MenuScraper.scrape(pid: pid, ignoredTitles: ignoredTitles)
+            MenuScraper.scrape(pid: pid, ignoredTitles: ignoredTitles, ignoredMenuTitles: ignoredMenuTitles)
         }
     }
 
