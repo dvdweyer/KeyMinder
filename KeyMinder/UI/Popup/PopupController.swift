@@ -289,7 +289,8 @@ final class PopupController {
 
         let layoutSections = sectionPairs.map(\.layout)
         let count = min(layoutSections.count, maxColumns)
-        let distributedLayout = MenuLayout.distribute(layoutSections, columns: count)
+        let rawLayout = MenuLayout.distribute(layoutSections, columns: count)
+        let distributedLayout = MenuLayout.consolidateTrailing(rawLayout)
         let actual = max(1, distributedLayout.count)
 
         let contentWidth = CGFloat(actual) * MenuLayout.columnWidth

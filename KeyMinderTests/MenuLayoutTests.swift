@@ -213,8 +213,8 @@ final class MenuLayoutDistributeTests: XCTestCase {
 
     func testDistribute_singleHeavySection_isolatedInOwnColumn() {
         // One very tall section followed by many small ones.
-        // The tall section must occupy its own column because the binary-searched
-        // capacity is at least max(single weight), so it always fits alone.
+        // The heavy section always ends up alone because the greedy packer
+        // places it in its own column when the current column is non-empty.
         let heavy  = MenuSection.fixture(title: "Heavy", count: 30)
         let smalls = (0..<4).map { MenuSection.fixture(title: "S\($0)", count: 1) }
         let sections = [heavy] + smalls
@@ -224,6 +224,86 @@ final class MenuLayoutDistributeTests: XCTestCase {
         // The heavy section must be the sole occupant of the first column.
         XCTAssertEqual(result[0].count, 1)
         XCTAssertEqual(result[0][0].title, "Heavy")
+    }
+
+    func testDistribute_usesMaxColumnsWhenTallSectionDominates() {
+        // 5 sections with varying heights + one very tall section (Window).
+        // Window dominates, so any valid k-column layout has Window alone in one
+        // column and the max height is Window's height regardless of how the
+        // short sections are split. The binary search (with lo = 0) must therefore
+        // fill all k = 4 columns rather than collapsing short sections together.
+        let window  = MenuSection.fixture(title: "Window", count: 30)  // ~714 pt
+        let apple   = MenuSection.fixture(title: "Apple",   count: 5)  // ~139 pt
+        let ghostty = MenuSection.fixture(title: "Ghostty", count: 8)  // ~208 pt
+        let file    = MenuSection.fixture(title: "File",    count: 3)  // ~93 pt
+        let view    = MenuSection.fixture(title: "View",    count: 6)  // ~162 pt
+        // [Apple, Ghostty, File, View, Window] — 5 sections, k = 4.
+        let sections = [apple, ghostty, file, view, window]
+        let result = MenuLayout.distribute(sections, columns: 4)
+        XCTAssertEqual(result.count, 4,
+                       "Should fill all 4 allowed columns when tall section dominates")
+        // Window must be alone in the last column.
+        XCTAssertEqual(result.last!.count, 1)
+        XCTAssertEqual(result.last![0].title, "Window")
+    }
+}
+
+// MARK: - MenuLayout.consolidateTrailing tests
+
+final class MenuLayoutConsolidateTrailingTests: XCTestCase {
+
+    func testConsolidate_singleColumn_unchanged() {
+        let col = [MenuSection.fixture(title: "File", count: 5)]
+        let result = MenuLayout.consolidateTrailing([col])
+        XCTAssertEqual(result.count, 1)
+        XCTAssertEqual(result[0].count, 1)
+    }
+
+    func testConsolidate_balancedColumns_unchanged() {
+        // Two equally-tall columns: last is 100 % of the other, not < 30 % → no merge.
+        let a = MenuSection.fixture(title: "File", count: 5)
+        let b = MenuSection.fixture(title: "Edit", count: 5)
+        let result = MenuLayout.consolidateTrailing([[a], [b]])
+        XCTAssertEqual(result.count, 2)
+    }
+
+    func testConsolidate_tinyTrailingColumn_mergedIntoPrevious() {
+        // last column has 1 item; tallest other has 30 items — ratio ≈ 3 % → merge.
+        let tall = MenuSection.fixture(title: "Window", count: 30)
+        let tiny = MenuSection.fixture(title: "Help", count: 1)
+        let result = MenuLayout.consolidateTrailing([[tall], [tiny]])
+        XCTAssertEqual(result.count, 1, "Tiny trailing column should be merged")
+        XCTAssertEqual(result[0].map(\.title), ["Window", "Help"])
+    }
+
+    func testConsolidate_threeColumns_tinyLast_mergedIntoPrevious() {
+        // Three columns; last is tiny relative to the Window column.
+        let col1 = [MenuSection.fixture(title: "Apple", count: 5),
+                    MenuSection.fixture(title: "File",  count: 8)]
+        let col2 = [MenuSection.fixture(title: "Window", count: 30)]
+        let col3 = [MenuSection.fixture(title: "Help", count: 1)]
+        let result = MenuLayout.consolidateTrailing([col1, col2, col3])
+        XCTAssertEqual(result.count, 2, "Three-column layout should consolidate to two")
+        XCTAssertEqual(result[1].map(\.title), ["Window", "Help"])
+    }
+
+    func testConsolidate_threeBalancedColumns_unchanged() {
+        // All three columns roughly equal — none qualifies as tiny.
+        let cols = (0..<3).map { i in [MenuSection.fixture(title: "M\(i)", count: 5)] }
+        let result = MenuLayout.consolidateTrailing(cols)
+        XCTAssertEqual(result.count, 3)
+    }
+
+    func testConsolidate_preservesMenuBarOrder() {
+        // After merge, sections must remain in original menu-bar order.
+        let sections = ["Apple", "Ghostty", "File", "Edit", "View", "Window", "Help"]
+        let col1 = sections.prefix(5).map { MenuSection.fixture(title: $0, count: 5) }
+        let col2 = [MenuSection.fixture(title: "Window", count: 30)]
+        let col3 = [MenuSection.fixture(title: "Help", count: 1)]
+        let result = MenuLayout.consolidateTrailing([Array(col1), col2, col3])
+        let allTitles = result.flatMap { $0.map(\.title) }
+        XCTAssertEqual(allTitles, Array(sections.prefix(5)) + ["Window", "Help"],
+                       "Menu-bar order must be preserved across the merge")
     }
 }
 

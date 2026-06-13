@@ -182,8 +182,12 @@ enum MenuLayout {
     /// columns. Binary-searched in `[largest single weight, total weight]`;
     /// feasibility is monotonic in capacity, so this finds the optimal max.
     private static func minimalCapacity(_ weights: [CGFloat], maxColumns k: Int) -> CGFloat {
-        var lo = weights.max() ?? 0
-        var hi = max(lo, weights.reduce(0, +))
+        // lo starts at 0 (every section alone) so the search explores the full
+        // capacity range. The invariant columnsNeeded(lo) > k holds because
+        // we only reach this function when k < sections.count, meaning
+        // columnsNeeded(0) = sections.count > k.
+        var lo: CGFloat = 0
+        var hi = weights.reduce(0, +)
         while hi - lo > 0.5 {
             let mid = (lo + hi) / 2
             if columnsNeeded(weights, capacity: mid) <= k {
@@ -193,5 +197,35 @@ enum MenuLayout {
             }
         }
         return hi
+    }
+
+    // MARK: - Trailing-column consolidation
+
+    /// Merges a sparse trailing column into the previous one.
+    ///
+    /// When a short menu (e.g. Help with one shortcut) lands alone in the last
+    /// column its height can be a tiny fraction of the tallest column, leaving
+    /// most of the rightmost column as blank popup background. If the last
+    /// column is less than 30 % as tall as the tallest preceding column, append
+    /// its sections to the previous column. Menu-bar order is preserved because
+    /// the last column's sections always come after the previous column's.
+    ///
+    /// Call once after `distribute(_:columns:)`. Does nothing when there is only
+    /// one column or the last column is not significantly shorter than the rest.
+    static func consolidateTrailing(_ columns: [[MenuSection]]) -> [[MenuSection]] {
+        guard columns.count >= 2 else { return columns }
+        let lastH  = estimatedColumnHeight(columns.last!)
+        let maxOtherH = columns.dropLast().map { estimatedColumnHeight($0) }.max() ?? 0
+        guard lastH < maxOtherH * 0.30 else { return columns }
+        return Array(columns.dropLast(2)) + [columns[columns.count - 2] + columns.last!]
+    }
+
+    /// Estimated rendered height of a column of sections stacked with
+    /// `sectionSpacing` between them (mirrors the `VStack(spacing: sectionSpacing)`
+    /// in `FilterableShortcutsView.grid`).
+    private static func estimatedColumnHeight(_ sections: [MenuSection]) -> CGFloat {
+        guard !sections.isEmpty else { return 0 }
+        return sections.reduce(0.0) { $0 + height(of: $1) }
+            + CGFloat(sections.count - 1) * sectionSpacing
     }
 }
