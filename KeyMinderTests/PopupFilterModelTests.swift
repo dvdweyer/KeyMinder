@@ -328,18 +328,24 @@ final class PopupFilterModelTests: XCTestCase {
     private var savedIgnoreEnabled = false
     private var savedShowWhenFiltering = false
     private var savedGlobalTitles: [String] = []
+    private var savedRequireFilter = false
 
     override func setUp() {
         super.setUp()
         savedIgnoreEnabled      = IgnoreListStore.shared.isEnabled
         savedShowWhenFiltering  = IgnoreListStore.shared.showWhenFiltering
         savedGlobalTitles       = IgnoreListStore.shared.globalTitles
+        savedRequireFilter      = UserDefaults.standard.requireFilterForAllMenuItems
+        // Tests that check showsAllItems behaviour depend on requireFilterForAllMenuItems
+        // being on so that an empty / short query does not enable all-entries mode.
+        UserDefaults.standard.requireFilterForAllMenuItems = true
     }
 
     override func tearDown() {
         IgnoreListStore.shared.isEnabled       = savedIgnoreEnabled
         IgnoreListStore.shared.showWhenFiltering = savedShowWhenFiltering
         IgnoreListStore.shared.globalTitles    = savedGlobalTitles
+        UserDefaults.standard.requireFilterForAllMenuItems = savedRequireFilter
         super.tearDown()
     }
 
@@ -357,7 +363,7 @@ final class PopupFilterModelTests: XCTestCase {
         XCTAssertEqual(model.visibleShortcuts.map(\.title), ["New Window"])
     }
 
-    func testVisibleShortcuts_showWhenFiltering_ignoredExcludedEvenWhenQueryMatches() {
+    func testVisibleShortcuts_showWhenFiltering_ignoredRevealedWhenQueryMatches() {
         IgnoreListStore.shared.isEnabled      = true
         IgnoreListStore.shared.showWhenFiltering = true
         IgnoreListStore.shared.globalTitles   = ["Minimize"]
@@ -368,9 +374,8 @@ final class PopupFilterModelTests: XCTestCase {
         ])
         let model = makeModel(sections: [section])
         model.query = "mini"
-        // "Minimize" matches the query but is always excluded from visibleShortcuts
-        // (shown dimmed in the view, not tab-navigable).
-        XCTAssertEqual(model.visibleShortcuts.map(\.title), [])
+        // "Minimize" matches the query and is revealed as a fully-interactive result.
+        XCTAssertEqual(model.visibleShortcuts.map(\.title), ["Minimize"])
     }
 
     func testVisibleShortcuts_showWhenFiltering_nonMatchingQueryKeepsIgnoredHidden() {
@@ -402,7 +407,7 @@ final class PopupFilterModelTests: XCTestCase {
         XCTAssertEqual(model.visibleShortcuts.count, 2)
     }
 
-    func testMatchCount_showWhenFiltering_excludesIgnoredItems() {
+    func testMatchCount_showWhenFiltering_includesRevealedIgnoredItems() {
         IgnoreListStore.shared.isEnabled      = true
         IgnoreListStore.shared.showWhenFiltering = true
         IgnoreListStore.shared.globalTitles   = ["Minimize"]
@@ -414,9 +419,9 @@ final class PopupFilterModelTests: XCTestCase {
         ])
         let model = makeModel(sections: [section])
         model.query = "mini"
-        // "Minimize" matches but is ignored; "Miniature" matches and is not ignored.
-        XCTAssertEqual(model.matchCount, 1)
-        XCTAssertEqual(model.visibleShortcuts.map(\.title), ["Miniature"])
+        // Both "Minimize" (ignored but revealed) and "Miniature" (not ignored) match.
+        XCTAssertEqual(model.matchCount, 2)
+        XCTAssertEqual(model.visibleShortcuts.map(\.title), ["Minimize", "Miniature"])
     }
 
     func testDisplayableCount_showWhenFiltering_excludesIgnoredItems() {
