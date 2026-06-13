@@ -7,7 +7,7 @@ cask "keyminder" do
   desc "Menu-bar app that shows keyboard shortcuts of the frontmost app"
   homepage "https://keyminder.app"
 
-  depends_on macos: ">= :sonoma"
+  depends_on macos: :sonoma
 
   app "KeyMinder.app"
 
