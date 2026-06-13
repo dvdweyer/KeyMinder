@@ -333,6 +333,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         checkUpdates.target = updaterController
         menu.addItem(checkUpdates)
 
+        if AccessibilityPermission.isTrusted, frontmostMonitor.frontmostApp != nil {
+            let quiz = menu.addItem(withTitle: String(localized: "Quiz Mode…"),
+                                    action: #selector(startQuiz), keyEquivalent: "")
+            quiz.target = self
+        }
+
         let settings = menu.addItem(withTitle: String(localized: "Settings…"),
                                     action: #selector(openSettings), keyEquivalent: ",")
         settings.target = self
@@ -352,6 +358,20 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         statusItem?.menu = menu
         statusItem?.button?.performClick(nil)
         statusItem?.menu = nil
+    }
+
+    @objc private func startQuiz() {
+        guard let app = frontmostMonitor.frontmostApp else { return }
+        let pid = app.processIdentifier
+        let appName = app.localizedName ?? "App"
+        let appIcon = app.icon
+        let bundleID = app.bundleIdentifier
+        Task {
+            let sections = await Task.detached(priority: .userInitiated) {
+                MenuScraper.scrape(pid: pid)
+            }.value
+            QuizWindowController.show(appName: appName, appIcon: appIcon, bundleID: bundleID, sections: sections)
+        }
     }
 
     @objc private func showAbout() {
