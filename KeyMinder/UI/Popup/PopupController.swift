@@ -319,7 +319,12 @@ final class PopupController {
         let fitsWithoutScrolling = naturalHeight <= maxPanelHeight
         let model = PopupFilterModel(app: app, columns: displayColumns,
                                      fitsWithoutScrolling: fitsWithoutScrolling)
-        if let bid = app.bundleIdentifier, bid == lastFilterBundleID {
+        // Don't restore the saved query when "show when filtering" is active:
+        // ignored items should only be revealed by typing in the current session,
+        // not by a query that happened to match them in a previous one.
+        let ignoreStore = IgnoreListStore.shared
+        let queryRestoreAllowed = !(ignoreStore.isEnabled && ignoreStore.showWhenFiltering)
+        if queryRestoreAllowed, let bid = app.bundleIdentifier, bid == lastFilterBundleID {
             model.query = lastFilterQuery
         }
         model.heldModifiers = Self.extractModifiers(from: NSEvent.modifierFlags)
