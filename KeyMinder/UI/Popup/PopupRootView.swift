@@ -103,6 +103,12 @@ final class PopupFilterModel {
         for column in columns {
             for section in column {
                 for group in section.groups {
+                    if let groupTitle = group.title,
+                       ignoreStore.isEnabled && ignoreStore.showWhenFiltering,
+                       IgnoreListStore.isIgnored(title: groupTitle, patterns: ignoreStore.ignoredTitles(for: app.bundleIdentifier)),
+                       activeQuery.isEmpty {
+                        continue
+                    }
                     for shortcut in group.shortcuts
                         where !shortcut.isDisabled
                             && (!shortcut.keys.isEmpty || showsAllItems)
@@ -167,12 +173,18 @@ final class PopupFilterModel {
             ? ignoreStore.ignoredTitles(for: app.bundleIdentifier)
             : []
         return app.sections.reduce(0) { total, section in
-            total + section.shortcuts.filter {
-                !$0.isSeparator &&
-                (!$0.keys.isEmpty || showsAllItems) &&
-                (!showOnlyFavourites || FavouritesStore.shared.isFavourite($0, appID: appID)) &&
-                (hiddenPatterns.isEmpty || !IgnoreListStore.isIgnored(title: $0.title, patterns: hiddenPatterns))
-            }.count
+            total + section.groups.reduce(0) { gTotal, group in
+                if let title = group.title, !hiddenPatterns.isEmpty,
+                   IgnoreListStore.isIgnored(title: title, patterns: hiddenPatterns) {
+                    return gTotal
+                }
+                return gTotal + group.shortcuts.filter {
+                    !$0.isSeparator &&
+                    (!$0.keys.isEmpty || showsAllItems) &&
+                    (!showOnlyFavourites || FavouritesStore.shared.isFavourite($0, appID: appID)) &&
+                    (hiddenPatterns.isEmpty || !IgnoreListStore.isIgnored(title: $0.title, patterns: hiddenPatterns))
+                }.count
+            }
         }
     }
 
@@ -635,6 +647,14 @@ struct MenuSectionView: View {
         shortcut.matches(query) && shortcut.matchesModifierFilter(modifierFilter)
     }
 
+    private func isGroupIgnoredWhileIdle(_ group: ShortcutGroup) -> Bool {
+        guard let title = group.title else { return false }
+        let store = IgnoreListStore.shared
+        guard store.isEnabled && store.showWhenFiltering else { return false }
+        guard IgnoreListStore.isIgnored(title: title, patterns: store.ignoredTitles(for: appID)) else { return false }
+        return query.isEmpty || !group.shortcuts.contains { !$0.isSeparator && matchesFilter($0) }
+    }
+
     private func isIgnoredWhileIdle(_ shortcut: Shortcut) -> Bool {
         let store = IgnoreListStore.shared
         guard store.isEnabled && store.showWhenFiltering else { return false }
@@ -670,7 +690,8 @@ struct MenuSectionView: View {
     }
 
     private func groupHasContent(_ group: ShortcutGroup) -> Bool {
-        group.shortcuts.contains { !$0.isSeparator && isShown($0) }
+        if isGroupIgnoredWhileIdle(group) { return false }
+        return group.shortcuts.contains { !$0.isSeparator && isShown($0) }
     }
 
     /// Removes leading, trailing, and consecutive separators from an already-filtered list.
