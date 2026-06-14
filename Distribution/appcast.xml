@@ -6,6 +6,15 @@
         <language>en</language>
         <!-- Items are populated by generate_appcast during the release pipeline. -->
         <item>
+            <title>1.0.128</title>
+            <pubDate>Sun, 14 Jun 2026 19:53:43 +0200</pubDate>
+            <sparkle:channel>beta</sparkle:channel>
+            <sparkle:version>319</sparkle:version>
+            <sparkle:shortVersionString>1.0.128</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://keyminder.app/KeyMinder_1.0.128.zip" length="3410637" type="application/octet-stream" sparkle:edSignature="tDxKdp5X0rUbj8B5cmYIwYuY328xaYY7rKE7vBE0NkPprZ9IE/y3+QlUTTEbiAET+5LO6t1iRN0laVoy1FFfCQ=="/>
+        </item>
+        <item>
             <title>1.0.127</title>
             <pubDate>Sun, 14 Jun 2026 12:10:15 +0200</pubDate>
             <sparkle:channel>beta</sparkle:channel>
@@ -22,15 +31,6 @@
             <sparkle:shortVersionString>1.0.126</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
             <enclosure url="https://keyminder.app/KeyMinder_1.0.126.zip" length="3344918" type="application/octet-stream" sparkle:edSignature="RPWTXp1hE5xxJHBkN+EC6jRXKeQlNnEJlO1LfAHHS5594h482zzBjulPYYKP8wxPbI4zsCUC1gNiNtX5cO9nDA=="/>
-        </item>
-        <item>
-            <title>1.0.125</title>
-            <pubDate>Sun, 14 Jun 2026 09:12:31 +0200</pubDate>
-            <sparkle:channel>beta</sparkle:channel>
-            <sparkle:version>308</sparkle:version>
-            <sparkle:shortVersionString>1.0.125</sparkle:shortVersionString>
-            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
-            <enclosure url="https://keyminder.app/KeyMinder_1.0.125.zip" length="3336562" type="application/octet-stream" sparkle:edSignature="I2q211wuaPt+ZhgYWiEuw0Ys/vwm5LpJAtwkgk6stTd2DNZZodMCZHo8gcoeuCSpQ/ftH/v8VoNVRalYyP09CA=="/>
         </item>
         <item>
             <title>1.0.122</title>
