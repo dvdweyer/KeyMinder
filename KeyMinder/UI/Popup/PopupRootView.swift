@@ -190,16 +190,29 @@ final class PopupFilterModel {
     }
 
     /// Count of displayable items matching all active filters (text query + modifier filter
-    /// + favourites filter when active).
+    /// + favourites filter when active). Applies the same ignored-group exclusion as
+    /// `displayableCount` so the "X of Y" header counts are consistent.
     var matchCount: Int {
         let appID = app.bundleIdentifier ?? app.appName
+        let ignoreStore = IgnoreListStore.shared
+        let hiddenPatterns: [String] = (ignoreStore.isEnabled && ignoreStore.showWhenFiltering)
+            ? ignoreStore.ignoredTitles(for: app.bundleIdentifier)
+            : []
         return app.sections.reduce(0) { total, section in
-            total + section.shortcuts.filter {
-                (!$0.keys.isEmpty || showsAllItems)
-                    && $0.matches(activeQuery)
-                    && $0.matchesModifierFilter(modifierFilter)
-                    && (!showOnlyFavourites || FavouritesStore.shared.isFavourite($0, appID: appID))
-            }.count
+            total + section.groups.reduce(0) { gTotal, group in
+                if let title = group.title, !hiddenPatterns.isEmpty,
+                   IgnoreListStore.isIgnored(title: title, patterns: hiddenPatterns) {
+                    return gTotal
+                }
+                return gTotal + group.shortcuts.filter {
+                    !$0.isSeparator &&
+                    (!$0.keys.isEmpty || showsAllItems) &&
+                    $0.matches(activeQuery) &&
+                    $0.matchesModifierFilter(modifierFilter) &&
+                    (!showOnlyFavourites || FavouritesStore.shared.isFavourite($0, appID: appID)) &&
+                    (hiddenPatterns.isEmpty || !IgnoreListStore.isIgnored(title: $0.title, patterns: hiddenPatterns))
+                }.count
+            }
         }
     }
 
@@ -439,7 +452,7 @@ private struct FilterableShortcutsView: View {
                                         showOnlyFavourites: model.showOnlyFavourites,
                                         appID: model.app.bundleIdentifier ?? model.app.appName,
                                         conflictingKeys: model.conflictingKeys,
-                                        dimMode: model.fitsWithoutScrolling,
+                                        dimMode: model.fitsWithoutScrolling && !model.hasQuery && !model.hasModifierFilter,
                                         selectedShortcutID: model.selectedShortcut?.id,
                                         onActivate: onActivate,
                                         onToggleFavourite: { model.toggleFavourite($0) })
@@ -653,7 +666,7 @@ struct MenuSectionView: View {
         let store = IgnoreListStore.shared
         guard store.isEnabled && store.showWhenFiltering else { return false }
         guard IgnoreListStore.isIgnored(title: title, patterns: store.ignoredTitles(for: appID)) else { return false }
-        return query.isEmpty || !group.shortcuts.contains { !$0.isSeparator && matchesFilter($0) }
+        return query.isEmpty || !group.shortcuts.contains { !$0.isSeparator && $0.matches(query) }
     }
 
     private func isIgnoredWhileIdle(_ shortcut: Shortcut) -> Bool {
