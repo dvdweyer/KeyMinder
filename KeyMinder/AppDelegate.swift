@@ -69,6 +69,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         setupHotkey()
         setupDoubleTap()
         setupSleepWakeObserver()
+        UserDefaults.standard.appIconVariant.apply()
         showWelcomeIfNeeded()
         betaChannelObserver = NotificationCenter.default.addObserver(
             forName: .receiveBetaUpdatesChanged,

@@ -167,6 +167,13 @@ final class SettingsModel {
         }
     }
 
+    var appIconVariant: AppIconVariant = UserDefaults.standard.appIconVariant {
+        didSet {
+            UserDefaults.standard.appIconVariant = appIconVariant
+            appIconVariant.apply()
+        }
+    }
+
     var showConflictIndicator: Bool = UserDefaults.standard.showConflictIndicator {
         didSet { UserDefaults.standard.showConflictIndicator = showConflictIndicator }
     }
@@ -406,6 +413,18 @@ private struct GeneralSettingsView: View {
             Picker("Menu bar icon", selection: $model.menuBarIconStyle) {
                 ForEach(MenuBarIconStyle.allCases, id: \.self) { style in
                     Text(style.label).tag(style)
+                }
+            }
+            .pickerStyle(.segmented)
+            .labelsHidden()
+
+            Text("App icon")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+
+            Picker("App icon", selection: $model.appIconVariant) {
+                ForEach(AppIconVariant.allCases, id: \.self) { variant in
+                    Text(variant.label).tag(variant)
                 }
             }
             .pickerStyle(.segmented)
