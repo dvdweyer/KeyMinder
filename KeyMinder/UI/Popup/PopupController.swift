@@ -29,6 +29,12 @@ final class PopupController {
     private var lastFilterQuery: String = ""
     private var lastFilterBundleID: String? = nil
 
+    /// Shortcuts from ignored menus (e.g. Apple menu) for the current app.
+    /// Not shown in the popup; used to trigger chord disambiguation.
+    private var ignoredMenuShortcuts: [Shortcut] = []
+    /// Display name of the frontmost app, used in the disambiguation overlay.
+    private var currentAppName: String = ""
+
     // MARK: - Permission polling
 
     /// Fires every 0.5 s while the onboarding screen is visible and checks
@@ -56,8 +62,10 @@ final class PopupController {
             stopPermissionPoll()
         }
 
-        if case .shortcuts = content {
+        if case .shortcuts(let app) = content {
             UserDefaults.standard.popupOpenCount += 1
+            ignoredMenuShortcuts = app.ignoredMenuShortcuts
+            currentAppName = app.appName
         }
 
         let panel = panel ?? makePanel()
@@ -156,6 +164,8 @@ final class PopupController {
         removeDismissalMonitors()
         // Stop permission polling whenever the popup goes away.
         stopPermissionPoll()
+        ignoredMenuShortcuts = []
+        currentAppName = ""
 
         guard let panel else { return }
 
@@ -450,10 +460,23 @@ final class PopupController {
                     // Chord invocation: ⌘ or ⌃ held + exactly one visible shortcut
                     // matches the key combo → invoke it directly.
                     let flags = event.modifierFlags
-                    if (flags.contains(.command) || flags.contains(.control)),
-                       let shortcut = self.matchShortcutEvent(event) {
-                        self.activate(shortcut)
-                        return nil
+                    if flags.contains(.command) || flags.contains(.control) {
+                        if let shortcut = self.matchShortcutEvent(event) {
+                            self.activate(shortcut)
+                            return nil
+                        }
+                        // No visible match — check shortcuts from ignored menus.
+                        // If found, show disambiguation instead of falling through.
+                        if let keysStr = ShortcutFormatter.keys(from: event),
+                           !keysStr.isEmpty {
+                            let candidates = self.ignoredMenuShortcuts.filter {
+                                $0.keys == keysStr && $0.axElement != nil
+                            }
+                            if !candidates.isEmpty {
+                                self.showDisambiguation(shortcuts: candidates, keys: keysStr)
+                                return nil
+                            }
+                        }
                     }
                     return event
                 }
@@ -513,10 +536,29 @@ final class PopupController {
         if element != nil { ShortcutActivator.activate(shortcut) }
     }
 
-    /// Esc behaviour: clear text filter first, then toggled modifier filter, then
-    /// dismiss. Physically-held modifiers are not cleared — they self-clear on release.
+    /// Shows the disambiguation overlay for `shortcuts` (from an ignored menu).
+    private func showDisambiguation(shortcuts: [Shortcut], keys: String) {
+        guard let model = filterModel else { return }
+        let kmAction = KeyMinderActions.action(for: keys, onOpenSettings: { [weak self] in
+            self?.onOpenSettings()
+        })
+        withAnimation {
+            model.disambiguation = DisambiguationState(
+                shortcuts: shortcuts,
+                appName: currentAppName,
+                keyMinderAction: kmAction
+            )
+        }
+    }
+
+    /// Esc behaviour: clear disambiguation first, then text filter, then toggled
+    /// modifier filter, then favourites filter, then dismiss.
     @discardableResult
     private func handleEscape() -> Bool {
+        if let filterModel, filterModel.disambiguation != nil {
+            withAnimation { filterModel.disambiguation = nil }
+            return true
+        }
         if let filterModel, filterModel.hasQuery {
             filterModel.query = ""
             return true

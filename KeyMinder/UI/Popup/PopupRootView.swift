@@ -211,6 +211,12 @@ final class PopupFilterModel {
         UserDefaults.standard.popupTipIndex = tipIndex
     }
 
+    // MARK: Disambiguation
+
+    /// When set, the popup shows an overlay asking the user what to do with a
+    /// shortcut from an ignored menu. Cleared by the overlay's action buttons or Esc.
+    var disambiguation: DisambiguationState? = nil
+
     // MARK: Growth nudges
 
     /// The nudge to display, or nil when not yet triggered or already dismissed.
@@ -226,6 +232,19 @@ final class PopupFilterModel {
     func dismissNudge() {
         UserDefaults.standard.didPromptGitHubStar = true
     }
+}
+
+// MARK: - Disambiguation
+
+/// State for the in-popup disambiguation overlay, shown when the user presses a
+/// chord matching a shortcut from an ignored menu (e.g. the Apple menu).
+struct DisambiguationState {
+    /// Matching shortcuts from ignored menus (usually one; may be multiple on key conflict).
+    let shortcuts: [Shortcut]
+    /// Display name of the frontmost app, used in button labels.
+    let appName: String
+    /// A KeyMinder-native action for the same key combo, if one exists.
+    let keyMinderAction: KeyMinderAction?
 }
 
 // MARK: - PopupTip
@@ -349,6 +368,23 @@ private struct FilterableShortcutsView: View {
         // Task inherits @MainActor from the .onAppear closure, giving identical
         // deferral semantics to DispatchQueue.main.async without Dispatch.
         .onAppear { Task { searchFocused = true } }
+        .overlay {
+            if let d = model.disambiguation {
+                DisambiguationOverlay(
+                    state: d,
+                    onActivateAppShortcut: { shortcut in
+                        model.disambiguation = nil
+                        onActivate(shortcut)
+                    },
+                    onChooseKMAction: { action in
+                        model.disambiguation = nil
+                        action()
+                    }
+                )
+                .transition(.opacity.combined(with: .scale(0.96)))
+            }
+        }
+        .animation(.easeOut(duration: 0.12), value: model.disambiguation != nil)
     }
 
     @ViewBuilder
@@ -980,6 +1016,97 @@ private struct NudgeBannerView: View {
                 )
         )
         .transition(.opacity.animation(.easeOut(duration: 0.15)))
+    }
+}
+
+// MARK: - DisambiguationOverlay
+
+/// Covers the shortcut grid when the user presses a key combo that belongs to
+/// a hidden (ignored) menu. Lets the user choose whether to execute the action
+/// in the frontmost app, in KeyMinder itself, or to cancel.
+private struct DisambiguationOverlay: View {
+    let state: DisambiguationState
+    /// Called for app shortcuts — hides the popup and AX-activates the shortcut.
+    let onActivateAppShortcut: (Shortcut) -> Void
+    /// Called for KeyMinder actions and cancel — clears the overlay then runs the closure.
+    let onChooseKMAction: (@escaping () -> Void) -> Void
+
+    var body: some View {
+        ZStack {
+            // Dim the grid behind the card.
+            Color.black.opacity(0.18)
+                .ignoresSafeArea()
+
+            VStack(alignment: .leading, spacing: 12) {
+                Text("What should happen?")
+                    .font(.headline)
+
+                VStack(alignment: .leading, spacing: 8) {
+                    ForEach(state.shortcuts) { shortcut in
+                        Button {
+                            onActivateAppShortcut(shortcut)
+                        } label: {
+                            Label {
+                                Text(verbatim: "\(shortcut.title)  in \(state.appName)")
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                            } icon: {
+                                Image(systemName: "arrow.right.circle")
+                            }
+                        }
+                        .buttonStyle(DisambiguationButtonStyle(isPrimary: true))
+                    }
+
+                    if let km = state.keyMinderAction {
+                        let handler = km.handler
+                        Button {
+                            onChooseKMAction { handler() }
+                        } label: {
+                            Label {
+                                Text(verbatim: km.title)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                            } icon: {
+                                Image(systemName: "k.circle")
+                            }
+                        }
+                        .buttonStyle(DisambiguationButtonStyle(isPrimary: false))
+                    }
+
+                    Button {
+                        onChooseKMAction {}
+                    } label: {
+                        Text("Cancel")
+                            .frame(maxWidth: .infinity, alignment: .center)
+                    }
+                    .buttonStyle(DisambiguationButtonStyle(isPrimary: false))
+                }
+            }
+            .padding(16)
+            .frame(maxWidth: 300)
+            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: Theme.cornerRadius))
+            .overlay(
+                RoundedRectangle(cornerRadius: Theme.cornerRadius)
+                    .strokeBorder(Color.primary.opacity(0.10), lineWidth: 1)
+            )
+            .shadow(color: .black.opacity(0.18), radius: 12, y: 4)
+        }
+    }
+}
+
+private struct DisambiguationButtonStyle: ButtonStyle {
+    let isPrimary: Bool
+
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(.callout)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 7)
+            .background(
+                RoundedRectangle(cornerRadius: 7)
+                    .fill(configuration.isPressed
+                          ? Color.primary.opacity(0.10)
+                          : (isPrimary ? ThemeSettings.shared.keyAccent.opacity(0.12) : Color.primary.opacity(0.05)))
+            )
+            .foregroundStyle(isPrimary ? ThemeSettings.shared.keyAccent : Color.primary)
     }
 }
 

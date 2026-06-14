@@ -25,6 +25,7 @@ private struct PrecacheKey: Equatable {
 private struct MenuCache {
     let key: PrecacheKey
     let sections: [MenuSection]
+    let ignoredShortcuts: [Shortcut]
     let storedAt: Date
     static let ttl: TimeInterval = 20
     var isExpired: Bool { Date().timeIntervalSince(storedAt) > Self.ttl }
@@ -179,7 +180,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     /// the outer task does not stop an in-flight scrape. Awaiting it first ensures
     /// at most one AX traversal runs at any time. Also used for pre-cache tasks
     /// started on app switch (at .utility priority).
-    private var detachedScrapeTask: Task<[MenuSection], Never>?
+    private var detachedScrapeTask: Task<([MenuSection], [Shortcut]), Never>?
     /// Params the current `detachedScrapeTask` was started with (nil for user-triggered scrapes).
     private var preCacheKey: PrecacheKey?
     /// Most-recent completed scrape result; checked before starting a fresh scrape.
@@ -237,10 +238,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             // Drain any in-flight AX traversal before starting a new one.
             // If it was a pre-cache for exactly this invocation, keep the result.
             if let previous = self.detachedScrapeTask {
-                let drained = await previous.value
+                let (drained, drainedIgnored) = await previous.value
                 self.detachedScrapeTask = nil
                 if self.preCacheKey == cacheKey {
-                    self.menuCache = MenuCache(key: cacheKey, sections: drained, storedAt: Date())
+                    self.menuCache = MenuCache(key: cacheKey, sections: drained,
+                                              ignoredShortcuts: drainedIgnored, storedAt: Date())
                 }
                 self.preCacheKey = nil
             }
@@ -251,18 +253,23 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
             // Use the cache if it's fresh and matches this invocation's settings.
             let sections: [MenuSection]
+            let ignoredShortcuts: [Shortcut]
             if let hit = self.menuCache, hit.matches(cacheKey) {
                 sections = hit.sections
+                ignoredShortcuts = hit.ignoredShortcuts
             } else {
                 let work = Task.detached(priority: .userInitiated) {
-                    MenuScraper.scrape(pid: pid, includeItemsWithoutShortcuts: includeAll,
-                                       ignoredTitles: ignoredTitles, ignoredMenuTitles: ignoredMenuTitles,
-                                       maxShortcutFreeSubmenuSize: maxSubmenuSize)
+                    let s = MenuScraper.scrape(pid: pid, includeItemsWithoutShortcuts: includeAll,
+                                               ignoredTitles: ignoredTitles, ignoredMenuTitles: ignoredMenuTitles,
+                                               maxShortcutFreeSubmenuSize: maxSubmenuSize)
+                    let ignored = MenuScraper.scrapeIgnoredMenus(pid: pid, ignoredMenuTitles: ignoredMenuTitles)
+                    return (s, ignored)
                 }
                 self.detachedScrapeTask = work
-                sections = await work.value
+                (sections, ignoredShortcuts) = await work.value
                 self.detachedScrapeTask = nil
-                self.menuCache = MenuCache(key: cacheKey, sections: sections, storedAt: Date())
+                self.menuCache = MenuCache(key: cacheKey, sections: sections,
+                                          ignoredShortcuts: ignoredShortcuts, storedAt: Date())
             }
 
             guard !Task.isCancelled else { return }
@@ -272,13 +279,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                let sys = SystemShortcutsProvider.load() {
                 allSections.append(sys)
             }
-            let shortcuts = AppShortcuts(
+            var shortcuts = AppShortcuts(
                 appName: appName,
                 bundleIdentifier: bundleID,
                 icon: icon,
                 sections: allSections,
                 includesItemsWithoutShortcuts: includeAll
             )
+            shortcuts.ignoredMenuShortcuts = ignoredShortcuts
             popup.show(.shortcuts(shortcuts))
         }
     }
@@ -311,7 +319,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         preCacheKey = key
         detachedScrapeTask = Task.detached(priority: .utility) {
-            MenuScraper.scrape(pid: pid, ignoredTitles: ignoredTitles, ignoredMenuTitles: ignoredMenuTitles)
+            let s = MenuScraper.scrape(pid: pid, ignoredTitles: ignoredTitles, ignoredMenuTitles: ignoredMenuTitles)
+            let ignored = MenuScraper.scrapeIgnoredMenus(pid: pid, ignoredMenuTitles: ignoredMenuTitles)
+            return (s, ignored)
         }
     }
 

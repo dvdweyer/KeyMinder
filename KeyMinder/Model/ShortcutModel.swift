@@ -82,6 +82,10 @@ struct AppShortcuts {
     let sections: [MenuSection]
     /// True when the scrape included items without key equivalents (all-entries mode).
     let includesItemsWithoutShortcuts: Bool
+    /// Shortcuts from menus that are hidden from the popup (e.g. the Apple menu).
+    /// Not displayed, but used to offer chord disambiguation when the user presses
+    /// one of these key combos while the popup is open.
+    var ignoredMenuShortcuts: [Shortcut] = []
 
     var isEmpty: Bool { sections.allSatisfy { $0.shortcuts.allSatisfy(\.isSeparator) } }
 

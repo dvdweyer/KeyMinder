@@ -47,6 +47,24 @@ enum MenuScraper {
         return sections
     }
 
+    /// Scrapes only the menus whose titles match `ignoredMenuTitles` and returns
+    /// their shortcuts as a flat list. Used to enable chord disambiguation for
+    /// shortcuts that are intentionally hidden from the popup display.
+    static func scrapeIgnoredMenus(pid: pid_t, ignoredMenuTitles: [String]) -> [Shortcut] {
+        guard !ignoredMenuTitles.isEmpty else { return [] }
+        let app = AXUIElementCreateApplication(pid)
+        AXUIElementSetMessagingTimeout(app, 1.0)
+        guard let menuBar = element(app, kAXMenuBarAttribute) else { return [] }
+        var result: [Shortcut] = []
+        for menuBarItem in children(menuBar) {
+            let title = string(menuBarItem, kAXTitleAttribute) ?? ""
+            guard IgnoreListStore.isIgnored(title: title, patterns: ignoredMenuTitles) else { continue }
+            guard let menu = children(menuBarItem).first else { continue }
+            result.append(contentsOf: collectShortcutsFlat(in: menu))
+        }
+        return result
+    }
+
     /// Walks the direct children of `menu` and returns shortcut groups:
     /// one unnamed group for top-level items, then one named group per submenu
     /// that has at least one item. Sub-submenus (depth > 2) are flattened into
