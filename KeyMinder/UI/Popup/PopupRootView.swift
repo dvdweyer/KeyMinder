@@ -1069,6 +1069,12 @@ private struct DisambiguationOverlay: View {
                             }
                         }
                         .buttonStyle(DisambiguationButtonStyle(isPrimary: false))
+                        if let note = km.note {
+                            Text(verbatim: note)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .padding(.horizontal, 4)
+                        }
                     }
 
                     Button {

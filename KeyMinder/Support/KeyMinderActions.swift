@@ -4,6 +4,7 @@ import AppKit
 /// presses a shortcut that belongs to an ignored menu in the frontmost app.
 struct KeyMinderAction {
     let title: String
+    var note: String? = nil
     let handler: () -> Void
 }
 
@@ -24,7 +25,10 @@ enum KeyMinderActions {
             return KeyMinderAction(title: String(localized: "Open KeyMinder Settings")) { fn() }
         case "⌘W":
             guard let fn = onClose else { return nil }
-            return KeyMinderAction(title: String(localized: "Close KeyMinder Popup")) { fn() }
+            return KeyMinderAction(
+                title: String(localized: "Close KeyMinder Popup"),
+                note: String(localized: "Tip: press Esc to dismiss the popup")
+            ) { fn() }
         default:
             return nil
         }
