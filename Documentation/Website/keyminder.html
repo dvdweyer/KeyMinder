@@ -525,10 +525,10 @@
   },
   "description": "A macOS menu bar app that instantly shows the keyboard shortcuts of whichever app you're currently using, grouped by menu.",
   "url": "https://keyminder.app/",
-  "downloadUrl": "https://keyminder.app/KeyMinder_1.0.118.zip",
-  "softwareVersion": "1.0.118",
+  "downloadUrl": "https://keyminder.app/KeyMinder_1.0.122.zip",
+  "softwareVersion": "1.0.122",
   "datePublished": "2026-05-25",
-  "dateModified": "2026-06-12",
+  "dateModified": "2026-06-14",
   "featureList": "Show keyboard shortcuts for any macOS app, Grouped by menu, Search by command name, Filter by modifier key, Click to run command, Pin favourite shortcuts, Double-tap trigger, System shortcuts, Export shortcuts as Markdown, Free and open source",
   "screenshot": [
     {
@@ -557,8 +557,8 @@
   <h1>KeyMinder</h1>
   <p data-de="Eine macOS-Menüleisten-App, die sofort die Tastenkürzel der aktiven App anzeigt. Kostenlos und Open Source.">A macOS menu bar app that instantly shows the keyboard shortcuts of whichever app you're currently using. Free and open source.</p>
   <div class="button-row">
-    <a href="KeyMinder_1.0.118.zip" class="btn btn-primary" download data-de="↓ v1.0.118 herunterladen">
-      ↓ Download v1.0.118
+    <a href="KeyMinder_1.0.122.zip" class="btn btn-primary" download data-de="↓ v1.0.122 herunterladen">
+      ↓ Download v1.0.122
     </a>
     <a href="https://github.com/dvdweyer/KeyMinder" class="btn btn-secondary" target="_blank" rel="noopener">
       View on GitHub
@@ -617,7 +617,7 @@
   <div class="section">
     <h2 data-de="Installation">Install</h2>
     <ol class="steps">
-      <li data-de-html="&lt;code&gt;KeyMinder_1.0.118.zip&lt;/code&gt; herunterladen und entpacken">Download and unzip <code>KeyMinder_1.0.118.zip</code></li>
+      <li data-de-html="&lt;code&gt;KeyMinder_1.0.122.zip&lt;/code&gt; herunterladen und entpacken">Download and unzip <code>KeyMinder_1.0.122.zip</code></li>
       <li data-de-html="&lt;code&gt;KeyMinder.app&lt;/code&gt; nach &lt;code&gt;/Applications&lt;/code&gt; verschieben">Move <code>KeyMinder.app</code> to <code>/Applications</code></li>
       <li data-de="KeyMinder öffnen – ein Einrichtungsassistent führt Sie durch die Konfiguration">Open KeyMinder — a welcome wizard guides you through setup</li>
       <li data-de="Dem Assistenten folgen, Bedienungshilfen-Berechtigung erteilen und Auslöser festlegen">Follow the wizard to grant Accessibility permission and choose your trigger</li>
@@ -640,8 +640,22 @@
 
     <div class="changelog-entry">
       <div class="changelog-version">
+        <strong>v1.0.122</strong>
+        <span>Jun 14, 2026 — current</span>
+      </div>
+      <ul>
+        <li>New: <strong>Quiz Mode</strong> — test yourself on your keyboard shortcuts. Right-click the menu bar icon → Quiz Mode… to launch a flash-card session for the frontmost app</li>
+        <li>New: <strong>Ignored Menus</strong> — hide entire top-level menus (e.g. the Apple menu) from the popup. Configure in Settings → Advanced → Ignored Commands</li>
+        <li>The popup now maximises columns and automatically merges a sparse trailing column, so short menus like Help no longer leave a mostly-blank rightmost column</li>
+        <li>Fixed: <strong>Show when filtering</strong> (ignored commands) now correctly hides ignored items at idle and reveals them only when the search query matches — two bugs where they could appear without typing have been resolved</li>
+        <li>All new strings translated into 16 languages</li>
+      </ul>
+    </div>
+
+    <div class="changelog-entry">
+      <div class="changelog-version">
         <strong>v1.0.118</strong>
-        <span>Jun 11, 2026 — current</span>
+        <span>Jun 11, 2026</span>
       </div>
       <ul>
         <li>Fixed popup latency in apps with large menus (e.g. Safari) when <strong>Show all menu entries</strong> is on — pre-caching is now skipped in this mode, avoiding a slow background scrape that could block the popup</li>
