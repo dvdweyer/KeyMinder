@@ -160,6 +160,13 @@ final class SettingsModel {
         }
     }
 
+    var menuBarIconStyle: MenuBarIconStyle = UserDefaults.standard.menuBarIconStyle {
+        didSet {
+            UserDefaults.standard.menuBarIconStyle = menuBarIconStyle
+            NotificationCenter.default.post(name: .menuBarIconStyleChanged, object: nil)
+        }
+    }
+
     var showConflictIndicator: Bool = UserDefaults.standard.showConflictIndicator {
         didSet { UserDefaults.standard.showConflictIndicator = showConflictIndicator }
     }
@@ -391,6 +398,18 @@ private struct GeneralSettingsView: View {
 
             Text("Appearance")
                 .font(.headline)
+
+            Text("Menu bar icon")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+
+            Picker("Menu bar icon", selection: $model.menuBarIconStyle) {
+                ForEach(MenuBarIconStyle.allCases, id: \.self) { style in
+                    Text(style.label).tag(style)
+                }
+            }
+            .pickerStyle(.segmented)
+            .labelsHidden()
 
             Text("Colour used for keyboard shortcut glyphs in the popup.")
                 .font(.subheadline)
@@ -1080,6 +1099,7 @@ extension UserDefaults {
 
 extension Notification.Name {
     static let receiveBetaUpdatesChanged = Notification.Name("org.afaik.KeyMinder.receiveBetaUpdatesChanged")
+    static let menuBarIconStyleChanged   = Notification.Name("org.afaik.KeyMinder.menuBarIconStyleChanged")
 }
 
 // MARK: - HotkeyBadge

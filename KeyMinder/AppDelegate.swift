@@ -45,6 +45,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusItem: NSStatusItem?
     private var hintPopover: NSPopover?
     private var betaChannelObserver: NSObjectProtocol?
+    private var iconStyleObserver: NSObjectProtocol?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
@@ -75,6 +76,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         ) { [weak self] _ in
             MainActor.assumeIsolated {
                 self?.updaterController.updater.resetUpdateCycleAfterShortDelay()
+            }
+        }
+        iconStyleObserver = NotificationCenter.default.addObserver(
+            forName: .menuBarIconStyleChanged,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            MainActor.assumeIsolated {
+                self?.updateMenuBarIcon()
             }
         }
     }
@@ -128,13 +138,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private func setupStatusItem() {
         let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         if let button = item.button {
-            button.image = NSImage(systemSymbolName: "keyboard", accessibilityDescription: "KeyMinder")
-            button.image?.isTemplate = true
+            button.image = UserDefaults.standard.menuBarIconStyle.makeImage()
             button.target = self
             button.action = #selector(statusItemClicked)
             button.sendAction(on: [.leftMouseUp, .rightMouseUp])
         }
         statusItem = item
+    }
+
+    private func updateMenuBarIcon() {
+        statusItem?.button?.image = UserDefaults.standard.menuBarIconStyle.makeImage()
     }
 
     @objc private func statusItemClicked() {
