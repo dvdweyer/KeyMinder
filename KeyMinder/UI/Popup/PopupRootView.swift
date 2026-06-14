@@ -217,6 +217,11 @@ final class PopupFilterModel {
     /// shortcut from an ignored menu. Cleared by the overlay's action buttons or Esc.
     var disambiguation: DisambiguationState? = nil
 
+    /// Index of the currently focused button in the disambiguation overlay.
+    /// 0 = first app-shortcut button; buttons follow the same order as rendered.
+    /// Reset to 0 whenever a new disambiguation state is shown.
+    var disambiguationFocusedIndex: Int = 0
+
     // MARK: Growth nudges
 
     /// The nudge to display, or nil when not yet triggered or already dismissed.
@@ -245,6 +250,9 @@ struct DisambiguationState {
     let appName: String
     /// A KeyMinder-native action for the same key combo, if one exists.
     let keyMinderAction: KeyMinderAction?
+
+    /// Total number of buttons rendered: app shortcuts + optional KM action + Cancel.
+    var buttonCount: Int { shortcuts.count + (keyMinderAction != nil ? 1 : 0) + 1 }
 }
 
 // MARK: - PopupTip
@@ -372,6 +380,7 @@ private struct FilterableShortcutsView: View {
             if let d = model.disambiguation {
                 DisambiguationOverlay(
                     state: d,
+                    focusedIndex: model.disambiguationFocusedIndex,
                     onActivateAppShortcut: { shortcut in
                         model.disambiguation = nil
                         onActivate(shortcut)
@@ -1026,6 +1035,8 @@ private struct NudgeBannerView: View {
 /// in the frontmost app, in KeyMinder itself, or to cancel.
 private struct DisambiguationOverlay: View {
     let state: DisambiguationState
+    /// Index of the keyboard-focused button (driven by Tab in PopupController).
+    let focusedIndex: Int
     /// Called for app shortcuts — hides the popup and AX-activates the shortcut.
     let onActivateAppShortcut: (Shortcut) -> Void
     /// Called for KeyMinder actions and cancel — clears the overlay then runs the closure.
@@ -1042,7 +1053,7 @@ private struct DisambiguationOverlay: View {
                     .font(.headline)
 
                 VStack(alignment: .leading, spacing: 8) {
-                    ForEach(state.shortcuts) { shortcut in
+                    ForEach(Array(state.shortcuts.enumerated()), id: \.offset) { i, shortcut in
                         Button {
                             onActivateAppShortcut(shortcut)
                         } label: {
@@ -1053,10 +1064,11 @@ private struct DisambiguationOverlay: View {
                                 Image(systemName: "arrow.right.circle")
                             }
                         }
-                        .buttonStyle(DisambiguationButtonStyle(isPrimary: true))
+                        .buttonStyle(DisambiguationButtonStyle(isPrimary: true, isFocused: focusedIndex == i))
                     }
 
                     if let km = state.keyMinderAction {
+                        let kmIndex = state.shortcuts.count
                         let handler = km.handler
                         Button {
                             onChooseKMAction { handler() }
@@ -1068,7 +1080,7 @@ private struct DisambiguationOverlay: View {
                                 Image(systemName: "k.circle")
                             }
                         }
-                        .buttonStyle(DisambiguationButtonStyle(isPrimary: false))
+                        .buttonStyle(DisambiguationButtonStyle(isPrimary: false, isFocused: focusedIndex == kmIndex))
                         if let note = km.note {
                             Text(verbatim: note)
                                 .font(.caption)
@@ -1077,13 +1089,14 @@ private struct DisambiguationOverlay: View {
                         }
                     }
 
+                    let cancelIndex = state.buttonCount - 1
                     Button {
                         onChooseKMAction {}
                     } label: {
                         Text("Cancel")
                             .frame(maxWidth: .infinity, alignment: .center)
                     }
-                    .buttonStyle(DisambiguationButtonStyle(isPrimary: false))
+                    .buttonStyle(DisambiguationButtonStyle(isPrimary: false, isFocused: focusedIndex == cancelIndex))
                 }
             }
             .padding(16)
@@ -1100,6 +1113,7 @@ private struct DisambiguationOverlay: View {
 
 private struct DisambiguationButtonStyle: ButtonStyle {
     let isPrimary: Bool
+    var isFocused: Bool = false
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
@@ -1111,6 +1125,11 @@ private struct DisambiguationButtonStyle: ButtonStyle {
                     .fill(configuration.isPressed
                           ? Color.primary.opacity(0.10)
                           : (isPrimary ? ThemeSettings.shared.keyAccent.opacity(0.12) : Color.primary.opacity(0.05)))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 7)
+                    .strokeBorder(ThemeSettings.shared.keyAccent, lineWidth: 1.5)
+                    .opacity(isFocused ? 1 : 0)
             )
             .foregroundStyle(isPrimary ? ThemeSettings.shared.keyAccent : Color.primary)
     }

@@ -441,7 +441,14 @@ final class PopupController {
                     _ = self.handleEscape()
                     return nil
                 case 48: // Tab
-                    if event.modifierFlags.contains(.shift) {
+                    if let model = self.filterModel, let d = model.disambiguation {
+                        let count = d.buttonCount
+                        if event.modifierFlags.contains(.shift) {
+                            model.disambiguationFocusedIndex = (model.disambiguationFocusedIndex - 1 + count) % count
+                        } else {
+                            model.disambiguationFocusedIndex = (model.disambiguationFocusedIndex + 1) % count
+                        }
+                    } else if event.modifierFlags.contains(.shift) {
                         self.filterModel?.selectPrevious()
                     } else {
                         self.filterModel?.selectNext()
@@ -451,6 +458,21 @@ final class PopupController {
                 //     Disabled: ⌘ activates the command-key modifier filter before D is read.
                 //     Planned replacement: long-press F (no modifier).
                 case 36, 76: // Return / numpad Enter
+                    if let model = self.filterModel, let d = model.disambiguation {
+                        let idx = model.disambiguationFocusedIndex
+                        if idx < d.shortcuts.count {
+                            let shortcut = d.shortcuts[idx]
+                            model.disambiguation = nil
+                            self.activate(shortcut)
+                        } else if let km = d.keyMinderAction, idx == d.shortcuts.count {
+                            let handler = km.handler
+                            model.disambiguation = nil
+                            handler()
+                        } else {
+                            withAnimation { model.disambiguation = nil }
+                        }
+                        return nil
+                    }
                     if let shortcut = self.filterModel?.selectedShortcut {
                         self.activate(shortcut)
                         return nil
@@ -551,6 +573,7 @@ final class PopupController {
         let kmAction = KeyMinderActions.action(for: keys,
                                                onOpenSettings: { [weak self] in self?.onOpenSettings() },
                                                onClose: { [weak self] in self?.hide() })
+        model.disambiguationFocusedIndex = 0
         withAnimation {
             model.disambiguation = DisambiguationState(
                 shortcuts: shortcuts,
