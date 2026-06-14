@@ -296,6 +296,11 @@ find "$SITE_DIR" \
 echo "--- Deploying via rsync…"
 (cd "$(dirname "$DEPLOY_SH")" && bash "$(basename "$DEPLOY_SH")" app.keyminder)
 
+echo ""
+echo "--- Purging Cloudflare cache…"
+bash "$SCRIPT_DIR/purge-cf-cache.sh" \
+    || echo "warning: CF purge failed — check CF_ZONE_ID/CF_API_TOKEN in scripts/.env"
+
 # ── Local install (full-deploy only) ─────────────────────────────────────────
 if [[ "$MODE" == "full-deploy" ]]; then
     echo ""
