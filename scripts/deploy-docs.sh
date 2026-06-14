@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: GPL-3.0-or-later
 # Copies Documentation/Website/ to the local website and rsyncs to the server.
 # Use this for HTML-only updates that don't need a new binary.
 set -euo pipefail

@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: GPL-3.0-or-later
 # Pre-deploy preparation for KeyMinder.
 #
 # Run this BEFORE scripts/release.sh. It:

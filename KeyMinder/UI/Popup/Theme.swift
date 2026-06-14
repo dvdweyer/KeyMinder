@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
 import SwiftUI
 
 /// Centralized colors/metrics for the popup. All colors are semantic or system colors

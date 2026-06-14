@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: GPL-3.0-or-later
 # Updates Distribution/Casks/keyminder.rb with the new version + SHA256,
 # then syncs to the local tap repo clone (TAP_REPO_DIR) and pushes if set.
 #

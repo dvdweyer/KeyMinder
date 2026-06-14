@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
 import AppKit
 
 /// A borderless, non-activating floating panel that can still become key (so it

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
 import ServiceManagement
 
 /// Wraps `SMAppService.mainApp` to register / unregister KeyMinder as a login item.

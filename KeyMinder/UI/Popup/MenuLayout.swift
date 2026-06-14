@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
 import CoreGraphics
 
 /// Lays out menu sections into columns, preserving their menu-bar order, and

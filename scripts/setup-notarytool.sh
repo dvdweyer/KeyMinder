@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: GPL-3.0-or-later
 # Run once to store Apple notarization credentials in the macOS keychain.
 # After this, release.sh can notarize without interactive prompts.
 #

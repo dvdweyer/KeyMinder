@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
 import AppKit
 
 /// A KeyMinder-native action that can be offered as an alternative when the user

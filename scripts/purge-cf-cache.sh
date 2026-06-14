@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: GPL-3.0-or-later
 # Purge Cloudflare cache for keyminder.app after a release.
 #
 # Usage:

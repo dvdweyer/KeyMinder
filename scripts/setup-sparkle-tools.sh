@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: GPL-3.0-or-later
 # Downloads the Sparkle developer tools (generate_keys, generate_appcast, sign_update)
 # from the latest GitHub release and installs them to ~/.sparkle-tools/bin/.
 #

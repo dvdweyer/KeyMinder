@@ -45,4 +45,8 @@ open /Applications/KeyMinder.app
 
 ## License
 
-MIT
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+
+GPL-3.0-or-later
+
+As of v1.0.129, KeyMinder is licensed under the GNU General Public License v3 (GPLv3). Prior releases remain available under the MIT License.

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
 import AppKit
 
 /// Tracks how many "dock-visible" windows (Settings, About) are open and

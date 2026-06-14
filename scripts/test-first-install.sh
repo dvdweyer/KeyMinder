@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: GPL-3.0-or-later
 # Reset KeyMinder's state to simulate a first-install experience.
 # Quits the app if running; does NOT relaunch it.
 #

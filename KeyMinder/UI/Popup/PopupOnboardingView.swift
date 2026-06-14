@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
 import SwiftUI
 
 /// Shown in the popup when KeyMinder doesn't yet have Accessibility permission.

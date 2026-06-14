@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: GPL-3.0-or-later
 # Watches Documentation/Website/ and auto-deploys on every save.
 # Run this in a terminal while editing keyminder.html.
 set -euo pipefail
