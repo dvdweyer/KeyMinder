@@ -160,17 +160,26 @@ final class SettingsModel {
         }
     }
 
-    var menuBarIconStyle: MenuBarIconStyle = UserDefaults.standard.menuBarIconStyle {
+    private(set) var menuBarIconStyle: MenuBarIconStyle = UserDefaults.standard.menuBarIconStyle {
         didSet {
             UserDefaults.standard.menuBarIconStyle = menuBarIconStyle
             NotificationCenter.default.post(name: .menuBarIconStyleChanged, object: nil)
         }
     }
 
-    var appIconVariant: AppIconVariant = UserDefaults.standard.appIconVariant {
+    private(set) var appIconVariant: AppIconVariant = UserDefaults.standard.appIconVariant {
         didSet {
             UserDefaults.standard.appIconVariant = appIconVariant
             appIconVariant.apply()
+        }
+    }
+
+    var matchAppIconToTrigger: Bool = UserDefaults.standard.matchAppIconToTrigger {
+        didSet {
+            UserDefaults.standard.matchAppIconToTrigger = matchAppIconToTrigger
+            if matchAppIconToTrigger && doubleTapEnabled {
+                appIconVariant = doubleTapModifier.appIconVariant
+            }
         }
     }
 
@@ -186,6 +195,7 @@ final class SettingsModel {
         didSet {
             UserDefaults.standard.doubleTapEnabled = doubleTapEnabled
             applyDoubleTap()
+            syncIcons()
         }
     }
 
@@ -193,6 +203,7 @@ final class SettingsModel {
         didSet {
             UserDefaults.standard.doubleTapModifier = doubleTapModifier
             applyDoubleTap()
+            syncIcons()
         }
     }
 
@@ -201,6 +212,15 @@ final class SettingsModel {
             DoubleTapTrigger.shared.start(modifier: doubleTapModifier)
         } else {
             DoubleTapTrigger.shared.stop()
+        }
+    }
+
+    private func syncIcons() {
+        if doubleTapEnabled {
+            menuBarIconStyle = doubleTapModifier.menuBarIconStyle
+            if matchAppIconToTrigger { appIconVariant = doubleTapModifier.appIconVariant }
+        } else {
+            menuBarIconStyle = .keyboard
         }
     }
 
@@ -401,34 +421,14 @@ private struct GeneralSettingsView: View {
                 }
             }
 
+            if model.doubleTapEnabled {
+                Toggle("Match app icon to trigger key", isOn: $model.matchAppIconToTrigger)
+            }
+
             Divider()
 
             Text("Appearance")
                 .font(.headline)
-
-            Text("Menu bar icon")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-
-            Picker("Menu bar icon", selection: $model.menuBarIconStyle) {
-                ForEach(MenuBarIconStyle.allCases, id: \.self) { style in
-                    Text(style.label).tag(style)
-                }
-            }
-            .pickerStyle(.segmented)
-            .labelsHidden()
-
-            Text("App icon")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-
-            Picker("App icon", selection: $model.appIconVariant) {
-                ForEach(AppIconVariant.allCases, id: \.self) { variant in
-                    Text(variant.label).tag(variant)
-                }
-            }
-            .pickerStyle(.segmented)
-            .labelsHidden()
 
             Text("Colour used for keyboard shortcut glyphs in the popup.")
                 .font(.subheadline)

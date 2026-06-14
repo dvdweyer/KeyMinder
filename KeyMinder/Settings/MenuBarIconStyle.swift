@@ -54,10 +54,36 @@ enum MenuBarIconStyle: Int, CaseIterable {
 // MARK: - UserDefaults
 
 extension UserDefaults {
-    private static let menuBarIconStyleKey = "menuBarIconStyle"
+    private static let menuBarIconStyleKey      = "menuBarIconStyle"
+    private static let matchAppIconToTriggerKey = "matchAppIconToTrigger"
 
     var menuBarIconStyle: MenuBarIconStyle {
         get { MenuBarIconStyle(rawValue: integer(forKey: Self.menuBarIconStyleKey)) ?? .keyboard }
         set { set(newValue.rawValue, forKey: Self.menuBarIconStyleKey) }
+    }
+
+    var matchAppIconToTrigger: Bool {
+        get { bool(forKey: Self.matchAppIconToTriggerKey) }
+        set { set(newValue, forKey: Self.matchAppIconToTriggerKey) }
+    }
+}
+
+// MARK: - DoubleTapModifier icon mappings
+
+extension DoubleTapModifier {
+    var menuBarIconStyle: MenuBarIconStyle {
+        switch self {
+        case .command: .command
+        case .option:  .option
+        case .control: .control
+        }
+    }
+
+    var appIconVariant: AppIconVariant {
+        switch self {
+        case .command: .command
+        case .option:  .option
+        case .control: .control
+        }
     }
 }
