@@ -12,7 +12,7 @@ enum KeyMinderActions {
     /// `onOpenSettings` is passed in so the caller controls the Settings flow.
     static func action(for keys: String, onOpenSettings: (() -> Void)?) -> KeyMinderAction? {
         switch keys {
-        case "⌘Q":
+        case "⌘Q", "⌥⌘Q":
             return KeyMinderAction(title: String(localized: "Quit KeyMinder")) {
                 NSApp.terminate(nil)
             }

@@ -461,8 +461,15 @@ final class PopupController {
                     // matches the key combo → invoke it directly.
                     let flags = event.modifierFlags
                     if flags.contains(.command) || flags.contains(.control) {
-                        if let shortcut = self.matchShortcutEvent(event) {
-                            self.activate(shortcut)
+                        if let shortcut = self.matchShortcutEvent(event),
+                           let keysStr = ShortcutFormatter.keys(from: event) {
+                            // If the key also maps to a KeyMinder action, show
+                            // disambiguation rather than immediately invoking.
+                            if KeyMinderActions.action(for: keysStr, onOpenSettings: nil) != nil {
+                                self.showDisambiguation(shortcuts: [shortcut], keys: keysStr)
+                            } else {
+                                self.activate(shortcut)
+                            }
                             return nil
                         }
                         // No visible match — check shortcuts from ignored menus.
