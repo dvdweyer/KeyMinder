@@ -465,7 +465,9 @@ final class PopupController {
                            let keysStr = ShortcutFormatter.keys(from: event) {
                             // If the key also maps to a KeyMinder action, show
                             // disambiguation rather than immediately invoking.
-                            if KeyMinderActions.action(for: keysStr, onOpenSettings: nil) != nil {
+                            if KeyMinderActions.action(for: keysStr,
+                                                       onOpenSettings: { [weak self] in self?.onOpenSettings() },
+                                                       onClose: { [weak self] in self?.hide() }) != nil {
                                 self.showDisambiguation(shortcuts: [shortcut], keys: keysStr)
                             } else {
                                 self.activate(shortcut)
@@ -546,9 +548,9 @@ final class PopupController {
     /// Shows the disambiguation overlay for `shortcuts` (from an ignored menu).
     private func showDisambiguation(shortcuts: [Shortcut], keys: String) {
         guard let model = filterModel else { return }
-        let kmAction = KeyMinderActions.action(for: keys, onOpenSettings: { [weak self] in
-            self?.onOpenSettings()
-        })
+        let kmAction = KeyMinderActions.action(for: keys,
+                                               onOpenSettings: { [weak self] in self?.onOpenSettings() },
+                                               onClose: { [weak self] in self?.hide() })
         withAnimation {
             model.disambiguation = DisambiguationState(
                 shortcuts: shortcuts,

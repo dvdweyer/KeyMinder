@@ -9,8 +9,11 @@ struct KeyMinderAction {
 
 enum KeyMinderActions {
     /// Returns the KeyMinder-native action for a given key string, if one exists.
-    /// `onOpenSettings` is passed in so the caller controls the Settings flow.
-    static func action(for keys: String, onOpenSettings: (() -> Void)?) -> KeyMinderAction? {
+    /// Pass closures only for the actions you want to support; a nil closure
+    /// suppresses the corresponding case (so the option isn't shown).
+    static func action(for keys: String,
+                       onOpenSettings: (() -> Void)?,
+                       onClose: (() -> Void)? = nil) -> KeyMinderAction? {
         switch keys {
         case "⌘Q", "⌥⌘Q":
             return KeyMinderAction(title: String(localized: "Quit KeyMinder")) {
@@ -19,6 +22,9 @@ enum KeyMinderActions {
         case "⌘,":
             guard let fn = onOpenSettings else { return nil }
             return KeyMinderAction(title: String(localized: "Open KeyMinder Settings")) { fn() }
+        case "⌘W":
+            guard let fn = onClose else { return nil }
+            return KeyMinderAction(title: String(localized: "Close KeyMinder Popup")) { fn() }
         default:
             return nil
         }
