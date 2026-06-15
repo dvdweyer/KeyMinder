@@ -124,6 +124,12 @@
             "state": "translated",
             "value": " sürebilir."
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": " untuk muncul."
+          }
         }
       }
     },
@@ -256,6 +262,12 @@
             "state": "translated",
             "value": "%1$@ %2$@"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ %2$@"
+          }
         }
       }
     },
@@ -381,6 +393,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ için test edilecek klavye kısayolu yok."
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ tidak memiliki pintasan keyboard untuk dikuis."
           }
         }
       }
@@ -510,6 +528,12 @@
           }
         },
         "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld / %2$lld"
+          }
+        },
+        "id": {
           "stringUnit": {
             "state": "translated",
             "value": "%1$lld / %2$lld"
@@ -645,6 +669,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$lld doğru · %2$lld yanlış"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld benar · %2$lld salah"
           }
         }
       }
@@ -999,6 +1029,12 @@
             "state": "translated",
             "value": "%lld menü öğesi"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld item menu"
+          }
         }
       }
     },
@@ -1123,6 +1159,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%lld / %lld"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld dari %lld"
           }
         }
       }
@@ -1477,6 +1519,12 @@
             "state": "translated",
             "value": "%lld kısayol"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld pintasan"
+          }
         }
       }
     },
@@ -1602,6 +1650,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%lld%% doğru"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld%% benar"
           }
         }
       }
@@ -1831,6 +1885,12 @@
             "state": "translated",
             "value": "Bir sütuna sığmayan uzun bir menü, menü adı tekrarlanarak bir sonraki sütunda devam eder."
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Menu panjang yang tidak muat dalam satu kolom dilanjutkan di kolom berikutnya dengan nama menu diulang."
+          }
         }
       }
     },
@@ -1955,6 +2015,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "KeyMinder Hakkında"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tentang KeyMinder"
           }
         }
       }
@@ -2082,6 +2148,12 @@
             "state": "translated",
             "value": "Erişim verildi"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Akses diberikan"
+          }
         }
       }
     },
@@ -2207,6 +2279,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ekle"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tambah"
           }
         }
       }
@@ -2334,6 +2412,12 @@
             "state": "translated",
             "value": "Uygulama Kuralı Ekle…"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tambah Aturan Aplikasi…"
+          }
         }
       }
     },
@@ -2459,6 +2543,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Uygulamaya Özel Kural Ekle"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tambah Aturan Khusus Aplikasi"
           }
         }
       }
@@ -2586,6 +2676,12 @@
             "state": "translated",
             "value": "Uygulama Ekle…"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tambah Aplikasi…"
+          }
         }
       }
     },
@@ -2711,6 +2807,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Genel Kural Ekle…"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tambah Aturan Global…"
           }
         }
       }
@@ -2838,6 +2940,12 @@
             "state": "translated",
             "value": "Yoksayılan Komut Ekle"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tambah Perintah yang Diabaikan"
+          }
         }
       }
     },
@@ -2964,6 +3072,12 @@
             "state": "translated",
             "value": "Menü Ekle…"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tambah Menu…"
+          }
         }
       }
     },
@@ -3089,6 +3203,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sık kullanılanlara ekle"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tambahkan ke favorit"
           }
         }
       }
@@ -3217,6 +3337,12 @@
             "state": "translated",
             "value": "Gelişmiş"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lanjutan"
+          }
         }
       }
     },
@@ -3342,6 +3468,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tüm Uygulamalar"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Semua Aplikasi"
           }
         }
       }
@@ -3469,6 +3601,12 @@
             "state": "translated",
             "value": "Uygulamalarınıza erişime izin verin"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Izinkan akses ke aplikasi Anda"
+          }
         }
       }
     },
@@ -3594,6 +3732,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Neredeyse tamam"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hampir selesai"
           }
         }
       }
@@ -3721,6 +3865,12 @@
             "state": "translated",
             "value": "Uygulama"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aplikasi"
+          }
         }
       }
     },
@@ -3847,6 +3997,12 @@
             "state": "translated",
             "value": "Uygulamaya Özel"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Khusus Aplikasi"
+          }
         }
       }
     },
@@ -3971,6 +4127,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Görünüm"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tampilan"
           }
         }
       }
@@ -4098,6 +4260,12 @@
             "state": "translated",
             "value": "Burada listelenen uygulamalar tamamen atlanır — bu uygulamalar ön plandayken açılır pencere açılmaz."
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aplikasi yang tercantum di sini dilewati sepenuhnya — popup tidak akan terbuka saat aplikasi tersebut berada di depan."
+          }
         }
       }
     },
@@ -4224,6 +4392,12 @@
             "state": "translated",
             "value": "Geri"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kembali"
+          }
         }
       }
     },
@@ -4349,6 +4523,12 @@
             "state": "translated",
             "value": "İptal"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Batalkan"
+          }
         }
       }
     },
@@ -4473,6 +4653,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Değiştir…"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ubah…"
           }
         }
       }
@@ -4600,6 +4786,12 @@
             "state": "translated",
             "value": "Güncellemeleri otomatik denetle"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Periksa pembaruan secara otomatis"
+          }
         }
       }
     },
@@ -4725,6 +4917,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Güncellemeleri Otomatik Denetle"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Periksa Pembaruan Secara Otomatis"
           }
         }
       }
@@ -4852,6 +5050,12 @@
             "state": "translated",
             "value": "Güncellemeleri Denetle…"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Periksa Pembaruan…"
+          }
         }
       }
     },
@@ -4978,6 +5182,12 @@
             "state": "translated",
             "value": "KeyMinder'ı herhangi bir uygulamadan nasıl açacağınızı seçin."
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pilih cara membuka KeyMinder dari aplikasi mana pun."
+          }
         }
       }
     },
@@ -5103,6 +5313,12 @@
             "state": "translated",
             "value": "Temizle"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hapus"
+          }
         }
       }
     },
@@ -5227,6 +5443,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Filtreyi temizle"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hapus filter"
           }
         }
       }
@@ -5354,6 +5576,12 @@
             "state": "translated",
             "value": "Etkin uygulamanın kısayollarını görmek için bu simgeye tıklayın."
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klik ikon ini untuk menampilkan pintasan aplikasi yang aktif."
+          }
         }
       }
     },
@@ -5480,6 +5708,12 @@
             "state": "translated",
             "value": "KeyMinder Açılır Penceresini Kapat"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tutup Popup KeyMinder"
+          }
         }
       }
     },
@@ -5604,6 +5838,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Açılır penceredeki klavye kısayolu simgeleri için kullanılan renk."
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Warna yang digunakan untuk simbol pintasan keyboard di popup."
           }
         }
       }
@@ -5731,6 +5971,12 @@
             "state": "translated",
             "value": "Komut başlığı"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Judul perintah"
+          }
         }
       }
     },
@@ -5856,6 +6102,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Burada listelenen komutlar açılır pencereden gizlenir. Bir komut alt menü açıyorsa, alt menünün tamamı da gizlenir."
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Perintah yang tercantum di sini disembunyikan dari popup. Jika perintah membuka submenu, seluruh submenu juga disembunyikan."
           }
         }
       }
@@ -5983,6 +6235,12 @@
             "state": "translated",
             "value": "Tamamlandı"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Selesai"
+          }
         }
       }
     },
@@ -6109,6 +6367,12 @@
             "state": "translated",
             "value": "Doğru: %@"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Benar: %@"
+          }
         }
       }
     },
@@ -6233,6 +6497,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Geliştirici"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pengembang"
           }
         }
       }
@@ -6360,6 +6630,12 @@
             "state": "translated",
             "value": "Yoksay"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abaikan"
+          }
         }
       }
     },
@@ -6485,6 +6761,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "İpucunu kapat"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tutup tips"
           }
         }
       }
@@ -6612,6 +6894,12 @@
             "state": "translated",
             "value": "Tamam"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Selesai"
+          }
         }
       }
     },
@@ -6738,6 +7026,12 @@
             "state": "translated",
             "value": "Çift Dokunma Değiştirici Tuşu"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ketuk Dua Kali Tombol Modifier"
+          }
         }
       }
     },
@@ -6862,6 +7156,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Çift Dokunma Tetikleyici"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pemicu Ketuk Dua Kali"
           }
         }
       }
@@ -6988,6 +7288,12 @@
             "state": "translated",
             "value": "Etkinleştir"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktifkan"
+          }
         }
       }
     },
@@ -7112,6 +7418,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Hata ayıklama günlüğünü etkinleştir"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktifkan pencatatan debug"
           }
         }
       }
@@ -7239,6 +7551,12 @@
             "state": "translated",
             "value": "KeyMinder'ı beğeniyor musunuz? GitHub'da yıldız verin ↗"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Suka KeyMinder? Beri bintang di GitHub ↗"
+          }
         }
       }
     },
@@ -7364,6 +7682,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tüm uygulamalarda açılır pencereden gizlenecek komut başlığını girin. * joker karakter olarak kullanın — ör. *Window*, 'Window' içeren tüm komutları gizler."
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Masukkan judul perintah yang akan disembunyikan dari popup di semua aplikasi. Gunakan * sebagai karakter pengganti — mis. *Window* menyembunyikan perintah yang mengandung 'Window'."
           }
         }
       }
@@ -7492,6 +7816,12 @@
             "state": "translated",
             "value": "Tüm uygulamalarda açılır pencereden gizlenecek komut başlığını tam olarak girin."
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Masukkan judul perintah yang tepat untuk disembunyikan dari popup di semua aplikasi."
+          }
         }
       }
     },
@@ -7617,6 +7947,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Menü çubuğunda göründüğü şekliyle menü adını girin (ör. \"File\", \"View\", \"Help\"). Apple menüsü \"Apple\" olarak tanımlanır."
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Masukkan nama menu persis seperti yang muncul di bilah menu (mis. \"File\", \"View\", \"Help\"). Menu Apple diidentifikasi dengan \"Apple\"."
           }
         }
       }
@@ -7744,6 +8080,12 @@
             "state": "translated",
             "value": "deneysel"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "eksperimental"
+          }
         }
       }
     },
@@ -7869,6 +8211,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kısayolları dışa aktar"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ekspor pintasan"
           }
         }
       }
@@ -7996,6 +8344,12 @@
             "state": "translated",
             "value": "Sık Kullanılanlar"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Favorit"
+          }
         }
       }
     },
@@ -8120,6 +8474,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Filtrele"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filter"
           }
         }
       }
@@ -8247,6 +8607,12 @@
             "state": "translated",
             "value": "Değiştirici tuşa göre filtrele — listeyi daraltmak için ⌃ ⌥ ⇧ ⌘ tuşlarına tıklayın"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filter berdasarkan modifier — klik ⌃ ⌥ ⇧ ⌘ untuk mempersempit daftar"
+          }
         }
       }
     },
@@ -8373,6 +8739,12 @@
             "state": "translated",
             "value": "Değiştirici tuşa göre filtrele veya ada göre ara"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filter berdasarkan tombol modifier atau cari berdasarkan nama"
+          }
         }
       }
     },
@@ -8497,6 +8869,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sistem vurgu rengini kullan"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ikuti warna aksen sistem"
           }
         }
       }
@@ -8623,6 +9001,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Hata buldunuz mu veya öneriniz mi var? "
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Menemukan bug atau punya saran? "
           }
         }
       }
@@ -8751,6 +9135,12 @@
             "state": "translated",
             "value": "Genel"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Umum"
+          }
         }
       }
     },
@@ -8876,6 +9266,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Genel sürümden önce yeni özelliklere erken erişin. Beta sürümler daha az kararlı olabilir."
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dapatkan akses awal ke fitur baru sebelum rilis publik. Build beta mungkin kurang stabil."
           }
         }
       }
@@ -9003,6 +9399,12 @@
             "state": "translated",
             "value": "Başla"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mulai"
+          }
         }
       }
     },
@@ -9127,6 +9529,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Global Kısayol"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pintasan Global"
           }
         }
       }
@@ -9253,6 +9661,12 @@
             "state": "translated",
             "value": "Erişim Ver…"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Berikan Akses…"
+          }
         }
       }
     },
@@ -9377,6 +9791,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Erişilebilirlik Erişimi Ver…"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Berikan Akses Aksesibilitas…"
           }
         }
       }
@@ -9505,6 +9925,12 @@
             "state": "translated",
             "value": "Bir komutu yalnızca bir uygulamada gizleyin."
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sembunyikan perintah hanya di satu aplikasi."
+          }
         }
       }
     },
@@ -9630,6 +10056,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bir komutu yalnızca bir uygulamada gizleyin. * joker karakter olarak kullanın — ör. *Window*, 'Window' içeren tüm komutları gizler."
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sembunyikan perintah hanya di satu aplikasi. Gunakan * sebagai karakter pengganti — mis. *Window* menyembunyikan perintah yang mengandung 'Window'."
           }
         }
       }
@@ -9757,6 +10189,12 @@
             "state": "translated",
             "value": "Yoksayılan komutları gizle"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sembunyikan perintah yang diabaikan"
+          }
         }
       }
     },
@@ -9882,6 +10320,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kısayol içermeyen büyük alt menüleri gizle"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sembunyikan submenu besar tanpa pintasan"
           }
         }
       }
@@ -10009,6 +10453,12 @@
             "state": "translated",
             "value": "Uygulamayı Yoksay"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abaikan Aplikasi"
+          }
         }
       }
     },
@@ -10134,6 +10584,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Menüyü Yoksay"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abaikan Menu"
           }
         }
       }
@@ -10261,6 +10717,12 @@
             "state": "translated",
             "value": "Yoksayılan Uygulamalar"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aplikasi yang Diabaikan"
+          }
         }
       }
     },
@@ -10386,6 +10848,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Yoksayılan Komutlar"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Perintah yang Diabaikan"
           }
         }
       }
@@ -10513,6 +10981,12 @@
             "state": "translated",
             "value": "Yoksayılan Menüler"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Menu yang Diabaikan"
+          }
         }
       }
     },
@@ -10638,6 +11112,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ içinde"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "di %@"
           }
         }
       }
@@ -10765,6 +11245,12 @@
             "state": "translated",
             "value": "Çok sayıda menü öğesi olan uygulamalarda (ör. tarayıcı geçmişi) açılır pencere "
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Di aplikasi dengan banyak entri menu (mis., riwayat browser), popup mungkin memerlukan waktu "
+          }
         }
       }
     },
@@ -10890,6 +11376,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Çok sayıda menü öğesi olan uygulamalarda (ör. tarayıcı geçmişi) açılır pencerenin görünmesi birkaç saniye sürebilir."
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Di aplikasi dengan banyak entri menu (mis., riwayat browser), popup mungkin memerlukan beberapa detik untuk muncul."
           }
         }
       }
@@ -11017,6 +11509,12 @@
             "state": "translated",
             "value": "Anında arama — sadece herhangi bir uygulamaya geçin"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pencarian instan — cukup beralih ke aplikasi mana pun"
+          }
         }
       }
     },
@@ -11141,6 +11639,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tuş rengi"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Warna tombol"
           }
         }
       }
@@ -11268,6 +11772,12 @@
             "state": "translated",
             "value": "KeyMinder hazır"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "KeyMinder siap"
+          }
         }
       }
     },
@@ -11392,6 +11902,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "KeyMinder, Erişilebilirlik erişimine ihtiyaç duyuyor"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "KeyMinder memerlukan akses Aksesibilitas"
           }
         }
       }
@@ -11519,6 +12035,12 @@
             "state": "translated",
             "value": "KeyMinder, menüleri macOS Erişilebilirlik API'si aracılığıyla okur — ekran okuyucular ve yardımcı araçların kullandığı izinle aynıdır. Verileriniz hiçbir zaman Mac'inizden çıkmaz."
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "KeyMinder membaca menu melalui API Aksesibilitas macOS — izin yang sama dengan yang digunakan pembaca layar dan alat bantu. Data Anda tidak pernah meninggalkan Mac Anda."
+          }
         }
       }
     },
@@ -11643,6 +12165,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "KeyMinder Ayarları"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pengaturan KeyMinder"
           }
         }
       }
@@ -11770,6 +12298,12 @@
             "state": "translated",
             "value": "KeyMinder, ihtiyaç duyduğunuzda her zaman menü çubuğunuzda hazır olacak."
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "KeyMinder akan siap di bilah menu Anda kapan pun Anda membutuhkannya."
+          }
         }
       }
     },
@@ -11895,6 +12429,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Yeni bir sürüm mevcut olduğunda KeyMinder sizi bilgilendirecek."
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "KeyMinder akan memberi tahu Anda ketika versi baru tersedia."
           }
         }
       }
@@ -12123,6 +12663,12 @@
             "state": "translated",
             "value": "Girişte Başlat"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buka saat Masuk"
+          }
         }
       }
     },
@@ -12248,6 +12794,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Uygulama simgesini tetikleyici tuşla eşleştir"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cocokkan ikon aplikasi dengan tombol pemicu"
           }
         }
       }
@@ -12375,6 +12927,12 @@
             "state": "translated",
             "value": "Menü adı"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nama menu"
+          }
         }
       }
     },
@@ -12501,6 +13059,12 @@
             "state": "translated",
             "value": "Burada listelenen menüler açılır pencereden gizlenir. Apple menüsü () varsayılan olarak yoksayılır."
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Menu yang tercantum di sini disembunyikan dari popup. Menu Apple () diabaikan secara default."
+          }
         }
       }
     },
@@ -12625,6 +13189,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Değiştirici Tuş"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tombol Modifier"
           }
         }
       }
@@ -12752,6 +13322,12 @@
             "state": "translated",
             "value": "İleri"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lanjut"
+          }
         }
       }
     },
@@ -12876,6 +13452,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Etkin uygulama yok"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tidak ada aplikasi aktif"
           }
         }
       }
@@ -13003,6 +13585,12 @@
             "state": "translated",
             "value": "Şu anda çalışan uygulama yok."
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tidak ada aplikasi yang sedang berjalan."
+          }
         }
       }
     },
@@ -13126,6 +13714,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Eklenecek uygulama yok (çalışan tüm uygulamalar zaten yoksayılıyor)."
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tidak ada aplikasi untuk ditambahkan (semua aplikasi yang berjalan sudah diabaikan)."
           }
         }
       }
@@ -13253,6 +13847,12 @@
             "state": "translated",
             "value": "Yoksayılan uygulama yok"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tidak ada aplikasi yang diabaikan"
+          }
         }
       }
     },
@@ -13378,6 +13978,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Yoksayılan komut yok"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tidak ada perintah yang diabaikan"
           }
         }
       }
@@ -13505,6 +14111,12 @@
             "state": "translated",
             "value": "Yoksayılan menü yok"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tidak ada menu yang diabaikan"
+          }
         }
       }
     },
@@ -13629,6 +14241,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ için klavye kısayolu bulunamadı"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tidak ada pintasan keyboard untuk %@"
           }
         }
       }
@@ -13755,6 +14373,12 @@
             "state": "translated",
             "value": "Ayarlanmadı"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Belum diatur"
+          }
         }
       }
     },
@@ -13880,6 +14504,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Test edilecek bir şey yok"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tidak ada yang dikuis"
           }
         }
       }
@@ -14013,6 +14643,12 @@
             "state": "translated",
             "value": "Kapalı"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nonaktif"
+          }
         }
       }
     },
@@ -14138,6 +14774,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tamam"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OK"
           }
         }
       }
@@ -14271,6 +14913,12 @@
             "state": "translated",
             "value": "Açık"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktif"
+          }
         }
       }
     },
@@ -14396,6 +15044,12 @@
             "state": "translated",
             "value": "Yalnızca aramada göster"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tampilkan hanya saat mencari"
+          }
         }
       }
     },
@@ -14520,6 +15174,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Etkin klavye kısayollarını görmek için KeyMinder'ı herhangi bir uygulamadan açın."
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buka KeyMinder dari aplikasi mana pun untuk melihat pintasan keyboard yang aktif."
           }
         }
       }
@@ -14647,6 +15307,12 @@
             "state": "translated",
             "value": "KeyMinder Ayarlarını Aç"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buka Pengaturan KeyMinder"
+          }
         }
       }
     },
@@ -14771,6 +15437,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ayarları Aç…"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buka Pengaturan…"
           }
         }
       }
@@ -14898,6 +15570,12 @@
             "state": "translated",
             "value": "Tek dokunuşta erişim için sık kullanılanları sabitle"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sematkan favorit untuk akses satu ketukan"
+          }
         }
       }
     },
@@ -15022,6 +15700,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Açılır Pencere İçeriği"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Konten Popup"
           }
         }
       }
@@ -15149,6 +15833,12 @@
             "state": "translated",
             "value": "Etkin uygulamanın kısayollarını görmek için %@ tuşuna basın."
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tekan %@ untuk menampilkan pintasan aplikasi yang aktif."
+          }
         }
       }
     },
@@ -15272,6 +15962,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bir değiştirici tuşa hızlıca iki kez basın."
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tekan tombol modifier dua kali dengan cepat."
           }
         }
       }
@@ -15399,6 +16095,12 @@
             "state": "translated",
             "value": "Kısayola basın…"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tekan pintasannya…"
+          }
         }
       }
     },
@@ -15523,6 +16225,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "KeyMinder'dan Çık"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keluar dari KeyMinder"
           }
         }
       }
@@ -15650,6 +16358,12 @@
             "state": "translated",
             "value": "Tekrar Test Et"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kuis Lagi"
+          }
         }
       }
     },
@@ -15775,6 +16489,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Yalnızca sık kullanılanları test et"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hanya kuis favorit"
           }
         }
       }
@@ -15902,6 +16622,12 @@
             "state": "translated",
             "value": "Test Modu — %@"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mode Kuis — %@"
+          }
         }
       }
     },
@@ -16027,6 +16753,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Test Modu…"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mode Kuis…"
           }
         }
       }
@@ -16154,6 +16886,12 @@
             "state": "translated",
             "value": "Beta sürümleri al"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Terima rilis beta"
+          }
         }
       }
     },
@@ -16278,6 +17016,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kısayol Kaydet…"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rekam Pintasan…"
           }
         }
       }
@@ -16405,6 +17149,12 @@
             "state": "translated",
             "value": "Bu uygulama için tüm kuralları kaldır"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hapus semua aturan untuk aplikasi ini"
+          }
         }
       }
     },
@@ -16531,6 +17281,12 @@
             "state": "translated",
             "value": "Sık kullanılanlardan kaldır"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hapus dari favorit"
+          }
         }
       }
     },
@@ -16655,6 +17411,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sıfırla"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Setel Ulang"
           }
         }
       }
@@ -16782,6 +17544,12 @@
             "state": "translated",
             "value": "Herhangi bir uygulamanın tüm klavye kısayollarını menüleri açmadan görün."
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lihat setiap pintasan keyboard untuk aplikasi apa pun — tanpa membuka menunya."
+          }
         }
       }
     },
@@ -16907,6 +17675,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Uygulama seç…"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pilih aplikasi…"
           }
         }
       }
@@ -17034,6 +17808,12 @@
             "state": "translated",
             "value": "Başlamadan önce son tercihlerinizi ayarlayın."
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Atur preferensi terakhir sebelum Anda mulai."
+          }
         }
       }
     },
@@ -17159,6 +17939,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tetikleyicinizi ayarlayın"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Atur pemicu Anda"
           }
         }
       }
@@ -17286,6 +18072,12 @@
             "state": "translated",
             "value": "Ayarlar"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pengaturan"
+          }
         }
       }
     },
@@ -17410,6 +18202,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ayarlar…"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pengaturan…"
           }
         }
       }
@@ -17537,6 +18335,12 @@
             "state": "translated",
             "value": "birkaç saniye"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "beberapa detik"
+          }
         }
       }
     },
@@ -17661,6 +18465,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kısayol zaten kullanımda"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pintasan sudah digunakan"
           }
         }
       }
@@ -17788,6 +18598,12 @@
             "state": "translated",
             "value": "Kısayol çalışıyor!"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pintasan berhasil!"
+          }
         }
       }
     },
@@ -17912,6 +18728,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tüm menü öğelerini göster"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tampilkan semua entri menu"
           }
         }
       }
@@ -18039,6 +18861,12 @@
             "state": "translated",
             "value": "Kullanılabilir eylemleri keşfetmeye yardımcı olmak için yalnızca klavye kısayolu olanları değil, tüm menü öğelerini gösterin."
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tampilkan semua entri menu, bukan hanya yang memiliki pintasan keyboard, untuk memudahkan menemukan tindakan yang tersedia."
+          }
         }
       }
     },
@@ -18164,6 +18992,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Çakışma göstergesini göster"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tampilkan indikator konflik"
           }
         }
       }
@@ -18291,6 +19125,12 @@
             "state": "translated",
             "value": "Devre dışı bırakılmış sistem kısayollarını göster"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tampilkan pintasan sistem yang dinonaktifkan"
+          }
         }
       }
     },
@@ -18415,6 +19255,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bir değiştirici tuşa hızlıca iki kez basıp bırakarak KeyMinder'ı gösterin."
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tampilkan KeyMinder dengan menekan dan melepaskan satu tombol modifier dua kali dengan cepat."
           }
         }
       }
@@ -18541,6 +19387,12 @@
             "state": "translated",
             "value": "Kısayolları Göster  (ayarlanmadı)"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tampilkan Pintasan  (belum diatur)"
+          }
         }
       }
     },
@@ -18665,6 +19517,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kısayolları Göster  %@"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tampilkan Pintasan  %@"
           }
         }
       }
@@ -18792,6 +19650,12 @@
             "state": "translated",
             "value": "Sistem kısayollarını göster"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tampilkan pintasan sistem"
+          }
         }
       }
     },
@@ -18917,6 +19781,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Filtreleme sırasında göster"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tampilkan saat memfilter"
           }
         }
       }
@@ -19044,6 +19914,12 @@
             "state": "translated",
             "value": "Yalnızca sık kullanılanlar gösteriliyor"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hanya menampilkan favorit"
+          }
         }
       }
     },
@@ -19169,6 +20045,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sabitlemek için herhangi bir kısayoldaki ★ simgesine dokunun — yalnızca sık kullanılanları görmek için başlıktaki ★ simgesine dokunun"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ketuk ★ pada pintasan mana pun untuk menyematkan — ketuk ★ di header untuk melihat hanya favorit"
           }
         }
       }
@@ -19296,6 +20178,12 @@
             "state": "translated",
             "value": "Tüm kısayollarda arama yapmak için yazmaya başlayın"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mulai mengetik untuk mencari di semua pintasan"
+          }
         }
       }
     },
@@ -19418,6 +20306,12 @@
           }
         },
         "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sistem"
+          }
+        },
+        "id": {
           "stringUnit": {
             "state": "translated",
             "value": "Sistem"
@@ -19548,6 +20442,12 @@
             "state": "translated",
             "value": "Bu uygulama ön plandayken açılır pencere açılmaz."
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Popup tidak akan terbuka saat aplikasi ini berada di depan."
+          }
         }
       }
     },
@@ -19673,6 +20573,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bu kısayol birden fazla komuta atanmış"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pintasan ini ditetapkan untuk beberapa perintah"
           }
         }
       }
@@ -19800,6 +20706,12 @@
             "state": "translated",
             "value": "İpucu: açılır pencereyi kapatmak için Esc tuşuna basın"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tips: tekan Esc untuk menutup popup"
+          }
         }
       }
     },
@@ -19925,6 +20837,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dene"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coba"
           }
         }
       }
@@ -20052,6 +20970,12 @@
             "state": "translated",
             "value": "Şimdi dene"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coba sekarang"
+          }
         }
       }
     },
@@ -20176,6 +21100,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kısayolunuzu yazın…"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ketik pintasan Anda…"
           }
         }
       }
@@ -20303,6 +21233,12 @@
             "state": "translated",
             "value": "Güncellemeler"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pembaruan"
+          }
         }
       }
     },
@@ -20428,6 +21364,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bu pencere açıkken tetikleyicinizi kullanın."
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gunakan pemicu Anda saat jendela ini terbuka."
           }
         }
       }
@@ -20555,6 +21497,12 @@
             "state": "translated",
             "value": "İzin bekleniyor…"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Menunggu izin…"
+          }
         }
       }
     },
@@ -20679,6 +21627,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "KeyMinder'a Hoş Geldiniz"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Selamat Datang di KeyMinder"
           }
         }
       }
@@ -20806,6 +21760,12 @@
             "state": "translated",
             "value": "Ne olmalı?"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apa yang harus terjadi?"
+          }
         }
       }
     },
@@ -20931,6 +21891,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "joker karakter"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "karakter pengganti"
           }
         }
       }
@@ -21058,6 +22024,12 @@
             "state": "translated",
             "value": "Uzun menüleri sütunlara kaydır"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bungkus menu panjang ke beberapa kolom"
+          }
         }
       }
     },
@@ -21183,6 +22155,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bunları istediğiniz zaman Ayarlar → Genel bölümünden değiştirebilirsiniz."
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anda dapat mengubah ini kapan saja di Pengaturan → Umum."
           }
         }
       }
@@ -21310,6 +22288,12 @@
             "state": "translated",
             "value": "%@ tuşuna bastınız"
           }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anda menekan %@"
+          }
         }
       }
     },
@@ -21435,6 +22419,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Hazırsınız — devam etmek için İleri'ye tıklayın."
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Semua sudah siap — klik Lanjut untuk melanjutkan."
           }
         }
       }
