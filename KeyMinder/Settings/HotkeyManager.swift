@@ -95,7 +95,7 @@ final class HotkeyManager {
                     nil,
                     &hkID
                 )
-                if hkID.id == HotkeyManager.eventID {
+                if hkID.signature == HotkeyManager.signature && hkID.id == HotkeyManager.eventID {
                     DispatchQueue.main.async { mgr.onActivate?() }
                 }
                 return noErr
