@@ -488,7 +488,7 @@ private struct FilterableShortcutsView: View {
                 .animation(.easeInOut(duration: 0.15), value: copied)
         }
         .buttonStyle(.plain)
-        .accessibilityLabel("Export shortcuts")
+        .accessibilityLabel(copied ? "Exported" : "Export shortcuts")
         .help("Export shortcuts")
     }
 
