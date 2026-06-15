@@ -445,7 +445,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             .applicationVersion: displayVersion,
             .credits: credits,
         ])
-        NSApp.activate(ignoringOtherApps: true)
+        NSApp.activate()
 
         if let aboutWindow = NSApp.windows.first(where: { !windowsBefore.contains($0) }) {
             DockIconManager.shared.windowOpened()
