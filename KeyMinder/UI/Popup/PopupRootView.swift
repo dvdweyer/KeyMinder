@@ -83,10 +83,13 @@ final class PopupFilterModel {
     /// dims non-matching rows rather than hiding them (layout stays stable).
     let fitsWithoutScrolling: Bool
 
+    private let cachedConflictingKeys: Set<String>
+
     init(app: AppShortcuts, columns: [[MenuSection]], fitsWithoutScrolling: Bool = false) {
         self.app = app
         self.columns = columns
         self.fitsWithoutScrolling = fitsWithoutScrolling
+        cachedConflictingKeys = UserDefaults.standard.showConflictIndicator ? app.conflictingKeys : []
         updateVisibleShortcuts()
     }
 
@@ -218,9 +221,7 @@ final class PopupFilterModel {
 
     /// Key strings assigned to two or more shortcuts in this app — forwarded
     /// to `MenuSectionView` to flag conflicted rows. Empty when the setting is off.
-    var conflictingKeys: Set<String> {
-        UserDefaults.standard.showConflictIndicator ? app.conflictingKeys : []
-    }
+    var conflictingKeys: Set<String> { cachedConflictingKeys }
 
     // MARK: Onboarding tips
 
