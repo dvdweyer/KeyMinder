@@ -445,8 +445,8 @@ private struct WelcomeLoginStep: View {
                 HStack(spacing: 0) {
                     Text("Found a bug or have a suggestion? ")
                         .foregroundStyle(.secondary)
-                    Link("keyminder@afaik.org ↗",
-                         destination: URL(string: "mailto:keyminder@afaik.org")!)
+                    Link("info@keyminder.app ↗",
+                         destination: URL(string: "mailto:info@keyminder.app")!)
                 }
                 .font(.caption)
             }

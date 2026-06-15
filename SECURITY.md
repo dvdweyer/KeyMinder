@@ -14,7 +14,7 @@ Older versions are unsupported; please upgrade before filing a report.
 
 **Do not open a public GitHub issue for security vulnerabilities.**
 
-Report privately by emailing **keyminder@afaik.org** (or use GitHub's
+Report privately by emailing **info@keyminder.app** (or use GitHub's
 [private vulnerability reporting](https://docs.github.com/en/code-security/security-advisories/guidance-on-reporting-and-writing/privately-reporting-a-security-vulnerability)
 if enabled on this repository).
 
