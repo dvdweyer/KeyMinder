@@ -61,7 +61,7 @@ enum MenuScraper {
             let title = string(menuBarItem, kAXTitleAttribute) ?? ""
             guard IgnoreListStore.isIgnored(title: title, patterns: ignoredMenuTitles) else { continue }
             guard let menu = children(menuBarItem).first else { continue }
-            result.append(contentsOf: collectShortcutsFlat(in: menu))
+            result.append(contentsOf: collectShortcutsFlat(in: menu).shortcuts)
         }
         return result
     }
@@ -119,15 +119,14 @@ enum MenuScraper {
             // collectShortcutsFlat recurses further but keeps everything in one list,
             // which is the right behaviour for sub-submenus (depth > 2).
             if let submenu {
-                let submenuItems = collectShortcutsFlat(in: submenu, includeAll: includeAll, ignoredTitles: ignoredTitles)
+                let (submenuItems, rawChildCount) = collectShortcutsFlat(in: submenu, includeAll: includeAll, ignoredTitles: ignoredTitles)
                 if submenuItems.isEmpty {
                     // Log empty submenus so we can quantify how often lazy population
-                    // hides shortcuts.  itemCount == 0 strongly suggests the submenu
+                    // hides shortcuts.  rawChildCount == 0 strongly suggests the submenu
                     // is populated lazily (NSMenu's menuNeedsUpdate: fires only when
                     // the menu is actually displayed, not when AX reads it).
-                    let itemCount = children(submenu).count
-                    let hint = itemCount == 0 ? "; likely lazy-populated" : ""
-                    Logger.scraper.info("Submenu '\(title, privacy: .private)' yielded 0 items (\(itemCount, privacy: .public) child items\(hint, privacy: .private))")
+                    let hint = rawChildCount == 0 ? "; likely lazy-populated" : ""
+                    Logger.scraper.info("Submenu '\(title, privacy: .private)' yielded 0 items (\(rawChildCount, privacy: .public) child items\(hint, privacy: .private))")
                 } else if let limit = maxShortcutFreeSubmenuSize,
                           submenuItems.count > limit,
                           submenuItems.allSatisfy({ $0.keys.isEmpty }) {
@@ -149,13 +148,16 @@ enum MenuScraper {
 
     /// Recursively collects items within `menu`, flattening any nested submenus
     /// into a single list. Used for submenu contents (depth ≥ 2).
+    /// Returns the shortcut list and the raw AX child count of `menu` so callers
+    /// can log empty-submenu diagnostics without a second AX round-trip.
     private static func collectShortcutsFlat(
         in menu: AXUIElement, includeAll: Bool = false, depth: Int = 0,
         ignoredTitles: [String] = []
-    ) -> [Shortcut] {
-        guard depth < 10 else { return [] }
+    ) -> (shortcuts: [Shortcut], rawChildCount: Int) {
+        guard depth < 10 else { return ([], 0) }
+        let menuChildren = children(menu)
         var result: [Shortcut] = []
-        for item in children(menu) {
+        for item in menuChildren {
             let title = string(item, kAXTitleAttribute) ?? ""
             if title.isEmpty {
                 result.append(.separator())
@@ -179,16 +181,15 @@ enum MenuScraper {
 
             // Flatten sub-submenus.
             if let submenu {
-                let sub = collectShortcutsFlat(in: submenu, includeAll: includeAll, depth: depth + 1, ignoredTitles: ignoredTitles)
+                let (sub, subChildCount) = collectShortcutsFlat(in: submenu, includeAll: includeAll, depth: depth + 1, ignoredTitles: ignoredTitles)
                 if sub.isEmpty {
-                    let itemCount = children(submenu).count
-                    let hint = itemCount == 0 ? "; likely lazy-populated" : ""
-                    Logger.scraper.info("Nested submenu '\(title, privacy: .private)' yielded 0 items (\(itemCount, privacy: .public) child items\(hint, privacy: .private))")
+                    let hint = subChildCount == 0 ? "; likely lazy-populated" : ""
+                    Logger.scraper.info("Nested submenu '\(title, privacy: .private)' yielded 0 items (\(subChildCount, privacy: .public) child items\(hint, privacy: .private))")
                 }
                 result.append(contentsOf: sub)
             }
         }
-        return result
+        return (result, menuChildren.count)
     }
 
     // MARK: - Accessibility helpers
