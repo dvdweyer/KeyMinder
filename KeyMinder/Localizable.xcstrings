@@ -118,6 +118,12 @@
             "state": "translated",
             "value": "."
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": " sürebilir."
+          }
         }
       }
     },
@@ -244,6 +250,12 @@
             "state": "translated",
             "value": "%1$@ %2$@"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ %2$@"
+          }
         }
       }
     },
@@ -363,6 +375,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "В «%@» нет горячих клавиш для викторины."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ için test edilecek klavye kısayolu yok."
           }
         }
       }
@@ -486,6 +504,12 @@
           }
         },
         "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld / %2$lld"
+          }
+        },
+        "tr": {
           "stringUnit": {
             "state": "translated",
             "value": "%1$lld / %2$lld"
@@ -615,6 +639,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$lld верно · %2$lld неверно"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld doğru · %2$lld yanlış"
           }
         }
       }
@@ -963,6 +993,12 @@
             "state": "translated",
             "value": "%lld пунктов меню"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld menü öğesi"
+          }
         }
       }
     },
@@ -1081,6 +1117,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%lld из %lld"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld / %lld"
           }
         }
       }
@@ -1429,6 +1471,12 @@
             "state": "translated",
             "value": "%lld горячих клавиш"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld kısayol"
+          }
         }
       }
     },
@@ -1548,6 +1596,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%lld%% верно"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld%% doğru"
           }
         }
       }
@@ -1771,6 +1825,12 @@
             "state": "translated",
             "value": "Длинное меню, не помещающееся в один столбец, продолжается в следующем с повторением названия меню."
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bir sütuna sığmayan uzun bir menü, menü adı tekrarlanarak bir sonraki sütunda devam eder."
+          }
         }
       }
     },
@@ -1889,6 +1949,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "О программе KeyMinder"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "KeyMinder Hakkında"
           }
         }
       }
@@ -2010,6 +2076,12 @@
             "state": "translated",
             "value": "Доступ предоставлен"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erişim verildi"
+          }
         }
       }
     },
@@ -2129,6 +2201,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Добавить"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ekle"
           }
         }
       }
@@ -2250,6 +2328,12 @@
             "state": "translated",
             "value": "Добавить правило для приложения…"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uygulama Kuralı Ekle…"
+          }
         }
       }
     },
@@ -2369,6 +2453,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Добавить правило для конкретного приложения"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uygulamaya Özel Kural Ekle"
           }
         }
       }
@@ -2490,6 +2580,12 @@
             "state": "translated",
             "value": "Добавить приложение…"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uygulama Ekle…"
+          }
         }
       }
     },
@@ -2609,6 +2705,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Добавить общее правило…"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Genel Kural Ekle…"
           }
         }
       }
@@ -2730,6 +2832,12 @@
             "state": "translated",
             "value": "Добавить игнорируемую команду"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yoksayılan Komut Ekle"
+          }
         }
       }
     },
@@ -2850,6 +2958,12 @@
             "state": "translated",
             "value": "Добавить меню…"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Menü Ekle…"
+          }
         }
       }
     },
@@ -2969,6 +3083,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Добавить в избранное"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sık kullanılanlara ekle"
           }
         }
       }
@@ -3091,6 +3211,12 @@
             "state": "translated",
             "value": "Дополнительно"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gelişmiş"
+          }
         }
       }
     },
@@ -3210,6 +3336,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Все приложения"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tüm Uygulamalar"
           }
         }
       }
@@ -3331,6 +3463,12 @@
             "state": "translated",
             "value": "Разрешить доступ к приложениям"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uygulamalarınıza erişime izin verin"
+          }
         }
       }
     },
@@ -3450,6 +3588,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Почти готово"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neredeyse tamam"
           }
         }
       }
@@ -3571,6 +3715,12 @@
             "state": "translated",
             "value": "Приложение"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uygulama"
+          }
         }
       }
     },
@@ -3691,6 +3841,12 @@
             "state": "translated",
             "value": "Для конкретного приложения"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uygulamaya Özel"
+          }
         }
       }
     },
@@ -3809,6 +3965,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Вид"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Görünüm"
           }
         }
       }
@@ -3930,6 +4092,12 @@
             "state": "translated",
             "value": "Приложения из этого списка полностью пропускаются — всплывающее окно не откроется, пока они активны."
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Burada listelenen uygulamalar tamamen atlanır — bu uygulamalar ön plandayken açılır pencere açılmaz."
+          }
         }
       }
     },
@@ -4050,6 +4218,12 @@
             "state": "translated",
             "value": "Назад"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Geri"
+          }
         }
       }
     },
@@ -4169,6 +4343,12 @@
             "state": "translated",
             "value": "Отменить"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İptal"
+          }
         }
       }
     },
@@ -4287,6 +4467,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Изменить…"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Değiştir…"
           }
         }
       }
@@ -4408,6 +4594,12 @@
             "state": "translated",
             "value": "Автоматически проверять обновления"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Güncellemeleri otomatik denetle"
+          }
         }
       }
     },
@@ -4527,6 +4719,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Автоматически проверять обновления"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Güncellemeleri Otomatik Denetle"
           }
         }
       }
@@ -4648,6 +4846,12 @@
             "state": "translated",
             "value": "Проверить обновления…"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Güncellemeleri Denetle…"
+          }
         }
       }
     },
@@ -4768,6 +4972,12 @@
             "state": "translated",
             "value": "Выберите способ открытия KeyMinder из любого приложения."
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "KeyMinder'ı herhangi bir uygulamadan nasıl açacağınızı seçin."
+          }
         }
       }
     },
@@ -4887,6 +5097,12 @@
             "state": "translated",
             "value": "Очистить"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Temizle"
+          }
         }
       }
     },
@@ -5005,6 +5221,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Очистить фильтр"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filtreyi temizle"
           }
         }
       }
@@ -5126,6 +5348,12 @@
             "state": "translated",
             "value": "Нажмите на этот значок, чтобы показать горячие клавиши активного приложения."
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Etkin uygulamanın kısayollarını görmek için bu simgeye tıklayın."
+          }
         }
       }
     },
@@ -5246,6 +5474,12 @@
             "state": "translated",
             "value": "Закрыть всплывающее окно KeyMinder"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "KeyMinder Açılır Penceresini Kapat"
+          }
         }
       }
     },
@@ -5364,6 +5598,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Цвет символов горячих клавиш во всплывающем окне."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Açılır penceredeki klavye kısayolu simgeleri için kullanılan renk."
           }
         }
       }
@@ -5485,6 +5725,12 @@
             "state": "translated",
             "value": "Название команды"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Komut başlığı"
+          }
         }
       }
     },
@@ -5604,6 +5850,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Команды из этого списка скрыты во всплывающем окне. Если команда открывает подменю, оно тоже скрывается."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Burada listelenen komutlar açılır pencereden gizlenir. Bir komut alt menü açıyorsa, alt menünün tamamı da gizlenir."
           }
         }
       }
@@ -5725,6 +5977,12 @@
             "state": "translated",
             "value": "Завершено"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tamamlandı"
+          }
         }
       }
     },
@@ -5845,6 +6103,12 @@
             "state": "translated",
             "value": "Правильно: %@"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Doğru: %@"
+          }
         }
       }
     },
@@ -5963,6 +6227,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Разработчик"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Geliştirici"
           }
         }
       }
@@ -6084,6 +6354,12 @@
             "state": "translated",
             "value": "Отклонить"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yoksay"
+          }
         }
       }
     },
@@ -6203,6 +6479,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Закрыть подсказку"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İpucunu kapat"
           }
         }
       }
@@ -6324,6 +6606,12 @@
             "state": "translated",
             "value": "Готово"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tamam"
+          }
         }
       }
     },
@@ -6444,6 +6732,12 @@
             "state": "translated",
             "value": "Двойное нажатие модификатора"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Çift Dokunma Değiştirici Tuşu"
+          }
         }
       }
     },
@@ -6562,6 +6856,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Запуск двойным нажатием"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Çift Dokunma Tetikleyici"
           }
         }
       }
@@ -6682,6 +6982,12 @@
             "state": "translated",
             "value": "Включить"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Etkinleştir"
+          }
         }
       }
     },
@@ -6800,6 +7106,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Включить журнал отладки"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hata ayıklama günlüğünü etkinleştir"
           }
         }
       }
@@ -6921,6 +7233,12 @@
             "state": "translated",
             "value": "Нравится KeyMinder? Поставьте звезду на GitHub ↗"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "KeyMinder'ı beğeniyor musunuz? GitHub'da yıldız verin ↗"
+          }
         }
       }
     },
@@ -7040,6 +7358,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Введите название команды для скрытия во всех приложениях. Используйте * как подстановочный знак — например, *Window* скроет любую команду, содержащую «Window»."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tüm uygulamalarda açılır pencereden gizlenecek komut başlığını girin. * joker karakter olarak kullanın — ör. *Window*, 'Window' içeren tüm komutları gizler."
           }
         }
       }
@@ -7162,6 +7486,12 @@
             "state": "translated",
             "value": "Введите точное название команды для скрытия из всплывающего окна во всех приложениях."
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tüm uygulamalarda açılır pencereden gizlenecek komut başlığını tam olarak girin."
+          }
         }
       }
     },
@@ -7281,6 +7611,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Введите название меню точно так, как оно отображается в строке меню (например, «File», «View», «Help»). Меню Apple обозначается именем «Apple»."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Menü çubuğunda göründüğü şekliyle menü adını girin (ör. \"File\", \"View\", \"Help\"). Apple menüsü \"Apple\" olarak tanımlanır."
           }
         }
       }
@@ -7402,6 +7738,12 @@
             "state": "translated",
             "value": "экспериментально"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "deneysel"
+          }
         }
       }
     },
@@ -7521,6 +7863,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Экспортировать горячие клавиши"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kısayolları dışa aktar"
           }
         }
       }
@@ -7642,6 +7990,12 @@
             "state": "translated",
             "value": "Избранное"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sık Kullanılanlar"
+          }
         }
       }
     },
@@ -7760,6 +8114,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Фильтр"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filtrele"
           }
         }
       }
@@ -7881,6 +8241,12 @@
             "state": "translated",
             "value": "Фильтр по модификатору — нажмите ⌃ ⌥ ⇧ ⌘ для сужения списка"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Değiştirici tuşa göre filtrele — listeyi daraltmak için ⌃ ⌥ ⇧ ⌘ tuşlarına tıklayın"
+          }
         }
       }
     },
@@ -8001,6 +8367,12 @@
             "state": "translated",
             "value": "Фильтр по клавише-модификатору или поиск по имени"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Değiştirici tuşa göre filtrele veya ada göre ara"
+          }
         }
       }
     },
@@ -8119,6 +8491,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Использовать системный цвет акцента"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sistem vurgu rengini kullan"
           }
         }
       }
@@ -8239,6 +8617,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Нашли ошибку или есть предложение? "
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hata buldunuz mu veya öneriniz mi var? "
           }
         }
       }
@@ -8361,6 +8745,12 @@
             "state": "translated",
             "value": "Основные"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Genel"
+          }
         }
       }
     },
@@ -8480,6 +8870,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Получите ранний доступ к новым функциям до публичного выпуска. Бета-версии могут быть менее стабильными."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Genel sürümden önce yeni özelliklere erken erişin. Beta sürümler daha az kararlı olabilir."
           }
         }
       }
@@ -8601,6 +8997,12 @@
             "state": "translated",
             "value": "Начать"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Başla"
+          }
         }
       }
     },
@@ -8719,6 +9121,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Глобальная горячая клавиша"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Global Kısayol"
           }
         }
       }
@@ -8839,6 +9247,12 @@
             "state": "translated",
             "value": "Предоставить доступ…"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erişim Ver…"
+          }
         }
       }
     },
@@ -8957,6 +9371,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Предоставить доступ к «Универсальному доступу»…"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erişilebilirlik Erişimi Ver…"
           }
         }
       }
@@ -9079,6 +9499,12 @@
             "state": "translated",
             "value": "Скрыть команду только в одном приложении."
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bir komutu yalnızca bir uygulamada gizleyin."
+          }
         }
       }
     },
@@ -9198,6 +9624,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Скрыть команду только в одном приложении. Используйте * как подстановочный знак — например, *Window* скроет любую команду, содержащую «Window»."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bir komutu yalnızca bir uygulamada gizleyin. * joker karakter olarak kullanın — ör. *Window*, 'Window' içeren tüm komutları gizler."
           }
         }
       }
@@ -9319,6 +9751,12 @@
             "state": "translated",
             "value": "Скрыть игнорируемые команды"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yoksayılan komutları gizle"
+          }
         }
       }
     },
@@ -9438,6 +9876,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Скрыть большие подменю без горячих клавиш"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kısayol içermeyen büyük alt menüleri gizle"
           }
         }
       }
@@ -9559,6 +10003,12 @@
             "state": "translated",
             "value": "Игнорировать приложение"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uygulamayı Yoksay"
+          }
         }
       }
     },
@@ -9678,6 +10128,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Игнорировать меню"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Menüyü Yoksay"
           }
         }
       }
@@ -9799,6 +10255,12 @@
             "state": "translated",
             "value": "Игнорируемые приложения"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yoksayılan Uygulamalar"
+          }
         }
       }
     },
@@ -9918,6 +10380,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Игнорируемые команды"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yoksayılan Komutlar"
           }
         }
       }
@@ -10039,6 +10507,12 @@
             "state": "translated",
             "value": "Игнорируемые меню"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yoksayılan Menüler"
+          }
         }
       }
     },
@@ -10158,6 +10632,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "в %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ içinde"
           }
         }
       }
@@ -10279,6 +10759,12 @@
             "state": "translated",
             "value": "В приложениях с большим количеством пунктов меню (например, история браузера) для появления всплывающего окна может потребоваться "
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Çok sayıda menü öğesi olan uygulamalarda (ör. tarayıcı geçmişi) açılır pencere "
+          }
         }
       }
     },
@@ -10398,6 +10884,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "В приложениях с большим количеством пунктов меню (например, история браузера) для появления всплывающего окна может потребоваться несколько секунд."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Çok sayıda menü öğesi olan uygulamalarda (ör. tarayıcı geçmişi) açılır pencerenin görünmesi birkaç saniye sürebilir."
           }
         }
       }
@@ -10519,6 +11011,12 @@
             "state": "translated",
             "value": "Мгновенный поиск — просто переключитесь на любое приложение"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anında arama — sadece herhangi bir uygulamaya geçin"
+          }
         }
       }
     },
@@ -10637,6 +11135,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Цвет клавиши"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tuş rengi"
           }
         }
       }
@@ -10758,6 +11262,12 @@
             "state": "translated",
             "value": "KeyMinder готов"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "KeyMinder hazır"
+          }
         }
       }
     },
@@ -10876,6 +11386,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "KeyMinder требует доступ к «Универсальному доступу»"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "KeyMinder, Erişilebilirlik erişimine ihtiyaç duyuyor"
           }
         }
       }
@@ -10997,6 +11513,12 @@
             "state": "translated",
             "value": "KeyMinder считывает меню через API «Универсального доступа» macOS — то же разрешение, что используют программы чтения с экрана и вспомогательные инструменты. Ваши данные никогда не покидают ваш Mac."
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "KeyMinder, menüleri macOS Erişilebilirlik API'si aracılığıyla okur — ekran okuyucular ve yardımcı araçların kullandığı izinle aynıdır. Verileriniz hiçbir zaman Mac'inizden çıkmaz."
+          }
         }
       }
     },
@@ -11115,6 +11637,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Настройки KeyMinder"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "KeyMinder Ayarları"
           }
         }
       }
@@ -11236,6 +11764,12 @@
             "state": "translated",
             "value": "KeyMinder будет готов в строке меню всякий раз, когда вам это нужно."
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "KeyMinder, ihtiyaç duyduğunuzda her zaman menü çubuğunuzda hazır olacak."
+          }
         }
       }
     },
@@ -11355,6 +11889,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "KeyMinder уведомит вас, когда выйдет новая версия."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yeni bir sürüm mevcut olduğunda KeyMinder sizi bilgilendirecek."
           }
         }
       }
@@ -11577,6 +12117,12 @@
             "state": "translated",
             "value": "Открывать при входе в систему"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Girişte Başlat"
+          }
         }
       }
     },
@@ -11696,6 +12242,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Совместить цвет значка приложения с клавишей запуска"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uygulama simgesini tetikleyici tuşla eşleştir"
           }
         }
       }
@@ -11817,6 +12369,12 @@
             "state": "translated",
             "value": "Название меню"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Menü adı"
+          }
         }
       }
     },
@@ -11937,6 +12495,12 @@
             "state": "translated",
             "value": "Меню из этого списка скрыты во всплывающем окне. Меню Apple () игнорируется по умолчанию."
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Burada listelenen menüler açılır pencereden gizlenir. Apple menüsü () varsayılan olarak yoksayılır."
+          }
         }
       }
     },
@@ -12055,6 +12619,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Клавиша-модификатор"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Değiştirici Tuş"
           }
         }
       }
@@ -12176,6 +12746,12 @@
             "state": "translated",
             "value": "Далее"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İleri"
+          }
         }
       }
     },
@@ -12294,6 +12870,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Нет активного приложения"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Etkin uygulama yok"
           }
         }
       }
@@ -12415,6 +12997,12 @@
             "state": "translated",
             "value": "В данный момент нет запущенных приложений."
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Şu anda çalışan uygulama yok."
+          }
         }
       }
     },
@@ -12532,6 +13120,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Нет приложений для добавления (все запущенные приложения уже игнорируются)."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eklenecek uygulama yok (çalışan tüm uygulamalar zaten yoksayılıyor)."
           }
         }
       }
@@ -12653,6 +13247,12 @@
             "state": "translated",
             "value": "Нет игнорируемых приложений"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yoksayılan uygulama yok"
+          }
         }
       }
     },
@@ -12772,6 +13372,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Нет игнорируемых команд"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yoksayılan komut yok"
           }
         }
       }
@@ -12893,6 +13499,12 @@
             "state": "translated",
             "value": "Нет игнорируемых меню"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yoksayılan menü yok"
+          }
         }
       }
     },
@@ -13011,6 +13623,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Горячих клавиш для «%@» не найдено"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ için klavye kısayolu bulunamadı"
           }
         }
       }
@@ -13131,6 +13749,12 @@
             "state": "translated",
             "value": "Не задано"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ayarlanmadı"
+          }
         }
       }
     },
@@ -13250,6 +13874,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Нечего проверять"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Test edilecek bir şey yok"
           }
         }
       }
@@ -13377,6 +14007,12 @@
             "state": "translated",
             "value": "Выкл."
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kapalı"
+          }
         }
       }
     },
@@ -13496,6 +14132,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "ОК"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tamam"
           }
         }
       }
@@ -13623,6 +14265,12 @@
             "state": "translated",
             "value": "Вкл."
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Açık"
+          }
         }
       }
     },
@@ -13742,6 +14390,12 @@
             "state": "translated",
             "value": "Показывать только при поиске"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yalnızca aramada göster"
+          }
         }
       }
     },
@@ -13860,6 +14514,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Откройте KeyMinder из любого приложения, чтобы увидеть активные горячие клавиши."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Etkin klavye kısayollarını görmek için KeyMinder'ı herhangi bir uygulamadan açın."
           }
         }
       }
@@ -13981,6 +14641,12 @@
             "state": "translated",
             "value": "Открыть настройки KeyMinder"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "KeyMinder Ayarlarını Aç"
+          }
         }
       }
     },
@@ -14099,6 +14765,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Открыть настройки…"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ayarları Aç…"
           }
         }
       }
@@ -14220,6 +14892,12 @@
             "state": "translated",
             "value": "Закрепите избранное для быстрого доступа"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tek dokunuşta erişim için sık kullanılanları sabitle"
+          }
         }
       }
     },
@@ -14338,6 +15016,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Содержимое всплывающего окна"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Açılır Pencere İçeriği"
           }
         }
       }
@@ -14459,6 +15143,12 @@
             "state": "translated",
             "value": "Нажмите %@, чтобы показать горячие клавиши активного приложения."
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Etkin uygulamanın kısayollarını görmek için %@ tuşuna basın."
+          }
         }
       }
     },
@@ -14576,6 +15266,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Быстро нажмите клавишу-модификатор дважды."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bir değiştirici tuşa hızlıca iki kez basın."
           }
         }
       }
@@ -14697,6 +15393,12 @@
             "state": "translated",
             "value": "Нажмите горячую клавишу…"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kısayola basın…"
+          }
         }
       }
     },
@@ -14815,6 +15517,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Завершить KeyMinder"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "KeyMinder'dan Çık"
           }
         }
       }
@@ -14936,6 +15644,12 @@
             "state": "translated",
             "value": "Пройти викторину снова"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tekrar Test Et"
+          }
         }
       }
     },
@@ -15055,6 +15769,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Викторина только по избранному"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yalnızca sık kullanılanları test et"
           }
         }
       }
@@ -15176,6 +15896,12 @@
             "state": "translated",
             "value": "Режим викторины — %@"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Test Modu — %@"
+          }
         }
       }
     },
@@ -15295,6 +16021,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Режим викторины…"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Test Modu…"
           }
         }
       }
@@ -15416,6 +16148,12 @@
             "state": "translated",
             "value": "Получать бета-версии"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beta sürümleri al"
+          }
         }
       }
     },
@@ -15534,6 +16272,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Записать горячую клавишу…"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kısayol Kaydet…"
           }
         }
       }
@@ -15655,6 +16399,12 @@
             "state": "translated",
             "value": "Удалить все правила для этого приложения"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu uygulama için tüm kuralları kaldır"
+          }
         }
       }
     },
@@ -15775,6 +16525,12 @@
             "state": "translated",
             "value": "Удалить из избранного"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sık kullanılanlardan kaldır"
+          }
         }
       }
     },
@@ -15893,6 +16649,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Сбросить"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sıfırla"
           }
         }
       }
@@ -16014,6 +16776,12 @@
             "state": "translated",
             "value": "Просматривайте все горячие клавиши любого приложения — без открытия меню."
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Herhangi bir uygulamanın tüm klavye kısayollarını menüleri açmadan görün."
+          }
         }
       }
     },
@@ -16133,6 +16901,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Выбрать приложение…"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uygulama seç…"
           }
         }
       }
@@ -16254,6 +17028,12 @@
             "state": "translated",
             "value": "Настройте последние параметры перед началом работы."
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Başlamadan önce son tercihlerinizi ayarlayın."
+          }
         }
       }
     },
@@ -16373,6 +17153,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Настройте способ запуска"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tetikleyicinizi ayarlayın"
           }
         }
       }
@@ -16494,6 +17280,12 @@
             "state": "translated",
             "value": "Настройки"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ayarlar"
+          }
         }
       }
     },
@@ -16612,6 +17404,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Настройки…"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ayarlar…"
           }
         }
       }
@@ -16733,6 +17531,12 @@
             "state": "translated",
             "value": "несколько секунд"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "birkaç saniye"
+          }
         }
       }
     },
@@ -16851,6 +17655,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Горячая клавиша уже используется"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kısayol zaten kullanımda"
           }
         }
       }
@@ -16972,6 +17782,12 @@
             "state": "translated",
             "value": "Горячая клавиша работает!"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kısayol çalışıyor!"
+          }
         }
       }
     },
@@ -17090,6 +17906,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Показывать все пункты меню"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tüm menü öğelerini göster"
           }
         }
       }
@@ -17211,6 +18033,12 @@
             "state": "translated",
             "value": "Показывать все пункты меню, не только с горячими клавишами, для удобного обнаружения доступных действий."
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kullanılabilir eylemleri keşfetmeye yardımcı olmak için yalnızca klavye kısayolu olanları değil, tüm menü öğelerini gösterin."
+          }
         }
       }
     },
@@ -17330,6 +18158,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Показывать индикатор конфликта"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Çakışma göstergesini göster"
           }
         }
       }
@@ -17451,6 +18285,12 @@
             "state": "translated",
             "value": "Показывать отключённые системные горячие клавиши"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Devre dışı bırakılmış sistem kısayollarını göster"
+          }
         }
       }
     },
@@ -17569,6 +18409,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Откройте KeyMinder, быстро дважды нажав и отпустив клавишу-модификатор."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bir değiştirici tuşa hızlıca iki kez basıp bırakarak KeyMinder'ı gösterin."
           }
         }
       }
@@ -17689,6 +18535,12 @@
             "state": "translated",
             "value": "Показать горячие клавиши  (не задано)"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kısayolları Göster  (ayarlanmadı)"
+          }
         }
       }
     },
@@ -17807,6 +18659,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Показать горячие клавиши  %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kısayolları Göster  %@"
           }
         }
       }
@@ -17928,6 +18786,12 @@
             "state": "translated",
             "value": "Показывать системные горячие клавиши"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sistem kısayollarını göster"
+          }
         }
       }
     },
@@ -18047,6 +18911,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Показывать при фильтрации"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filtreleme sırasında göster"
           }
         }
       }
@@ -18168,6 +19038,12 @@
             "state": "translated",
             "value": "Показывается только избранное"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yalnızca sık kullanılanlar gösteriliyor"
+          }
         }
       }
     },
@@ -18287,6 +19163,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Нажмите ★ рядом с горячей клавишей для закрепления — нажмите ★ в заголовке, чтобы видеть только избранное"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sabitlemek için herhangi bir kısayoldaki ★ simgesine dokunun — yalnızca sık kullanılanları görmek için başlıktaki ★ simgesine dokunun"
           }
         }
       }
@@ -18408,6 +19290,12 @@
             "state": "translated",
             "value": "Начните вводить текст для поиска по горячим клавишам"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tüm kısayollarda arama yapmak için yazmaya başlayın"
+          }
         }
       }
     },
@@ -18527,6 +19415,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Система"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sistem"
           }
         }
       }
@@ -18648,6 +19542,12 @@
             "state": "translated",
             "value": "Всплывающее окно не откроется, пока это приложение активно."
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu uygulama ön plandayken açılır pencere açılmaz."
+          }
         }
       }
     },
@@ -18767,6 +19667,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Эта горячая клавиша назначена нескольким командам"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu kısayol birden fazla komuta atanmış"
           }
         }
       }
@@ -18888,6 +19794,12 @@
             "state": "translated",
             "value": "Совет: нажмите Esc, чтобы закрыть всплывающее окно"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İpucu: açılır pencereyi kapatmak için Esc tuşuna basın"
+          }
         }
       }
     },
@@ -19007,6 +19919,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Попробовать"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dene"
           }
         }
       }
@@ -19128,6 +20046,12 @@
             "state": "translated",
             "value": "Попробовать сейчас"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Şimdi dene"
+          }
         }
       }
     },
@@ -19246,6 +20170,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Введите горячую клавишу…"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kısayolunuzu yazın…"
           }
         }
       }
@@ -19367,6 +20297,12 @@
             "state": "translated",
             "value": "Обновления"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Güncellemeler"
+          }
         }
       }
     },
@@ -19486,6 +20422,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Используйте триггер, пока это окно открыто."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu pencere açıkken tetikleyicinizi kullanın."
           }
         }
       }
@@ -19607,6 +20549,12 @@
             "state": "translated",
             "value": "Ожидание разрешения…"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İzin bekleniyor…"
+          }
         }
       }
     },
@@ -19725,6 +20673,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Добро пожаловать в KeyMinder"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "KeyMinder'a Hoş Geldiniz"
           }
         }
       }
@@ -19846,6 +20800,12 @@
             "state": "translated",
             "value": "Что должно произойти?"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ne olmalı?"
+          }
         }
       }
     },
@@ -19965,6 +20925,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "подстановочный знак"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "joker karakter"
           }
         }
       }
@@ -20086,6 +21052,12 @@
             "state": "translated",
             "value": "Переносить длинные меню по столбцам"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uzun menüleri sütunlara kaydır"
+          }
         }
       }
     },
@@ -20205,6 +21177,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Это можно изменить в любое время в разделе «Настройки» → «Основные»."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bunları istediğiniz zaman Ayarlar → Genel bölümünden değiştirebilirsiniz."
           }
         }
       }
@@ -20326,6 +21304,12 @@
             "state": "translated",
             "value": "Вы нажали %@"
           }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ tuşuna bastınız"
+          }
         }
       }
     },
@@ -20445,6 +21429,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Всё готово — нажмите «Далее» для продолжения."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hazırsınız — devam etmek için İleri'ye tıklayın."
           }
         }
       }
