@@ -449,14 +449,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         if let aboutWindow = NSApp.windows.first(where: { !windowsBefore.contains($0) }) {
             DockIconManager.shared.windowOpened()
-            var observer: NSObjectProtocol?
-            observer = NotificationCenter.default.addObserver(
+            final class Holder: @unchecked Sendable { var token: NSObjectProtocol? }
+            let holder = Holder()
+            holder.token = NotificationCenter.default.addObserver(
                 forName: NSWindow.willCloseNotification,
                 object: aboutWindow,
                 queue: .main
             ) { _ in
                 MainActor.assumeIsolated { DockIconManager.shared.windowClosed() }
-                NotificationCenter.default.removeObserver(observer!)
+                if let t = holder.token { NotificationCenter.default.removeObserver(t) }
             }
         }
     }
