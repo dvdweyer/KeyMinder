@@ -261,6 +261,13 @@ extension UserDefaults {
         set { set(newValue, forKey: Self.showDeactivatedSystemShortcutsKey) }
     }
 
+    private static let showThirdPartyShortcutsKey = "showThirdPartyShortcuts"
+
+    var showThirdPartyShortcuts: Bool {
+        get { bool(forKey: Self.showThirdPartyShortcutsKey) }
+        set { set(newValue, forKey: Self.showThirdPartyShortcutsKey) }
+    }
+
     private static let showConflictIndicatorKey = "showConflictIndicator"
 
     var showConflictIndicator: Bool {

@@ -281,6 +281,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                let sys = SystemShortcutsProvider.load() {
                 allSections.append(sys)
             }
+            if UserDefaults.standard.showThirdPartyShortcuts {
+                allSections.append(contentsOf: ThirdPartyShortcutRegistry.load())
+            }
             var shortcuts = AppShortcuts(
                 appName: appName,
                 bundleIdentifier: bundleID,

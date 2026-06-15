@@ -136,6 +136,10 @@ final class SettingsModel {
         didSet { UserDefaults.standard.showDeactivatedSystemShortcuts = showDeactivatedSystemShortcuts }
     }
 
+    var showThirdPartyShortcuts: Bool = UserDefaults.standard.showThirdPartyShortcuts {
+        didSet { UserDefaults.standard.showThirdPartyShortcuts = showThirdPartyShortcuts }
+    }
+
     var automaticUpdatesEnabled: Bool = UserDefaults.standard.automaticUpdatesEnabled {
         didSet { UserDefaults.standard.automaticUpdatesEnabled = automaticUpdatesEnabled }
     }
@@ -527,6 +531,9 @@ private struct PopupSettingsView: View {
                     .padding(.leading, 20)
                     .foregroundStyle(.secondary)
             }
+
+            Toggle("Show registered app shortcuts", isOn: $model.showThirdPartyShortcuts)
+                .help("Apps can register their global shortcuts at ~/Library/Application Support/KeyMinder/Integrations/<BundleID>.json")
 
             Divider()
 
