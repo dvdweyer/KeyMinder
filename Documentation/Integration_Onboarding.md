@@ -271,4 +271,4 @@ If your app runs in the macOS **App Sandbox**, writing to `~/Library/Application
 
 ## Questions / feedback
 
-Open an issue or start a discussion at [github.com/dvdweyer/KeyMinder](https://github.com/dvdweyer/KeyMinder). We are happy to help you get integrated.
+Open an issue or start a discussion at [github.com/dvdweyer/KeyMinder](https://github.com/dvdweyer/KeyMinder). I am happy to help you get integrated.
