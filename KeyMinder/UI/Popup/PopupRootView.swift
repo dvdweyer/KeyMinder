@@ -84,32 +84,32 @@ final class PopupFilterModel {
     let fitsWithoutScrolling: Bool
 
     private let cachedConflictingKeys: Set<String>
+    /// Ignore-list patterns for this app, computed once at init. Empty when the
+    /// ignore list is disabled or "show when filtering" is off.
+    private let hiddenPatterns: [String]
 
     init(app: AppShortcuts, columns: [[MenuSection]], fitsWithoutScrolling: Bool = false) {
         self.app = app
         self.columns = columns
         self.fitsWithoutScrolling = fitsWithoutScrolling
         cachedConflictingKeys = UserDefaults.standard.showConflictIndicator ? app.conflictingKeys : []
+        let store = IgnoreListStore.shared
+        hiddenPatterns = (store.isEnabled && store.showWhenFiltering)
+            ? store.ignoredTitles(for: app.bundleIdentifier)
+            : []
         updateVisibleShortcuts()
     }
 
     private func updateVisibleShortcuts() {
         let appID = app.bundleIdentifier ?? app.appName
-        let ignoreStore = IgnoreListStore.shared
-        // When showWhenFiltering is on and the query is empty, exclude ignored items from
-        // the navigable set so they don't appear while the popup is idle. When a query is
-        // active the `matches` check below already gates which items enter the list; ignored
-        // items that match the query are included so the user can Tab-navigate and activate them.
-        let hiddenPatterns: [String] = (ignoreStore.isEnabled && ignoreStore.showWhenFiltering && activeQuery.isEmpty)
-            ? ignoreStore.ignoredTitles(for: app.bundleIdentifier)
-            : []
         var result: [Shortcut] = []
         for column in columns {
             for section in column {
                 for group in section.groups {
+                    // Skip ignored groups while idle; reveal them when a query is active.
                     if let groupTitle = group.title,
-                       ignoreStore.isEnabled && ignoreStore.showWhenFiltering,
-                       IgnoreListStore.isIgnored(title: groupTitle, patterns: ignoreStore.ignoredTitles(for: app.bundleIdentifier)),
+                       !hiddenPatterns.isEmpty,
+                       IgnoreListStore.isIgnored(title: groupTitle, patterns: hiddenPatterns),
                        activeQuery.isEmpty {
                         continue
                     }
@@ -119,7 +119,7 @@ final class PopupFilterModel {
                             && shortcut.matches(activeQuery)
                             && shortcut.matchesModifierFilter(modifierFilter)
                             && (!showOnlyFavourites || FavouritesStore.shared.isFavourite(shortcut, appID: appID))
-                            && (hiddenPatterns.isEmpty || !IgnoreListStore.isIgnored(title: shortcut.title, patterns: hiddenPatterns)) {
+                            && (hiddenPatterns.isEmpty || !activeQuery.isEmpty || !IgnoreListStore.isIgnored(title: shortcut.title, patterns: hiddenPatterns)) {
                         result.append(shortcut)
                     }
                 }
@@ -172,10 +172,6 @@ final class PopupFilterModel {
     /// the favourites filter when active).
     var displayableCount: Int {
         let appID = app.bundleIdentifier ?? app.appName
-        let ignoreStore = IgnoreListStore.shared
-        let hiddenPatterns: [String] = (ignoreStore.isEnabled && ignoreStore.showWhenFiltering)
-            ? ignoreStore.ignoredTitles(for: app.bundleIdentifier)
-            : []
         return app.sections.reduce(0) { total, section in
             total + section.groups.reduce(0) { gTotal, group in
                 if let title = group.title, !hiddenPatterns.isEmpty,
@@ -197,10 +193,6 @@ final class PopupFilterModel {
     /// `displayableCount` so the "X of Y" header counts are consistent.
     var matchCount: Int {
         let appID = app.bundleIdentifier ?? app.appName
-        let ignoreStore = IgnoreListStore.shared
-        let hiddenPatterns: [String] = (ignoreStore.isEnabled && ignoreStore.showWhenFiltering)
-            ? ignoreStore.ignoredTitles(for: app.bundleIdentifier)
-            : []
         return app.sections.reduce(0) { total, section in
             total + section.groups.reduce(0) { gTotal, group in
                 if let title = group.title, !hiddenPatterns.isEmpty,
