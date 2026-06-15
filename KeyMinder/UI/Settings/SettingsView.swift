@@ -50,11 +50,7 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
         let developerRaw = NSHostingController(rootView: DeveloperSettingsView(model: m))
             .sizeThatFits(in: CGSize(width: 420, height: CGFloat.greatestFiniteMagnitude)).height + 24
 
-        // Derive the picker+divider overhead: SettingsView() shows General (tab 0) by
-        // default, so fullRaw − genRaw gives the exact picker + divider height.
-        let fullRaw = NSHostingController(rootView: SettingsView())
-            .sizeThatFits(in: CGSize(width: 420, height: CGFloat.greatestFiniteMagnitude)).height
-        let tabBarH = max(fullRaw - genRaw, 44)
+        let tabBarH: CGFloat = 44   // tab picker (≈32 pt) + divider (1 pt) + padding
 
         tabHeights = [
             min(genRaw      + tabBarH, screenH).rounded(),
@@ -73,7 +69,7 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
         window.center()
         super.init(window: window)
         window.delegate = self
-        window.contentView = NSHostingView(rootView: SettingsView(onTabChange: { [weak self] tab in
+        window.contentView = NSHostingView(rootView: SettingsView(model: m, onTabChange: { [weak self] tab in
             self?.resize(to: tab)
         }))
     }
@@ -329,8 +325,13 @@ private struct TabPickerView: NSViewRepresentable {
 
 struct SettingsView: View {
     var onTabChange: (Int) -> Void = { _ in }
-    @State private var model = SettingsModel()
+    @State private var model: SettingsModel
     @State private var selectedTab = 0
+
+    init(model: SettingsModel = SettingsModel(), onTabChange: @escaping (Int) -> Void = { _ in }) {
+        _model = State(initialValue: model)
+        self.onTabChange = onTabChange
+    }
 
     fileprivate static let tabs: [TabPickerView.Tab] = [
         .init(label: "General",   systemImage: "gearshape"),
