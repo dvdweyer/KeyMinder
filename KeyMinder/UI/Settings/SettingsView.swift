@@ -322,7 +322,8 @@ struct SettingsView: View {
     @State private var model: SettingsModel
     @State private var selectedTab = 0
 
-    init(model: SettingsModel = SettingsModel(), onTabChange: @escaping (Int) -> Void = { _ in }) {
+    @MainActor
+    init(model: SettingsModel, onTabChange: @escaping (Int) -> Void = { _ in }) {
         _model = State(initialValue: model)
         self.onTabChange = onTabChange
     }

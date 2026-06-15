@@ -205,7 +205,7 @@ final class PopupFilterModel {
                     $0.matches(activeQuery) &&
                     $0.matchesModifierFilter(modifierFilter) &&
                     (!showOnlyFavourites || FavouritesStore.shared.isFavourite($0, appID: appID)) &&
-                    (hiddenPatterns.isEmpty || !IgnoreListStore.isIgnored(title: $0.title, patterns: hiddenPatterns))
+                    (hiddenPatterns.isEmpty || !activeQuery.isEmpty || !IgnoreListStore.isIgnored(title: $0.title, patterns: hiddenPatterns))
                 }.count
             }
         }
