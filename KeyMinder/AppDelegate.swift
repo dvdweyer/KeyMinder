@@ -313,10 +313,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                               ignoredTitles: ignoredTitles, ignoredMenuTitles: ignoredMenuTitles,
                               maxSubmenuSize: nil)
 
-        // Evict cache from the previous app.
+        // Evict cache and abandon pre-cache task from a different app.
         if menuCache?.key.pid != pid { menuCache = nil }
+        if preCacheKey?.pid != pid {
+            // The AX scrape is synchronous C code — it cannot be cancelled — but dropping
+            // the reference frees the slot so the new app can start its own pre-cache.
+            // presentPopup() drains any in-flight task before starting a new traversal.
+            detachedScrapeTask = nil
+            preCacheKey = nil
+        }
 
-        // Nothing to do if a fresh cache already exists or a task is running.
+        // Nothing to do if a fresh cache already exists or a task is already running
+        // for this exact app.
         if menuCache?.matches(key) == true || detachedScrapeTask != nil { return }
 
         preCacheKey = key
