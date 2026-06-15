@@ -81,7 +81,7 @@ final class PopupFilterModel {
 
     /// When true the popup fits all shortcuts without scrolling, so filtering
     /// dims non-matching rows rather than hiding them (layout stays stable).
-    let fitsWithoutScrolling: Bool
+    var fitsWithoutScrolling: Bool
 
     private let cachedConflictingKeys: Set<String>
     /// Ignore-list patterns for this app, computed once at init. Empty when the

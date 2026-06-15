@@ -318,8 +318,8 @@ final class PopupController {
         // Height is measured with an empty query. When "Only show when searching" is
         // off, showsAllItems is true here too — the measurement correctly captures the
         // taller all-entries height. When it is on, no-shortcut rows are absent.
-        let placeholderModel = PopupFilterModel(app: app, columns: displayColumns)
-        let measureView = rootView(content, model: placeholderModel, width: width,
+        let model = PopupFilterModel(app: app, columns: displayColumns)
+        let measureView = rootView(content, model: model, width: width,
                                    height: nil, scrolls: false)
         let measurer = NSHostingController(rootView: measureView)
         let naturalHeight = measurer.sizeThatFits(in: CGSize(width: width, height: .greatestFiniteMagnitude)).height
@@ -327,9 +327,7 @@ final class PopupController {
 
         // When all content fits without scrolling, filtering dims non-matching rows
         // rather than collapsing the layout, keeping column heights stable.
-        let fitsWithoutScrolling = naturalHeight <= maxPanelHeight
-        let model = PopupFilterModel(app: app, columns: displayColumns,
-                                     fitsWithoutScrolling: fitsWithoutScrolling)
+        model.fitsWithoutScrolling = naturalHeight <= maxPanelHeight
         // Don't restore the saved query when "show when filtering" is active:
         // ignored items should only be revealed by typing in the current session,
         // not by a query that happened to match them in a previous one.
