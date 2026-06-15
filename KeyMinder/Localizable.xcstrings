@@ -106,6 +106,12 @@
             "state": "translated",
             "value": "가 걸릴 수 있습니다."
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": " để xuất hiện."
+          }
         }
       }
     },
@@ -220,6 +226,12 @@
             "state": "translated",
             "value": "%1$@ %2$@"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ %2$@"
+          }
         }
       }
     },
@@ -327,6 +339,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@에는 퀴즈로 낼 단축키가 없습니다."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ không có phím tắt nào để kiểm tra."
           }
         }
       }
@@ -438,6 +456,12 @@
           }
         },
         "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld / %2$lld"
+          }
+        },
+        "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "%1$lld / %2$lld"
@@ -555,6 +579,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$lld 정답 · %2$lld 오답"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld đúng · %2$lld sai"
           }
         }
       }
@@ -891,6 +921,12 @@
             "state": "translated",
             "value": "메뉴 항목 %lld개"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld mục menu"
+          }
         }
       }
     },
@@ -994,6 +1030,12 @@
           }
         },
         "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld / %lld"
+          }
+        },
+        "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "%lld / %lld"
@@ -1333,6 +1375,12 @@
             "state": "translated",
             "value": "단축키 %lld개"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld phím tắt"
+          }
         }
       }
     },
@@ -1440,6 +1488,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%lld%% 정답"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld%% đúng"
           }
         }
       }
@@ -1651,6 +1705,12 @@
             "state": "translated",
             "value": "한 열에 맞지 않는 긴 메뉴는 메뉴 이름이 반복되면서 다음 열로 이어집니다."
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Menu dài không vừa một cột sẽ tiếp tục ở cột tiếp theo với tên menu được lặp lại."
+          }
         }
       }
     },
@@ -1757,6 +1817,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "KeyMinder 정보"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Giới thiệu về KeyMinder"
           }
         }
       }
@@ -1866,6 +1932,12 @@
             "state": "translated",
             "value": "접근 허용됨"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đã cấp quyền truy cập"
+          }
         }
       }
     },
@@ -1973,6 +2045,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "추가"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thêm"
           }
         }
       }
@@ -2082,6 +2160,12 @@
             "state": "translated",
             "value": "앱 규칙 추가…"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thêm quy tắc ứng dụng…"
+          }
         }
       }
     },
@@ -2189,6 +2273,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "앱별 규칙 추가"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thêm quy tắc theo ứng dụng"
           }
         }
       }
@@ -2298,6 +2388,12 @@
             "state": "translated",
             "value": "앱 추가…"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thêm ứng dụng…"
+          }
         }
       }
     },
@@ -2405,6 +2501,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "전체 규칙 추가…"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thêm quy tắc toàn cục…"
           }
         }
       }
@@ -2514,6 +2616,12 @@
             "state": "translated",
             "value": "무시 명령 추가"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thêm lệnh bị bỏ qua"
+          }
         }
       }
     },
@@ -2622,6 +2730,12 @@
             "state": "translated",
             "value": "메뉴 추가…"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thêm menu…"
+          }
         }
       }
     },
@@ -2729,6 +2843,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "즐겨찾기에 추가"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thêm vào mục yêu thích"
           }
         }
       }
@@ -2839,6 +2959,12 @@
             "state": "translated",
             "value": "고급"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nâng cao"
+          }
         }
       }
     },
@@ -2946,6 +3072,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "모든 앱"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tất cả ứng dụng"
           }
         }
       }
@@ -3055,6 +3187,12 @@
             "state": "translated",
             "value": "앱 접근 허용"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cho phép truy cập vào ứng dụng"
+          }
         }
       }
     },
@@ -3162,6 +3300,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "거의 다 왔어요"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gần xong rồi"
           }
         }
       }
@@ -3271,6 +3415,12 @@
             "state": "translated",
             "value": "앱"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ứng dụng"
+          }
         }
       }
     },
@@ -3379,6 +3529,12 @@
             "state": "translated",
             "value": "앱별"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Theo ứng dụng"
+          }
         }
       }
     },
@@ -3485,6 +3641,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "외관"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Giao diện"
           }
         }
       }
@@ -3594,6 +3756,12 @@
             "state": "translated",
             "value": "여기에 나열된 앱은 완전히 건너뜁니다 — 해당 앱이 맨 앞에 있는 동안 팝업이 열리지 않습니다."
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Các ứng dụng được liệt kê ở đây sẽ bị bỏ qua hoàn toàn — cửa sổ bật lên sẽ không mở khi chúng ở phía trước."
+          }
         }
       }
     },
@@ -3702,6 +3870,12 @@
             "state": "translated",
             "value": "뒤로"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quay lại"
+          }
         }
       }
     },
@@ -3809,6 +3983,12 @@
             "state": "translated",
             "value": "취소"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hủy"
+          }
         }
       }
     },
@@ -3915,6 +4095,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "변경…"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thay đổi…"
           }
         }
       }
@@ -4024,6 +4210,12 @@
             "state": "translated",
             "value": "자동으로 업데이트 확인"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tự động kiểm tra cập nhật"
+          }
         }
       }
     },
@@ -4131,6 +4323,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "자동으로 업데이트 확인"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tự động kiểm tra cập nhật"
           }
         }
       }
@@ -4240,6 +4438,12 @@
             "state": "translated",
             "value": "업데이트 확인…"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kiểm tra cập nhật…"
+          }
         }
       }
     },
@@ -4348,6 +4552,12 @@
             "state": "translated",
             "value": "모든 앱에서 KeyMinder를 여는 방법을 선택하세요."
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chọn cách mở KeyMinder từ bất kỳ ứng dụng nào."
+          }
         }
       }
     },
@@ -4455,6 +4665,12 @@
             "state": "translated",
             "value": "지우기"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xóa"
+          }
         }
       }
     },
@@ -4561,6 +4777,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "필터 지우기"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xóa bộ lọc"
           }
         }
       }
@@ -4670,6 +4892,12 @@
             "state": "translated",
             "value": "이 아이콘을 클릭하면 활성 앱의 단축키가 표시됩니다."
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nhấp vào biểu tượng này để hiển thị phím tắt của ứng dụng đang hoạt động."
+          }
         }
       }
     },
@@ -4778,6 +5006,12 @@
             "state": "translated",
             "value": "KeyMinder 팝업 닫기"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đóng cửa sổ bật lên KeyMinder"
+          }
         }
       }
     },
@@ -4884,6 +5118,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "팝업에서 단축키 기호에 사용되는 색상입니다."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Màu sắc dùng cho ký hiệu phím tắt trong cửa sổ bật lên."
           }
         }
       }
@@ -4993,6 +5233,12 @@
             "state": "translated",
             "value": "명령 제목"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tên lệnh"
+          }
         }
       }
     },
@@ -5100,6 +5346,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "여기에 나열된 명령은 팝업에서 숨겨집니다. 명령이 하위 메뉴를 여는 경우 전체 하위 메뉴도 숨겨집니다."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Các lệnh được liệt kê ở đây sẽ bị ẩn khỏi cửa sổ bật lên. Nếu lệnh mở menu con, toàn bộ menu con cũng bị ẩn."
           }
         }
       }
@@ -5209,6 +5461,12 @@
             "state": "translated",
             "value": "완료"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoàn thành"
+          }
         }
       }
     },
@@ -5317,6 +5575,12 @@
             "state": "translated",
             "value": "정답: %@"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đúng: %@"
+          }
         }
       }
     },
@@ -5423,6 +5687,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "개발자"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nhà phát triển"
           }
         }
       }
@@ -5532,6 +5802,12 @@
             "state": "translated",
             "value": "무시"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bỏ qua"
+          }
         }
       }
     },
@@ -5639,6 +5915,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "팁 닫기"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đóng gợi ý"
           }
         }
       }
@@ -5748,6 +6030,12 @@
             "state": "translated",
             "value": "완료"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xong"
+          }
         }
       }
     },
@@ -5856,6 +6144,12 @@
             "state": "translated",
             "value": "두 번 탭 보조 키"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Phím bổ trợ nhấn đôi"
+          }
         }
       }
     },
@@ -5962,6 +6256,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "두 번 탭 트리거"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kích hoạt nhấn đôi"
           }
         }
       }
@@ -6070,6 +6370,12 @@
             "state": "translated",
             "value": "활성화"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bật"
+          }
         }
       }
     },
@@ -6176,6 +6482,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "디버그 로깅 활성화"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bật ghi nhật ký gỡ lỗi"
           }
         }
       }
@@ -6285,6 +6597,12 @@
             "state": "translated",
             "value": "KeyMinder가 마음에 드시나요? GitHub에서 별을 눌러주세요 ↗"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bạn thích KeyMinder? Hãy gắn sao trên GitHub ↗"
+          }
         }
       }
     },
@@ -6392,6 +6710,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "모든 앱의 팝업에서 숨길 명령 제목을 입력하세요. *를 와일드카드로 사용하세요 — 예: *Window*는 'Window'가 포함된 모든 명령을 숨깁니다."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nhập tên lệnh để ẩn khỏi cửa sổ bật lên trong tất cả ứng dụng. Dùng * làm ký tự đại diện — ví dụ: *Window* ẩn mọi lệnh chứa 'Window'."
           }
         }
       }
@@ -6502,6 +6826,12 @@
             "state": "translated",
             "value": "모든 앱의 팝업에서 숨길 명령 제목을 정확히 입력하세요."
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nhập chính xác tên lệnh để ẩn khỏi cửa sổ bật lên trong tất cả ứng dụng."
+          }
         }
       }
     },
@@ -6609,6 +6939,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "메뉴 막대에 표시된 그대로 메뉴 이름을 입력하세요(예: \"File\", \"View\", \"Help\"). Apple 메뉴는 \"Apple\"로 식별됩니다."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nhập tên menu chính xác như hiển thị trong thanh menu (ví dụ: \"File\", \"View\", \"Help\"). Menu Apple được xác định bằng \"Apple\"."
           }
         }
       }
@@ -6718,6 +7054,12 @@
             "state": "translated",
             "value": "실험적"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "thử nghiệm"
+          }
         }
       }
     },
@@ -6825,6 +7167,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "단축키 내보내기"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xuất phím tắt"
           }
         }
       }
@@ -6934,6 +7282,12 @@
             "state": "translated",
             "value": "즐겨찾기"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yêu thích"
+          }
         }
       }
     },
@@ -7040,6 +7394,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "필터"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lọc"
           }
         }
       }
@@ -7149,6 +7509,12 @@
             "state": "translated",
             "value": "보조 키로 필터 — ⌃ ⌥ ⇧ ⌘를 클릭하여 목록 좁히기"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lọc theo phím bổ trợ — nhấp ⌃ ⌥ ⇧ ⌘ để thu hẹp danh sách"
+          }
         }
       }
     },
@@ -7257,6 +7623,12 @@
             "state": "translated",
             "value": "보조 키로 필터링하거나 이름으로 검색"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lọc theo phím bổ trợ hoặc tìm kiếm theo tên"
+          }
         }
       }
     },
@@ -7363,6 +7735,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "시스템 강조 색상 따르기"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Theo màu nhấn của hệ thống"
           }
         }
       }
@@ -7471,6 +7849,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "버그를 발견하셨거나 제안이 있으신가요? "
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tìm thấy lỗi hoặc có góp ý? "
           }
         }
       }
@@ -7581,6 +7965,12 @@
             "state": "translated",
             "value": "일반"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chung"
+          }
         }
       }
     },
@@ -7688,6 +8078,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "공개 출시 전에 새 기능에 먼저 접근하세요. 베타 빌드는 불안정할 수 있습니다."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trải nghiệm sớm các tính năng mới trước khi phát hành chính thức. Bản beta có thể kém ổn định hơn."
           }
         }
       }
@@ -7797,6 +8193,12 @@
             "state": "translated",
             "value": "시작하기"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bắt đầu"
+          }
         }
       }
     },
@@ -7903,6 +8305,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "전체 단축키"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Phím tắt toàn cục"
           }
         }
       }
@@ -8011,6 +8419,12 @@
             "state": "translated",
             "value": "접근 허용…"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cấp quyền truy cập…"
+          }
         }
       }
     },
@@ -8117,6 +8531,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "손쉬운 사용 접근 허용…"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cấp quyền Hỗ trợ tiếp cận…"
           }
         }
       }
@@ -8227,6 +8647,12 @@
             "state": "translated",
             "value": "하나의 앱에서만 명령을 숨깁니다."
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ẩn lệnh chỉ trong một ứng dụng."
+          }
         }
       }
     },
@@ -8334,6 +8760,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "하나의 앱에서만 명령을 숨깁니다. *를 와일드카드로 사용하세요 — 예: *Window*는 'Window'가 포함된 모든 명령을 숨깁니다."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ẩn lệnh chỉ trong một ứng dụng. Dùng * làm ký tự đại diện — ví dụ: *Window* ẩn mọi lệnh chứa 'Window'."
           }
         }
       }
@@ -8443,6 +8875,12 @@
             "state": "translated",
             "value": "무시된 명령 숨기기"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ẩn lệnh bị bỏ qua"
+          }
         }
       }
     },
@@ -8550,6 +8988,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "단축키 없는 큰 하위 메뉴 숨기기"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ẩn menu con lớn không có phím tắt"
           }
         }
       }
@@ -8659,6 +9103,12 @@
             "state": "translated",
             "value": "앱 무시"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bỏ qua ứng dụng"
+          }
         }
       }
     },
@@ -8766,6 +9216,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "메뉴 무시"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bỏ qua menu"
           }
         }
       }
@@ -8875,6 +9331,12 @@
             "state": "translated",
             "value": "무시된 앱"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ứng dụng bị bỏ qua"
+          }
         }
       }
     },
@@ -8982,6 +9444,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "무시된 명령"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lệnh bị bỏ qua"
           }
         }
       }
@@ -9091,6 +9559,12 @@
             "state": "translated",
             "value": "무시된 메뉴"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Menu bị bỏ qua"
+          }
         }
       }
     },
@@ -9198,6 +9672,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@에서"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "trong %@"
           }
         }
       }
@@ -9307,6 +9787,12 @@
             "state": "translated",
             "value": "메뉴 항목이 많은 앱(예: 브라우저 기록)에서는 팝업이 표시되기까지 "
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trong các ứng dụng có nhiều mục menu (ví dụ: lịch sử trình duyệt), cửa sổ bật lên có thể mất "
+          }
         }
       }
     },
@@ -9414,6 +9900,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "메뉴 항목이 많은 앱(예: 브라우저 기록)에서는 팝업이 표시되기까지 몇 초가 걸릴 수 있습니다."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trong các ứng dụng có nhiều mục menu (ví dụ: lịch sử trình duyệt), cửa sổ bật lên có thể mất vài giây để xuất hiện."
           }
         }
       }
@@ -9523,6 +10015,12 @@
             "state": "translated",
             "value": "즉시 조회 — 원하는 앱으로 전환하기만 하면 됩니다"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tra cứu tức thì — chỉ cần chuyển sang bất kỳ ứng dụng nào"
+          }
         }
       }
     },
@@ -9629,6 +10127,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "키 색상"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Màu phím"
           }
         }
       }
@@ -9738,6 +10242,12 @@
             "state": "translated",
             "value": "KeyMinder 준비 완료"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "KeyMinder đã sẵn sàng"
+          }
         }
       }
     },
@@ -9844,6 +10354,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "KeyMinder에 손쉬운 사용 접근 권한이 필요합니다"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "KeyMinder cần quyền Hỗ trợ tiếp cận"
           }
         }
       }
@@ -9953,6 +10469,12 @@
             "state": "translated",
             "value": "KeyMinder는 macOS 손쉬운 사용 API를 통해 메뉴를 읽습니다 — 화면 낭독기 및 보조 기술과 동일한 권한입니다. 데이터는 Mac 밖으로 나가지 않습니다."
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "KeyMinder đọc menu thông qua API Hỗ trợ tiếp cận của macOS — cùng quyền được dùng bởi trình đọc màn hình và công cụ hỗ trợ. Dữ liệu của bạn không bao giờ rời khỏi Mac."
+          }
         }
       }
     },
@@ -10059,6 +10581,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "KeyMinder 설정"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cài đặt KeyMinder"
           }
         }
       }
@@ -10168,6 +10696,12 @@
             "state": "translated",
             "value": "필요할 때마다 메뉴 막대에서 KeyMinder를 사용할 수 있습니다."
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "KeyMinder sẽ sẵn sàng trong thanh menu của bạn bất cứ khi nào bạn cần."
+          }
         }
       }
     },
@@ -10275,6 +10809,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "새 버전이 출시되면 KeyMinder가 알려드립니다."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "KeyMinder sẽ thông báo khi có phiên bản mới."
           }
         }
       }
@@ -10485,6 +11025,12 @@
             "state": "translated",
             "value": "로그인 시 시작"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Khởi động khi đăng nhập"
+          }
         }
       }
     },
@@ -10592,6 +11138,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "트리거 키에 앱 아이콘 색상 맞추기"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Khớp màu biểu tượng ứng dụng với phím kích hoạt"
           }
         }
       }
@@ -10701,6 +11253,12 @@
             "state": "translated",
             "value": "메뉴 이름"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tên menu"
+          }
         }
       }
     },
@@ -10809,6 +11367,12 @@
             "state": "translated",
             "value": "여기에 나열된 메뉴는 팝업에서 숨겨집니다. Apple 메뉴()는 기본적으로 무시됩니다."
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Các menu được liệt kê ở đây sẽ bị ẩn khỏi cửa sổ bật lên. Menu Apple () bị bỏ qua theo mặc định."
+          }
         }
       }
     },
@@ -10915,6 +11479,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "보조 키"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Phím bổ trợ"
           }
         }
       }
@@ -11024,6 +11594,12 @@
             "state": "translated",
             "value": "다음"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tiếp theo"
+          }
         }
       }
     },
@@ -11130,6 +11706,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "활성 앱 없음"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không có ứng dụng nào đang hoạt động"
           }
         }
       }
@@ -11239,6 +11821,12 @@
             "state": "translated",
             "value": "현재 실행 중인 앱이 없습니다."
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hiện không có ứng dụng nào đang chạy."
+          }
         }
       }
     },
@@ -11344,6 +11932,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "추가할 앱이 없습니다(실행 중인 모든 앱이 이미 무시됩니다)."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không có ứng dụng nào để thêm (tất cả ứng dụng đang chạy đã bị bỏ qua)."
           }
         }
       }
@@ -11453,6 +12047,12 @@
             "state": "translated",
             "value": "무시된 앱 없음"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không có ứng dụng bị bỏ qua"
+          }
         }
       }
     },
@@ -11560,6 +12160,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "무시된 명령 없음"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không có lệnh bị bỏ qua"
           }
         }
       }
@@ -11669,6 +12275,12 @@
             "state": "translated",
             "value": "무시된 메뉴 없음"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không có menu bị bỏ qua"
+          }
         }
       }
     },
@@ -11775,6 +12387,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@의 단축키를 찾을 수 없습니다"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không tìm thấy phím tắt nào cho %@"
           }
         }
       }
@@ -11883,6 +12501,12 @@
             "state": "translated",
             "value": "설정 안 됨"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chưa đặt"
+          }
         }
       }
     },
@@ -11990,6 +12614,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "퀴즈 항목 없음"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không có gì để kiểm tra"
           }
         }
       }
@@ -12105,6 +12735,12 @@
             "state": "translated",
             "value": "꺼짐"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tắt"
+          }
         }
       }
     },
@@ -12212,6 +12848,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "확인"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OK"
           }
         }
       }
@@ -12327,6 +12969,12 @@
             "state": "translated",
             "value": "켜짐"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bật"
+          }
         }
       }
     },
@@ -12434,6 +13082,12 @@
             "state": "translated",
             "value": "검색 시에만 표시"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chỉ hiển thị khi tìm kiếm"
+          }
         }
       }
     },
@@ -12540,6 +13194,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "모든 앱에서 KeyMinder를 열어 활성 단축키를 확인하세요."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mở KeyMinder từ bất kỳ ứng dụng nào để xem phím tắt đang hoạt động."
           }
         }
       }
@@ -12649,6 +13309,12 @@
             "state": "translated",
             "value": "KeyMinder 설정 열기"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mở Cài đặt KeyMinder"
+          }
         }
       }
     },
@@ -12755,6 +13421,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "설정 열기…"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mở Cài đặt…"
           }
         }
       }
@@ -12864,6 +13536,12 @@
             "state": "translated",
             "value": "즐겨찾기를 고정하여 한 번에 접근"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ghim mục yêu thích để truy cập bằng một nhấn"
+          }
         }
       }
     },
@@ -12970,6 +13648,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "팝업 콘텐츠"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nội dung cửa sổ bật lên"
           }
         }
       }
@@ -13079,6 +13763,12 @@
             "state": "translated",
             "value": "%@을(를) 눌러 활성 앱의 단축키를 표시하세요."
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nhấn %@ để hiển thị phím tắt của ứng dụng đang hoạt động."
+          }
         }
       }
     },
@@ -13184,6 +13874,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "보조 키를 빠르게 두 번 누르세요."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nhấn nhanh phím bổ trợ hai lần."
           }
         }
       }
@@ -13293,6 +13989,12 @@
             "state": "translated",
             "value": "단축키를 누르세요…"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nhấn phím tắt…"
+          }
         }
       }
     },
@@ -13399,6 +14101,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "KeyMinder 종료"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thoát KeyMinder"
           }
         }
       }
@@ -13508,6 +14216,12 @@
             "state": "translated",
             "value": "다시 퀴즈"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kiểm tra lại"
+          }
         }
       }
     },
@@ -13615,6 +14329,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "즐겨찾기만 퀴즈"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chỉ kiểm tra mục yêu thích"
           }
         }
       }
@@ -13724,6 +14444,12 @@
             "state": "translated",
             "value": "퀴즈 모드 — %@"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chế độ kiểm tra — %@"
+          }
         }
       }
     },
@@ -13831,6 +14557,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "퀴즈 모드…"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chế độ kiểm tra…"
           }
         }
       }
@@ -13940,6 +14672,12 @@
             "state": "translated",
             "value": "베타 버전 수신"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nhận bản phát hành beta"
+          }
         }
       }
     },
@@ -14046,6 +14784,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "단축키 기록…"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ghi phím tắt…"
           }
         }
       }
@@ -14155,6 +14899,12 @@
             "state": "translated",
             "value": "이 앱의 모든 규칙 제거"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xóa tất cả quy tắc cho ứng dụng này"
+          }
         }
       }
     },
@@ -14263,6 +15013,12 @@
             "state": "translated",
             "value": "즐겨찾기에서 제거"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xóa khỏi mục yêu thích"
+          }
         }
       }
     },
@@ -14369,6 +15125,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "재설정"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đặt lại"
           }
         }
       }
@@ -14478,6 +15240,12 @@
             "state": "translated",
             "value": "메뉴를 열지 않고도 모든 앱의 단축키를 한눈에 확인하세요."
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xem mọi phím tắt của bất kỳ ứng dụng nào — không cần mở menu."
+          }
         }
       }
     },
@@ -14585,6 +15353,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "앱 선택…"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chọn ứng dụng…"
           }
         }
       }
@@ -14694,6 +15468,12 @@
             "state": "translated",
             "value": "시작하기 전에 마지막 설정을 완료하세요."
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thiết lập tùy chọn cuối cùng trước khi bắt đầu."
+          }
         }
       }
     },
@@ -14801,6 +15581,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "트리거 설정"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đặt phím kích hoạt"
           }
         }
       }
@@ -14910,6 +15696,12 @@
             "state": "translated",
             "value": "설정"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cài đặt"
+          }
         }
       }
     },
@@ -15016,6 +15808,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "설정…"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cài đặt…"
           }
         }
       }
@@ -15125,6 +15923,12 @@
             "state": "translated",
             "value": "몇 초"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "vài giây"
+          }
         }
       }
     },
@@ -15231,6 +16035,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "이미 사용 중인 단축키"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Phím tắt đã được sử dụng"
           }
         }
       }
@@ -15340,6 +16150,12 @@
             "state": "translated",
             "value": "단축키가 작동합니다!"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Phím tắt hoạt động!"
+          }
         }
       }
     },
@@ -15446,6 +16262,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "모든 메뉴 항목 표시"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hiển thị tất cả mục menu"
           }
         }
       }
@@ -15555,6 +16377,12 @@
             "state": "translated",
             "value": "단축키가 있는 항목뿐만 아니라 모든 메뉴 항목을 표시하여 사용 가능한 동작을 쉽게 찾을 수 있습니다."
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hiển thị tất cả mục menu, không chỉ những mục có phím tắt, để khám phá các thao tác khả dụng."
+          }
         }
       }
     },
@@ -15662,6 +16490,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "충돌 표시기 표시"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hiển thị chỉ báo xung đột"
           }
         }
       }
@@ -15771,6 +16605,12 @@
             "state": "translated",
             "value": "비활성화된 시스템 단축키 표시"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hiển thị phím tắt hệ thống bị vô hiệu hóa"
+          }
         }
       }
     },
@@ -15877,6 +16717,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "보조 키 하나를 빠르게 두 번 눌렀다 놓으면 KeyMinder가 표시됩니다."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hiển thị KeyMinder bằng cách nhấn nhanh và thả một phím bổ trợ hai lần."
           }
         }
       }
@@ -15985,6 +16831,12 @@
             "state": "translated",
             "value": "단축키 표시  (설정 안 됨)"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hiện phím tắt  (chưa đặt)"
+          }
         }
       }
     },
@@ -16091,6 +16943,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "단축키 표시  %@"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hiện phím tắt  %@"
           }
         }
       }
@@ -16200,6 +17058,12 @@
             "state": "translated",
             "value": "시스템 단축키 표시"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hiển thị phím tắt hệ thống"
+          }
         }
       }
     },
@@ -16307,6 +17171,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "필터링 시 표시"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hiển thị khi lọc"
           }
         }
       }
@@ -16416,6 +17286,12 @@
             "state": "translated",
             "value": "즐겨찾기만 표시 중"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chỉ hiển thị mục yêu thích"
+          }
         }
       }
     },
@@ -16523,6 +17399,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "단축키에 ★을 눌러 고정 — 헤더의 ★을 눌러 즐겨찾기만 보기"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nhấn ★ trên phím tắt bất kỳ để ghim — nhấn ★ ở tiêu đề để chỉ xem mục yêu thích"
           }
         }
       }
@@ -16632,6 +17514,12 @@
             "state": "translated",
             "value": "입력하여 모든 단축키 검색"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bắt đầu nhập để tìm kiếm trong tất cả phím tắt"
+          }
         }
       }
     },
@@ -16739,6 +17627,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "시스템"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hệ thống"
           }
         }
       }
@@ -16848,6 +17742,12 @@
             "state": "translated",
             "value": "이 앱이 맨 앞에 있는 동안 팝업이 열리지 않습니다."
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cửa sổ bật lên sẽ không mở khi ứng dụng này ở phía trước."
+          }
         }
       }
     },
@@ -16955,6 +17855,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "이 단축키는 여러 명령에 할당되어 있습니다"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Phím tắt này được gán cho nhiều lệnh"
           }
         }
       }
@@ -17064,6 +17970,12 @@
             "state": "translated",
             "value": "팁: Esc를 눌러 팝업 닫기"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mẹo: nhấn Esc để đóng cửa sổ bật lên"
+          }
         }
       }
     },
@@ -17171,6 +18083,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "시도"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thử"
           }
         }
       }
@@ -17280,6 +18198,12 @@
             "state": "translated",
             "value": "지금 시도해보기"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thử ngay"
+          }
         }
       }
     },
@@ -17386,6 +18310,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "단축키를 입력하세요…"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nhập phím tắt của bạn…"
           }
         }
       }
@@ -17495,6 +18425,12 @@
             "state": "translated",
             "value": "업데이트"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cập nhật"
+          }
         }
       }
     },
@@ -17602,6 +18538,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "이 창이 열려 있는 동안 트리거를 사용하세요."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sử dụng phím kích hoạt khi cửa sổ này đang mở."
           }
         }
       }
@@ -17711,6 +18653,12 @@
             "state": "translated",
             "value": "권한 대기 중…"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đang chờ cấp quyền…"
+          }
         }
       }
     },
@@ -17817,6 +18765,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "KeyMinder에 오신 것을 환영합니다"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chào mừng đến với KeyMinder"
           }
         }
       }
@@ -17926,6 +18880,12 @@
             "state": "translated",
             "value": "어떻게 할까요?"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Điều gì sẽ xảy ra?"
+          }
         }
       }
     },
@@ -18033,6 +18993,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "와일드카드"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ký tự đại diện"
           }
         }
       }
@@ -18142,6 +19108,12 @@
             "state": "translated",
             "value": "긴 메뉴를 여러 열에 걸쳐 표시"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bọc menu dài qua nhiều cột"
+          }
         }
       }
     },
@@ -18249,6 +19221,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "설정 → 일반에서 언제든지 변경할 수 있습니다."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bạn có thể thay đổi những điều này bất kỳ lúc nào trong Cài đặt → Chung."
           }
         }
       }
@@ -18358,6 +19336,12 @@
             "state": "translated",
             "value": "%@을(를) 눌렀습니다"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bạn đã nhấn %@"
+          }
         }
       }
     },
@@ -18465,6 +19449,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "모두 완료되었습니다 — 계속하려면 다음을 클릭하세요."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bạn đã hoàn tất — nhấn Tiếp theo để tiếp tục."
           }
         }
       }
