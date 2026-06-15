@@ -7,6 +7,7 @@ final class QuizWindowController: NSWindowController, NSWindowDelegate {
 
     private static var current: QuizWindowController?
     private var keyMonitor: Any?
+    private var advanceTask: Task<Void, Never>?
 
     static func show(appName: String, appIcon: NSImage?, bundleID: String?, sections: [MenuSection]) {
         let model = QuizModel(sections: sections, appName: appName, appIcon: appIcon, bundleID: bundleID)
@@ -60,14 +61,18 @@ final class QuizWindowController: NSWindowController, NSWindowDelegate {
             guard let formatted = ShortcutFormatter.keys(from: event) else { return event }
             model.checkAnswer(formatted)
             let delay: TimeInterval = model.phase == .correct ? 0.8 : 1.5
-            Task { @MainActor [weak model] in
+            advanceTask = Task { @MainActor [weak self, weak model] in
                 try? await Task.sleep(for: .seconds(delay))
                 model?.advance()
+                self?.advanceTask = nil
             }
             return nil
 
         case .correct, .wrong:
             // Any key press skips the result and advances immediately.
+            // Cancel the pending auto-advance so it doesn't fire a second time.
+            advanceTask?.cancel()
+            advanceTask = nil
             model.advance()
             return nil
 
@@ -77,6 +82,8 @@ final class QuizWindowController: NSWindowController, NSWindowDelegate {
     }
 
     func windowWillClose(_ notification: Notification) {
+        advanceTask?.cancel()
+        advanceTask = nil
         if let m = keyMonitor { NSEvent.removeMonitor(m); keyMonitor = nil }
         QuizWindowController.current = nil
         DockIconManager.shared.windowClosed()
