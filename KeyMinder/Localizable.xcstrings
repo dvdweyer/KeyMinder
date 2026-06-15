@@ -136,6 +136,12 @@
             "state": "translated",
             "value": "."
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": " จึงจะปรากฏขึ้น"
+          }
         }
       }
     },
@@ -280,6 +286,12 @@
             "state": "translated",
             "value": "%1$@ %2$@"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ %2$@"
+          }
         }
       }
     },
@@ -417,6 +429,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ nie ma skrótów klawiszowych do quizu."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ ไม่มีแป้นลัดสำหรับทดสอบ"
           }
         }
       }
@@ -558,6 +576,12 @@
           }
         },
         "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld / %2$lld"
+          }
+        },
+        "th": {
           "stringUnit": {
             "state": "translated",
             "value": "%1$lld / %2$lld"
@@ -705,6 +729,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$lld poprawnie · %2$lld błędnie"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld ถูก · %2$lld ผิด"
           }
         }
       }
@@ -1071,6 +1101,12 @@
             "state": "translated",
             "value": "%lld pozycji menu"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld รายการเมนู"
+          }
         }
       }
     },
@@ -1207,6 +1243,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%lld z %lld"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld / %lld"
           }
         }
       }
@@ -1573,6 +1615,12 @@
             "state": "translated",
             "value": "%lld skrótów"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld แป้นลัด"
+          }
         }
       }
     },
@@ -1710,6 +1758,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%lld%% poprawnie"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld%% ถูกต้อง"
           }
         }
       }
@@ -1951,6 +2005,12 @@
             "state": "translated",
             "value": "Długie menu, które nie mieści się w jednej kolumnie, jest kontynuowane w następnej z powtórzeniem nazwy menu."
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เมนูที่ยาวเกินหนึ่งคอลัมน์จะต่อในคอลัมน์ถัดไปโดยทำซ้ำชื่อเมนู"
+          }
         }
       }
     },
@@ -2087,6 +2147,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "O programie KeyMinder"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เกี่ยวกับ KeyMinder"
           }
         }
       }
@@ -2226,6 +2292,12 @@
             "state": "translated",
             "value": "Dostęp przyznany"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ได้รับสิทธิ์การเข้าถึงแล้ว"
+          }
         }
       }
     },
@@ -2363,6 +2435,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dodaj"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เพิ่ม"
           }
         }
       }
@@ -2502,6 +2580,12 @@
             "state": "translated",
             "value": "Dodaj regułę aplikacji…"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เพิ่มกฎแอป…"
+          }
         }
       }
     },
@@ -2639,6 +2723,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dodaj regułę dla konkretnej aplikacji"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เพิ่มกฎเฉพาะแอป"
           }
         }
       }
@@ -2778,6 +2868,12 @@
             "state": "translated",
             "value": "Dodaj aplikację…"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เพิ่มแอป…"
+          }
         }
       }
     },
@@ -2915,6 +3011,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dodaj regułę globalną…"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เพิ่มกฎทั่วไป…"
           }
         }
       }
@@ -3054,6 +3156,12 @@
             "state": "translated",
             "value": "Dodaj ignorowane polecenie"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เพิ่มคำสั่งที่ถูกละเว้น"
+          }
         }
       }
     },
@@ -3192,6 +3300,12 @@
             "state": "translated",
             "value": "Dodaj menu…"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เพิ่มเมนู…"
+          }
         }
       }
     },
@@ -3329,6 +3443,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dodaj do ulubionych"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เพิ่มในรายการโปรด"
           }
         }
       }
@@ -3469,6 +3589,12 @@
             "state": "translated",
             "value": "Zaawansowane"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ขั้นสูง"
+          }
         }
       }
     },
@@ -3606,6 +3732,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Wszystkie aplikacje"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "แอปทั้งหมด"
           }
         }
       }
@@ -3745,6 +3877,12 @@
             "state": "translated",
             "value": "Zezwól na dostęp do aplikacji"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "อนุญาตให้เข้าถึงแอปของคุณ"
+          }
         }
       }
     },
@@ -3882,6 +4020,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Prawie gotowe"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ใกล้เสร็จแล้ว"
           }
         }
       }
@@ -4021,6 +4165,12 @@
             "state": "translated",
             "value": "Aplikacja"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "แอป"
+          }
         }
       }
     },
@@ -4159,6 +4309,12 @@
             "state": "translated",
             "value": "Dla konkretnej aplikacji"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เฉพาะแอป"
+          }
         }
       }
     },
@@ -4295,6 +4451,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Wygląd"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "รูปลักษณ์"
           }
         }
       }
@@ -4434,6 +4596,12 @@
             "state": "translated",
             "value": "Aplikacje wymienione tutaj są całkowicie pomijane — okno podręczne nie otworzy się, gdy są na pierwszym planie."
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "แอปที่อยู่ในรายการนี้จะถูกข้ามทั้งหมด — ป็อปอัพจะไม่เปิดขณะที่แอปเหล่านี้อยู่ด้านหน้า"
+          }
         }
       }
     },
@@ -4572,6 +4740,12 @@
             "state": "translated",
             "value": "Wstecz"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ย้อนกลับ"
+          }
         }
       }
     },
@@ -4709,6 +4883,12 @@
             "state": "translated",
             "value": "Anuluj"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ยกเลิก"
+          }
         }
       }
     },
@@ -4845,6 +5025,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zmień…"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เปลี่ยน…"
           }
         }
       }
@@ -4984,6 +5170,12 @@
             "state": "translated",
             "value": "Automatycznie sprawdzaj aktualizacje"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ตรวจหาการอัปเดตโดยอัตโนมัติ"
+          }
         }
       }
     },
@@ -5121,6 +5313,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Automatycznie sprawdzaj aktualizacje"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ตรวจหาการอัปเดตโดยอัตโนมัติ"
           }
         }
       }
@@ -5260,6 +5458,12 @@
             "state": "translated",
             "value": "Sprawdź aktualizacje…"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ตรวจหาการอัปเดต…"
+          }
         }
       }
     },
@@ -5398,6 +5602,12 @@
             "state": "translated",
             "value": "Wybierz, jak otwierać KeyMinder z dowolnej aplikacji."
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เลือกวิธีเปิด KeyMinder จากแอปใดก็ได้"
+          }
         }
       }
     },
@@ -5535,6 +5745,12 @@
             "state": "translated",
             "value": "Wyczyść"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ล้าง"
+          }
         }
       }
     },
@@ -5671,6 +5887,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Wyczyść filtr"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ล้างตัวกรอง"
           }
         }
       }
@@ -5810,6 +6032,12 @@
             "state": "translated",
             "value": "Kliknij tę ikonę, aby wyświetlić skróty aktywnej aplikacji."
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "คลิกไอคอนนี้เพื่อแสดงแป้นลัดของแอปที่ใช้งานอยู่"
+          }
         }
       }
     },
@@ -5948,6 +6176,12 @@
             "state": "translated",
             "value": "Zamknij okno podręczne KeyMinder"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ปิดป็อปอัพ KeyMinder"
+          }
         }
       }
     },
@@ -6084,6 +6318,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kolor używany dla symboli skrótów klawiszowych w oknie podręcznym."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "สีที่ใช้สำหรับสัญลักษณ์แป้นลัดในป็อปอัพ"
           }
         }
       }
@@ -6223,6 +6463,12 @@
             "state": "translated",
             "value": "Tytuł polecenia"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ชื่อคำสั่ง"
+          }
         }
       }
     },
@@ -6360,6 +6606,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Polecenia wymienione tutaj są ukryte w oknie podręcznym. Jeśli polecenie otwiera podmenu, całe podmenu jest również ukryte."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "คำสั่งที่อยู่ในรายการนี้จะถูกซ่อนจากป็อปอัพ หากคำสั่งเปิดเมนูย่อย เมนูย่อยทั้งหมดก็จะถูกซ่อนด้วย"
           }
         }
       }
@@ -6499,6 +6751,12 @@
             "state": "translated",
             "value": "Ukończono"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เสร็จสมบูรณ์"
+          }
         }
       }
     },
@@ -6637,6 +6895,12 @@
             "state": "translated",
             "value": "Poprawnie: %@"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ถูกต้อง: %@"
+          }
         }
       }
     },
@@ -6773,6 +7037,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Deweloper"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "นักพัฒนา"
           }
         }
       }
@@ -6912,6 +7182,12 @@
             "state": "translated",
             "value": "Odrzuć"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ปิด"
+          }
         }
       }
     },
@@ -7049,6 +7325,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Odrzuć wskazówkę"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ปิดเคล็ดลับ"
           }
         }
       }
@@ -7188,6 +7470,12 @@
             "state": "translated",
             "value": "Gotowe"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เสร็จสิ้น"
+          }
         }
       }
     },
@@ -7326,6 +7614,12 @@
             "state": "translated",
             "value": "Klawisz modyfikujący z podwójnym naciśnięciem"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "แป้นปรับแต่งแตะสองครั้ง"
+          }
         }
       }
     },
@@ -7462,6 +7756,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Wyzwalacz z podwójnym naciśnięciem"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ทริกเกอร์แตะสองครั้ง"
           }
         }
       }
@@ -7600,6 +7900,12 @@
             "state": "translated",
             "value": "Włącz"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เปิดใช้"
+          }
         }
       }
     },
@@ -7736,6 +8042,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Włącz rejestrowanie debugowania"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เปิดใช้การบันทึกข้อผิดพลาด"
           }
         }
       }
@@ -7875,6 +8187,12 @@
             "state": "translated",
             "value": "Podoba Ci się KeyMinder? Dodaj gwiazdkę na GitHub ↗"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ชอบ KeyMinder ไหม? กดดาวบน GitHub ↗"
+          }
         }
       }
     },
@@ -8012,6 +8330,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Wpisz tytuł polecenia do ukrycia z okna podręcznego we wszystkich aplikacjach. Użyj * jako symbolu wieloznacznego — np. *Window* ukrywa każde polecenie zawierające ‘Window’."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ป้อนชื่อคำสั่งที่ต้องการซ่อนจากป็อปอัพในทุกแอป ใช้ * เป็นอักขระตัวแทน — เช่น *Window* จะซ่อนคำสั่งที่มี 'Window'"
           }
         }
       }
@@ -8152,6 +8476,12 @@
             "state": "translated",
             "value": "Wpisz dokładny tytuł polecenia do ukrycia z okna podręcznego we wszystkich aplikacjach."
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ป้อนชื่อคำสั่งที่ต้องการซ่อนจากป็อปอัพในทุกแอปให้ตรงทุกตัวอักษร"
+          }
         }
       }
     },
@@ -8289,6 +8619,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Wpisz nazwę menu dokładnie tak, jak pojawia się na pasku menu (np. „File”, „View”, „Help”). Menu Apple jest identyfikowane przez „Apple”."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ป้อนชื่อเมนูให้ตรงกับที่ปรากฏในแถบเมนูทุกประการ (เช่น \"File\", \"View\", \"Help\") เมนู Apple ระบุโดยใช้ \"Apple\""
           }
         }
       }
@@ -8428,6 +8764,12 @@
             "state": "translated",
             "value": "eksperymentalne"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ทดลอง"
+          }
         }
       }
     },
@@ -8565,6 +8907,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Eksportuj skróty"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ส่งออกแป้นลัด"
           }
         }
       }
@@ -8704,6 +9052,12 @@
             "state": "translated",
             "value": "Ulubione"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "รายการโปรด"
+          }
         }
       }
     },
@@ -8840,6 +9194,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Filtruj"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "กรอง"
           }
         }
       }
@@ -8979,6 +9339,12 @@
             "state": "translated",
             "value": "Filtruj według modyfikatora — kliknij ⌃ ⌥ ⇧ ⌘, aby zawęzić listę"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "กรองตามแป้นปรับแต่ง — คลิก ⌃ ⌥ ⇧ ⌘ เพื่อจำกัดรายการ"
+          }
         }
       }
     },
@@ -9117,6 +9483,12 @@
             "state": "translated",
             "value": "Filtruj według klawisza modyfikującego lub szukaj po nazwie"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "กรองตามแป้นปรับแต่งหรือค้นหาตามชื่อ"
+          }
         }
       }
     },
@@ -9253,6 +9625,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Użyj koloru akcentu systemu"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ใช้สีเน้นของระบบ"
           }
         }
       }
@@ -9391,6 +9769,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Znalazłeś błąd lub masz sugestję? "
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "พบบั๊กหรือมีข้อเสนอแนะ? "
           }
         }
       }
@@ -9531,6 +9915,12 @@
             "state": "translated",
             "value": "Ogólne"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ทั่วไป"
+          }
         }
       }
     },
@@ -9668,6 +10058,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Uzyskaj wczesny dostęp do nowych funkcji przed wydaniem publicznym. Wersje beta mogą być mniej stabilne."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "รับสิทธิ์เข้าถึงฟีเจอร์ใหม่ก่อนการเผยแพร่สู่สาธารณะ บิลด์เบต้าอาจมีความเสถียรน้อยกว่า"
           }
         }
       }
@@ -9807,6 +10203,12 @@
             "state": "translated",
             "value": "Zacznij"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เริ่มต้น"
+          }
         }
       }
     },
@@ -9943,6 +10345,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Globalny skrót klawiszowy"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "แป้นลัดทั่วไป"
           }
         }
       }
@@ -10081,6 +10489,12 @@
             "state": "translated",
             "value": "Przyznaj dostęp…"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ให้สิทธิ์การเข้าถึง…"
+          }
         }
       }
     },
@@ -10217,6 +10631,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Przyznaj dostęp do Dostępności…"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ให้สิทธิ์การช่วยการเข้าถึง…"
           }
         }
       }
@@ -10357,6 +10777,12 @@
             "state": "translated",
             "value": "Ukryj polecenie tylko w jednej aplikacji."
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ซ่อนคำสั่งในแอปเดียวเท่านั้น"
+          }
         }
       }
     },
@@ -10494,6 +10920,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ukryj polecenie tylko w jednej aplikacji. Użyj * jako symbolu wieloznacznego — np. *Window* ukrywa każde polecenie zawierające ‘Window’."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ซ่อนคำสั่งในแอปเดียวเท่านั้น ใช้ * เป็นอักขระตัวแทน — เช่น *Window* จะซ่อนคำสั่งที่มี 'Window'"
           }
         }
       }
@@ -10633,6 +11065,12 @@
             "state": "translated",
             "value": "Ukryj ignorowane polecenia"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ซ่อนคำสั่งที่ถูกละเว้น"
+          }
         }
       }
     },
@@ -10770,6 +11208,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ukryj duże podmenu bez skrótów"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ซ่อนเมนูย่อยขนาดใหญ่ที่ไม่มีแป้นลัด"
           }
         }
       }
@@ -10909,6 +11353,12 @@
             "state": "translated",
             "value": "Ignoruj aplikację"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ละเว้นแอป"
+          }
         }
       }
     },
@@ -11046,6 +11496,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ignoruj menu"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ละเว้นเมนู"
           }
         }
       }
@@ -11185,6 +11641,12 @@
             "state": "translated",
             "value": "Ignorowane aplikacje"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "แอปที่ถูกละเว้น"
+          }
         }
       }
     },
@@ -11322,6 +11784,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ignorowane polecenia"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "คำสั่งที่ถูกละเว้น"
           }
         }
       }
@@ -11461,6 +11929,12 @@
             "state": "translated",
             "value": "Ignorowane menu"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เมนูที่ถูกละเว้น"
+          }
         }
       }
     },
@@ -11598,6 +12072,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "w %@"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ใน %@"
           }
         }
       }
@@ -11737,6 +12217,12 @@
             "state": "translated",
             "value": "W aplikacjach z wieloma pozycjami menu (np. historia przeglądarki) wyświetlenie okna podręcznego może potrwać "
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ในแอปที่มีรายการเมนูจำนวนมาก (เช่น ประวัติเบราว์เซอร์) ป็อปอัพอาจใช้เวลา "
+          }
         }
       }
     },
@@ -11874,6 +12360,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "W aplikacjach z wieloma pozycjami menu (np. historia przeglądarki) wyświetlenie okna podręcznego może potrwać kilka sekund."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ในแอปที่มีรายการเมนูจำนวนมาก (เช่น ประวัติเบราว์เซอร์) ป็อปอัพอาจใช้เวลาหลายวินาทีจึงจะปรากฏขึ้น"
           }
         }
       }
@@ -12013,6 +12505,12 @@
             "state": "translated",
             "value": "Natychmiastowe wyszukiwanie — wystarczy przełączyć się na dowolną aplikację"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ค้นหาทันที — แค่สลับไปยังแอปใดก็ได้"
+          }
         }
       }
     },
@@ -12149,6 +12647,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kolor klawisza"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "สีแป้น"
           }
         }
       }
@@ -12288,6 +12792,12 @@
             "state": "translated",
             "value": "KeyMinder jest gotowy"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "KeyMinder พร้อมใช้งาน"
+          }
         }
       }
     },
@@ -12424,6 +12934,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "KeyMinder wymaga dostępu do Dostępności"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "KeyMinder ต้องการสิทธิ์การช่วยการเข้าถึง"
           }
         }
       }
@@ -12563,6 +13079,12 @@
             "state": "translated",
             "value": "KeyMinder odczytuje menu za pomocą API Dostępności macOS — tego samego uprawnienia używanego przez czytniki ekranu i narzędzia asystenckie. Twoje dane nigdy nie opuszczają Twojego Maca."
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "KeyMinder อ่านเมนูผ่าน API การช่วยการเข้าถึงของ macOS — สิทธิ์เดียวกับที่โปรแกรมอ่านหน้าจอและเครื่องมือช่วยเหลือใช้ ข้อมูลของคุณจะไม่ออกจาก Mac ของคุณ"
+          }
         }
       }
     },
@@ -12699,6 +13221,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ustawienia KeyMinder"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "การตั้งค่า KeyMinder"
           }
         }
       }
@@ -12838,6 +13366,12 @@
             "state": "translated",
             "value": "KeyMinder będzie gotowy na pasku menu zawsze, gdy go potrzebujesz."
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "KeyMinder จะพร้อมอยู่ในแถบเมนูของคุณเสมอเมื่อคุณต้องการ"
+          }
         }
       }
     },
@@ -12975,6 +13509,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "KeyMinder powiadomi Cię, gdy dostępna będzie nowa wersja."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "KeyMinder จะแจ้งเตือนคุณเมื่อมีเวอร์ชันใหม่"
           }
         }
       }
@@ -13215,6 +13755,12 @@
             "state": "translated",
             "value": "Uruchamiaj przy logowaniu"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เปิดเมื่อเข้าสู่ระบบ"
+          }
         }
       }
     },
@@ -13352,6 +13898,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dopasuj ikonę aplikacji do klawisza wyzwalającego"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "จับคู่สีไอคอนแอปกับแป้นทริกเกอร์"
           }
         }
       }
@@ -13491,6 +14043,12 @@
             "state": "translated",
             "value": "Nazwa menu"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ชื่อเมนู"
+          }
         }
       }
     },
@@ -13629,6 +14187,12 @@
             "state": "translated",
             "value": "Menu wymienione tutaj są ukryte w oknie podręcznym. Menu Apple () jest domyślnie ignorowane."
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เมนูที่อยู่ในรายการนี้จะถูกซ่อนจากป็อปอัพ เมนู Apple () จะถูกละเว้นโดยค่าเริ่มต้น"
+          }
         }
       }
     },
@@ -13765,6 +14329,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Klawisz modyfikujący"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "แป้นปรับแต่ง"
           }
         }
       }
@@ -13904,6 +14474,12 @@
             "state": "translated",
             "value": "Dalej"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ถัดไป"
+          }
         }
       }
     },
@@ -14040,6 +14616,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Brak aktywnej aplikacji"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ไม่มีแอปที่ใช้งานอยู่"
           }
         }
       }
@@ -14179,6 +14761,12 @@
             "state": "translated",
             "value": "Żadna aplikacja nie jest aktualnie uruchomiona."
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ขณะนี้ไม่มีแอปที่กำลังทำงาน"
+          }
         }
       }
     },
@@ -14314,6 +14902,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Brak aplikacji do dodania (wszystkie uruchomione aplikacje są już ignorowane)."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ไม่มีแอปที่จะเพิ่ม (แอปที่ทำงานอยู่ทั้งหมดถูกละเว้นแล้ว)"
           }
         }
       }
@@ -14453,6 +15047,12 @@
             "state": "translated",
             "value": "Brak ignorowanych aplikacji"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ไม่มีแอปที่ถูกละเว้น"
+          }
         }
       }
     },
@@ -14590,6 +15190,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Brak ignorowanych poleceń"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ไม่มีคำสั่งที่ถูกละเว้น"
           }
         }
       }
@@ -14729,6 +15335,12 @@
             "state": "translated",
             "value": "Brak ignorowanych menu"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ไม่มีเมนูที่ถูกละเว้น"
+          }
         }
       }
     },
@@ -14865,6 +15477,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nie znaleziono skrótów klawiszowych dla %@"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ไม่พบแป้นลัดสำหรับ %@"
           }
         }
       }
@@ -15003,6 +15621,12 @@
             "state": "translated",
             "value": "Nie ustawiono"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ไม่ได้ตั้งค่า"
+          }
         }
       }
     },
@@ -15140,6 +15764,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Brak pytań do quizu"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ไม่มีอะไรให้ทดสอบ"
           }
         }
       }
@@ -15285,6 +15915,12 @@
             "state": "translated",
             "value": "Wyłączone"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ปิด"
+          }
         }
       }
     },
@@ -15422,6 +16058,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "OK"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ตกลง"
           }
         }
       }
@@ -15567,6 +16209,12 @@
             "state": "translated",
             "value": "Włączone"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เปิด"
+          }
         }
       }
     },
@@ -15704,6 +16352,12 @@
             "state": "translated",
             "value": "Pokazuj tylko podczas wyszukiwania"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "แสดงเฉพาะเมื่อค้นหา"
+          }
         }
       }
     },
@@ -15840,6 +16494,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Otwórz KeyMinder z dowolnej aplikacji, aby zobaczyć aktywne skróty klawiszowe."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เปิด KeyMinder จากแอปใดก็ได้เพื่อดูแป้นลัดที่ใช้งานอยู่"
           }
         }
       }
@@ -15979,6 +16639,12 @@
             "state": "translated",
             "value": "Otwórz ustawienia KeyMinder"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เปิดการตั้งค่า KeyMinder"
+          }
         }
       }
     },
@@ -16115,6 +16781,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Otwórz ustawienia…"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เปิดการตั้งค่า…"
           }
         }
       }
@@ -16254,6 +16926,12 @@
             "state": "translated",
             "value": "Przypnij ulubione dla dostępu jednym dotknięciem"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ปักหมุดรายการโปรดเพื่อเข้าถึงได้ด้วยการแตะครั้งเดียว"
+          }
         }
       }
     },
@@ -16390,6 +17068,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zawartość okna podręcznego"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เนื้อหาป็อปอัพ"
           }
         }
       }
@@ -16529,6 +17213,12 @@
             "state": "translated",
             "value": "Naciśnij %@, aby wyświetlić skróty aktywnej aplikacji."
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "กด %@ เพื่อแสดงแป้นลัดของแอปที่ใช้งานอยู่"
+          }
         }
       }
     },
@@ -16664,6 +17354,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Szybko naciśnij klawisz modyfikujący dwa razy."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "กดแป้นปรับแต่งสองครั้งอย่างรวดเร็ว"
           }
         }
       }
@@ -16803,6 +17499,12 @@
             "state": "translated",
             "value": "Naciśnij skrót…"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "กดแป้นลัด…"
+          }
         }
       }
     },
@@ -16939,6 +17641,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zakończ KeyMinder"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ออกจาก KeyMinder"
           }
         }
       }
@@ -17078,6 +17786,12 @@
             "state": "translated",
             "value": "Quiz ponownie"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ทดสอบอีกครั้ง"
+          }
         }
       }
     },
@@ -17215,6 +17929,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Quiz tylko z ulubionych"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ทดสอบเฉพาะรายการโปรด"
           }
         }
       }
@@ -17354,6 +18074,12 @@
             "state": "translated",
             "value": "Tryb quizu — %@"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "โหมดทดสอบ — %@"
+          }
         }
       }
     },
@@ -17491,6 +18217,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tryb quizu…"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "โหมดทดสอบ…"
           }
         }
       }
@@ -17630,6 +18362,12 @@
             "state": "translated",
             "value": "Otrzymuj wersje beta"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "รับเวอร์ชันเบต้า"
+          }
         }
       }
     },
@@ -17766,6 +18504,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nagraj skrót…"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "บันทึกแป้นลัด…"
           }
         }
       }
@@ -17905,6 +18649,12 @@
             "state": "translated",
             "value": "Usuń wszystkie reguły dla tej aplikacji"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ลบกฎทั้งหมดสำหรับแอปนี้"
+          }
         }
       }
     },
@@ -18043,6 +18793,12 @@
             "state": "translated",
             "value": "Usuń z ulubionych"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ลบออกจากรายการโปรด"
+          }
         }
       }
     },
@@ -18179,6 +18935,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Resetuj"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "รีเซ็ต"
           }
         }
       }
@@ -18318,6 +19080,12 @@
             "state": "translated",
             "value": "Przeglądaj wszystkie skróty klawiszowe dowolnej aplikacji — bez otwierania jej menu."
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ดูแป้นลัดทุกอย่างของแอปใดก็ได้ — โดยไม่ต้องเปิดเมนู"
+          }
         }
       }
     },
@@ -18455,6 +19223,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Wybierz aplikację…"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เลือกแอป…"
           }
         }
       }
@@ -18594,6 +19368,12 @@
             "state": "translated",
             "value": "Skonfiguruj ostatnie preferencje przed rozpoczęciem."
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ตั้งค่าการตั้งค่าสุดท้ายก่อนเริ่มต้น"
+          }
         }
       }
     },
@@ -18731,6 +19511,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ustaw wyzwalacz"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ตั้งค่าทริกเกอร์"
           }
         }
       }
@@ -18870,6 +19656,12 @@
             "state": "translated",
             "value": "Ustawienia"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "การตั้งค่า"
+          }
         }
       }
     },
@@ -19006,6 +19798,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ustawienia…"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "การตั้งค่า…"
           }
         }
       }
@@ -19145,6 +19943,12 @@
             "state": "translated",
             "value": "kilka sekund"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "หลายวินาที"
+          }
         }
       }
     },
@@ -19281,6 +20085,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Skrót jest już używany"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "แป้นลัดถูกใช้งานอยู่แล้ว"
           }
         }
       }
@@ -19420,6 +20230,12 @@
             "state": "translated",
             "value": "Skrót działa!"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "แป้นลัดใช้งานได้!"
+          }
         }
       }
     },
@@ -19556,6 +20372,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Pokazuj wszystkie pozycje menu"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "แสดงรายการเมนูทั้งหมด"
           }
         }
       }
@@ -19695,6 +20517,12 @@
             "state": "translated",
             "value": "Pokazuj wszystkie pozycje menu, nie tylko te ze skrótami klawiszowymi, aby ułatwić odkrywanie dostępnych działań."
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "แสดงรายการเมนูทั้งหมด ไม่ใช่แค่ที่มีแป้นลัด เพื่อช่วยค้นหาการกระทำที่ใช้ได้"
+          }
         }
       }
     },
@@ -19832,6 +20660,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Pokaż wskaźnik konfliktu"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "แสดงตัวบ่งชี้ความขัดแย้ง"
           }
         }
       }
@@ -19971,6 +20805,12 @@
             "state": "translated",
             "value": "Pokazuj dezaktywowane skróty systemowe"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "แสดงแป้นลัดระบบที่ปิดใช้งาน"
+          }
         }
       }
     },
@@ -20107,6 +20947,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Pokaż KeyMinder, szybko naciskając i zwalniając jeden klawisz modyfikujący dwa razy."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "แสดง KeyMinder โดยกดและปล่อยแป้นปรับแต่งหนึ่งแป้นสองครั้งอย่างรวดเร็ว"
           }
         }
       }
@@ -20245,6 +21091,12 @@
             "state": "translated",
             "value": "Pokaż skróty  (nie ustawiono)"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "แสดงแป้นลัด  (ไม่ได้ตั้งค่า)"
+          }
         }
       }
     },
@@ -20381,6 +21233,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Pokaż skróty  %@"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "แสดงแป้นลัด  %@"
           }
         }
       }
@@ -20520,6 +21378,12 @@
             "state": "translated",
             "value": "Pokazuj skróty systemowe"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "แสดงแป้นลัดระบบ"
+          }
         }
       }
     },
@@ -20657,6 +21521,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Pokazuj podczas filtrowania"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "แสดงขณะกรอง"
           }
         }
       }
@@ -20796,6 +21666,12 @@
             "state": "translated",
             "value": "Wyświetlane są tylko ulubione"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "แสดงเฉพาะรายการโปรด"
+          }
         }
       }
     },
@@ -20933,6 +21809,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Naciśnij ★ przy dowolnym skrócie, aby go przypiąć — naciśnij ★ w nagłówku, aby widzieć tylko ulubione"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "แตะ ★ บนแป้นลัดใดก็ได้เพื่อปักหมุด — แตะ ★ ที่หัวเรื่องเพื่อดูเฉพาะรายการโปรด"
           }
         }
       }
@@ -21072,6 +21954,12 @@
             "state": "translated",
             "value": "Zacznij pisać, aby przeszukać wszystkie skróty"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เริ่มพิมพ์เพื่อค้นหาในแป้นลัดทั้งหมด"
+          }
         }
       }
     },
@@ -21209,6 +22097,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "System"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ระบบ"
           }
         }
       }
@@ -21348,6 +22242,12 @@
             "state": "translated",
             "value": "Okno podręczne nie otworzy się, gdy ta aplikacja jest na pierwszym planie."
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ป็อปอัพจะไม่เปิดขณะที่แอปนี้อยู่ด้านหน้า"
+          }
         }
       }
     },
@@ -21485,6 +22385,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ten skrót jest przypisany do wielu poleceń"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "แป้นลัดนี้ถูกกำหนดให้กับหลายคำสั่ง"
           }
         }
       }
@@ -21624,6 +22530,12 @@
             "state": "translated",
             "value": "Wskazówka: naciśnij Esc, aby zamknąć okno podręczne"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เคล็ดลับ: กด Esc เพื่อปิดป็อปอัพ"
+          }
         }
       }
     },
@@ -21761,6 +22673,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Wypróbuj"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ลอง"
           }
         }
       }
@@ -21900,6 +22818,12 @@
             "state": "translated",
             "value": "Wypróbuj teraz"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ลองเลย"
+          }
         }
       }
     },
@@ -22036,6 +22960,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Wpisz swój skrót…"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "พิมพ์แป้นลัดของคุณ…"
           }
         }
       }
@@ -22175,6 +23105,12 @@
             "state": "translated",
             "value": "Aktualizacje"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "อัปเดต"
+          }
         }
       }
     },
@@ -22312,6 +23248,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Użyj wyzwalacza, gdy to okno jest otwarte."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ใช้ทริกเกอร์ขณะที่หน้าต่างนี้เปิดอยู่"
           }
         }
       }
@@ -22451,6 +23393,12 @@
             "state": "translated",
             "value": "Oczekiwanie na uprawnienie…"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "กำลังรอสิทธิ์…"
+          }
         }
       }
     },
@@ -22587,6 +23535,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Witamy w KeyMinder"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ยินดีต้อนรับสู่ KeyMinder"
           }
         }
       }
@@ -22726,6 +23680,12 @@
             "state": "translated",
             "value": "Co powinno się stać?"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "จะเกิดอะไรขึ้น?"
+          }
         }
       }
     },
@@ -22863,6 +23823,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "symbol wieloznaczny"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "อักขระตัวแทน"
           }
         }
       }
@@ -23002,6 +23968,12 @@
             "state": "translated",
             "value": "Zawijaj długie menu do kolumn"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ตัดเมนูยาวข้ามหลายคอลัมน์"
+          }
         }
       }
     },
@@ -23139,6 +24111,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Możesz to zmienić w dowolnym momencie w Ustawienia → Ogólne."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "คุณสามารถเปลี่ยนสิ่งเหล่านี้ได้ตลอดเวลาใน การตั้งค่า → ทั่วไป"
           }
         }
       }
@@ -23278,6 +24256,12 @@
             "state": "translated",
             "value": "Naciśnąłeś/aś %@"
           }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "คุณกด %@"
+          }
         }
       }
     },
@@ -23415,6 +24399,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Wszystko gotowe — kliknij Dalej, aby kontynuować."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "พร้อมแล้ว — คลิกถัดไปเพื่อดำเนินการต่อ"
           }
         }
       }
