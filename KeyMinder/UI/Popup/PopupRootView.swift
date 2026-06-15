@@ -86,7 +86,7 @@ final class PopupFilterModel {
     private let cachedConflictingKeys: Set<String>
     /// Ignore-list patterns for this app, computed once at init. Empty when the
     /// ignore list is disabled or "show when filtering" is off.
-    private let hiddenPatterns: [String]
+    let hiddenPatterns: [String]
 
     init(app: AppShortcuts, columns: [[MenuSection]], fitsWithoutScrolling: Bool = false) {
         self.app = app
@@ -445,6 +445,7 @@ private struct FilterableShortcutsView: View {
                                         showOnlyFavourites: model.showOnlyFavourites,
                                         appID: model.app.bundleIdentifier ?? model.app.appName,
                                         conflictingKeys: model.conflictingKeys,
+                                        hiddenPatterns: model.hiddenPatterns,
                                         dimMode: model.fitsWithoutScrolling && !model.hasQuery && !model.hasModifierFilter,
                                         selectedShortcutID: model.selectedShortcut?.id,
                                         onActivate: onActivate,
@@ -640,6 +641,9 @@ struct MenuSectionView: View {
     var appID: String = ""
     /// Key strings that appear in two or more shortcuts — used to flag conflicted rows.
     var conflictingKeys: Set<String> = []
+    /// Ignore-list patterns for this app; empty when the ignore list is off or
+    /// "show when filtering" is disabled. Pre-computed by `PopupFilterModel`.
+    var hiddenPatterns: [String] = []
     /// When true, non-matching rows are dimmed instead of hidden (stable layout).
     var dimMode: Bool = false
     var selectedShortcutID: UUID? = nil
@@ -655,17 +659,14 @@ struct MenuSectionView: View {
     }
 
     private func isGroupIgnoredWhileIdle(_ group: ShortcutGroup) -> Bool {
-        guard let title = group.title else { return false }
-        let store = IgnoreListStore.shared
-        guard store.isEnabled && store.showWhenFiltering else { return false }
-        guard IgnoreListStore.isIgnored(title: title, patterns: store.ignoredTitles(for: appID)) else { return false }
+        guard let title = group.title, !hiddenPatterns.isEmpty else { return false }
+        guard IgnoreListStore.isIgnored(title: title, patterns: hiddenPatterns) else { return false }
         return query.isEmpty || !group.shortcuts.contains { !$0.isSeparator && $0.matches(query) }
     }
 
     private func isIgnoredWhileIdle(_ shortcut: Shortcut) -> Bool {
-        let store = IgnoreListStore.shared
-        guard store.isEnabled && store.showWhenFiltering else { return false }
-        guard IgnoreListStore.isIgnored(title: shortcut.title, patterns: store.ignoredTitles(for: appID)) else { return false }
+        guard !hiddenPatterns.isEmpty else { return false }
+        guard IgnoreListStore.isIgnored(title: shortcut.title, patterns: hiddenPatterns) else { return false }
         // Hidden when there is no query, or when the active query does not match —
         // ignored items are revealed only by a query that specifically finds them.
         return query.isEmpty || !matchesFilter(shortcut)
