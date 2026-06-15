@@ -1014,7 +1014,6 @@ private struct TipBannerView: View {
 private struct NudgeBannerView: View {
     let nudge: PopupNudge
     let onDismiss: () -> Void
-    @Environment(\.openURL) private var openURL
 
     var body: some View {
         HStack(spacing: 8) {
@@ -1023,7 +1022,7 @@ private struct NudgeBannerView: View {
                 .foregroundStyle(ThemeSettings.shared.keyAccent)
 
             Button {
-                openURL(nudge.url)
+                NSWorkspace.shared.open(nudge.url)
                 onDismiss()
             } label: {
                 Text(nudge.text)
