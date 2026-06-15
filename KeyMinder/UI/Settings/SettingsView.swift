@@ -12,10 +12,6 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
 
     private static var instance: SettingsWindowController?
 
-    /// Called once when the window closes, then cleared. Set by AppDelegate before
-    /// the first-launch open so it can trigger the post-setup hint.
-    static var onFirstClose: (() -> Void)? = nil
-
     /// Pre-measured natural heights for each tab (0=General, 1=Popup, 2=Ignored, 3=Developer),
     /// capped at 85 % of the available screen height.
     private var tabHeights: [CGFloat] = [0, 0, 0, 0]
@@ -90,8 +86,6 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
 
     func windowWillClose(_ notification: Notification) {
         Self.instance = nil
-        Self.onFirstClose?()
-        Self.onFirstClose = nil
         DockIconManager.shared.windowClosed()
     }
 }

@@ -22,7 +22,7 @@ final class QuizWindowController: NSWindowController, NSWindowDelegate {
         current?.close()
         current = QuizWindowController(model: model)
         DockIconManager.shared.windowOpened()
-        NSApp.activate(ignoringOtherApps: true)
+        NSApp.activate()
         current?.window?.makeKeyAndOrderFront(nil)
         current?.window?.orderFrontRegardless()
     }
