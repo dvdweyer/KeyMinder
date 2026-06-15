@@ -446,6 +446,7 @@ private struct FilterableShortcutsView: View {
                                         appID: model.app.bundleIdentifier ?? model.app.appName,
                                         conflictingKeys: model.conflictingKeys,
                                         hiddenPatterns: model.hiddenPatterns,
+                                        showDeactivatedSystemShortcuts: UserDefaults.standard.showDeactivatedSystemShortcuts,
                                         dimMode: model.fitsWithoutScrolling && !model.hasQuery && !model.hasModifierFilter,
                                         selectedShortcutID: model.selectedShortcut?.id,
                                         onActivate: onActivate,
@@ -644,6 +645,8 @@ struct MenuSectionView: View {
     /// Ignore-list patterns for this app; empty when the ignore list is off or
     /// "show when filtering" is disabled. Pre-computed by `PopupFilterModel`.
     var hiddenPatterns: [String] = []
+    /// When true, disabled system shortcuts are shown greyed-out.
+    var showDeactivatedSystemShortcuts: Bool = false
     /// When true, non-matching rows are dimmed instead of hidden (stable layout).
     var dimMode: Bool = false
     var selectedShortcutID: UUID? = nil
@@ -681,7 +684,7 @@ struct MenuSectionView: View {
         }
         guard passesGate(shortcut) else { return false }
         if shortcut.isDisabled {
-            guard UserDefaults.standard.showDeactivatedSystemShortcuts else { return false }
+            guard showDeactivatedSystemShortcuts else { return false }
             // Disabled system shortcuts: shown with text filter only (no modifier/favourites filter).
             return shortcut.matches(query)
         }
