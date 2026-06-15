@@ -27,16 +27,10 @@ final class QuizModel {
     private(set) var phase: QuizPhase = .asking
     let appName: String
     let appIcon: NSImage?
+    let hasFavourites: Bool
 
     var favouritesOnly: Bool = false {
         didSet { applyFilter() }
-    }
-
-    var hasFavourites: Bool {
-        guard let bundleID else { return false }
-        return allQuestions.contains { q in
-            FavouritesStore.shared.isFavourite(Shortcut(title: q.title, keys: q.keys), appID: bundleID)
-        }
     }
 
     var current: QuizQuestion? {
@@ -62,6 +56,13 @@ final class QuizModel {
         }
         self.allQuestions = qs
         self.activeQuestions = qs.shuffled()
+        if let bundleID {
+            hasFavourites = qs.contains { q in
+                FavouritesStore.shared.isFavourite(Shortcut(title: q.title, keys: q.keys), appID: bundleID)
+            }
+        } else {
+            hasFavourites = false
+        }
     }
 
     func checkAnswer(_ keys: String) {
