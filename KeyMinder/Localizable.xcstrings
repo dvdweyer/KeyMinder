@@ -142,6 +142,12 @@
             "state": "translated",
             "value": " จึงจะปรากฏขึ้น"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": " সময় লাগতে পারে।"
+          }
         }
       }
     },
@@ -292,6 +298,12 @@
             "state": "translated",
             "value": "%1$@ %2$@"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ %2$@"
+          }
         }
       }
     },
@@ -435,6 +447,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ ไม่มีแป้นลัดสำหรับทดสอบ"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@-এ কুইজ করার জন্য কোনো কীবোর্ড শর্টকাট নেই।"
           }
         }
       }
@@ -582,6 +600,12 @@
           }
         },
         "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld / %2$lld"
+          }
+        },
+        "bn": {
           "stringUnit": {
             "state": "translated",
             "value": "%1$lld / %2$lld"
@@ -735,6 +759,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$lld ถูก · %2$lld ผิด"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld সঠিক · %2$lld ভুল"
           }
         }
       }
@@ -1107,6 +1137,12 @@
             "state": "translated",
             "value": "%lld รายการเมนู"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld টি মেনু আইটেম"
+          }
         }
       }
     },
@@ -1246,6 +1282,12 @@
           }
         },
         "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld / %lld"
+          }
+        },
+        "bn": {
           "stringUnit": {
             "state": "translated",
             "value": "%lld / %lld"
@@ -1621,6 +1663,12 @@
             "state": "translated",
             "value": "%lld แป้นลัด"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld টি শর্টকাট"
+          }
         }
       }
     },
@@ -1764,6 +1812,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%lld%% ถูกต้อง"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld%% সঠিক"
           }
         }
       }
@@ -2011,6 +2065,12 @@
             "state": "translated",
             "value": "เมนูที่ยาวเกินหนึ่งคอลัมน์จะต่อในคอลัมน์ถัดไปโดยทำซ้ำชื่อเมนู"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "একটি দীর্ঘ মেনু যা এক কলামে ফিট হয় না তা পরবর্তী কলামে মেনুর নাম পুনরাবৃত্তি করে চলতে থাকে।"
+          }
         }
       }
     },
@@ -2153,6 +2213,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "เกี่ยวกับ KeyMinder"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "KeyMinder সম্পর্কে"
           }
         }
       }
@@ -2298,6 +2364,12 @@
             "state": "translated",
             "value": "ได้รับสิทธิ์การเข้าถึงแล้ว"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "অ্যাক্সেস মঞ্জুর হয়েছে"
+          }
         }
       }
     },
@@ -2441,6 +2513,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "เพิ่ม"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "যোগ করুন"
           }
         }
       }
@@ -2586,6 +2664,12 @@
             "state": "translated",
             "value": "เพิ่มกฎแอป…"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "অ্যাপ নিয়ম যোগ করুন…"
+          }
         }
       }
     },
@@ -2729,6 +2813,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "เพิ่มกฎเฉพาะแอป"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "অ্যাপ-নির্দিষ্ট নিয়ম যোগ করুন"
           }
         }
       }
@@ -2874,6 +2964,12 @@
             "state": "translated",
             "value": "เพิ่มแอป…"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "অ্যাপ যোগ করুন…"
+          }
         }
       }
     },
@@ -3017,6 +3113,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "เพิ่มกฎทั่วไป…"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "সাধারণ নিয়ম যোগ করুন…"
           }
         }
       }
@@ -3162,6 +3264,12 @@
             "state": "translated",
             "value": "เพิ่มคำสั่งที่ถูกละเว้น"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "উপেক্ষিত কমান্ড যোগ করুন"
+          }
         }
       }
     },
@@ -3306,6 +3414,12 @@
             "state": "translated",
             "value": "เพิ่มเมนู…"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "মেনু যোগ করুন…"
+          }
         }
       }
     },
@@ -3449,6 +3563,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "เพิ่มในรายการโปรด"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "প্রিয়তে যোগ করুন"
           }
         }
       }
@@ -3595,6 +3715,12 @@
             "state": "translated",
             "value": "ขั้นสูง"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "উন্নত"
+          }
         }
       }
     },
@@ -3738,6 +3864,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "แอปทั้งหมด"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "সব অ্যাপ"
           }
         }
       }
@@ -3883,6 +4015,12 @@
             "state": "translated",
             "value": "อนุญาตให้เข้าถึงแอปของคุณ"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "আপনার অ্যাপে অ্যাক্সেসের অনুমতি দিন"
+          }
         }
       }
     },
@@ -4026,6 +4164,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "ใกล้เสร็จแล้ว"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "প্রায় হয়ে গেছে"
           }
         }
       }
@@ -4171,6 +4315,12 @@
             "state": "translated",
             "value": "แอป"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "অ্যাপ"
+          }
         }
       }
     },
@@ -4315,6 +4465,12 @@
             "state": "translated",
             "value": "เฉพาะแอป"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "অ্যাপ-নির্দিষ্ট"
+          }
         }
       }
     },
@@ -4457,6 +4613,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "รูปลักษณ์"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "চেহারা"
           }
         }
       }
@@ -4602,6 +4764,12 @@
             "state": "translated",
             "value": "แอปที่อยู่ในรายการนี้จะถูกข้ามทั้งหมด — ป็อปอัพจะไม่เปิดขณะที่แอปเหล่านี้อยู่ด้านหน้า"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "এখানে তালিকাভুক্ত অ্যাপগুলি সম্পূর্ণভাবে বাদ দেওয়া হয় — এগুলি সামনে থাকলে পপআপ খুলবে না।"
+          }
         }
       }
     },
@@ -4746,6 +4914,12 @@
             "state": "translated",
             "value": "ย้อนกลับ"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "পেছনে"
+          }
         }
       }
     },
@@ -4889,6 +5063,12 @@
             "state": "translated",
             "value": "ยกเลิก"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "বাতিল"
+          }
         }
       }
     },
@@ -5031,6 +5211,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "เปลี่ยน…"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "পরিবর্তন করুন…"
           }
         }
       }
@@ -5176,6 +5362,12 @@
             "state": "translated",
             "value": "ตรวจหาการอัปเดตโดยอัตโนมัติ"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "স্বয়ংক্রিয়ভাবে আপডেট পরীক্ষা করুন"
+          }
         }
       }
     },
@@ -5319,6 +5511,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "ตรวจหาการอัปเดตโดยอัตโนมัติ"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "স্বয়ংক্রিয়ভাবে আপডেট পরীক্ষা করুন"
           }
         }
       }
@@ -5464,6 +5662,12 @@
             "state": "translated",
             "value": "ตรวจหาการอัปเดต…"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "আপডেট পরীক্ষা করুন…"
+          }
         }
       }
     },
@@ -5608,6 +5812,12 @@
             "state": "translated",
             "value": "เลือกวิธีเปิด KeyMinder จากแอปใดก็ได้"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "যেকোনো অ্যাপ থেকে KeyMinder খোলার পদ্ধতি বেছে নিন।"
+          }
         }
       }
     },
@@ -5751,6 +5961,12 @@
             "state": "translated",
             "value": "ล้าง"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "পরিষ্কার করুন"
+          }
         }
       }
     },
@@ -5893,6 +6109,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "ล้างตัวกรอง"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ফিল্টার পরিষ্কার করুন"
           }
         }
       }
@@ -6038,6 +6260,12 @@
             "state": "translated",
             "value": "คลิกไอคอนนี้เพื่อแสดงแป้นลัดของแอปที่ใช้งานอยู่"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "সক্রিয় অ্যাপের শর্টকাট দেখতে এই আইকনে ক্লিক করুন।"
+          }
         }
       }
     },
@@ -6182,6 +6410,12 @@
             "state": "translated",
             "value": "ปิดป็อปอัพ KeyMinder"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "KeyMinder পপআপ বন্ধ করুন"
+          }
         }
       }
     },
@@ -6324,6 +6558,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "สีที่ใช้สำหรับสัญลักษณ์แป้นลัดในป็อปอัพ"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "পপআপে কীবোর্ড শর্টকাট চিহ্নের জন্য ব্যবহৃত রঙ।"
           }
         }
       }
@@ -6469,6 +6709,12 @@
             "state": "translated",
             "value": "ชื่อคำสั่ง"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "কমান্ডের শিরোনাম"
+          }
         }
       }
     },
@@ -6612,6 +6858,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "คำสั่งที่อยู่ในรายการนี้จะถูกซ่อนจากป็อปอัพ หากคำสั่งเปิดเมนูย่อย เมนูย่อยทั้งหมดก็จะถูกซ่อนด้วย"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "এখানে তালিকাভুক্ত কমান্ডগুলি পপআপ থেকে লুকানো থাকে। কোনো কমান্ড সাবমেনু খুললে পুরো সাবমেনুটিও লুকানো হয়।"
           }
         }
       }
@@ -6757,6 +7009,12 @@
             "state": "translated",
             "value": "เสร็จสมบูรณ์"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "সম্পন্ন"
+          }
         }
       }
     },
@@ -6901,6 +7159,12 @@
             "state": "translated",
             "value": "ถูกต้อง: %@"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "সঠিক: %@"
+          }
         }
       }
     },
@@ -7043,6 +7307,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "นักพัฒนา"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ডেভেলপার"
           }
         }
       }
@@ -7188,6 +7458,12 @@
             "state": "translated",
             "value": "ปิด"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "খারিজ করুন"
+          }
         }
       }
     },
@@ -7331,6 +7607,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "ปิดเคล็ดลับ"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "টিপ বন্ধ করুন"
           }
         }
       }
@@ -7476,6 +7758,12 @@
             "state": "translated",
             "value": "เสร็จสิ้น"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "সম্পন্ন"
+          }
         }
       }
     },
@@ -7620,6 +7908,12 @@
             "state": "translated",
             "value": "แป้นปรับแต่งแตะสองครั้ง"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ডবল-ট্যাপ মডিফায়ার কী"
+          }
         }
       }
     },
@@ -7762,6 +8056,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "ทริกเกอร์แตะสองครั้ง"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ডবল-ট্যাপ ট্রিগার"
           }
         }
       }
@@ -7906,6 +8206,12 @@
             "state": "translated",
             "value": "เปิดใช้"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "সক্রিয় করুন"
+          }
         }
       }
     },
@@ -8048,6 +8354,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "เปิดใช้การบันทึกข้อผิดพลาด"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ডিবাগ লগিং সক্রিয় করুন"
           }
         }
       }
@@ -8193,6 +8505,12 @@
             "state": "translated",
             "value": "ชอบ KeyMinder ไหม? กดดาวบน GitHub ↗"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "KeyMinder পছন্দ হচ্ছে? GitHub-এ স্টার দিন ↗"
+          }
         }
       }
     },
@@ -8336,6 +8654,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "ป้อนชื่อคำสั่งที่ต้องการซ่อนจากป็อปอัพในทุกแอป ใช้ * เป็นอักขระตัวแทน — เช่น *Window* จะซ่อนคำสั่งที่มี 'Window'"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "সব অ্যাপের পপআপ থেকে লুকাতে কমান্ডের শিরোনাম লিখুন। * ওয়াইল্ডকার্ড হিসেবে ব্যবহার করুন — যেমন *Window* দিয়ে 'Window' ধারণকারী যেকোনো কমান্ড লুকানো যায়।"
           }
         }
       }
@@ -8482,6 +8806,12 @@
             "state": "translated",
             "value": "ป้อนชื่อคำสั่งที่ต้องการซ่อนจากป็อปอัพในทุกแอปให้ตรงทุกตัวอักษร"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "সব অ্যাপের পপআপ থেকে লুকাতে কমান্ডের সঠিক শিরোনাম লিখুন।"
+          }
         }
       }
     },
@@ -8625,6 +8955,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "ป้อนชื่อเมนูให้ตรงกับที่ปรากฏในแถบเมนูทุกประการ (เช่น \"File\", \"View\", \"Help\") เมนู Apple ระบุโดยใช้ \"Apple\""
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "মেনু বারে যেভাবে দেখা যায় ঠিক সেভাবে মেনুর নাম লিখুন (যেমন \"File\", \"View\", \"Help\")। Apple মেনু \"Apple\" দিয়ে চিহ্নিত করা হয়।"
           }
         }
       }
@@ -8770,6 +9106,12 @@
             "state": "translated",
             "value": "ทดลอง"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "পরীক্ষামূলক"
+          }
         }
       }
     },
@@ -8913,6 +9255,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "ส่งออกแป้นลัด"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "শর্টকাট রপ্তানি করুন"
           }
         }
       }
@@ -9058,6 +9406,12 @@
             "state": "translated",
             "value": "รายการโปรด"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "প্রিয়"
+          }
         }
       }
     },
@@ -9200,6 +9554,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "กรอง"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ফিল্টার"
           }
         }
       }
@@ -9345,6 +9705,12 @@
             "state": "translated",
             "value": "กรองตามแป้นปรับแต่ง — คลิก ⌃ ⌥ ⇧ ⌘ เพื่อจำกัดรายการ"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "মডিফায়ার দিয়ে ফিল্টার — তালিকা সংকুচিত করতে ⌃ ⌥ ⇧ ⌘ ক্লিক করুন"
+          }
         }
       }
     },
@@ -9489,6 +9855,12 @@
             "state": "translated",
             "value": "กรองตามแป้นปรับแต่งหรือค้นหาตามชื่อ"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "মডিফায়ার কী দিয়ে ফিল্টার করুন বা নাম দিয়ে খুঁজুন"
+          }
         }
       }
     },
@@ -9631,6 +10003,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "ใช้สีเน้นของระบบ"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "সিস্টেমের অ্যাকসেন্ট রঙ ব্যবহার করুন"
           }
         }
       }
@@ -9775,6 +10153,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "พบบั๊กหรือมีข้อเสนอแนะ? "
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "বাগ পেয়েছেন বা পরামর্শ আছে? "
           }
         }
       }
@@ -9921,6 +10305,12 @@
             "state": "translated",
             "value": "ทั่วไป"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "সাধারণ"
+          }
         }
       }
     },
@@ -10064,6 +10454,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "รับสิทธิ์เข้าถึงฟีเจอร์ใหม่ก่อนการเผยแพร่สู่สาธารณะ บิลด์เบต้าอาจมีความเสถียรน้อยกว่า"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "পাবলিক রিলিজের আগে নতুন ফিচারে আর্লি অ্যাক্সেস পান। বেটা বিল্ড কম স্থিতিশীল হতে পারে।"
           }
         }
       }
@@ -10209,6 +10605,12 @@
             "state": "translated",
             "value": "เริ่มต้น"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "শুরু করুন"
+          }
         }
       }
     },
@@ -10351,6 +10753,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "แป้นลัดทั่วไป"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "গ্লোবাল শর্টকাট"
           }
         }
       }
@@ -10495,6 +10903,12 @@
             "state": "translated",
             "value": "ให้สิทธิ์การเข้าถึง…"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "অ্যাক্সেস দিন…"
+          }
         }
       }
     },
@@ -10637,6 +11051,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "ให้สิทธิ์การช่วยการเข้าถึง…"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "অ্যাক্সেসিবিলিটি অ্যাক্সেস দিন…"
           }
         }
       }
@@ -10783,6 +11203,12 @@
             "state": "translated",
             "value": "ซ่อนคำสั่งในแอปเดียวเท่านั้น"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "শুধুমাত্র একটি অ্যাপে কমান্ড লুকান।"
+          }
         }
       }
     },
@@ -10926,6 +11352,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "ซ่อนคำสั่งในแอปเดียวเท่านั้น ใช้ * เป็นอักขระตัวแทน — เช่น *Window* จะซ่อนคำสั่งที่มี 'Window'"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "শুধুমাত্র একটি অ্যাপে কমান্ড লুকান। * ওয়াইল্ডকার্ড হিসেবে ব্যবহার করুন — যেমন *Window* দিয়ে 'Window' ধারণকারী যেকোনো কমান্ড লুকানো যায়।"
           }
         }
       }
@@ -11071,6 +11503,12 @@
             "state": "translated",
             "value": "ซ่อนคำสั่งที่ถูกละเว้น"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "উপেক্ষিত কমান্ড লুকান"
+          }
         }
       }
     },
@@ -11214,6 +11652,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "ซ่อนเมนูย่อยขนาดใหญ่ที่ไม่มีแป้นลัด"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "শর্টকাট ছাড়া বড় সাবমেনু লুকান"
           }
         }
       }
@@ -11359,6 +11803,12 @@
             "state": "translated",
             "value": "ละเว้นแอป"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "অ্যাপ উপেক্ষা করুন"
+          }
         }
       }
     },
@@ -11502,6 +11952,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "ละเว้นเมนู"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "মেনু উপেক্ষা করুন"
           }
         }
       }
@@ -11647,6 +12103,12 @@
             "state": "translated",
             "value": "แอปที่ถูกละเว้น"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "উপেক্ষিত অ্যাপ"
+          }
         }
       }
     },
@@ -11790,6 +12252,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "คำสั่งที่ถูกละเว้น"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "উপেক্ষিত কমান্ড"
           }
         }
       }
@@ -11935,6 +12403,12 @@
             "state": "translated",
             "value": "เมนูที่ถูกละเว้น"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "উপেক্ষিত মেনু"
+          }
         }
       }
     },
@@ -12078,6 +12552,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "ใน %@"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@-এ"
           }
         }
       }
@@ -12223,6 +12703,12 @@
             "state": "translated",
             "value": "ในแอปที่มีรายการเมนูจำนวนมาก (เช่น ประวัติเบราว์เซอร์) ป็อปอัพอาจใช้เวลา "
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "অনেক মেনু আইটেম সহ অ্যাপে (যেমন ব্রাউজার ইতিহাস) পপআপটি প্রদর্শিত হতে "
+          }
         }
       }
     },
@@ -12366,6 +12852,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "ในแอปที่มีรายการเมนูจำนวนมาก (เช่น ประวัติเบราว์เซอร์) ป็อปอัพอาจใช้เวลาหลายวินาทีจึงจะปรากฏขึ้น"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "অনেক মেনু আইটেম সহ অ্যাপে (যেমন ব্রাউজার ইতিহাস) পপআপটি প্রদর্শিত হতে কয়েক সেকেন্ড সময় লাগতে পারে।"
           }
         }
       }
@@ -12511,6 +13003,12 @@
             "state": "translated",
             "value": "ค้นหาทันที — แค่สลับไปยังแอปใดก็ได้"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "তাৎক্ষণিক অনুসন্ধান — যেকোনো অ্যাপে সুইচ করুন"
+          }
         }
       }
     },
@@ -12653,6 +13151,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "สีแป้น"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "কী রঙ"
           }
         }
       }
@@ -12798,6 +13302,12 @@
             "state": "translated",
             "value": "KeyMinder พร้อมใช้งาน"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "KeyMinder প্রস্তুত"
+          }
         }
       }
     },
@@ -12940,6 +13450,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "KeyMinder ต้องการสิทธิ์การช่วยการเข้าถึง"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "KeyMinder-এর অ্যাক্সেসিবিলিটি অ্যাক্সেস দরকার"
           }
         }
       }
@@ -13085,6 +13601,12 @@
             "state": "translated",
             "value": "KeyMinder อ่านเมนูผ่าน API การช่วยการเข้าถึงของ macOS — สิทธิ์เดียวกับที่โปรแกรมอ่านหน้าจอและเครื่องมือช่วยเหลือใช้ ข้อมูลของคุณจะไม่ออกจาก Mac ของคุณ"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "KeyMinder macOS অ্যাক্সেসিবিলিটি API-এর মাধ্যমে মেনু পড়ে — স্ক্রিন রিডার ও সহায়ক টুলে ব্যবহৃত একই অনুমতি। আপনার ডেটা কখনো Mac ছাড়ে না।"
+          }
         }
       }
     },
@@ -13227,6 +13749,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "การตั้งค่า KeyMinder"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "KeyMinder সেটিংস"
           }
         }
       }
@@ -13372,6 +13900,12 @@
             "state": "translated",
             "value": "KeyMinder จะพร้อมอยู่ในแถบเมนูของคุณเสมอเมื่อคุณต้องการ"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "প্রয়োজনে KeyMinder সবসময় আপনার মেনু বারে প্রস্তুত থাকবে।"
+          }
         }
       }
     },
@@ -13515,6 +14049,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "KeyMinder จะแจ้งเตือนคุณเมื่อมีเวอร์ชันใหม่"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "নতুন সংস্করণ পাওয়া গেলে KeyMinder আপনাকে জানাবে।"
           }
         }
       }
@@ -13761,6 +14301,12 @@
             "state": "translated",
             "value": "เปิดเมื่อเข้าสู่ระบบ"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "লগইনে চালু করুন"
+          }
         }
       }
     },
@@ -13904,6 +14450,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "จับคู่สีไอคอนแอปกับแป้นทริกเกอร์"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ট্রিগার কীর সাথে অ্যাপ আইকনের রঙ মেলান"
           }
         }
       }
@@ -14049,6 +14601,12 @@
             "state": "translated",
             "value": "ชื่อเมนู"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "মেনুর নাম"
+          }
         }
       }
     },
@@ -14193,6 +14751,12 @@
             "state": "translated",
             "value": "เมนูที่อยู่ในรายการนี้จะถูกซ่อนจากป็อปอัพ เมนู Apple () จะถูกละเว้นโดยค่าเริ่มต้น"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "এখানে তালিকাভুক্ত মেনুগুলি পপআপ থেকে লুকানো থাকে। Apple মেনু () ডিফল্টরূপে উপেক্ষিত।"
+          }
         }
       }
     },
@@ -14335,6 +14899,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "แป้นปรับแต่ง"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "মডিফায়ার কী"
           }
         }
       }
@@ -14480,6 +15050,12 @@
             "state": "translated",
             "value": "ถัดไป"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "পরবর্তী"
+          }
         }
       }
     },
@@ -14622,6 +15198,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "ไม่มีแอปที่ใช้งานอยู่"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "কোনো সক্রিয় অ্যাপ নেই"
           }
         }
       }
@@ -14767,6 +15349,12 @@
             "state": "translated",
             "value": "ขณะนี้ไม่มีแอปที่กำลังทำงาน"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "বর্তমানে কোনো অ্যাপ চলছে না।"
+          }
         }
       }
     },
@@ -14908,6 +15496,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "ไม่มีแอปที่จะเพิ่ม (แอปที่ทำงานอยู่ทั้งหมดถูกละเว้นแล้ว)"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "যোগ করার কোনো অ্যাপ নেই (চলমান সব অ্যাপ ইতিমধ্যে উপেক্ষিত)।"
           }
         }
       }
@@ -15053,6 +15647,12 @@
             "state": "translated",
             "value": "ไม่มีแอปที่ถูกละเว้น"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "কোনো উপেক্ষিত অ্যাপ নেই"
+          }
         }
       }
     },
@@ -15196,6 +15796,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "ไม่มีคำสั่งที่ถูกละเว้น"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "কোনো উপেক্ষিত কমান্ড নেই"
           }
         }
       }
@@ -15341,6 +15947,12 @@
             "state": "translated",
             "value": "ไม่มีเมนูที่ถูกละเว้น"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "কোনো উপেক্ষিত মেনু নেই"
+          }
         }
       }
     },
@@ -15483,6 +16095,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "ไม่พบแป้นลัดสำหรับ %@"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@-এর জন্য কোনো কীবোর্ড শর্টকাট পাওয়া যায়নি"
           }
         }
       }
@@ -15627,6 +16245,12 @@
             "state": "translated",
             "value": "ไม่ได้ตั้งค่า"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "সেট করা হয়নি"
+          }
         }
       }
     },
@@ -15770,6 +16394,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "ไม่มีอะไรให้ทดสอบ"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "কুইজ করার কিছু নেই"
           }
         }
       }
@@ -15921,6 +16551,12 @@
             "state": "translated",
             "value": "ปิด"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "বন্ধ"
+          }
         }
       }
     },
@@ -16064,6 +16700,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "ตกลง"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ঠিক আছে"
           }
         }
       }
@@ -16215,6 +16857,12 @@
             "state": "translated",
             "value": "เปิด"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "চালু"
+          }
         }
       }
     },
@@ -16358,6 +17006,12 @@
             "state": "translated",
             "value": "แสดงเฉพาะเมื่อค้นหา"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "শুধুমাত্র খোঁজার সময় দেখান"
+          }
         }
       }
     },
@@ -16500,6 +17154,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "เปิด KeyMinder จากแอปใดก็ได้เพื่อดูแป้นลัดที่ใช้งานอยู่"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "সক্রিয় কীবোর্ড শর্টকাট দেখতে যেকোনো অ্যাপ থেকে KeyMinder খুলুন।"
           }
         }
       }
@@ -16645,6 +17305,12 @@
             "state": "translated",
             "value": "เปิดการตั้งค่า KeyMinder"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "KeyMinder সেটিংস খুলুন"
+          }
         }
       }
     },
@@ -16787,6 +17453,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "เปิดการตั้งค่า…"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "সেটিংস খুলুন…"
           }
         }
       }
@@ -16932,6 +17604,12 @@
             "state": "translated",
             "value": "ปักหมุดรายการโปรดเพื่อเข้าถึงได้ด้วยการแตะครั้งเดียว"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "এক-ট্যাপে অ্যাক্সেসের জন্য প্রিয় পিন করুন"
+          }
         }
       }
     },
@@ -17074,6 +17752,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "เนื้อหาป็อปอัพ"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "পপআপের বিষয়বস্তু"
           }
         }
       }
@@ -17219,6 +17903,12 @@
             "state": "translated",
             "value": "กด %@ เพื่อแสดงแป้นลัดของแอปที่ใช้งานอยู่"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "সক্রিয় অ্যাপের শর্টকাট দেখতে %@ চাপুন।"
+          }
         }
       }
     },
@@ -17360,6 +18050,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "กดแป้นปรับแต่งสองครั้งอย่างรวดเร็ว"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "মডিফায়ার কী দ্রুত দুইবার চাপুন।"
           }
         }
       }
@@ -17505,6 +18201,12 @@
             "state": "translated",
             "value": "กดแป้นลัด…"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "শর্টকাট চাপুন…"
+          }
         }
       }
     },
@@ -17647,6 +18349,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "ออกจาก KeyMinder"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "KeyMinder বন্ধ করুন"
           }
         }
       }
@@ -17792,6 +18500,12 @@
             "state": "translated",
             "value": "ทดสอบอีกครั้ง"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "আবার কুইজ করুন"
+          }
         }
       }
     },
@@ -17935,6 +18649,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "ทดสอบเฉพาะรายการโปรด"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "শুধু প্রিয় কুইজ করুন"
           }
         }
       }
@@ -18080,6 +18800,12 @@
             "state": "translated",
             "value": "โหมดทดสอบ — %@"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "কুইজ মোড — %@"
+          }
         }
       }
     },
@@ -18223,6 +18949,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "โหมดทดสอบ…"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "কুইজ মোড…"
           }
         }
       }
@@ -18368,6 +19100,12 @@
             "state": "translated",
             "value": "รับเวอร์ชันเบต้า"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "বেটা রিলিজ গ্রহণ করুন"
+          }
         }
       }
     },
@@ -18510,6 +19248,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "บันทึกแป้นลัด…"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "শর্টকাট রেকর্ড করুন…"
           }
         }
       }
@@ -18655,6 +19399,12 @@
             "state": "translated",
             "value": "ลบกฎทั้งหมดสำหรับแอปนี้"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "এই অ্যাপের সব নিয়ম সরান"
+          }
         }
       }
     },
@@ -18799,6 +19549,12 @@
             "state": "translated",
             "value": "ลบออกจากรายการโปรด"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "প্রিয় থেকে সরান"
+          }
         }
       }
     },
@@ -18941,6 +19697,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "รีเซ็ต"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "রিসেট করুন"
           }
         }
       }
@@ -19086,6 +19848,12 @@
             "state": "translated",
             "value": "ดูแป้นลัดทุกอย่างของแอปใดก็ได้ — โดยไม่ต้องเปิดเมนู"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "মেনু না খুলেই যেকোনো অ্যাপের সব কীবোর্ড শর্টকাট দেখুন।"
+          }
         }
       }
     },
@@ -19229,6 +19997,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "เลือกแอป…"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "অ্যাপ নির্বাচন করুন…"
           }
         }
       }
@@ -19374,6 +20148,12 @@
             "state": "translated",
             "value": "ตั้งค่าการตั้งค่าสุดท้ายก่อนเริ่มต้น"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "শুরু করার আগে শেষ পছন্দগুলো সেট করুন।"
+          }
         }
       }
     },
@@ -19517,6 +20297,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "ตั้งค่าทริกเกอร์"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ট্রিগার সেট করুন"
           }
         }
       }
@@ -19662,6 +20448,12 @@
             "state": "translated",
             "value": "การตั้งค่า"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "সেটিংস"
+          }
         }
       }
     },
@@ -19804,6 +20596,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "การตั้งค่า…"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "সেটিংস…"
           }
         }
       }
@@ -19949,6 +20747,12 @@
             "state": "translated",
             "value": "หลายวินาที"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "কয়েক সেকেন্ড"
+          }
         }
       }
     },
@@ -20091,6 +20895,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "แป้นลัดถูกใช้งานอยู่แล้ว"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "শর্টকাটটি ইতিমধ্যে ব্যবহৃত"
           }
         }
       }
@@ -20236,6 +21046,12 @@
             "state": "translated",
             "value": "แป้นลัดใช้งานได้!"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "শর্টকাট কাজ করছে!"
+          }
         }
       }
     },
@@ -20378,6 +21194,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "แสดงรายการเมนูทั้งหมด"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "সব মেনু আইটেম দেখান"
           }
         }
       }
@@ -20523,6 +21345,12 @@
             "state": "translated",
             "value": "แสดงรายการเมนูทั้งหมด ไม่ใช่แค่ที่มีแป้นลัด เพื่อช่วยค้นหาการกระทำที่ใช้ได้"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "উপলব্ধ ক্রিয়াগুলি আবিষ্কার করতে সহায়তার জন্য শুধু কীবোর্ড শর্টকাট সহ নয়, সব মেনু আইটেম দেখান।"
+          }
         }
       }
     },
@@ -20666,6 +21494,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "แสดงตัวบ่งชี้ความขัดแย้ง"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "দ্বন্দ্ব নির্দেশক দেখান"
           }
         }
       }
@@ -20811,6 +21645,12 @@
             "state": "translated",
             "value": "แสดงแป้นลัดระบบที่ปิดใช้งาน"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "নিষ্ক্রিয় সিস্টেম শর্টকাট দেখান"
+          }
         }
       }
     },
@@ -20953,6 +21793,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "แสดง KeyMinder โดยกดและปล่อยแป้นปรับแต่งหนึ่งแป้นสองครั้งอย่างรวดเร็ว"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "একটি মডিফায়ার কী দ্রুত দুইবার চেপে ছেড়ে দিয়ে KeyMinder দেখান।"
           }
         }
       }
@@ -21097,6 +21943,12 @@
             "state": "translated",
             "value": "แสดงแป้นลัด  (ไม่ได้ตั้งค่า)"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "শর্টকাট দেখান  (সেট করা হয়নি)"
+          }
         }
       }
     },
@@ -21239,6 +22091,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "แสดงแป้นลัด  %@"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "শর্টকাট দেখান  %@"
           }
         }
       }
@@ -21384,6 +22242,12 @@
             "state": "translated",
             "value": "แสดงแป้นลัดระบบ"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "সিস্টেম শর্টকাট দেখান"
+          }
         }
       }
     },
@@ -21527,6 +22391,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "แสดงขณะกรอง"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ফিল্টার করার সময় দেখান"
           }
         }
       }
@@ -21672,6 +22542,12 @@
             "state": "translated",
             "value": "แสดงเฉพาะรายการโปรด"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "শুধুমাত্র প্রিয় দেখানো হচ্ছে"
+          }
         }
       }
     },
@@ -21815,6 +22691,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "แตะ ★ บนแป้นลัดใดก็ได้เพื่อปักหมุด — แตะ ★ ที่หัวเรื่องเพื่อดูเฉพาะรายการโปรด"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "পিন করতে যেকোনো শর্টকাটে ★ চাপুন — শুধু প্রিয় দেখতে হেডারে ★ চাপুন"
           }
         }
       }
@@ -21960,6 +22842,12 @@
             "state": "translated",
             "value": "เริ่มพิมพ์เพื่อค้นหาในแป้นลัดทั้งหมด"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "সব শর্টকাট খুঁজতে টাইপ শুরু করুন"
+          }
         }
       }
     },
@@ -22103,6 +22991,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "ระบบ"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "সিস্টেম"
           }
         }
       }
@@ -22248,6 +23142,12 @@
             "state": "translated",
             "value": "ป็อปอัพจะไม่เปิดขณะที่แอปนี้อยู่ด้านหน้า"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "এই অ্যাপটি সামনে থাকলে পপআপ খুলবে না।"
+          }
         }
       }
     },
@@ -22391,6 +23291,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "แป้นลัดนี้ถูกกำหนดให้กับหลายคำสั่ง"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "এই শর্টকাটটি একাধিক কমান্ডে নির্ধারিত"
           }
         }
       }
@@ -22536,6 +23442,12 @@
             "state": "translated",
             "value": "เคล็ดลับ: กด Esc เพื่อปิดป็อปอัพ"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "টিপ: পপআপ বন্ধ করতে Esc চাপুন"
+          }
         }
       }
     },
@@ -22679,6 +23591,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "ลอง"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "চেষ্টা করুন"
           }
         }
       }
@@ -22824,6 +23742,12 @@
             "state": "translated",
             "value": "ลองเลย"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "এখনই চেষ্টা করুন"
+          }
         }
       }
     },
@@ -22966,6 +23890,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "พิมพ์แป้นลัดของคุณ…"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "আপনার শর্টকাট টাইপ করুন…"
           }
         }
       }
@@ -23111,6 +24041,12 @@
             "state": "translated",
             "value": "อัปเดต"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "আপডেট"
+          }
         }
       }
     },
@@ -23254,6 +24190,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "ใช้ทริกเกอร์ขณะที่หน้าต่างนี้เปิดอยู่"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "এই উইন্ডো খোলা থাকাকালীন ট্রিগার ব্যবহার করুন।"
           }
         }
       }
@@ -23399,6 +24341,12 @@
             "state": "translated",
             "value": "กำลังรอสิทธิ์…"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "অনুমতির অপেক্ষায়…"
+          }
         }
       }
     },
@@ -23541,6 +24489,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "ยินดีต้อนรับสู่ KeyMinder"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "KeyMinder-এ আপনাকে স্বাগতম"
           }
         }
       }
@@ -23686,6 +24640,12 @@
             "state": "translated",
             "value": "จะเกิดอะไรขึ้น?"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "কী হওয়া উচিত?"
+          }
         }
       }
     },
@@ -23829,6 +24789,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "อักขระตัวแทน"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ওয়াইল্ডকার্ড"
           }
         }
       }
@@ -23974,6 +24940,12 @@
             "state": "translated",
             "value": "ตัดเมนูยาวข้ามหลายคอลัมน์"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "দীর্ঘ মেনু কলুমনে ভাঁজ করুন"
+          }
         }
       }
     },
@@ -24117,6 +25089,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "คุณสามารถเปลี่ยนสิ่งเหล่านี้ได้ตลอดเวลาใน การตั้งค่า → ทั่วไป"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "সেটিংস → সাধারণ-এ যেকোনো সময় এগুলো পরিবর্তন করতে পারবেন।"
           }
         }
       }
@@ -24262,6 +25240,12 @@
             "state": "translated",
             "value": "คุณกด %@"
           }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "আপনি %@ চেপেছেন"
+          }
         }
       }
     },
@@ -24405,6 +25389,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "พร้อมแล้ว — คลิกถัดไปเพื่อดำเนินการต่อ"
+          }
+        },
+        "bn": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "সব ঠিক আছে — চালিয়ে যেতে পরবর্তী ক্লিক করুন।"
           }
         }
       }
