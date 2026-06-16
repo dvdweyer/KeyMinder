@@ -8,6 +8,7 @@
 #   release.sh --full-deploy    — Release build, notarize, rsync + install to /Applications
 #   release.sh --local-only     — Debug build + install to /Applications only
 #   release.sh --beta           — Release build, notarize, rsync (beta channel, ZIP only)
+#   release.sh --alpha          — Release build, notarize, rsync (alpha channel, ZIP only)
 #
 # Prerequisites (full pipeline):
 #   - Copy scripts/.env.example to ~/Documents/Development/.config/KeyMinder/scripts/.env and fill in TEAM_ID.
@@ -31,6 +32,7 @@ for arg in "$@"; do
         --remote-only) MODE="remote-only" ;;
         --full-deploy)  MODE="full-deploy" ;;
         --beta)         MODE="beta" ;;
+        --alpha)        MODE="alpha" ;;
         *) echo "error: unknown argument: $arg" >&2; exit 1 ;;
     esac
 done
@@ -42,14 +44,16 @@ if [[ -z "$MODE" ]]; then
     echo "  2) local-only    — Debug build, install to /Applications"
     echo "  3) full-deploy   — Release build, notarize, rsync + install to /Applications"
     echo "  4) beta          — Release build, notarize, rsync (beta channel, ZIP only)"
+    echo "  5) alpha         — Release build, notarize, rsync (alpha channel, ZIP only)"
     echo ""
-    read -rp "Choice [1/2/3/4]: " _CHOICE
+    read -rp "Choice [1/2/3/4/5]: " _CHOICE
     echo ""
     case "$_CHOICE" in
         1) MODE="remote-only" ;;
         2) MODE="local-only" ;;
         3) MODE="full-deploy" ;;
         4) MODE="beta" ;;
+        5) MODE="alpha" ;;
         *) echo "error: invalid choice '$_CHOICE'" >&2; exit 1 ;;
     esac
 fi
@@ -88,6 +92,15 @@ if [[ "$MODE" == "local-only" ]]; then
     echo "==> Done — KeyMinder (Debug) installed to /Applications."
     exit 0
 fi
+
+# ── Channel ───────────────────────────────────────────────────────────────────
+# Empty = stable (full website + DMG + cask). Non-empty = a Sparkle prerelease
+# channel (ZIP-only, appcast tagged with the channel, no website/DMG/cask).
+CHANNEL=""
+case "$MODE" in
+    beta)  CHANNEL="beta" ;;
+    alpha) CHANNEL="alpha" ;;
+esac
 
 SITE_DIR="$HOME/Public/Sites/app.keyminder"
 DEPLOY_SH="$HOME/Public/Sites/deploy.sh"
@@ -131,7 +144,7 @@ if ! git -C "$REPO_DIR" tag | grep -qxF "v${VERSION}"; then
 fi
 
 # ── QC: webpage must reference the same version (stable only) ─────────────────
-if [[ "$MODE" != "beta" ]]; then
+if [[ -z "$CHANNEL" ]]; then
     HTML="$REPO_DIR/Documentation/Website/keyminder.html"
     HTML_VERSION=$(grep -o 'href="KeyMinder_[0-9.]*\.zip"' "$HTML" | head -1 \
         | sed 's/href="KeyMinder_//; s/\.zip"//')
@@ -148,8 +161,8 @@ APP="$EXPORT_DIR/KeyMinder.app"
 ZIP="$BUILD_DIR/KeyMinder_${VERSION}.zip"
 DMG="$BUILD_DIR/KeyMinder_${VERSION}.dmg"
 
-if [[ "$MODE" == "beta" ]]; then
-    echo "==> KeyMinder $VERSION (beta)"
+if [[ -n "$CHANNEL" ]]; then
+    echo "==> KeyMinder $VERSION ($CHANNEL)"
 else
     echo "==> KeyMinder $VERSION"
 fi
@@ -177,8 +190,8 @@ EOF
 
 echo "--- Archiving…"
 _ARCHIVE_EXTRA_SETTINGS=()
-if [[ "$MODE" == "beta" ]]; then
-    _ARCHIVE_EXTRA_SETTINGS+=(KM_RELEASE_CHANNEL=beta)
+if [[ -n "$CHANNEL" ]]; then
+    _ARCHIVE_EXTRA_SETTINGS+=(KM_RELEASE_CHANNEL="$CHANNEL")
 fi
 xcodebuild archive \
     -project "$REPO_DIR/KeyMinder.xcodeproj" \
@@ -214,7 +227,7 @@ rm "$ZIP"
 ditto -c -k --sequesterRsrc --keepParent "$APP" "$ZIP"
 
 # ── DMG (stable only) ─────────────────────────────────────────────────────────
-if [[ "$MODE" != "beta" ]]; then
+if [[ -z "$CHANNEL" ]]; then
     echo ""
     echo "--- Creating DMG…"
     DMG_STAGING="$BUILD_DIR/dmg_staging"
@@ -258,11 +271,11 @@ APPCAST="$REPO_DIR/Distribution/appcast.xml"
 APPCAST_ASSETS="$BUILD_DIR/appcast_assets"
 mkdir -p "$APPCAST_ASSETS"
 cp "$ZIP" "$APPCAST_ASSETS/"
-if [[ "$MODE" == "beta" ]]; then
+if [[ -n "$CHANNEL" ]]; then
     "$GENERATE_APPCAST" "$APPCAST_ASSETS" \
         --download-url-prefix "https://keyminder.app/" \
         --maximum-versions 3 \
-        --channel beta \
+        --channel "$CHANNEL" \
         -o "$APPCAST"
 else
     "$GENERATE_APPCAST" "$APPCAST_ASSETS" \
@@ -306,7 +319,7 @@ echo "--- Copying to website…"
 mkdir -p "$SITE_DIR"
 cp "$ZIP" "$SITE_DIR/"
 cp "$APPCAST" "$SITE_DIR/"
-if [[ "$MODE" != "beta" ]]; then
+if [[ -z "$CHANNEL" ]]; then
     cp "$DMG" "$SITE_DIR/"
     cp "$REPO_DIR/Documentation/Website/keyminder.html" "$SITE_DIR/index.html"
     for f in "$REPO_DIR/Documentation/Website/"*.png "$REPO_DIR/Documentation/Website/"*.ico; do
@@ -349,7 +362,7 @@ if [[ "$MODE" == "full-deploy" ]]; then
 fi
 
 # ── Homebrew tap (stable only) ────────────────────────────────────────────────
-if [[ "$MODE" != "beta" ]]; then
+if [[ -z "$CHANNEL" ]]; then
     echo ""
     echo "--- Updating Homebrew cask…"
     TAP_REPO_DIR="${TAP_REPO_DIR:-$HOME/Documents/Development/.config/KeyMinder/homebrew}" bash "$SCRIPT_DIR/update-tap.sh" "$VERSION" "$DMG_SHA256"
@@ -358,10 +371,10 @@ fi
 # ── Commit release artifacts back to repo ────────────────────────────────────
 echo ""
 echo "--- Committing release artifacts…"
-if [[ "$MODE" == "beta" ]]; then
+if [[ -n "$CHANNEL" ]]; then
     git -C "$REPO_DIR" add Distribution/appcast.xml
     if ! git -C "$REPO_DIR" diff --cached --quiet; then
-        git -C "$REPO_DIR" commit -m "chore: beta appcast for v${VERSION}"
+        git -C "$REPO_DIR" commit -m "chore: $CHANNEL appcast for v${VERSION}"
         git -C "$REPO_DIR" push
     fi
 else
@@ -376,8 +389,8 @@ fi
 rm -rf "$BUILD_DIR"
 
 echo ""
-if [[ "$MODE" == "beta" ]]; then
-    echo "==> Done — KeyMinder $VERSION (beta) is live."
+if [[ -n "$CHANNEL" ]]; then
+    echo "==> Done — KeyMinder $VERSION ($CHANNEL) is live."
 else
     echo "==> Done — KeyMinder $VERSION is live."
 fi
