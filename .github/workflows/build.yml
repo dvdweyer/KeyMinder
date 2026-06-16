@@ -24,7 +24,8 @@ jobs:
             -configuration Debug \
             -destination 'platform=macOS' \
             -derivedDataPath /tmp/KeyMinder-CI \
-            build | xcpretty && exit ${PIPESTATUS[0]}
+            build 2>&1 | tee /tmp/build.log | xcpretty --color
+          exit ${PIPESTATUS[0]}
 
       - name: Test
         run: |
@@ -33,4 +34,12 @@ jobs:
             -scheme KeyMinder \
             -destination 'platform=macOS' \
             -derivedDataPath /tmp/KeyMinder-CI \
-            test | xcpretty && exit ${PIPESTATUS[0]}
+            test 2>&1 | tee /tmp/test.log | xcpretty --color
+          exit ${PIPESTATUS[0]}
+
+      - name: Upload raw logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: xcodebuild-logs
+          path: /tmp/*.log
