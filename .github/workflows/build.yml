@@ -24,6 +24,7 @@ jobs:
             -configuration Debug \
             -destination 'platform=macOS' \
             -derivedDataPath /tmp/KeyMinder-CI \
+            CODE_SIGNING_ALLOWED=NO \
             build 2>&1 | tee /tmp/build.log | xcpretty --color
           exit ${PIPESTATUS[0]}
 
@@ -34,6 +35,7 @@ jobs:
             -scheme KeyMinder \
             -destination 'platform=macOS' \
             -derivedDataPath /tmp/KeyMinder-CI \
+            CODE_SIGNING_ALLOWED=NO \
             test 2>&1 | tee /tmp/test.log | xcpretty --color
           exit ${PIPESTATUS[0]}
 
