@@ -1,0 +1,10 @@
+# Normalise line endings for all text files on checkout
+* text=auto
+
+# Xcode project file — use union merge to avoid conflict markers
+*.pbxproj merge=union
+
+# Treat all binary artefacts explicitly
+*.png binary
+*.icns binary
+*.xcassets binary

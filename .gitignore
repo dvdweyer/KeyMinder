@@ -8,6 +8,22 @@ DerivedData/
 xcuserdata/
 *.xcscmblueprint
 *.xccheckout
+*.xcarchive
+*.dSYM
+*.dSYM.zip
+*.ipa
+*.hmap
+*.pbxuser
+*.moved-aside
+
+# App Store Connect API keys
+AuthKey_*.p8
+
+# SPM cache when resolved inside the project dir
+SourcePackages/
+
+# Claude Code workspace data
+Claude/
 
 # Swift Package Manager
 .build/
