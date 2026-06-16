@@ -21,6 +21,7 @@
             <sparkle:version>354</sparkle:version>
             <sparkle:shortVersionString>1.0.147</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <sparkle:minimumAutoupdateVersion>357</sparkle:minimumAutoupdateVersion>
             <enclosure url="https://keyminder.app/KeyMinder_1.0.147.zip" length="3465714" type="application/octet-stream" sparkle:edSignature="/47UJ/tjehl5h+Ens5v6J0ZKjhQEuhsTFAxwfiKJlAQDRzLis0NP6BD4p7NHwJ+20kB98KaIv/pTb9DwBx52CA=="/>
         </item>
         <item>
@@ -29,6 +30,7 @@
             <sparkle:version>325</sparkle:version>
             <sparkle:shortVersionString>1.0.130</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <sparkle:minimumAutoupdateVersion>357</sparkle:minimumAutoupdateVersion>
             <enclosure url="https://keyminder.app/KeyMinder_1.0.130.zip" length="3411620" type="application/octet-stream" sparkle:edSignature="g7EAkx+pmUhbj+BVhEalmYgUos93AuS5ITKorcg1mmU/rgOBLM8Wv3WuxXZGiSc0PfABJTPArlqdc0dM5bvJBg=="/>
         </item>
         <item>
@@ -38,6 +40,7 @@
             <sparkle:version>323</sparkle:version>
             <sparkle:shortVersionString>1.0.130</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <sparkle:minimumAutoupdateVersion>357</sparkle:minimumAutoupdateVersion>
             <enclosure url="https://keyminder.app/KeyMinder_1.0.130.zip" length="3411639" type="application/octet-stream" sparkle:edSignature="ha2+OHRjC5V7mzFMtmcQzMziwwh5Sn6dRQOxLIdl5eTDnzDcPWawES8DGdtxgYJAfyC5MdP6S+zz8EtiGBAwDA=="/>
         </item>
         <item>
@@ -46,6 +49,7 @@
             <sparkle:version>301</sparkle:version>
             <sparkle:shortVersionString>1.0.122</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <sparkle:minimumAutoupdateVersion>357</sparkle:minimumAutoupdateVersion>
             <enclosure url="https://keyminder.app/KeyMinder_1.0.122.zip" length="3302241" type="application/octet-stream" sparkle:edSignature="G8MJi53Q6Xi/boIcAjZRzGj8m91oDXqKVsR8nTLjultzdxhk9O3B9yDvltU61vFyJT+cCteUDtPFg3ToC8S6AA=="/>
         </item>
         <item>
@@ -54,6 +58,7 @@
             <sparkle:version>284</sparkle:version>
             <sparkle:shortVersionString>1.0.118</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <sparkle:minimumAutoupdateVersion>357</sparkle:minimumAutoupdateVersion>
             <enclosure url="https://keyminder.app/KeyMinder_1.0.118.zip" length="3232154" type="application/octet-stream" sparkle:edSignature="4biDfaupNIB8lDZQ3LmWgtDP4YSuHKi5HTPNWYoNRRAqneSPyvGhjP1JNKptqv4t9ysh1nViF2AIcTCodAW3BA=="/>
         </item>
     </channel>

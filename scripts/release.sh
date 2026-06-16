@@ -271,6 +271,35 @@ else
         -o "$APPCAST"
 fi
 
+# Inject sparkle:minimumAutoupdateVersion into every item that is NOT the newest.
+# This creates a version floor: Sparkle will refuse to install any old enclosure
+# automatically unless the installed bundle version already meets the floor,
+# defending against MITM replay of genuine old signed builds.
+# The newest item itself gets no floor (it IS the target).
+NEW_BUILD=$(grep -m1 '<sparkle:version>' "$APPCAST" | sed 's/.*<sparkle:version>//; s/<\/sparkle:version>//')
+python3 - "$APPCAST" "$NEW_BUILD" <<'PYEOF'
+import sys, re
+
+path, new_build = sys.argv[1], sys.argv[2]
+with open(path) as f:
+    xml = f.read()
+
+items = list(re.finditer(r'<item>.*?</item>', xml, re.DOTALL))
+if len(items) <= 1:
+    sys.exit(0)
+
+floor_tag = f'            <sparkle:minimumAutoupdateVersion>{new_build}</sparkle:minimumAutoupdateVersion>\n        '
+# Process from end to preserve string positions; skip the first (newest) item.
+for item in reversed(items[1:]):
+    block = item.group(0)
+    if 'minimumAutoupdateVersion' not in block:
+        new_block = block.replace('</item>', floor_tag + '</item>')
+        xml = xml[:item.start()] + new_block + xml[item.end():]
+
+with open(path, 'w') as f:
+    f.write(xml)
+PYEOF
+
 # ── Deploy ────────────────────────────────────────────────────────────────────
 echo ""
 echo "--- Copying to website…"
