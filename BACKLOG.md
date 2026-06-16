@@ -4,32 +4,6 @@ Items are rough ideas, not commitments. No priority order.
 
 ---
 
-## Known Issues
-
-~~### Ignored Commands — "Show when filtering" unreliable (v0.1.71)~~ **Fixed in v0.1.86.**
-
----
-
-~~## Auto-updater~~ **Shipped in v0.1.84 (Sparkle).**
-
----
-
-~~## Alternative menu-bar icon~~ **Shipped — Settings → General → Double-tap Trigger (auto-syncs to trigger key; manual override via menu-bar icon style).**
-
----
-
-~~## Show Dock icon when Settings or About window is open~~ **Shipped — `DockIconManager` switches activation policy dynamically (Settings, About, Quiz windows).**
-
----
-
-~~## Quiz mode~~ **Shipped — right-click context menu "Quiz Mode…".**
-
----
-
-~~## Show only visible menu items until filtering starts~~ **Shipped — "Only show when searching" sub-toggle under "Show all menu entries" (Settings → Popup).**
-
----
-
 ## Hide global shortcuts for apps that are not running
 
 When showing global shortcuts registered by other apps (e.g. Raycast, Alfred, Bartender), only
@@ -197,8 +171,6 @@ guarded by a `UserDefaults` bool. A single dismissal marks it done permanently.
 a one-off item in the right-click context menu that removes itself after being
 clicked.
 
-~~### Star on GitHub~~ **Shipped — `NudgeBannerView` with `.githubStar` case; shown after 10 popup opens once all tips are seen.**
-
 ### Heart on AlternativeTo
 
 "Like us on AlternativeTo ↗" → opens the KeyMinder listing page. A heart
@@ -252,8 +224,6 @@ arrive with context.
 
 ## Submit to Mac app directories
 
-- ~~[MacMenuBar.com](https://macmenubar.com/keyminder/)~~ **Live.**
-- ~~[AlternativeTo](https://alternativeto.net/software/keyminder/about/)~~ **Live.**
 - [OpenAlternative.to](https://openalternative.to) — open-source alternatives directory; submit via their GitHub repo.
 - [Awesome macOS](https://github.com/iCHAIT/awesome-macOS) — PR to add KeyMinder under "Productivity".
 - [Setapp blog / newsletter](https://setapp.com) — not a distribution channel, but a potential editorial mention.
