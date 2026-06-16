@@ -352,7 +352,7 @@ fi
 if [[ "$MODE" != "beta" ]]; then
     echo ""
     echo "--- Updating Homebrew cask…"
-    TAP_REPO_DIR="${TAP_REPO_DIR:-}" bash "$SCRIPT_DIR/update-tap.sh" "$VERSION" "$DMG_SHA256"
+    TAP_REPO_DIR="${TAP_REPO_DIR:-$HOME/Documents/Development/.config/KeyMinder/homebrew}" bash "$SCRIPT_DIR/update-tap.sh" "$VERSION" "$DMG_SHA256"
 fi
 
 # ── Commit release artifacts back to repo ────────────────────────────────────
