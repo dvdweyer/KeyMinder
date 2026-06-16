@@ -248,6 +248,20 @@ final class ShortcutFormatterTests: XCTestCase {
         )
     }
 
+    // MARK: - Multi-character cmdChar: only first scalar used
+
+    func testCmdChar_multiChar_onlyFirstScalarUsed() {
+        // A cmdChar string with more than one character must only return the glyph
+        // for the first scalar; a trailing backtick or other character must not leak
+        // through into the key badge (audit finding: keySymbol returned the whole string).
+        XCTAssertEqual(format(cmdChar: "s`", modifiers: 0), "⌘S")
+    }
+
+    func testCmdChar_multiChar_injectedBidi_onlyFirstScalarUsed() {
+        // RLO appended after a printable scalar — only the printable part should appear.
+        XCTAssertEqual(format(cmdChar: "n\u{202E}", modifiers: 0), "⌘N")
+    }
+
     // MARK: - Returns nil when nothing is set
 
     func testAllNil_returnsNil() {

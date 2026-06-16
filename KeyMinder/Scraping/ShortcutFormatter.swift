@@ -71,7 +71,7 @@ enum ShortcutFormatter {
             case 0x1B:                return "⎋"   // escape
             case 0x08, 0x7F:          return "⌫"   // backspace
             case 0x20:                return "Space"
-            case 0x21...0x7E:         return cmdChar.uppercased()
+            case 0x21...0x7E:         return String(scalar).uppercased()
             default:                  break
             }
         }
