@@ -30,6 +30,32 @@ Items are rough ideas, not commitments. No priority order.
 
 ---
 
+## Stale shortcut cleanup
+
+Apps that have been uninstalled can leave their keyboard shortcut assignments behind in
+`~/Library/Preferences/com.apple.symbolichotkeys.plist` (and similar preference stores).
+These orphaned entries may appear in the popup with no runnable app behind them.
+
+**Two approaches (not mutually exclusive):**
+
+1. **Passive detection** — when building the shortcut list, check whether the source app bundle
+   still exists at its recorded path (or is findable via `NSWorkspace.urlForApplication(withBundleIdentifier:)`).
+   Flag or hide entries whose app is missing.
+
+2. **Cleanup UI** — a dedicated view (e.g. under Settings → App Shortcuts) that lists all stored
+   per-app shortcut assignments, indicates which apps are no longer installed, and lets the user
+   delete the stale entries (writing back to `com.apple.symbolichotkeys.plist` or invoking the
+   System Settings deep-link to remove them).
+
+**Notes:**
+- Writing to `com.apple.symbolichotkeys.plist` requires care: macOS caches the file and a
+  `cfprefsd` invalidation (`defaults read` / `killall cfprefsd`) is needed for changes to take
+  effect. Investigate whether the plist can be modified safely without a logout.
+- Scope is limited to shortcuts the user assigned via System Settings; third-party apps that
+  register hotkeys programmatically (Carbon / CGEvent) do not persist entries there.
+
+---
+
 ## User-defined shortcuts
 
 Some apps register global shortcuts outside the standard menu system (e.g. via `CGEventTap`,
