@@ -30,6 +30,21 @@ Items are rough ideas, not commitments. No priority order.
 
 ---
 
+## Single-letter shortcut execution
+
+Single-letter shortcuts (e.g. Reeder's `j`, `k`, `r` — no modifiers) should be directly executable
+from the popup, the same way modifier-key shortcuts already work via `ShortcutActivator`.
+
+**Problem:** the popup intercepts unmodified key presses to drive the search filter, so bare-letter
+shortcuts can't be dispatched to the target app by typing them.
+
+**Notes:** `ShortcutActivator` already calls `AXUIElementPerformAction(kAXPressAction)` on the stored
+`axElement` — the plumbing exists. The challenge is disambiguation: clicking a row (mouse path) should
+fire the action; typing a letter should still filter. A row-click-to-execute approach (matching what
+modifier shortcuts already do on click) is the likely path of least resistance.
+
+---
+
 ## Option-key alternate menu items
 
 In macOS, holding Option swaps certain menu items for alternates (e.g. "Close" → "Close All", "Get Info" → "Show Inspector"). Showing this live behaviour in the KeyMinder popup would be a useful differentiator.
