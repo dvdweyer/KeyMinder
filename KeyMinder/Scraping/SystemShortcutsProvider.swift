@@ -154,8 +154,10 @@ enum SystemShortcutsProvider {
               !equivs.isEmpty
         else { return nil }
 
-        let shortcuts = equivs.compactMap { title, value -> Shortcut? in
+        let shortcuts = equivs.compactMap { rawTitle, value -> Shortcut? in
             guard let keys = formatUserKeyEquivalent(value) else { return nil }
+            let title = ScrapedStringPolicy.sanitize(rawTitle)
+            guard !title.isEmpty else { return nil }
             return Shortcut(title: title, keys: keys)
         }.sorted { $0.title.localizedStandardCompare($1.title) == .orderedAscending }
 

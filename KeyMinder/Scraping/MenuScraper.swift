@@ -31,7 +31,7 @@ enum MenuScraper {
 
         var sections: [MenuSection] = []
         for menuBarItem in children(menuBar) {
-            let title = string(menuBarItem, kAXTitleAttribute) ?? ""
+            let title = titleString(menuBarItem)
             guard !IgnoreListStore.isIgnored(title: title, patterns: ignoredMenuTitles) else { continue }
             // A menu bar item owns its drop-down menu as its single child.
             guard let menu = children(menuBarItem).first else { continue }
@@ -58,7 +58,7 @@ enum MenuScraper {
         guard let menuBar = element(app, kAXMenuBarAttribute) else { return [] }
         var result: [Shortcut] = []
         for menuBarItem in children(menuBar) {
-            let title = string(menuBarItem, kAXTitleAttribute) ?? ""
+            let title = titleString(menuBarItem)
             guard IgnoreListStore.isIgnored(title: title, patterns: ignoredMenuTitles) else { continue }
             guard let menu = children(menuBarItem).first else { continue }
             result.append(contentsOf: collectShortcutsFlat(in: menu).shortcuts)
@@ -79,7 +79,7 @@ enum MenuScraper {
         var named:    [ShortcutGroup] = []
 
         for item in children(menu) {
-            let title = string(item, kAXTitleAttribute) ?? ""
+            let title = titleString(item)
             if title.isEmpty {
                 topLevel.append(.separator())
                 continue
@@ -158,7 +158,7 @@ enum MenuScraper {
         let menuChildren = children(menu)
         var result: [Shortcut] = []
         for item in menuChildren {
-            let title = string(item, kAXTitleAttribute) ?? ""
+            let title = titleString(item)
             if title.isEmpty {
                 result.append(.separator())
                 continue
@@ -193,6 +193,13 @@ enum MenuScraper {
     }
 
     // MARK: - Accessibility helpers
+
+    /// Reads the AX title attribute, applies scrape-boundary sanitization, and
+    /// returns an empty string when the attribute is absent.
+    private static func titleString(_ element: AXUIElement) -> String {
+        guard let raw = string(element, kAXTitleAttribute) else { return "" }
+        return ScrapedStringPolicy.sanitize(raw)
+    }
 
     private static func value(_ element: AXUIElement, _ attribute: String) -> CFTypeRef? {
         var result: CFTypeRef?
