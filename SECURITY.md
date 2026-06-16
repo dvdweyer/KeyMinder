@@ -70,25 +70,35 @@ timeline.
 - Reports against macOS itself or third-party applications whose menu data
   KeyMinder reads.
 - Missing security headers, certificate pinning, or other web/network hardening
-  (KeyMinder has no network stack).
+  beyond Sparkle's existing Ed25519 + HTTPS baseline.
 - Denial-of-service via the Accessibility API that requires the attacker to
   already control the target application.
 
 ## Threat Model
 
-KeyMinder is a local, non-sandboxed macOS utility with no network connectivity
-and no remote backend. Its attack surface is:
+KeyMinder is a local, non-sandboxed macOS utility. Its attack surface is:
 
 1. **The Accessibility API grant** — KeyMinder reads menu-bar structure from
    the frontmost app. It does not inject input, does not read window contents,
    and does not access files outside its own container.
-2. **Global NSEvent monitors** (`NSEvent.addGlobalMonitorForEvents`) registered for
+2. **Scraped strings from the frontmost app** — Menu item titles, app names, and
+   `NSUserKeyEquivalents` keys are **attacker-controlled** when a hostile app is
+   frontmost (or has written to `.GlobalPreferences.plist`, which requires no
+   elevated privilege). A hostile frontmost app is the normal operating condition
+   for an app in this category, not an "attacker already won" scenario. Scraped
+   strings are sanitized at the scrape boundary (`ScrapedStringPolicy`) and escaped
+   when exported to Markdown (`ShortcutExporter`).
+3. **Global NSEvent monitors** (`NSEvent.addGlobalMonitorForEvents`) registered for
    double-tap trigger detection (`.flagsChanged` + `.keyDown`) and for modifier key
    filter state while the popup is visible (`.flagsChanged` only — reads which modifier
    keys are held, not what the user types). All monitors are passive-only; they cannot
    suppress or synthesize events. No CGEventTap is used.
-3. **Parsing of AX attribute values** (strings) returned by target applications.
-   A malicious app could return unexpected data here.
+4. **Sparkle auto-updater** — Sparkle fetches `https://keyminder.app/appcast.xml`
+   over HTTPS and verifies each update package with Ed25519 before installation.
+   A TLS-MITM attacker on the same network could attempt to serve a modified
+   appcast; the Ed25519 signature prevents installing unsigned packages, and
+   `sparkle:minimumAutoupdateVersion` floors block replay of genuine old signed
+   enclosures.
 
 ## Security Best Practices for Users
 

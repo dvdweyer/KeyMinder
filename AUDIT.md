@@ -30,7 +30,7 @@ No `.entitlements` file exists. No `com.apple.security.*` keys are set. This is 
 | Key | Value | Notes |
 |-----|-------|-------|
 | `LSUIElement` | `YES` | Agent app — no Dock icon, no main menu bar. Correct. |
-| `NSAppTransportSecurity` | (absent) | No network stack. No ATS config needed. ✓ |
+| `NSAppTransportSecurity` | (absent) | No app-code network stack. Sparkle (bundled framework) fetches the appcast over HTTPS; ATS applies to it automatically. ✓ |
 | `CFBundleURLSchemes` | (absent) | No URL scheme handler. ✓ |
 | `NSAppleEventsUsageDescription` | (absent) | No AppleScript/AppleEvents surface. ✓ |
 
@@ -182,6 +182,8 @@ Both are read with `Data(contentsOf:)` + `PropertyListSerialization`, which cann
 
 **Note:** `.GlobalPreferences.plist` can contain sensitive data from other apps (historically, some apps stored credentials here). KeyMinder reads only the `NSUserKeyEquivalents` key, limiting the blast radius if parsing is somehow exploited. ✓
 
+**`NSUserKeyEquivalents` injection surface:** `.GlobalPreferences.plist` is a **multi-writer global preferences domain** — any same-user process can write to it with `defaults write -g NSUserKeyEquivalents …` with zero privilege and zero user interaction. A background process could therefore inject arbitrary menu-item title strings into KeyMinder's popup. **Mitigation:** `ScrapedStringPolicy.sanitize(_:)` is applied to all `NSUserKeyEquivalents` keys before they are stored as `Shortcut.title`, stripping C0/C1 controls, bidi overrides, and capping length. Exported Markdown is additionally escaped via `ShortcutExporter`.
+
 ### Unsafe Swift (`Unmanaged`, raw pointers)
 
 **`HotkeyManager.swift:74`** — `Unmanaged.passUnretained(self).toOpaque()` for the Carbon event handler `userData` context. Correct: `passUnretained` is appropriate because Carbon does not take ownership; the singleton outlives the callback. `takeUnretainedValue()` is used on the receiving side — no retain/release imbalance. ✓
@@ -233,7 +235,7 @@ A local attacker with filesystem access could modify `~/Library/Preferences/org.
 
 ## 6. Network & TLS
 
-**No network calls exist.** No `URLSession`, `URLRequest`, `Network.framework`, `CFNetwork`, `WKWebView`, or third-party HTTP library is imported or used anywhere in `KeyMinder/`. No data is transmitted over any network. No ATS configuration is needed or present.
+**No network calls exist in app code.** No `URLSession`, `URLRequest`, `Network.framework`, `CFNetwork`, `WKWebView`, or third-party HTTP library is imported or used anywhere in `KeyMinder/`. The bundled **Sparkle** framework does make network calls (appcast fetch over HTTPS) — this is covered in §7. No ATS configuration is needed for app code; Sparkle operates under the system's default ATS policy.
 
 `AppDelegate.swift:249` constructs a `URL` for the About panel link (`https://donald.van-de-weyer.net/keyminder.html`), but this URL is only passed to `NSApp.orderFrontStandardAboutPanel` and never opened programmatically. `NSWorkspace.shared.open(url)` is called only with the `x-apple.systempreferences:` scheme (in `AccessibilityPermission.openSettings()`), which opens System Settings — not a network request.
 
@@ -297,9 +299,9 @@ None found. ✓
 | 2. Dependencies | — | — | — | — | — |
 | 3. Sensitive Data / Secrets | — | — | — | — | F-02 ✓, F-04 ✓ |
 | 4. IPC & Attack Surface | — | — | — | N-01 ✓ v0.1.81 | F-07 ✓ |
-| 5. Data Handling | — | — | — | F-01 ✓ v0.1.81/v0.1.83, F-NEW-1 ✓ | N-02 ✓, N-03 ✓, N-04 ✓ v0.1.82 |
+| 5. Data Handling | — | — | EXT-01 ✓ v1.0.149, EXT-02 ✓ v1.0.149 | F-01 ✓ v0.1.81/v0.1.83, F-NEW-1 ✓ | N-02 ✓, N-03 ✓, N-04 ✓ v0.1.82 |
 | 6. Network & TLS | — | — | — | — | — |
-| 7. Update & Distribution | — | — | — | — | F-05 *(open)* |
+| 7. Update & Distribution | — | — | EXT-03 ✓ v1.0.150 | — | F-05 *(open)* |
 | 8. Code Quality | — | — | — | — | — |
 | **Total (open)** | **0** | **0** | **0** | **0** | **1** |
 
@@ -307,6 +309,7 @@ None found. ✓
 
 Prior findings closed since v0.1.39: F-02 (Medium), F-04, F-07, F-NEW-1.
 New findings since v0.1.39: N-01 (Low, fixed v0.1.81), N-02/N-03/N-04 (Informational, fixed v0.1.82).
+External adversarial review 2026-06-12 (v1.0.118 scope): EXT-01 (scraped-string spoofing, Medium, fixed v1.0.149), EXT-02 (Markdown export injection, Medium, fixed v1.0.151), EXT-03 (Sparkle downgrade floor absent, Medium, fixed v1.0.150). AX press re-read (EXT-04, Low) fixed v1.0.152.
 **One finding remains open:** F-05 (Informational) — Release config signing identity. No functional impact.
 
 ---
@@ -321,6 +324,10 @@ New findings since v0.1.39: N-01 (Low, fixed v0.1.81), N-02/N-03/N-04 (Informati
 | N-03 | Informational | `item.glyph.first!` in `PopupRootView` | ✅ Fixed v0.1.82 |
 | N-04 | Informational | Force-unwrap after nil-check filter in `SettingsView` | ✅ Fixed v0.1.82 |
 | F-05 | Informational | Release config `CODE_SIGN_IDENTITY = "Apple Development"` | ⚠️ Open — no functional impact; export step compensates |
+| EXT-01 | Medium | Scraped strings (AX titles, NSUserKeyEquivalents) unsanitized — bidi/control-char spoofing | ✅ Fixed v1.0.149 (`ScrapedStringPolicy`, applied in `MenuScraper` + `SystemShortcutsProvider`) |
+| EXT-02 | Medium | Markdown export injection — no escaping in `ShortcutExporter`; `keySymbol` returned whole cmdChar | ✅ Fixed v1.0.151 (`md()` + `codeSpan()` in `ShortcutExporter`; `String(scalar)` in `ShortcutFormatter`) |
+| EXT-03 | Medium | Sparkle appcast lacked `minimumAutoupdateVersion` floor — genuine old signed build replayable | ✅ Fixed v1.0.150 (floor added to all non-current items; `release.sh` maintains it going forward) |
+| EXT-04 | Low | `ShortcutActivator` did not re-read `kAXEnabledAttribute` or title at press time | ✅ Fixed v1.0.152 (re-reads both; logs title mismatches; refuses disabled items) |
 
 ### F-05 — Release config signing identity (Informational, open)
 **File:** `KeyMinder.xcodeproj/project.pbxproj`, UUID `3E3EC5A646DA464EBE9375A9` (Release config)
