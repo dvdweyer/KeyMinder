@@ -375,8 +375,16 @@ final class PopupController {
             scrolls: scrolls,
             onGrant: { [weak self] in self?.onGrant() },
             onOpenSettings: { [weak self] in self?.onOpenSettings() },
-            onActivate: { [weak self] shortcut in self?.activate(shortcut) }
+            onActivate: { [weak self] shortcut in self?.activate(shortcut) },
+            onAssign: { [weak self] shortcut in self?.assignShortcut(shortcut) }
         )
+    }
+
+    /// Dismisses the popup and opens the assign-shortcut window for `shortcut`.
+    private func assignShortcut(_ shortcut: Shortcut) {
+        guard let app = filterModel?.app else { return }
+        hide()
+        AssignShortcutController.show(shortcut: shortcut, app: app)
     }
 
     // MARK: - Permission polling helpers

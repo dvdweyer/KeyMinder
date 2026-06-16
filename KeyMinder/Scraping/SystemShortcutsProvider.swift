@@ -166,7 +166,9 @@ enum SystemShortcutsProvider {
 
     /// Converts an `NSUserKeyEquivalents` value string (e.g. `"@$/"`) into a
     /// display string (e.g. `"⇧⌘/"`). Returns `nil` for empty or unparseable strings.
-    private static func formatUserKeyEquivalent(_ value: String) -> String? {
+    /// Internal (not private) so the assign-shortcut writer's encoder can be
+    /// round-trip tested against it.
+    static func formatUserKeyEquivalent(_ value: String) -> String? {
         guard !value.isEmpty else { return nil }
         var ctrl = false, opt = false, shift = false, cmd = false
         var remaining = value[...]

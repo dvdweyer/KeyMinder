@@ -98,15 +98,37 @@ the About panel) that opens a Ko-fi, GitHub Sponsors, or similar page.
 
 ## Right-click to assign a shortcut
 
-Right-clicking a command row could open **System Settings → Keyboard →
-Keyboard Shortcuts → App Shortcuts** with the app pre-filled, so the user
-can assign or change the shortcut without navigating there manually.
+Right-clicking a command row could let the user **assign, change, or remove
+the keyboard shortcut for that menu item directly in KeyMinder** — via a
+context menu → key-capture sheet — without ever opening System Settings.
 
-**Notes:** the deep-link URL scheme for System Settings panels is
-`x-apple.systempreferences:com.apple.preference.keyboard?Shortcuts`; the
-app name field would need to be pre-filled via AppleScript or by writing a
-temporary `com.apple.symbolichotkeys` plist entry. Needs investigation —
-macOS does not expose a direct API to pre-populate the Add Shortcut sheet.
+**Mechanism (investigated 2026-06-16):** macOS "App Shortcuts" are persisted
+as **`NSUserKeyEquivalents`**, a `dict` of `"Menu Item Title" → "glyph-value"`
+stored in the *target app's* preference domain (e.g. `com.apple.Safari`) for
+per-app shortcuts, and in `.GlobalPreferences` / `NSGlobalDomain` for "All
+Applications". KeyMinder already **reads and decodes** this store
+(`SystemShortcutsProvider.loadAppShortcuts()` / `formatUserKeyEquivalent()`);
+writing is the inverse of the glyph table that already exists there
+(`^`=⌃, `~`=⌥, `$`=⇧, `@`=⌘ + special-char map). Because KeyMinder is
+non-sandboxed it can write another app's user-domain prefs via
+`CFPreferencesSetAppValue(key, value, bundleID)` — no TCC permission needed.
+
+**Caveats:** (1) takes effect only after the target app **relaunches** (Cocoa
+applies `NSUserKeyEquivalents` at menu-build time — same as System Settings);
+(2) **Cocoa/AppKit apps only** — Electron/Java/some Catalyst apps ignore it,
+but so does the OS feature; (3) the dict key must be the **raw** menu title
+(incl. the `…` ellipsis), so the write must use the unsanitized AX title, not
+the `ScrapedStringPolicy.sanitize`d display title — requires carrying the raw
+title on the `Shortcut` model; (4) must write through the `CFPreferences` API,
+not by editing the `.plist` directly, to avoid `cfprefsd` clobbering it;
+(5) it's an undocumented-but-stable convention (the same store the OS uses).
+
+**Rejected alternative — deep-link to System Settings:** the URL scheme
+(`x-apple.systempreferences:com.apple.Keyboard-Settings.extension` on macOS
+14+; the old `com.apple.preference.keyboard?Shortcuts` anchor no longer
+selects the Shortcuts tab) cannot pre-fill the Add Shortcut sheet and offers
+no public API to do so. Low effort, near-zero value. The `symbolichotkeys`
+plist is unrelated — it stores *system* shortcuts, not app menu shortcuts.
 
 ---
 

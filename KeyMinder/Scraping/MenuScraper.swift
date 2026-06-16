@@ -79,7 +79,7 @@ enum MenuScraper {
         var named:    [ShortcutGroup] = []
 
         for item in children(menu) {
-            let title = titleString(item)
+            let (title, rawTitle) = titles(item)
             if title.isEmpty {
                 topLevel.append(.separator())
                 continue
@@ -100,11 +100,11 @@ enum MenuScraper {
             let submenu = children(item).first
 
             if let keys = shortcutKeys {
-                topLevel.append(Shortcut(title: title, keys: keys, axElement: item, isDisabled: false))
+                topLevel.append(Shortcut(title: title, rawTitle: rawTitle, keys: keys, axElement: item, isDisabled: false))
             } else if includeAll, submenu == nil {
                 // Leaf item with no shortcut: include with empty keys so the full
                 // menu structure is discoverable.
-                topLevel.append(Shortcut(title: title, keys: "", axElement: item, isDisabled: false))
+                topLevel.append(Shortcut(title: title, rawTitle: rawTitle, keys: "", axElement: item, isDisabled: false))
             }
 
             if shortcutKeys == nil, submenu == nil, UserDefaults.standard.debugLoggingEnabled {
@@ -158,7 +158,7 @@ enum MenuScraper {
         let menuChildren = children(menu)
         var result: [Shortcut] = []
         for item in menuChildren {
-            let title = titleString(item)
+            let (title, rawTitle) = titles(item)
             if title.isEmpty {
                 result.append(.separator())
                 continue
@@ -174,9 +174,9 @@ enum MenuScraper {
             let submenu = children(item).first
 
             if let keys = shortcutKeys {
-                result.append(Shortcut(title: title, keys: keys, axElement: item, isDisabled: false))
+                result.append(Shortcut(title: title, rawTitle: rawTitle, keys: keys, axElement: item, isDisabled: false))
             } else if includeAll, submenu == nil {
-                result.append(Shortcut(title: title, keys: "", axElement: item, isDisabled: false))
+                result.append(Shortcut(title: title, rawTitle: rawTitle, keys: "", axElement: item, isDisabled: false))
             }
 
             // Flatten sub-submenus.
@@ -197,8 +197,16 @@ enum MenuScraper {
     /// Reads the AX title attribute, applies scrape-boundary sanitization, and
     /// returns an empty string when the attribute is absent.
     private static func titleString(_ element: AXUIElement) -> String {
-        guard let raw = string(element, kAXTitleAttribute) else { return "" }
-        return ScrapedStringPolicy.sanitize(raw)
+        titles(element).display
+    }
+
+    /// Reads the AX title attribute once and returns both the sanitized display
+    /// title (used everywhere in the UI) and the unsanitized raw title (used only
+    /// as the `NSUserKeyEquivalents` write key). Both are "" when the attribute
+    /// is absent.
+    private static func titles(_ element: AXUIElement) -> (display: String, raw: String) {
+        guard let raw = string(element, kAXTitleAttribute) else { return ("", "") }
+        return (ScrapedStringPolicy.sanitize(raw), raw)
     }
 
     private static func value(_ element: AXUIElement, _ attribute: String) -> CFTypeRef? {

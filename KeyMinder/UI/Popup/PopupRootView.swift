@@ -318,6 +318,7 @@ struct PopupRootView: View {
     var onGrant: () -> Void = {}
     var onOpenSettings: () -> Void = {}
     var onActivate: (Shortcut) -> Void = { _ in }
+    var onAssign: (Shortcut) -> Void = { _ in }
 
     var body: some View {
         Group {
@@ -345,7 +346,7 @@ struct PopupRootView: View {
     private func shortcutsView(_ app: AppShortcuts) -> some View {
         if let model, !app.isEmpty {
             FilterableShortcutsView(model: model, scrolls: scrolls, onActivate: onActivate,
-                                    onOpenSettings: onOpenSettings)
+                                    onAssign: onAssign, onOpenSettings: onOpenSettings)
         } else {
             VStack(alignment: .leading, spacing: 10) {
                 HStack(spacing: 8) {
@@ -372,6 +373,7 @@ private struct FilterableShortcutsView: View {
     @Bindable var model: PopupFilterModel
     let scrolls: Bool
     let onActivate: (Shortcut) -> Void
+    var onAssign: (Shortcut) -> Void = { _ in }
     var onOpenSettings: () -> Void = {}
     @FocusState private var searchFocused: Bool
     @State private var copied = false
@@ -450,6 +452,7 @@ private struct FilterableShortcutsView: View {
                                         dimMode: model.fitsWithoutScrolling && !model.hasQuery && !model.hasModifierFilter,
                                         selectedShortcutID: model.selectedShortcut?.id,
                                         onActivate: onActivate,
+                                        onAssign: onAssign,
                                         onToggleFavourite: { model.toggleFavourite($0) })
                     }
                 }
@@ -651,6 +654,7 @@ struct MenuSectionView: View {
     var dimMode: Bool = false
     var selectedShortcutID: UUID? = nil
     var onActivate: (Shortcut) -> Void = { _ in }
+    var onAssign: (Shortcut) -> Void = { _ in }
     var onToggleFavourite: (Shortcut) -> Void = { _ in }
 
     private func passesGate(_ shortcut: Shortcut) -> Bool {
@@ -755,6 +759,7 @@ struct MenuSectionView: View {
                                             dimmed: isDimmed(shortcut),
                                             isConflicted: !shortcut.keys.isEmpty && conflictingKeys.contains(shortcut.keys),
                                             onActivate: onActivate,
+                                            onAssign: onAssign,
                                             onToggleFavourite: { onToggleFavourite(shortcut) })
                             }
                         }
@@ -799,11 +804,15 @@ struct ShortcutRow: View {
     /// True when this key binding is shared by two or more commands in the same app.
     var isConflicted: Bool = false
     var onActivate: (Shortcut) -> Void = { _ in }
+    var onAssign: (Shortcut) -> Void = { _ in }
     var onToggleFavourite: () -> Void = {}
 
     @State private var hovered = false
 
     private var clickable: Bool { shortcut.axElement != nil && !dimmed }
+    /// Only real frontmost-app menu items (which carry an AX element) can have a
+    /// shortcut assigned; system and third-party rows are synthetic (no element).
+    private var assignable: Bool { shortcut.axElement != nil }
     private var isFavourite: Bool {
         !appID.isEmpty && FavouritesStore.shared.isFavourite(shortcut, appID: appID)
     }
@@ -850,6 +859,13 @@ struct ShortcutRow: View {
         )
         .onHover { hovered = $0 }
         .onTapGesture { if clickable { onActivate(shortcut) } }
+        .contextMenu {
+            if assignable {
+                Button(shortcut.keys.isEmpty ? "Assign Shortcut…" : "Change Shortcut…") {
+                    onAssign(shortcut)
+                }
+            }
+        }
         // Collapse the two Text children into one VoiceOver element so the
         // screen reader speaks "New Conversation, Shift Command N" rather than
         // announcing the raw glyph string "⇧⌘N" and the title separately.

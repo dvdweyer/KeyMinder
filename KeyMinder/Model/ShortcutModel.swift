@@ -9,6 +9,10 @@ struct Shortcut: Identifiable, Hashable {
     let id = UUID()
     /// The menu item's title, e.g. "New Conversation".
     let title: String
+    /// The unsanitized AX menu title, used as the `NSUserKeyEquivalents` dictionary
+    /// key when assigning a shortcut (which must match the app's real menu title
+    /// exactly, including any `…` ellipsis). `nil` for synthetic/test instances.
+    var rawTitle: String? = nil
     /// The display string for the key combination, e.g. "⇧⌘N".
     let keys: String
     /// The AX element for this menu item. Used to activate the shortcut
@@ -27,6 +31,10 @@ struct Shortcut: Identifiable, Hashable {
 }
 
 extension Shortcut {
+    /// The exact menu title to use as an `NSUserKeyEquivalents` key. Falls back to the
+    /// sanitized `title` when no raw title was captured (synthetic instances).
+    var writeKey: String { rawTitle ?? title }
+
     /// Convenience init for tests and other call sites that don't have an AX element.
     init(title: String, keys: String) {
         self.title = title
