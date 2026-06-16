@@ -30,6 +30,19 @@ Items are rough ideas, not commitments. No priority order.
 
 ---
 
+## Hide global shortcuts for apps that are not running
+
+When showing global shortcuts registered by other apps (e.g. Raycast, Alfred, Bartender), only
+display entries for apps that are currently running. A shortcut registered by an app that is not
+running cannot be triggered, so showing it is misleading and adds noise.
+
+**Implementation:** filter the global-shortcuts list against `NSWorkspace.shared.runningApplications`
+(keyed by bundle identifier). Re-evaluate on each popup open so the list stays current as apps
+launch and quit. Optionally, listen to `NSWorkspace.didLaunchApplicationNotification` /
+`didTerminateApplicationNotification` to invalidate a cached filtered list proactively.
+
+---
+
 ## Stale shortcut cleanup
 
 Apps that have been uninstalled can leave their keyboard shortcut assignments behind in
