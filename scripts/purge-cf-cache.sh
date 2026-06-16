@@ -6,20 +6,21 @@
 #   purge-cf-cache.sh                    — purge appcast.xml + current version ZIP
 #   purge-cf-cache.sh <url> [<url>...]   — purge specific URLs
 #
-# Requires CF_ZONE_ID and CF_API_TOKEN in scripts/.env (or the environment).
+# Requires CF_ZONE_ID and CF_API_TOKEN in the external .env file (or the environment).
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 # Load .env if credentials not already in the environment.
-ENV_FILE="$SCRIPT_DIR/.env"
+ENV_FILE="$HOME/Documents/Development/.config/KeyMinder/scripts/.env"
 if [[ -f "$ENV_FILE" ]]; then
+    # shellcheck source=/dev/null
     source "$ENV_FILE"
 fi
 
 if [[ -z "${CF_ZONE_ID:-}" || -z "${CF_API_TOKEN:-}" ]]; then
-    echo "error: CF_ZONE_ID and CF_API_TOKEN must be set in scripts/.env or the environment." >&2
+    echo "error: CF_ZONE_ID and CF_API_TOKEN must be set in $ENV_FILE or the environment." >&2
     exit 1
 fi
 

@@ -8,17 +8,17 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-ENV_FILE="$SCRIPT_DIR/.env"
+ENV_FILE="$HOME/Documents/Development/.config/KeyMinder/scripts/.env"
 
 if [[ ! -f "$ENV_FILE" ]]; then
-    echo "error: $ENV_FILE not found. Copy scripts/.env.example to scripts/.env and fill in TEAM_ID." >&2
+    echo "error: $ENV_FILE not found. Copy scripts/.env.example to that path and fill in TEAM_ID." >&2
     exit 1
 fi
-# shellcheck source=.env
+# shellcheck source=/dev/null
 source "$ENV_FILE"
 
 if [[ -z "${TEAM_ID:-}" ]]; then
-    echo "error: TEAM_ID is not set in scripts/.env" >&2
+    echo "error: TEAM_ID is not set in $ENV_FILE" >&2
     exit 1
 fi
 

@@ -4,7 +4,7 @@
 #
 # Run this BEFORE scripts/release.sh. It:
 #   1. Translates any missing strings in Localizable.xcstrings via the Claude API
-#      (requires ANTHROPIC_API_KEY in the environment or in scripts/.env)
+#      (requires ANTHROPIC_API_KEY in the environment or in the external .env file)
 #   2. Updates version references in Documentation/Website/keyminder.html
 #   3. Updates the version string in Distribution/Casks/keyminder.rb
 #   4. Commits any modified files

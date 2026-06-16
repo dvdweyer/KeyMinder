@@ -30,8 +30,7 @@ Claude/
 .swiftpm/
 .claude/settings.local.json
 
-# Local secrets
-scripts/.env
+# Local secrets (.env lives outside the repo at ~/Documents/Development/.config/KeyMinder/scripts/)
 
 # Internal working notes (not for repo)
 internal/

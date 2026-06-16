@@ -10,7 +10,7 @@
 #   release.sh --beta           — Release build, notarize, rsync (beta channel, ZIP only)
 #
 # Prerequisites (full pipeline):
-#   - Copy scripts/.env.example to scripts/.env and fill in TEAM_ID.
+#   - Copy scripts/.env.example to ~/Documents/Development/.config/KeyMinder/scripts/.env and fill in TEAM_ID.
 #   - Run scripts/setup-notarytool.sh once to store keychain credentials.
 #   - Run scripts/setup-sparkle-tools.sh once and add ~/.sparkle-tools/bin to PATH.
 #   - Xcode must be installed at /Applications/Xcode.app.
@@ -101,16 +101,16 @@ if [[ ! -f "$DEPLOY_SH" ]]; then
 fi
 
 # ── Config ────────────────────────────────────────────────────────────────────
-ENV_FILE="$SCRIPT_DIR/.env"
+ENV_FILE="$HOME/Documents/Development/.config/KeyMinder/scripts/.env"
 if [[ ! -f "$ENV_FILE" ]]; then
-    echo "error: $ENV_FILE not found. Copy scripts/.env.example to scripts/.env and fill in TEAM_ID." >&2
+    echo "error: $ENV_FILE not found. Copy scripts/.env.example to that path and fill in TEAM_ID." >&2
     exit 1
 fi
-# shellcheck source=.env
+# shellcheck source=/dev/null
 source "$ENV_FILE"
 
 if [[ -z "${TEAM_ID:-}" ]]; then
-    echo "error: TEAM_ID is not set in scripts/.env" >&2
+    echo "error: TEAM_ID is not set in $ENV_FILE" >&2
     exit 1
 fi
 
@@ -158,7 +158,7 @@ echo ""
 # ── Build ─────────────────────────────────────────────────────────────────────
 mkdir -p "$BUILD_DIR"
 
-# Generate ExportOptions.plist with team ID from .env (never stored in the repo).
+# Generate ExportOptions.plist with team ID from the external .env (never stored in the repo).
 EXPORT_OPTIONS="$BUILD_DIR/ExportOptions.plist"
 cat > "$EXPORT_OPTIONS" << EOF
 <?xml version="1.0" encoding="UTF-8"?>
@@ -329,7 +329,7 @@ echo "--- Deploying via rsync…"
 echo ""
 echo "--- Purging Cloudflare cache…"
 bash "$SCRIPT_DIR/purge-cf-cache.sh" \
-    || echo "warning: CF purge failed — check CF_ZONE_ID/CF_API_TOKEN in scripts/.env"
+    || echo "warning: CF purge failed — check CF_ZONE_ID/CF_API_TOKEN in $ENV_FILE"
 
 # ── Local install (full-deploy only) ─────────────────────────────────────────
 if [[ "$MODE" == "full-deploy" ]]; then

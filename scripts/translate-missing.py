@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Translates any untranslated strings in KeyMinder/Localizable.xcstrings using the
-Claude API. Reads ANTHROPIC_API_KEY from the environment (or scripts/.env).
+Claude API. Reads ANTHROPIC_API_KEY from the environment (or the external .env file).
 
 Usage:
     python3 scripts/translate-missing.py [--dry-run]
@@ -40,16 +40,18 @@ LANGUAGES = {
 DRY_RUN = "--dry-run" in sys.argv
 
 
+ENV_FILE = Path.home() / "Documents" / "Development" / ".config" / "KeyMinder" / "scripts" / ".env"
+
+
 def load_api_key() -> str:
     key = os.environ.get("ANTHROPIC_API_KEY", "")
     if not key:
-        env_file = SCRIPT_DIR / ".env"
-        if env_file.exists():
-            for line in env_file.read_text().splitlines():
+        if ENV_FILE.exists():
+            for line in ENV_FILE.read_text().splitlines():
                 if line.startswith("ANTHROPIC_API_KEY="):
                     key = line.split("=", 1)[1].strip().strip('"').strip("'")
     if not key:
-        print("error: ANTHROPIC_API_KEY not set — add it to the environment or scripts/.env", file=sys.stderr)
+        print(f"error: ANTHROPIC_API_KEY not set — add it to the environment or {ENV_FILE}", file=sys.stderr)
         sys.exit(1)
     return key
 
