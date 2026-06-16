@@ -30,6 +30,25 @@ Items are rough ideas, not commitments. No priority order.
 
 ---
 
+## User-defined shortcuts
+
+Some apps register global shortcuts outside the standard menu system (e.g. via `CGEventTap`,
+Carbon `RegisterEventHotKey`, or custom input handling) and therefore show up with no shortcuts
+in the KeyMinder popup. Let users manually add their own shortcut entries for these apps.
+
+**Proposed UX:** an editor (accessible from the popup or Settings) where the user picks a target
+app, types a key combination, and gives it a label. User-defined entries are stored in
+`UserDefaults` (or a small JSON file) and merged with scraped results at display time, shown
+with a visual indicator (e.g. a pencil badge) to distinguish them from AX-sourced shortcuts.
+
+**Notes:**
+- Entries should be editable and deletable.
+- Executing user-defined shortcuts via `ShortcutActivator` may not be possible without a stored
+  `axElement`; execution could fall back to a synthetic `CGEvent` key press.
+- Import/export (share a shortcut set with other KeyMinder users) is a natural follow-on.
+
+---
+
 ## Single-letter shortcut execution
 
 Single-letter shortcuts (e.g. Reeder's `j`, `k`, `r` — no modifiers) should be directly executable
