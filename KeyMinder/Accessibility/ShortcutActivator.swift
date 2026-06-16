@@ -11,9 +11,36 @@ enum ShortcutActivator {
     /// Returns `true` on success. The common failure case is a stale element
     /// (the target app rebuilt its menu after the scrape), which is rare in
     /// practice because most apps keep their `NSMenu` objects alive indefinitely.
+    ///
+    /// Before pressing, re-reads `kAXEnabledAttribute` to skip items that have
+    /// become disabled since the scrape, and re-reads `kAXTitleAttribute` so that
+    /// any label mismatch between the displayed title and the live element is
+    /// logged. This closes the false-label-press vector where a hostile app could
+    /// change its menu item's title after the popup was shown.
     @discardableResult
     static func activate(_ shortcut: Shortcut) -> Bool {
         guard let element = shortcut.axElement else { return false }
+
+        // Re-read enabled state at press time — an item may have been disabled
+        // after the popup was opened.
+        var enabledRef: CFTypeRef?
+        if AXUIElementCopyAttributeValue(element, kAXEnabledAttribute as CFString, &enabledRef) == .success,
+           let enabledNum = enabledRef as? NSNumber,
+           !enabledNum.boolValue {
+            Logger.accessibility.info("Skipping press — item '\(shortcut.title, privacy: .private)' is now disabled")
+            return false
+        }
+
+        // Re-read the live title and log if it no longer matches what the popup showed.
+        var titleRef: CFTypeRef?
+        if AXUIElementCopyAttributeValue(element, kAXTitleAttribute as CFString, &titleRef) == .success,
+           let liveTitle = titleRef as? String,
+           liveTitle != shortcut.title {
+            Logger.accessibility.error(
+                "Title mismatch at press: displayed '\(shortcut.title, privacy: .private)' but live element is '\(liveTitle, privacy: .private)'"
+            )
+        }
+
         let result = AXUIElementPerformAction(element, kAXPressAction as CFString)
         if result != .success {
             Logger.accessibility.error("AX press failed for '\(shortcut.title, privacy: .private)'")
