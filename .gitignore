@@ -19,3 +19,6 @@ scripts/.env
 
 # Internal working notes (not for repo)
 internal/
+
+# Claude project instructions (local only)
+**/CLAUDE.md
