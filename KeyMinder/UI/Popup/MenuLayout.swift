@@ -218,7 +218,8 @@ enum MenuLayout {
         let lastH  = estimatedColumnHeight(columns.last!)
         let maxOtherH = columns.dropLast().map { estimatedColumnHeight($0) }.max() ?? 0
         guard lastH < maxOtherH * 0.30 else { return columns }
-        return Array(columns.dropLast(2)) + [columns[columns.count - 2] + columns.last!]
+        let merged: [MenuSection] = columns[columns.count - 2] + columns.last!
+        return Array(columns.dropLast(2)) + [merged]
     }
 
     /// Estimated rendered height of a column of sections stacked with
