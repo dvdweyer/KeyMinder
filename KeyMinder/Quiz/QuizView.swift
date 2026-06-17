@@ -241,6 +241,11 @@ private struct QuizDoneView: View {
         return Int(Double(model.score) / Double(model.total) * 100)
     }
 
+    private var percentageFormatted: String {
+        guard model.total > 0 else { return 0.0.formatted(.percent) }
+        return (Double(model.score) / Double(model.total)).formatted(.percent)
+    }
+
     private var symbol: String {
         percentage >= 80 ? "star.fill" : percentage >= 50 ? "hand.thumbsup.fill" : "brain.fill"
     }
@@ -260,7 +265,7 @@ private struct QuizDoneView: View {
             VStack(spacing: 4) {
                 Text("\(model.score) / \(model.total)")
                     .font(.title.weight(.bold))
-                Text("\(percentage)% correct")
+                Text("\(percentageFormatted) correct")
                     .foregroundStyle(.secondary)
             }
 
