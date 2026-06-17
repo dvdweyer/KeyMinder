@@ -11,7 +11,10 @@ private final class UpdaterDelegate: NSObject, SPUUpdaterDelegate {
     }
 
     func allowedChannels(for updater: SPUUpdater) -> Set<String> {
-        UserDefaults.standard.receiveBetaUpdates ? ["beta"] : []
+        var channels: Set<String> = []
+        if UserDefaults.standard.receiveBetaUpdates  { channels.insert("beta") }
+        if UserDefaults.standard.receiveAlphaUpdates { channels.insert("alpha") }
+        return channels
     }
 }
 
@@ -47,6 +50,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusItem: NSStatusItem?
     private var hintPopover: NSPopover?
     private var betaChannelObserver: NSObjectProtocol?
+    private var alphaChannelObserver: NSObjectProtocol?
     private var iconStyleObserver: NSObjectProtocol?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
@@ -74,6 +78,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         showWelcomeIfNeeded()
         betaChannelObserver = NotificationCenter.default.addObserver(
             forName: .receiveBetaUpdatesChanged,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            MainActor.assumeIsolated {
+                self?.updaterController.updater.resetUpdateCycleAfterShortDelay()
+            }
+        }
+        alphaChannelObserver = NotificationCenter.default.addObserver(
+            forName: .receiveAlphaUpdatesChanged,
             object: nil,
             queue: .main
         ) { [weak self] _ in
