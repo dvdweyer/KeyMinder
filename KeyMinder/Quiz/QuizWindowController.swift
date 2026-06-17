@@ -1,12 +1,24 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-@preconcurrency import AppKit
+import AppKit
 import SwiftUI
+
+// Intercepts key events via sendEvent so no @Sendable closure is needed.
+@MainActor
+private final class QuizWindow: NSWindow {
+    var onKeyDown: ((NSEvent) -> Bool)?
+
+    override func sendEvent(_ event: NSEvent) {
+        if event.type == .keyDown, let handler = onKeyDown, handler(event) {
+            return
+        }
+        super.sendEvent(event)
+    }
+}
 
 @MainActor
 final class QuizWindowController: NSWindowController, NSWindowDelegate {
 
     private static var current: QuizWindowController?
-    private var keyMonitor: Any?
     private var advanceTask: Task<Void, Never>?
 
     static func show(appName: String, appIcon: NSImage?, bundleID: String?, sections: [MenuSection]) {
@@ -28,7 +40,7 @@ final class QuizWindowController: NSWindowController, NSWindowDelegate {
     }
 
     private init(model: QuizModel) {
-        let window = NSWindow(
+        let window = QuizWindow(
             contentRect: NSRect(x: 0, y: 0, width: 480, height: 360),
             styleMask: [.titled, .closable],
             backing: .buffered,
@@ -42,16 +54,12 @@ final class QuizWindowController: NSWindowController, NSWindowDelegate {
         window.contentView = NSHostingView(rootView:
             QuizView(model: model, onDone: { [weak self] in self?.close() })
         )
-        installKeyMonitor(model: model)
+        window.onKeyDown = { [weak self] event in
+            self?.handle(event: event, model: model) == nil
+        }
     }
 
     required init?(coder: NSCoder) { fatalError() }
-
-    private func installKeyMonitor(model: QuizModel) {
-        keyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
-            MainActor.assumeIsolated { self?.handle(event: event, model: model) ?? event }
-        }
-    }
 
     private func handle(event: NSEvent, model: QuizModel) -> NSEvent? {
         if event.keyCode == 53 { close(); return nil }  // Escape
@@ -84,7 +92,6 @@ final class QuizWindowController: NSWindowController, NSWindowDelegate {
     func windowWillClose(_ notification: Notification) {
         advanceTask?.cancel()
         advanceTask = nil
-        if let m = keyMonitor { NSEvent.removeMonitor(m); keyMonitor = nil }
         QuizWindowController.current = nil
         DockIconManager.shared.windowClosed()
     }
