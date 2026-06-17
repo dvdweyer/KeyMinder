@@ -33,8 +33,8 @@ git tag --sort=-v:refname | head -1
 
 1. Fork the repository and create a branch from `main`.
 2. Make your changes with a version bump if applicable.
-3. Open a pull request against `main`. The CI workflow builds and runs unit tests automatically.
+3. Open a pull request against `main`. The CI workflow builds and runs unit tests automatically -- that has not yet been tested well enough, be prepared for some errors there.
 
 ## Filing issues
 
-Open an issue on [GitHub](https://github.com/dvdweyer/KeyMinder/issues). Please include your macOS version and the name of the app whose shortcuts are affected.
+Open an issue on [GitHub](https://github.com/dvdweyer/KeyMinder/issues). Please include your macOS version and the name of the app whose shortcuts are affected. Keep in mind I am one person doing this in my free time.
