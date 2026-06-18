@@ -2,6 +2,13 @@
 
 All notable changes to KeyMinder are listed here. Grouped by significant milestone; individual patch releases are tagged `vX.Y.Z` in git.
 
+## v1.0.154–v1.0.157 — Alpha channel, compatibility (2026-06-18)
+
+- **Alpha release channel**: opt into alpha builds via Settings → Developer; independent of the existing beta toggle
+- Quiz mode: score percentage now formatted with locale-correct number style
+- Fixed: explicit type annotation in `consolidateTrailing` for Xcode 16.4 compatibility
+- Resolved Swift Sendable warnings in `QuizWindowController` and `NSWindow` event handling
+
 ## v1.0.149–v1.0.153 — Security hardening (2026-06-16)
 
 - Scraped menu-item titles and `NSUserKeyEquivalents` keys sanitised at the AX trust boundary (bidi overrides, C0/C1 controls, strings longer than 256 characters stripped)
