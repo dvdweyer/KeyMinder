@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 cask "keyminder" do
-  version "1.0.153"
-  sha256 "7057d5e5973c743915724d361b7e4983c964dc6938e1f763d776b2ab549e197e"
+  version "1.0.157"
+  sha256 "9e602c21e911d4da8e0518a352a672da7314faa7aa13c58e0af9ef6deaa3c364"
 
   url "https://keyminder.app/KeyMinder_#{version}.dmg"
   name "KeyMinder"
