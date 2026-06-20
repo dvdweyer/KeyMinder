@@ -198,6 +198,17 @@ final class SettingsModel {
         didSet { UserDefaults.standard.alwaysShowFavourites = alwaysShowFavourites }
     }
 
+    var iCloudSyncEnabled: Bool = UserDefaults.standard.iCloudSyncEnabled {
+        didSet {
+            UserDefaults.standard.iCloudSyncEnabled = iCloudSyncEnabled
+            if iCloudSyncEnabled {
+                SettingsSync.shared.start()
+            } else {
+                SettingsSync.shared.stop()
+            }
+        }
+    }
+
     var doubleTapEnabled: Bool = UserDefaults.standard.doubleTapEnabled {
         didSet {
             UserDefaults.standard.doubleTapEnabled = doubleTapEnabled
@@ -408,6 +419,9 @@ private struct GeneralSettingsView: View {
             Toggle("Launch at Login", isOn: $model.launchAtLogin)
 
             Toggle("Check for updates automatically", isOn: $model.automaticUpdatesEnabled)
+
+            Toggle("Sync settings with iCloud", isOn: $model.iCloudSyncEnabled)
+                .help("Syncs favourites, ignore rules, and appearance across your Macs. The global shortcut and trigger key are kept per-Mac.")
 
             Divider()
 
