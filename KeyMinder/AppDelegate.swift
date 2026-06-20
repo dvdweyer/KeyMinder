@@ -75,6 +75,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         setupDoubleTap()
         setupSleepWakeObserver()
         UserDefaults.standard.appIconVariant.apply()
+        if UserDefaults.standard.iCloudSyncEnabled { SettingsSync.shared.start() }
         showWelcomeIfNeeded()
         betaChannelObserver = NotificationCenter.default.addObserver(
             forName: .receiveBetaUpdatesChanged,
