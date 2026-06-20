@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 import SwiftUI
 import AppKit
+import UniformTypeIdentifiers
 import os
 
 // MARK: - SettingsWindowController
@@ -470,9 +471,67 @@ private struct GeneralSettingsView: View {
                 get: { ts.followsSystemAccent },
                 set: { if $0 { ts.resetToSystem() } else { ts.enableCustom() } }
             ))
+
+            Divider()
+
+            Text("Backup & Restore")
+                .font(.headline)
+
+            Text("Save your settings to a file, or restore them from a previous export.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            HStack(spacing: 10) {
+                Button("Export Settings…") { exportSettings() }
+                Button("Import Settings…") { importSettings() }
+            }
         }
         .padding(20)
         .frame(width: 420, alignment: .topLeading)
+    }
+
+    private func exportSettings() {
+        guard let data = try? SettingsPorter.export() else { return }
+        let panel = NSSavePanel()
+        panel.nameFieldStringValue = "KeyMinder Settings.keymindersettings"
+        panel.allowedContentTypes = [UTType(filenameExtension: "keymindersettings") ?? .data]
+        panel.canCreateDirectories = true
+        guard panel.runModal() == .OK, let url = panel.url else { return }
+        try? data.write(to: url)
+    }
+
+    private func importSettings() {
+        let panel = NSOpenPanel()
+        panel.allowedContentTypes = [UTType(filenameExtension: "keymindersettings") ?? .data]
+        panel.allowsMultipleSelection = false
+        guard panel.runModal() == .OK, let url = panel.url,
+              let data = try? Data(contentsOf: url) else { return }
+        do {
+            try SettingsPorter.apply(data)
+        } catch {
+            let errAlert = NSAlert()
+            errAlert.messageText = "Import Failed"
+            errAlert.informativeText = error.localizedDescription
+            errAlert.alertStyle = .warning
+            errAlert.runModal()
+            return
+        }
+        NotificationCenter.default.post(name: .menuBarIconStyleChanged, object: nil)
+        NotificationCenter.default.post(name: .receiveBetaUpdatesChanged, object: nil)
+        NotificationCenter.default.post(name: .receiveAlphaUpdatesChanged, object: nil)
+        let alert = NSAlert()
+        alert.messageText = String(localized: "Settings Imported")
+        alert.informativeText = String(localized: "Relaunch KeyMinder to apply all changes.")
+        alert.addButton(withTitle: String(localized: "Relaunch Now"))
+        alert.addButton(withTitle: String(localized: "Later"))
+        if alert.runModal() == .alertFirstButtonReturn {
+            let task = Process()
+            task.executableURL = URL(fileURLWithPath: "/usr/bin/open")
+            task.arguments = [Bundle.main.bundlePath]
+            try? task.run()
+            NSApplication.shared.terminate(nil)
+        }
     }
 
     @ViewBuilder
