@@ -156,13 +156,6 @@ final class SettingsModel {
         }
     }
 
-    var receiveAlphaUpdates: Bool = UserDefaults.standard.receiveAlphaUpdates {
-        didSet {
-            UserDefaults.standard.receiveAlphaUpdates = receiveAlphaUpdates
-            NotificationCenter.default.post(name: .receiveAlphaUpdatesChanged, object: nil)
-        }
-    }
-
     private(set) var menuBarIconStyle: MenuBarIconStyle = UserDefaults.standard.menuBarIconStyle {
         didSet {
             UserDefaults.standard.menuBarIconStyle = menuBarIconStyle
@@ -533,7 +526,6 @@ private struct GeneralSettingsView: View {
         }
         NotificationCenter.default.post(name: .menuBarIconStyleChanged, object: nil)
         NotificationCenter.default.post(name: .receiveBetaUpdatesChanged, object: nil)
-        NotificationCenter.default.post(name: .receiveAlphaUpdatesChanged, object: nil)
         let alert = NSAlert()
         alert.messageText = String(localized: "Settings Imported")
         alert.informativeText = String(localized: "Relaunch KeyMinder to apply all changes.")
@@ -834,16 +826,6 @@ private struct DeveloperSettingsView: View {
             Toggle("Receive beta releases", isOn: $model.receiveBetaUpdates)
 
             Text("Get early access to new features before the public release. Beta builds may be less stable.")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .fixedSize(horizontal: false, vertical: true)
-
-            HStack(alignment: .firstTextBaseline, spacing: 8) {
-                Toggle("Receive alpha releases", isOn: $model.receiveAlphaUpdates)
-                ExperimentalBadge()
-            }
-
-            Text("Experimental builds for active testers. Expect rough edges and occasional instability.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -1216,18 +1198,11 @@ extension UserDefaults {
         set { set(newValue, forKey: Self.receiveBetaUpdatesKey) }
     }
 
-    private static let receiveAlphaUpdatesKey = "receiveAlphaUpdates"
-
-    var receiveAlphaUpdates: Bool {
-        get { bool(forKey: Self.receiveAlphaUpdatesKey) }
-        set { set(newValue, forKey: Self.receiveAlphaUpdatesKey) }
-    }
 }
 
 extension Notification.Name {
-    static let receiveBetaUpdatesChanged  = Notification.Name("org.afaik.KeyMinder.receiveBetaUpdatesChanged")
-    static let receiveAlphaUpdatesChanged = Notification.Name("org.afaik.KeyMinder.receiveAlphaUpdatesChanged")
-    static let menuBarIconStyleChanged    = Notification.Name("org.afaik.KeyMinder.menuBarIconStyleChanged")
+    static let receiveBetaUpdatesChanged = Notification.Name("org.afaik.KeyMinder.receiveBetaUpdatesChanged")
+    static let menuBarIconStyleChanged   = Notification.Name("org.afaik.KeyMinder.menuBarIconStyleChanged")
 }
 
 // MARK: - HotkeyBadge
