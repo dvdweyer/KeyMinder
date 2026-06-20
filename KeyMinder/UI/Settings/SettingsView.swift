@@ -193,6 +193,10 @@ final class SettingsModel {
         didSet { UserDefaults.standard.wrapLongSections = wrapLongSections }
     }
 
+    var alwaysShowFavourites: Bool = UserDefaults.standard.alwaysShowFavourites {
+        didSet { UserDefaults.standard.alwaysShowFavourites = alwaysShowFavourites }
+    }
+
     var doubleTapEnabled: Bool = UserDefaults.standard.doubleTapEnabled {
         didSet {
             UserDefaults.standard.doubleTapEnabled = doubleTapEnabled
@@ -541,6 +545,9 @@ private struct PopupSettingsView: View {
 
             Toggle("Show registered app shortcuts", isOn: $model.showThirdPartyShortcuts)
                 .help("Apps can register their global shortcuts at ~/Library/Application Support/KeyMinder/Integrations/<BundleID>.json")
+
+            Toggle("Always show favorites", isOn: $model.alwaysShowFavourites)
+                .help("Pinned shortcuts always appear, even when the search or modifier filter doesn't match them.")
 
             Divider()
 

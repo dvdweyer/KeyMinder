@@ -288,4 +288,11 @@ extension UserDefaults {
         get { bool(forKey: Self.wrapLongSectionsKey) }
         set { set(newValue, forKey: Self.wrapLongSectionsKey) }
     }
+
+    private static let alwaysShowFavouritesKey = "alwaysShowFavourites"
+
+    var alwaysShowFavourites: Bool {
+        get { bool(forKey: Self.alwaysShowFavouritesKey) }
+        set { set(newValue, forKey: Self.alwaysShowFavouritesKey) }
+    }
 }

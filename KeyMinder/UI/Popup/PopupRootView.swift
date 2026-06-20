@@ -107,20 +107,25 @@ final class PopupFilterModel {
             for section in column {
                 for group in section.groups {
                     // Skip ignored groups while idle; reveal them when a query is active.
+                    // Don't skip if alwaysShowFavourites is on and the group has a favorite.
                     if let groupTitle = group.title,
                        !hiddenPatterns.isEmpty,
                        IgnoreListStore.isIgnored(title: groupTitle, patterns: hiddenPatterns),
                        activeQuery.isEmpty {
-                        continue
+                        let hasFav = alwaysShowFavourites &&
+                            group.shortcuts.contains { FavouritesStore.shared.isFavourite($0, appID: appID) }
+                        if !hasFav { continue }
                     }
-                    for shortcut in group.shortcuts
-                        where !shortcut.isDisabled
-                            && (!shortcut.keys.isEmpty || showsAllItems)
-                            && shortcut.matches(activeQuery)
+                    for shortcut in group.shortcuts {
+                        guard !shortcut.isDisabled && (!shortcut.keys.isEmpty || showsAllItems) else { continue }
+                        let isFav = alwaysShowFavourites && FavouritesStore.shared.isFavourite(shortcut, appID: appID)
+                        let passes = isFav || (
+                            shortcut.matches(activeQuery)
                             && shortcut.matchesModifierFilter(modifierFilter)
                             && (!showOnlyFavourites || FavouritesStore.shared.isFavourite(shortcut, appID: appID))
-                            && (hiddenPatterns.isEmpty || !activeQuery.isEmpty || !IgnoreListStore.isIgnored(title: shortcut.title, patterns: hiddenPatterns)) {
-                        result.append(shortcut)
+                            && (hiddenPatterns.isEmpty || !activeQuery.isEmpty || !IgnoreListStore.isIgnored(title: shortcut.title, patterns: hiddenPatterns))
+                        )
+                        if passes { result.append(shortcut) }
                     }
                 }
             }
@@ -161,6 +166,8 @@ final class PopupFilterModel {
     /// only physical keys are held (those clear themselves on release).
     var hasToggledModifiers: Bool { !toggledModifiers.isEmpty }
 
+    var alwaysShowFavourites: Bool { UserDefaults.standard.alwaysShowFavourites }
+
     /// True when non-shortcut items should be visible: all-entries mode is on,
     /// and either the filter requirement is off or 2+ characters have been typed.
     var showsAllItems: Bool {
@@ -197,15 +204,22 @@ final class PopupFilterModel {
             total + section.groups.reduce(0) { gTotal, group in
                 if let title = group.title, !hiddenPatterns.isEmpty,
                    IgnoreListStore.isIgnored(title: title, patterns: hiddenPatterns) {
-                    return gTotal
+                    let hasFav = alwaysShowFavourites &&
+                        group.shortcuts.contains { FavouritesStore.shared.isFavourite($0, appID: appID) }
+                    if !hasFav { return gTotal }
                 }
                 return gTotal + group.shortcuts.filter {
                     !$0.isSeparator &&
                     (!$0.keys.isEmpty || showsAllItems) &&
-                    $0.matches(activeQuery) &&
-                    $0.matchesModifierFilter(modifierFilter) &&
-                    (!showOnlyFavourites || FavouritesStore.shared.isFavourite($0, appID: appID)) &&
-                    (hiddenPatterns.isEmpty || !activeQuery.isEmpty || !IgnoreListStore.isIgnored(title: $0.title, patterns: hiddenPatterns))
+                    (
+                        (alwaysShowFavourites && FavouritesStore.shared.isFavourite($0, appID: appID)) ||
+                        (
+                            $0.matches(activeQuery) &&
+                            $0.matchesModifierFilter(modifierFilter) &&
+                            (!showOnlyFavourites || FavouritesStore.shared.isFavourite($0, appID: appID)) &&
+                            (hiddenPatterns.isEmpty || !activeQuery.isEmpty || !IgnoreListStore.isIgnored(title: $0.title, patterns: hiddenPatterns))
+                        )
+                    )
                 }.count
             }
         }
@@ -447,6 +461,7 @@ private struct FilterableShortcutsView: View {
                                         conflictingKeys: model.conflictingKeys,
                                         hiddenPatterns: model.hiddenPatterns,
                                         showDeactivatedSystemShortcuts: UserDefaults.standard.showDeactivatedSystemShortcuts,
+                                        alwaysShowFavourites: model.alwaysShowFavourites,
                                         dimMode: model.fitsWithoutScrolling && !model.hasQuery && !model.hasModifierFilter,
                                         selectedShortcutID: model.selectedShortcut?.id,
                                         onActivate: onActivate,
@@ -647,6 +662,8 @@ struct MenuSectionView: View {
     var hiddenPatterns: [String] = []
     /// When true, disabled system shortcuts are shown greyed-out.
     var showDeactivatedSystemShortcuts: Bool = false
+    /// When true, favorited shortcuts always appear regardless of active filters.
+    var alwaysShowFavourites: Bool = false
     /// When true, non-matching rows are dimmed instead of hidden (stable layout).
     var dimMode: Bool = false
     var selectedShortcutID: UUID? = nil
@@ -664,6 +681,10 @@ struct MenuSectionView: View {
     private func isGroupIgnoredWhileIdle(_ group: ShortcutGroup) -> Bool {
         guard let title = group.title, !hiddenPatterns.isEmpty else { return false }
         guard IgnoreListStore.isIgnored(title: title, patterns: hiddenPatterns) else { return false }
+        if alwaysShowFavourites,
+           group.shortcuts.contains(where: { FavouritesStore.shared.isFavourite($0, appID: appID) }) {
+            return false
+        }
         return query.isEmpty || !group.shortcuts.contains { !$0.isSeparator && $0.matches(query) }
     }
 
@@ -688,6 +709,7 @@ struct MenuSectionView: View {
             // Disabled system shortcuts: shown with text filter only (no modifier/favourites filter).
             return shortcut.matches(query)
         }
+        if alwaysShowFavourites && FavouritesStore.shared.isFavourite(shortcut, appID: appID) { return true }
         if isIgnoredWhileIdle(shortcut) { return false }
         if showOnlyFavourites && !FavouritesStore.shared.isFavourite(shortcut, appID: appID) { return false }
         return dimMode ? true : matchesFilter(shortcut)
@@ -697,6 +719,7 @@ struct MenuSectionView: View {
     private func isDimmed(_ shortcut: Shortcut) -> Bool {
         if shortcut.isSeparator { return false }
         if shortcut.isDisabled { return true }
+        if alwaysShowFavourites && FavouritesStore.shared.isFavourite(shortcut, appID: appID) { return false }
         return dimMode && !matchesFilter(shortcut)
     }
 
