@@ -19,7 +19,7 @@ extension UserDefaults {
 ///
 /// Usage:
 ///   - Call `start()` on app launch when `iCloudSyncEnabled` is true.
-///   - Call `push()` whenever settings change (e.g. from a UserDefaults.didChangeNotification).
+///   - Call `push()` whenever settings should be written out immediately.
 ///   - Call `stop()` when the user disables sync.
 @MainActor
 final class SettingsSync {
@@ -29,8 +29,8 @@ final class SettingsSync {
     /// Keys written to and read from NSUbiquitousKeyValueStore.
     /// Excludes Mac-local keys: globalHotkey, didSetDefaultHotkey, doubleTapEnabled,
     /// doubleTapModifier, menuBarIconStyle, appIconVariant, matchAppIconToTrigger,
-    /// launchAtLogin (SMAppService — not settable via UserDefaults at all).
-    static let syncedKeys: [String] = [
+    /// and launchAtLogin (SMAppService — not a UserDefaults key at all).
+    nonisolated static let syncedKeys: [String] = [
         "pinnedShortcuts",
         "ignoreList", "ignoreListEnabled", "ignoreListShowWhenFiltering",
         "keyAccentColor",
@@ -43,8 +43,9 @@ final class SettingsSync {
     ]
 
     private var kvs: NSUbiquitousKeyValueStore { .default }
-    private var observer: NSObjectProtocol?
+    private var kvsObserver: NSObjectProtocol?
     private var defaultsObserver: NSObjectProtocol?
+    private var debounceTask: Task<Void, Never>?
 
     private init() {}
 
@@ -56,15 +57,17 @@ final class SettingsSync {
     }
 
     func stop() {
-        if let o = observer { NotificationCenter.default.removeObserver(o) }
+        debounceTask?.cancel()
+        debounceTask = nil
+        if let o = kvsObserver { NotificationCenter.default.removeObserver(o) }
         if let o = defaultsObserver { NotificationCenter.default.removeObserver(o) }
-        observer = nil
+        kvsObserver = nil
         defaultsObserver = nil
     }
 
     // MARK: Push / pull
 
-    /// Writes all synced keys from UserDefaults → KVS.
+    /// Writes all synced keys from UserDefaults → KVS and flushes.
     func push() {
         for key in Self.syncedKeys {
             if let val = UserDefaults.standard.object(forKey: key) {
@@ -76,7 +79,7 @@ final class SettingsSync {
         kvs.synchronize()
     }
 
-    /// Writes all synced keys from KVS → UserDefaults.
+    /// Reads all synced keys from KVS → UserDefaults.
     private func pull() {
         for key in Self.syncedKeys {
             if let val = kvs.object(forKey: key) {
@@ -89,39 +92,47 @@ final class SettingsSync {
     // MARK: Observing
 
     private func startObserving() {
-        observer = NotificationCenter.default.addObserver(
+        // KVS change from another device → pull the changed keys.
+        kvsObserver = NotificationCenter.default.addObserver(
             forName: NSUbiquitousKeyValueStore.didChangeExternallyNotification,
             object: kvs,
             queue: .main
         ) { [weak self] notification in
-            guard let self else { return }
-            // Only pull keys that actually changed.
-            let changed = (notification.userInfo?[NSUbiquitousKeyValueStoreChangedKeysKey] as? [String]) ?? []
-            for key in changed where Self.syncedKeys.contains(key) {
-                if let val = self.kvs.object(forKey: key) {
-                    UserDefaults.standard.set(val, forKey: key)
-                } else {
-                    UserDefaults.standard.removeObject(forKey: key)
+            MainActor.assumeIsolated {
+                guard let self else { return }
+                let changed = (notification.userInfo?[NSUbiquitousKeyValueStoreChangedKeysKey]
+                    as? [String]) ?? []
+                for key in changed where SettingsSync.syncedKeys.contains(key) {
+                    if let val = self.kvs.object(forKey: key) {
+                        UserDefaults.standard.set(val, forKey: key)
+                    } else {
+                        UserDefaults.standard.removeObject(forKey: key)
+                    }
                 }
+                self.postChangeNotifications()
             }
-            self.postChangeNotifications()
         }
 
-        // Debounced push: whenever any UserDefaults key changes, push after a short delay.
-        var debounceWork: DispatchWorkItem?
+        // Local settings change → debounced push to KVS.
         defaultsObserver = NotificationCenter.default.addObserver(
             forName: UserDefaults.didChangeNotification,
             object: UserDefaults.standard,
             queue: .main
         ) { [weak self] _ in
-            debounceWork?.cancel()
-            let work = DispatchWorkItem { self?.push() }
-            debounceWork = work
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: work)
+            MainActor.assumeIsolated { self?.scheduleDebounce() }
         }
     }
 
-    // MARK: Private helpers
+    private func scheduleDebounce() {
+        debounceTask?.cancel()
+        debounceTask = Task {
+            try? await Task.sleep(for: .seconds(1))
+            guard !Task.isCancelled else { return }
+            push()
+        }
+    }
+
+    // MARK: Helpers
 
     private func postChangeNotifications() {
         NotificationCenter.default.post(name: .menuBarIconStyleChanged, object: nil)
