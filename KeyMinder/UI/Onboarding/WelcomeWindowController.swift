@@ -52,7 +52,7 @@ final class WelcomeWindowController: NSWindowController {
         window?.contentView = NSHostingView(rootView: rootView)
         window?.center()
         window?.makeKeyAndOrderFront(nil)
-        NSApp.activate(ignoringOtherApps: true)
+        NSApp.activate()
     }
 }
 
