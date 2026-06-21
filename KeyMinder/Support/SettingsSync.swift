@@ -38,7 +38,7 @@ final class SettingsSync {
         "showSystemShortcuts", "showDeactivatedSystemShortcuts",
         "showThirdPartyShortcuts", "wrapLongSections",
         "alwaysShowFavourites", "showConflictIndicator",
-        "SUEnableAutomaticChecks", "receiveBetaUpdates",
+        "SUEnableAutomaticChecks", "receiveBetaUpdates", "receiveAlphaUpdates",
         "debugLoggingEnabled",
     ]
 
@@ -137,5 +137,6 @@ final class SettingsSync {
     private func postChangeNotifications() {
         NotificationCenter.default.post(name: .menuBarIconStyleChanged, object: nil)
         NotificationCenter.default.post(name: .receiveBetaUpdatesChanged, object: nil)
+        NotificationCenter.default.post(name: .receiveAlphaUpdatesChanged, object: nil)
     }
 }

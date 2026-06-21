@@ -16,7 +16,7 @@ enum SettingsPorter {
         "showThirdPartyShortcuts", "wrapLongSections",
         "alwaysShowFavourites", "showConflictIndicator",
         // Updates
-        "SUEnableAutomaticChecks", "receiveBetaUpdates",
+        "SUEnableAutomaticChecks", "receiveBetaUpdates", "receiveAlphaUpdates",
         // Ignore list
         "ignoreList", "ignoreListEnabled", "ignoreListShowWhenFiltering",
         // Favorites
