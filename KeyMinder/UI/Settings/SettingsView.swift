@@ -420,8 +420,11 @@ private struct GeneralSettingsView: View {
 
             Toggle("Check for updates automatically", isOn: $model.automaticUpdatesEnabled)
 
-            Toggle("Sync settings with iCloud", isOn: $model.iCloudSyncEnabled)
-                .help("Syncs favourites, ignore rules, and appearance across your Macs. The global shortcut and trigger key are kept per-Mac.")
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                Toggle("Sync settings with iCloud", isOn: $model.iCloudSyncEnabled)
+                    .help("Syncs favourites, ignore rules, and appearance across your Macs. The global shortcut and trigger key are kept per-Mac.")
+                ExperimentalBadge()
+            }
 
             Divider()
 
