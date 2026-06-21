@@ -12,7 +12,8 @@
 #                  nudges, hotkey seed, ignore-list seed).  User settings
 #                  such as double-tap, appearance, popup content toggles,
 #                  and favourites are preserved.
-#   --deep         Wipe ALL preferences and reset Accessibility + Input
+#   --deep         Wipe ALL preferences, disable iCloud settings sync and clear
+#                  the local KVS mirror, and reset Accessibility + Input
 #                  Monitoring grants, fully mimicking a fresh install.
 #   --delete-app   Also delete /Applications/KeyMinder.app.
 #
@@ -41,8 +42,9 @@ if [[ $# -eq 0 ]]; then
     echo "  --shallow      Reset first-launch flags only (onboarding wizard, tips,"
     echo "                 nudges, hotkey seed, ignore-list seed). User settings are"
     echo "                 preserved (double-tap, appearance, popup toggles, favourites)."
-    echo "  --deep         Wipe ALL preferences and reset Accessibility + Input"
-    echo "                 Monitoring grants (full fresh-install simulation)."
+    echo "  --deep         Wipe ALL preferences, disable iCloud settings sync (and"
+    echo "                 clear the local KVS mirror), and reset Accessibility +"
+    echo "                 Input Monitoring grants (full fresh-install simulation)."
     echo "  --delete-app   Also delete ${APP_PATH}."
     echo ""
     echo "Flags can be combined, e.g.: --deep --delete-app"
@@ -88,6 +90,20 @@ if $do_deep; then
     else
         echo "    tccutil failed (try with sudo, or reset manually via System Settings → Privacy & Security → Input Monitoring)."
     fi
+
+    # iCloud settings sync (SettingsSync → NSUbiquitousKeyValueStore).
+    # The domain delete above already removed iCloudSyncEnabled (so sync stays
+    # OFF, matching a fresh install where the toggle defaults to off), but the
+    # local KVS mirror in ~/Library/SyncedPreferences still holds the curated
+    # settings synced from this and other Macs. Remove it so a fresh-install
+    # simulation cannot repopulate settings from stale cloud data, and write the
+    # toggle explicitly false in case a future build registers a non-false default.
+    # NOTE: this only clears the LOCAL mirror; the shared iCloud KVS is left
+    # intact so other Macs keep their synced settings.
+    echo "==> Disabling iCloud settings sync and clearing local KVS mirror…"
+    defaults write "$BUNDLE_ID" iCloudSyncEnabled -bool false 2>/dev/null || true
+    rm -f "$HOME/Library/SyncedPreferences/${BUNDLE_ID}.plist" \
+          "$HOME/Library/SyncedPreferences/${BUNDLE_ID}-"*.plist 2>/dev/null || true
 elif $do_shallow; then
     echo "==> Resetting first-launch flags…"
     # Onboarding wizard
@@ -106,6 +122,7 @@ elif $do_shallow; then
     defaults delete "$BUNDLE_ID" ignoreListShowWhenFiltering 2>/dev/null || true
     defaults delete "$BUNDLE_ID" ignoreList                  2>/dev/null || true
     defaults delete "$BUNDLE_ID" didSeedIgnoreList           2>/dev/null || true
+    defaults delete "$BUNDLE_ID" didSeedIgnoredMenus         2>/dev/null || true
 fi
 
 if $do_delete_app; then
