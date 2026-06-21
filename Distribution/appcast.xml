@@ -6,6 +6,15 @@
         <language>en</language>
         <!-- Items are populated by generate_appcast during the release pipeline. -->
         <item>
+            <title>1.0.164</title>
+            <pubDate>Sun, 21 Jun 2026 08:29:03 +0200</pubDate>
+            <sparkle:channel>alpha</sparkle:channel>
+            <sparkle:version>422</sparkle:version>
+            <sparkle:shortVersionString>1.0.164</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://keyminder.app/KeyMinder_1.0.164.zip" length="3554761" type="application/octet-stream" sparkle:edSignature="SfHhqUfPIjuaCtIrGwHBYMV1SVFlQ9xdWcl8/VP0j7ua4p2ExmezKW/sqiNBU6aDp0aT/XTCCPkl3oBrlXSTCw=="/>
+        </item>
+        <item>
             <title>1.0.163</title>
             <pubDate>Sun, 21 Jun 2026 07:56:43 +0200</pubDate>
             <sparkle:channel>alpha</sparkle:channel>
@@ -13,6 +22,7 @@
             <sparkle:shortVersionString>1.0.163</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
             <enclosure url="https://keyminder.app/KeyMinder_1.0.163.zip" length="3547556" type="application/octet-stream" sparkle:edSignature="BvAo57v7A1lIheHxPs3ME+Z7+XTYqH+6wWI5ERsVBlKBI56HtCQBznB8pzAnPEzIR+QJB8PtR47MXwerLVdxCA=="/>
+                    <sparkle:minimumAutoupdateVersion>422</sparkle:minimumAutoupdateVersion>
         </item>
         <item>
             <title>1.0.162</title>
@@ -22,7 +32,7 @@
             <sparkle:shortVersionString>1.0.162</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
             <enclosure url="https://keyminder.app/KeyMinder_1.0.162.zip" length="3544931" type="application/octet-stream" sparkle:edSignature="Xoc3wxLVgVInLERJrzqj8tI9MqpP+/SZyCmvfCovdXa/qb3KJQL4mFK9HlOctMagTZ+sS1BmLBbCWGUbmu1aBw=="/>
-                    <sparkle:minimumAutoupdateVersion>418</sparkle:minimumAutoupdateVersion>
+            <sparkle:minimumAutoupdateVersion>418</sparkle:minimumAutoupdateVersion>
         </item>
         <item>
             <title>1.0.161</title>
