@@ -137,6 +137,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         if UserDefaults.standard.doubleTapEnabled {
             DoubleTapTrigger.shared.start(modifier: UserDefaults.standard.doubleTapModifier)
         }
+        // Reconcile the stored icon style with the actual trigger config. The stored value
+        // can lag if doubleTapEnabled/doubleTapModifier were written to UserDefaults outside
+        // SettingsModel.syncIcons() (e.g. settings import, upgrade from an older build).
+        let expected: MenuBarIconStyle = UserDefaults.standard.doubleTapEnabled
+            ? UserDefaults.standard.doubleTapModifier.menuBarIconStyle
+            : .keyboard
+        if UserDefaults.standard.menuBarIconStyle != expected {
+            UserDefaults.standard.menuBarIconStyle = expected
+            updateMenuBarIcon()
+        }
     }
 
     private func setupSleepWakeObserver() {

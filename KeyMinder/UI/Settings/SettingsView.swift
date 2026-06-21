@@ -534,6 +534,7 @@ private struct GeneralSettingsView: View {
         FavouritesStore.shared.reload()
         IgnoreListStore.shared.reload()
         ThemeSettings.shared.reload()
+        UserDefaults.standard.appIconVariant.apply()
         NotificationCenter.default.post(name: .menuBarIconStyleChanged, object: nil)
         NotificationCenter.default.post(name: .receiveBetaUpdatesChanged, object: nil)
         NotificationCenter.default.post(name: .receiveAlphaUpdatesChanged, object: nil)
