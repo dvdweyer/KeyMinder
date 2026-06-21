@@ -68,12 +68,12 @@ final class SettingsSync {
     // MARK: Push / pull
 
     /// Writes all synced keys from UserDefaults → KVS and flushes.
+    /// Keys absent from UserDefaults are skipped (not removed from KVS) so that a Mac
+    /// with no value for a key never deletes data that exists on another Mac.
     func push() {
         for key in Self.syncedKeys {
             if let val = UserDefaults.standard.object(forKey: key) {
                 kvs.set(val, forKey: key)
-            } else {
-                kvs.removeObject(forKey: key)
             }
         }
         kvs.synchronize()
