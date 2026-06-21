@@ -202,11 +202,29 @@ final class SettingsModel {
         didSet {
             UserDefaults.standard.iCloudSyncEnabled = iCloudSyncEnabled
             if iCloudSyncEnabled {
-                SettingsSync.shared.start()
+                if SettingsSync.shared.wouldApplyRemote() {
+                    showingICloudConflictAlert = true
+                } else {
+                    SettingsSync.shared.start()
+                }
             } else {
                 SettingsSync.shared.stop()
             }
         }
+    }
+
+    var showingICloudConflictAlert = false
+
+    func confirmICloudWithRemote() {
+        SettingsSync.shared.start()
+    }
+
+    func confirmICloudWithLocal() {
+        SettingsSync.shared.startWithLocalPriority()
+    }
+
+    func cancelICloudEnable() {
+        iCloudSyncEnabled = false
     }
 
     var doubleTapEnabled: Bool = UserDefaults.standard.doubleTapEnabled {
@@ -423,6 +441,17 @@ private struct GeneralSettingsView: View {
             HStack(alignment: .firstTextBaseline, spacing: 8) {
                 Toggle("Sync settings with iCloud", isOn: $model.iCloudSyncEnabled)
                     .help("Syncs favourites, ignore rules, and appearance across your Macs. The global shortcut and trigger key are kept per-Mac.")
+                    .confirmationDialog(
+                        "iCloud Has Existing Settings",
+                        isPresented: $model.showingICloudConflictAlert,
+                        titleVisibility: .visible
+                    ) {
+                        Button("Use iCloud", role: .destructive) { model.confirmICloudWithRemote() }
+                        Button("Keep Local Settings") { model.confirmICloudWithLocal() }
+                        Button("Cancel", role: .cancel) { model.cancelICloudEnable() }
+                    } message: {
+                        Text("iCloud has settings from another Mac. Which settings should take effect on this Mac?")
+                    }
                 ExperimentalBadge()
             }
 

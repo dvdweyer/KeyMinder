@@ -82,6 +82,42 @@ final class SettingsSync {
         startObserving()
     }
 
+    /// Starts sync with local settings winning: stamps all local values with the
+    /// current time and pushes them to KVS before pulling, so remote values with
+    /// older timestamps are not applied. Used when the user explicitly chooses to
+    /// keep local settings during first-enable conflict resolution.
+    func startWithLocalPriority() {
+        snapshot = currentSyncedValues()
+        let now = Date().timeIntervalSince1970
+        var lts = localTimestamps()
+        for key in Self.syncedKeys {
+            guard let val = UserDefaults.standard.object(forKey: key) as? NSObject else { continue }
+            kvs.set(val, forKey: key)
+            kvs.set(now, forKey: Self.tsKey(key))
+            lts[key] = now
+            snapshot[key] = val
+        }
+        setLocalTimestamps(lts)
+        kvs.synchronize()
+        UserDefaults.standard.set(true, forKey: Self.didInitKey)
+        applyRemoteIfNewer()
+        startObserving()
+    }
+
+    /// Returns true if enabling sync right now would pull any remote values that are
+    /// newer than local ones — i.e., remote settings would overwrite local. Pure check,
+    /// no side effects. Call before `start()` to decide whether to prompt the user.
+    func wouldApplyRemote() -> Bool {
+        let lts = localTimestamps()
+        for key in Self.syncedKeys {
+            guard kvs.object(forKey: key) != nil else { continue }
+            let kvsTs = kvs.double(forKey: Self.tsKey(key))
+            let localTs = lts[key] ?? 0
+            if Self.shouldApplyRemote(kvsTs: kvsTs, localTs: localTs) { return true }
+        }
+        return false
+    }
+
     func stop() {
         debounceTask?.cancel()
         debounceTask = nil
