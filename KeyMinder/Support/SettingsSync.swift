@@ -42,6 +42,10 @@ final class SettingsSync {
         "debugLoggingEnabled",
     ]
 
+    private static let lastPushedAtKVSKey  = "lastPushedAt"
+    private static let lastSyncedAtLocalKey = "lastSyncedAt"
+    private static let migrationKey163      = "didRepairKVS163"
+
     private var kvs: NSUbiquitousKeyValueStore { .default }
     private var kvsObserver: NSObjectProtocol?
     private var defaultsObserver: NSObjectProtocol?
@@ -52,6 +56,10 @@ final class SettingsSync {
     // MARK: Lifecycle
 
     func start() {
+        if !UserDefaults.standard.bool(forKey: Self.migrationKey163) {
+            push()
+            UserDefaults.standard.set(true, forKey: Self.migrationKey163)
+        }
         pull()
         startObserving()
     }
@@ -76,16 +84,24 @@ final class SettingsSync {
                 kvs.set(val, forKey: key)
             }
         }
+        let now = Date().timeIntervalSince1970
+        kvs.set(now, forKey: Self.lastPushedAtKVSKey)
+        UserDefaults.standard.set(now, forKey: Self.lastSyncedAtLocalKey)
         kvs.synchronize()
     }
 
-    /// Reads all synced keys from KVS → UserDefaults.
+    /// Reads all synced keys from KVS → UserDefaults, but only when KVS is newer than
+    /// what this Mac last synced. Prevents stale KVS data from overwriting good local settings.
     private func pull() {
+        let kvsPushedAt  = kvs.double(forKey: Self.lastPushedAtKVSKey)
+        let localSyncedAt = UserDefaults.standard.double(forKey: Self.lastSyncedAtLocalKey)
+        guard kvsPushedAt > localSyncedAt else { return }
         for key in Self.syncedKeys {
             if let val = kvs.object(forKey: key) {
                 UserDefaults.standard.set(val, forKey: key)
             }
         }
+        UserDefaults.standard.set(kvsPushedAt, forKey: Self.lastSyncedAtLocalKey)
         postChangeNotifications()
     }
 
@@ -135,6 +151,9 @@ final class SettingsSync {
     // MARK: Helpers
 
     private func postChangeNotifications() {
+        FavouritesStore.shared.reload()
+        IgnoreListStore.shared.reload()
+        ThemeSettings.shared.reload()
         NotificationCenter.default.post(name: .menuBarIconStyleChanged, object: nil)
         NotificationCenter.default.post(name: .receiveBetaUpdatesChanged, object: nil)
         NotificationCenter.default.post(name: .receiveAlphaUpdatesChanged, object: nil)

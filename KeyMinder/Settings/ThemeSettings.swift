@@ -35,6 +35,10 @@ final class ThemeSettings {
         customColor = nil
         UserDefaults.standard.keyAccentColor = nil
     }
+
+    func reload() {
+        customColor = UserDefaults.standard.keyAccentColor
+    }
 }
 
 // MARK: - UserDefaults persistence

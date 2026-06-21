@@ -152,6 +152,19 @@ final class IgnoreListStore {
         save()
     }
 
+    func reload() {
+        isEnabled = UserDefaults.standard.bool(forKey: "ignoreListEnabled")
+        showWhenFiltering = UserDefaults.standard.bool(forKey: "ignoreListShowWhenFiltering")
+        if let data = UserDefaults.standard.data(forKey: Self.defaultsKey),
+           let stored = try? JSONDecoder().decode(IgnoreData.self, from: data) {
+            globalTitles     = stored.globalTitles
+            perApp           = stored.perApp
+            appDisplayNames  = stored.appDisplayNames
+            ignoredApps      = stored.ignoredApps
+            ignoredMenuTitles = stored.ignoredMenuTitles
+        }
+    }
+
     private func save() {
         let data = IgnoreData(
             globalTitles: globalTitles,

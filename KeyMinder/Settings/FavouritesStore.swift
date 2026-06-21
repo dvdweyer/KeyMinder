@@ -34,6 +34,11 @@ final class FavouritesStore {
         return pinned.contains { $0.hasPrefix(prefix) }
     }
 
+    func reload() {
+        let stored = UserDefaults.standard.stringArray(forKey: Self.defaultsKey) ?? []
+        pinned = Set(stored)
+    }
+
     private func key(for shortcut: Shortcut, appID: String) -> String {
         "\(appID)|\(shortcut.title)|\(shortcut.keys)"
     }
