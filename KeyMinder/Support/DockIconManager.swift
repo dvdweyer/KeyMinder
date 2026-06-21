@@ -13,6 +13,7 @@ final class DockIconManager {
         openCount += 1
         if openCount == 1 {
             NSApp.setActivationPolicy(.regular)
+            UserDefaults.standard.appIconVariant.apply()
         }
     }
 

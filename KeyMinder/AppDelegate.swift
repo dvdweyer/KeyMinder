@@ -147,6 +147,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             UserDefaults.standard.menuBarIconStyle = expected
             updateMenuBarIcon()
         }
+        // Reconcile appIconVariant with the trigger modifier when match-icon is on.
+        // Same rationale as menuBarIconStyle above: the stored value can be stale after
+        // an upgrade from pre-v1.0.128 or a settings import.
+        if UserDefaults.standard.matchAppIconToTrigger {
+            let expectedVariant: AppIconVariant = UserDefaults.standard.doubleTapEnabled
+                ? UserDefaults.standard.doubleTapModifier.appIconVariant
+                : .command
+            if UserDefaults.standard.appIconVariant != expectedVariant {
+                UserDefaults.standard.appIconVariant = expectedVariant
+                expectedVariant.apply()
+            }
+        }
     }
 
     private func setupSleepWakeObserver() {
