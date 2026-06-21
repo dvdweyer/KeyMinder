@@ -127,6 +127,22 @@ final class SettingsSync {
         defaultsObserver = nil
     }
 
+    /// Wipes all KeyMinder entries from iCloud Key-Value Store and resets local
+    /// sync metadata. Does NOT touch local UserDefaults settings — only clears
+    /// the iCloud copy. Resets didInitSyncV2 so the next start() treats this
+    /// Mac as a fresh install and re-seeds KVS from local values via additivePublish.
+    func clearICloudData() {
+        stop()
+        for key in Self.syncedKeys {
+            kvs.removeObject(forKey: key)
+            kvs.removeObject(forKey: Self.tsKey(key))
+        }
+        kvs.synchronize()
+        UserDefaults.standard.removeObject(forKey: Self.localTimestampsKey)
+        UserDefaults.standard.removeObject(forKey: Self.didInitKey)
+        snapshot = [:]
+    }
+
     // MARK: Push (local → KVS)
 
     /// Pushes only the synced keys whose value actually changed since the last sync.

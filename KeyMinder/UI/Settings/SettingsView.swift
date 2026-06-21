@@ -227,6 +227,13 @@ final class SettingsModel {
         iCloudSyncEnabled = false
     }
 
+    var showingClearICloudAlert = false
+
+    func clearICloudData() {
+        SettingsSync.shared.clearICloudData()
+        iCloudSyncEnabled = false
+    }
+
     var doubleTapEnabled: Bool = UserDefaults.standard.doubleTapEnabled {
         didSet {
             UserDefaults.standard.doubleTapEnabled = doubleTapEnabled
@@ -894,6 +901,25 @@ private struct DeveloperSettingsView: View {
             HStack(alignment: .firstTextBaseline, spacing: 8) {
                 Toggle("Show conflict indicator", isOn: $model.showConflictIndicator)
                 ExperimentalBadge()
+            }
+
+            Divider()
+
+            Text("iCloud")
+                .font(.headline)
+
+            Button("Clear iCloud Settings…", role: .destructive) {
+                model.showingClearICloudAlert = true
+            }
+            .confirmationDialog(
+                "Clear iCloud Settings?",
+                isPresented: $model.showingClearICloudAlert,
+                titleVisibility: .visible
+            ) {
+                Button("Clear iCloud Settings", role: .destructive) { model.clearICloudData() }
+                Button("Cancel", role: .cancel) { }
+            } message: {
+                Text("Removes all KeyMinder settings from iCloud. This affects every Mac in your Apple account — if another Mac is currently running KeyMinder, it may re-upload its settings immediately. iCloud sync will be turned off; re-enable it manually in General settings.")
             }
         }
         .padding(20)
