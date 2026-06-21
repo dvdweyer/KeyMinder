@@ -126,7 +126,7 @@ final class SettingsPorterTests: XCTestCase {
     // MARK: - Keys list invariants
 
     func testKeys_hasExpectedCount() {
-        XCTAssertEqual(SettingsPorter.keys.count, 24)
+        XCTAssertEqual(SettingsPorter.keys.count, 25)
     }
 
     func testKeys_hasNoDuplicates() {
