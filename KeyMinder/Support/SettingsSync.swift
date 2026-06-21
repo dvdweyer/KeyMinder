@@ -256,7 +256,6 @@ final class SettingsSync {
         FavouritesStore.shared.reload()
         IgnoreListStore.shared.reload()
         ThemeSettings.shared.reload()
-        NotificationCenter.default.post(name: .menuBarIconStyleChanged, object: nil)
         NotificationCenter.default.post(name: .receiveBetaUpdatesChanged, object: nil)
         NotificationCenter.default.post(name: .receiveAlphaUpdatesChanged, object: nil)
     }
