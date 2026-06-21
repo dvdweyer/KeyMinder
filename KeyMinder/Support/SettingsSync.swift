@@ -99,7 +99,7 @@ final class SettingsSync {
     /// as new as the remote's — otherwise we adopt the newer remote value instead of
     /// clobbering it.
     private func push() {
-        var current = currentSyncedValues()
+        let current = currentSyncedValues()
         let changed = Self.changedKeys(current: current, snapshot: snapshot)
         guard !changed.isEmpty else { return }
 
@@ -128,7 +128,6 @@ final class SettingsSync {
                 applyToLocal(remoteVal!, forKey: key)
                 lts[key] = kvsTs
                 snapshot[key] = remoteVal
-                current[key] = remoteVal
             }
         }
 
