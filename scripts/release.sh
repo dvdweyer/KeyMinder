@@ -140,11 +140,11 @@ fi
 # ── QC: webpage must reference the same version (stable only) ─────────────────
 if [[ -z "$CHANNEL" ]]; then
     HTML="$REPO_DIR/Documentation/Website/keyminder.html"
-    HTML_VERSION=$(grep -o 'href="KeyMinder_[0-9.]*\.zip"' "$HTML" | head -1 \
-        | sed 's/href="KeyMinder_//; s/\.zip"//')
+    HTML_VERSION=$(grep -o 'href="KeyMinder_[0-9.]*\.dmg"' "$HTML" | head -1 \
+        | sed 's/href="KeyMinder_//; s/\.dmg"//')
     if [[ "$HTML_VERSION" != "$VERSION" ]]; then
         echo "error: keyminder.html download link points to v${HTML_VERSION} but project is v${VERSION}" >&2
-        echo "       Update the href, button text, install step, and changelog in Documentation/Website/keyminder.html" >&2
+        echo "       Update the DMG href, button text, install step, and changelog in Documentation/Website/keyminder.html" >&2
         exit 1
     fi
 fi
