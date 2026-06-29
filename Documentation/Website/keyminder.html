@@ -526,10 +526,10 @@
   },
   "description": "A macOS menu bar app that instantly shows the keyboard shortcuts of whichever app you're currently using, grouped by menu.",
   "url": "https://keyminder.app/",
-  "downloadUrl": "https://keyminder.app/KeyMinder_1.0.157.dmg",
-  "softwareVersion": "1.0.157",
+  "downloadUrl": "https://keyminder.app/KeyMinder_1.0.173.dmg",
+  "softwareVersion": "1.0.173",
   "datePublished": "2026-05-25",
-  "dateModified": "2026-06-18",
+  "dateModified": "2026-06-29",
   "featureList": "Show keyboard shortcuts for any macOS app, Grouped by menu, Search by command name, Filter by modifier key, Click to run command, Pin favourite shortcuts, Double-tap trigger, System shortcuts, Export shortcuts as Markdown, Free and open source",
   "screenshot": [
     {
@@ -558,8 +558,8 @@
   <h1>KeyMinder</h1>
   <p data-de="Eine macOS-Menüleisten-App, die sofort die Tastenkürzel der aktiven App anzeigt. Kostenlos und Open Source.">A macOS menu bar app that instantly shows the keyboard shortcuts of whichever app you're currently using. Free and open source.</p>
   <div class="button-row">
-    <a href="KeyMinder_1.0.157.dmg" class="btn btn-primary" download data-de="↓ v1.0.157 herunterladen">
-      ↓ Download v1.0.157
+    <a href="KeyMinder_1.0.173.dmg" class="btn btn-primary" download data-de="↓ v1.0.173 herunterladen">
+      ↓ Download v1.0.173
     </a>
     <a href="https://github.com/dvdweyer/KeyMinder" class="btn btn-secondary" target="_blank" rel="noopener">
       View on GitHub
@@ -618,7 +618,7 @@
   <div class="section">
     <h2 data-de="Installation">Install</h2>
     <ol class="steps">
-      <li data-de-html="&lt;code&gt;KeyMinder_1.0.157.dmg&lt;/code&gt; herunterladen und öffnen">Download and open <code>KeyMinder_1.0.157.dmg</code></li>
+      <li data-de-html="&lt;code&gt;KeyMinder_1.0.173.dmg&lt;/code&gt; herunterladen und öffnen">Download and open <code>KeyMinder_1.0.173.dmg</code></li>
       <li data-de-html="&lt;code&gt;KeyMinder.app&lt;/code&gt; in den &lt;code&gt;/Applications&lt;/code&gt;-Ordner ziehen">Drag <code>KeyMinder.app</code> to the <code>Applications</code> folder</li>
       <li data-de="KeyMinder öffnen – ein Einrichtungsassistent führt Sie durch die Konfiguration">Open KeyMinder — a welcome wizard guides you through setup</li>
       <li data-de="Dem Assistenten folgen, Bedienungshilfen-Berechtigung erteilen und Auslöser festlegen">Follow the wizard to grant Accessibility permission and choose your trigger</li>
@@ -653,8 +653,24 @@
 
     <div class="changelog-entry">
       <div class="changelog-version">
+        <strong>v1.0.173</strong>
+        <span>Jun 29, 2026 — current</span>
+      </div>
+      <ul>
+        <li>New: <strong>iCloud settings sync</strong> (experimental) — toggle in Settings → General to keep your hotkey, ignored commands, favourites, and other preferences in sync across Macs via iCloud</li>
+        <li>When enabling iCloud sync, a prompt lets you choose whether to keep your local settings or pull in the settings already stored in iCloud from another Mac</li>
+        <li>New: <strong>Clear iCloud Settings</strong> action in Settings → Developer — removes all KeyMinder data from iCloud and turns off sync</li>
+        <li>New: <strong>Export and import settings</strong> — save all your preferences to a JSON file and restore them on any Mac via Settings → General</li>
+        <li>Favourites now remain visible even when a modifier filter or text search is active</li>
+        <li>New: <strong>Alpha release channel</strong> — opt into alpha builds independently of the beta channel via Settings → Developer</li>
+        <li>All new strings translated into all 24 supported languages</li>
+      </ul>
+    </div>
+
+    <div class="changelog-entry">
+      <div class="changelog-version">
         <strong>v1.0.157</strong>
-        <span>Jun 18, 2026 — current</span>
+        <span>Jun 18, 2026</span>
       </div>
       <ul>
         <li>New: <strong>Alpha release channel</strong> — opt into alpha builds independently of the beta channel via Settings → Developer</li>
