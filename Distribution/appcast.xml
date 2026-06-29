@@ -7,12 +7,21 @@
         <!-- Items are populated by generate_appcast during the release pipeline. -->
         <item>
             <title>1.0.173</title>
+            <pubDate>Mon, 29 Jun 2026 14:29:12 +0200</pubDate>
+            <sparkle:version>446</sparkle:version>
+            <sparkle:shortVersionString>1.0.173</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://keyminder.app/KeyMinder_1.0.173.zip" length="3578566" type="application/octet-stream" sparkle:edSignature="xyXB7hBMKXOz+5aVg+7PG6yRQxyTxbMvN08HBFRpbpqmxvHkit+sjnd5UfE9pjEy+GbT7MOcTXzjdC6j2UmPBA=="/>
+        </item>
+        <item>
+            <title>1.0.173</title>
             <pubDate>Sun, 21 Jun 2026 14:46:15 +0200</pubDate>
             <sparkle:channel>beta</sparkle:channel>
             <sparkle:version>442</sparkle:version>
             <sparkle:shortVersionString>1.0.173</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
             <enclosure url="https://keyminder.app/KeyMinder_1.0.173.zip" length="3567732" type="application/octet-stream" sparkle:edSignature="NIHnSIgdmDkK0W1k8pKZMCVzjw3zUrHSoQ4VGxdoTRgLgHBMD7isS9lta/ojQzXAcshZPnTpW8c9si6wss1kAA=="/>
+                    <sparkle:minimumAutoupdateVersion>446</sparkle:minimumAutoupdateVersion>
         </item>
         <item>
             <title>1.0.173</title>
@@ -22,7 +31,7 @@
             <sparkle:shortVersionString>1.0.173</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
             <enclosure url="https://keyminder.app/KeyMinder_1.0.173.zip" length="3567741" type="application/octet-stream" sparkle:edSignature="Yjo8yH23iL99r2yvK7MAVnEZPDe2vtFLwLDk5z7OXgt8Q7FjbGgy1Vrq46AnPiXOrbfAlHVHwkSk//EJjyOIBQ=="/>
-                    <sparkle:minimumAutoupdateVersion>442</sparkle:minimumAutoupdateVersion>
+            <sparkle:minimumAutoupdateVersion>442</sparkle:minimumAutoupdateVersion>
         </item>
         <item>
             <title>1.0.172</title>
