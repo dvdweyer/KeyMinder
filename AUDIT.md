@@ -1,8 +1,8 @@
 # KeyMinder — Security Audit
 
-**Date:** 2026-06-07 (last updated 2026-06-08 after v0.1.90)
-**Auditor:** Claude Sonnet 4.6 (automated static analysis)
-**Scope:** Full project, audited at v0.1.79; all findings resolved by v0.1.83 except where noted; Sparkle sections updated at v0.1.90
+**Date:** 2026-06-07 (last updated 2026-07-02 after the pre-distribution audit at v1.0.173)
+**Auditor:** Claude Sonnet 4.6 (automated static analysis); 2026-07-02 pass by Claude Fable 5
+**Scope:** Full project, audited at v0.1.79; all findings resolved by v0.1.83 except where noted; Sparkle sections updated at v0.1.90; pre-distribution security audit 2026-07-02 at v1.0.173 (findings SEC-01…SEC-05, fixes landed in v1.0.174)
 **Prior audit:** `Claude/AUDIT_2026-06-01.md` (v0.1.39). Status of all prior findings is tracked explicitly in each section.
 
 ---
@@ -23,7 +23,13 @@ KeyMinder is a macOS menu-bar agent that reads the frontmost app's menus via the
 
 ### Entitlements
 
-No `.entitlements` file exists. No `com.apple.security.*` keys are set. This is correct for non-sandboxed Developer ID distribution — App Sandbox cannot coexist with cross-process Accessibility API reads.
+*(Updated 2026-07-02 — SEC-03.)* `KeyMinder/KeyMinder.entitlements` exists and is wired into both build configurations via `CODE_SIGN_ENTITLEMENTS`. It contains exactly one entitlement:
+
+| Entitlement | Value | Justification |
+|-------------|-------|---------------|
+| `com.apple.developer.ubiquity-kvstore-identifier` | `$(TeamIdentifierPrefix)org.afaik.KeyMinder` | iCloud Key-Value Store for the opt-in settings sync (`SettingsSync`). Scoped to KeyMinder's own container only. |
+
+No `com.apple.security.*` keys are set — the app remains non-sandboxed with **zero Hardened Runtime exceptions**, which is correct for Developer ID distribution (App Sandbox cannot coexist with cross-process Accessibility API reads).
 
 ### Info.plist security-relevant keys
 
@@ -184,6 +190,12 @@ Both are read with `Data(contentsOf:)` + `PropertyListSerialization`, which cann
 
 **`NSUserKeyEquivalents` injection surface:** `.GlobalPreferences.plist` is a **multi-writer global preferences domain** — any same-user process can write to it with `defaults write -g NSUserKeyEquivalents …` with zero privilege and zero user interaction. A background process could therefore inject arbitrary menu-item title strings into KeyMinder's popup. **Mitigation:** `ScrapedStringPolicy.sanitize(_:)` is applied to all `NSUserKeyEquivalents` keys before they are stored as `Shortcut.title`, stripping C0/C1 controls, bidi overrides, and capping length. Exported Markdown is additionally escaped via `ShortcutExporter`.
 
+**Third-party registry injection surface (SEC-01, Medium) — FIXED in v1.0.174.** `ThirdPartyShortcutRegistry` reads JSON registration files from `~/Library/Application Support/KeyMinder/Integrations/` — the same same-user-writable trust boundary as `NSUserKeyEquivalents`. The EXT-01 fix (v1.0.149) did not cover this channel: `title`, `keys`, `group`, and `appName` flowed unsanitized into the popup UI and Markdown export, allowing bidi/control-character spoofing and unbounded string/count memory abuse. **Fix (v1.0.174):** `ScrapedStringPolicy.sanitize(_:)` is now applied to all four fields in `section(from:)`, and shortcuts are capped at `maxShortcutsPerFile = 500` per registration file.
+
+### iCloud settings sync (data leaves the machine — updated 2026-07-02, SEC-03)
+
+The earlier claim that scraped data is "never written to disk or transmitted over a network" no longer holds unqualified. `SettingsSync` mirrors a curated allowlist of `UserDefaults` keys to `NSUbiquitousKeyValueStore` (iCloud KVS). Two synced keys — `ignoreList` and `pinnedShortcuts` — contain menu-item titles originally scraped from other apps via AX, so AX-derived strings now reach Apple's iCloud servers **when the user opts in**. Mitigating factors: sync is off by default (`iCloudSyncEnabled`, only started when true in `applicationDidFinishLaunching`), the data is user-curated settings (not raw scrape output), transport/storage encryption is Apple's, and the KVS container is scoped to KeyMinder's own bundle. Values pulled from KVS are written back to `UserDefaults` and then decoded through the same typed decoders documented in §3 (typed `JSONDecoder`, class-restricted `NSKeyedUnarchiver`), so tampered KVS data (compromised iCloud account) degrades to a settings change, not code execution.
+
 ### Unsafe Swift (`Unmanaged`, raw pointers)
 
 **`HotkeyManager.swift:74`** — `Unmanaged.passUnretained(self).toOpaque()` for the Carbon event handler `userData` context. Correct: `passUnretained` is appropriate because Carbon does not take ownership; the singleton outlives the callback. `takeUnretainedValue()` is used on the receiving side — no retain/release imbalance. ✓
@@ -258,6 +270,16 @@ CODE_SIGN_IDENTITY = "Apple Development";
 
 `release.sh` uses `-exportArchive` with `ExportOptions.plist` specifying `method = developer-id`, which causes `xcodebuild` to re-sign with the Developer ID cert during export regardless of the project's `CODE_SIGN_IDENTITY`. As a result, notarization succeeds in practice. However, the Release config's identity is misleading and could break if the export step is skipped. The Release config should explicitly declare `"Developer ID Application"`.
 
+### 2026-07-02 findings (SEC-02, SEC-04, SEC-05)
+
+**SEC-02 (Medium) — FIXED in v1.0.174.** `scripts/setup-sparkle-tools.sh` installed `generate_appcast` / `sign_update` from Sparkle's mutable `releases/latest` with no version pin and no integrity check. These tools read the Ed25519 private key from the Keychain and produce the signatures every user's Sparkle install trusts — the most supply-chain-sensitive tooling in the pipeline (the app-side framework was already pinned via `Package.resolved`). **Fix:** the script now pins `SPARKLE_VERSION=2.9.2` and verifies the tarball against a hardcoded SHA-256 before extraction, failing with a non-zero exit on mismatch (both paths tested). The Sparkle tool binaries are only ad-hoc signed (`TeamIdentifier=not set`), so a `codesign` identity check is not possible — the hash is the integrity anchor. Keep `SPARKLE_VERSION` in sync with `Package.resolved` when upgrading, and recompute the hash from a manually downloaded tarball.
+
+**SEC-04 (Low) — open.** No SHA-256 checksum is published on the website next to the DMG/ZIP download links. The Homebrew cask checksum is generated and synced automatically (`release.sh` → `update-tap.sh`, with a post-substitution verification guard), and Sparkle update ZIPs carry EdDSA signatures — but a first-time manual DMG download relies solely on notarization/Gatekeeper. `DMG_SHA256` is already computed in `release.sh`; inject it into the download page at deploy time.
+
+**SEC-05 (Low) — open.** Sparkle 2 still honors a legacy `SUFeedURL` override written into the app's user-defaults domain (`defaults write org.afaik.KeyMinder SUFeedURL …` by any same-user process). Impact is bounded — EdDSA verification against the Info.plist key and Sparkle's no-downgrade rule still apply, and a local attacker at that level has broader options — but calling the updater's `clearFeedURLFromUserDefaults()` (verify exact API name against the pinned Sparkle version) once at startup closes it. No delegate `feedURLString` override exists in the code (verified).
+
+**Notarization chain (verified sound, 2026-07-02):** `release.sh` runs zip → `notarytool submit --wait` → `stapler staple` → re-zip of the stapled app; the DMG is built from the stapled app and is itself notarized and stapled. `set -euo pipefail` makes each step fatal, and `stapler staple` acts as a backstop even if `notarytool` were ever to exit 0 on a rejected submission (no ticket exists to staple). The shipped ZIP, DMG, and appcast asset are all post-staple artifacts.
+
 ---
 
 ## 8. Code Quality Red Flags
@@ -295,22 +317,23 @@ None found. ✓
 
 | Area | Critical | High | Medium | Low | Informational |
 |------|----------|------|--------|-----|---------------|
-| 1. Reconnaissance | — | — | — | — | F-05 *(open)*, TEAM_ID in CLAUDE.md |
+| 1. Reconnaissance | — | — | — | — | F-05 *(open)*, TEAM_ID in CLAUDE.md, SEC-03 ✓ v1.0.174 |
 | 2. Dependencies | — | — | — | — | — |
 | 3. Sensitive Data / Secrets | — | — | — | — | F-02 ✓, F-04 ✓ |
 | 4. IPC & Attack Surface | — | — | — | N-01 ✓ v0.1.81 | F-07 ✓ |
-| 5. Data Handling | — | — | EXT-01 ✓ v1.0.149, EXT-02 ✓ v1.0.149 | F-01 ✓ v0.1.81/v0.1.83, F-NEW-1 ✓ | N-02 ✓, N-03 ✓, N-04 ✓ v0.1.82 |
+| 5. Data Handling | — | — | EXT-01 ✓ v1.0.149, EXT-02 ✓ v1.0.149, SEC-01 ✓ v1.0.174 | F-01 ✓ v0.1.81/v0.1.83, F-NEW-1 ✓ | N-02 ✓, N-03 ✓, N-04 ✓ v0.1.82 |
 | 6. Network & TLS | — | — | — | — | — |
-| 7. Update & Distribution | — | — | EXT-03 ✓ v1.0.150 | — | F-05 *(open)* |
+| 7. Update & Distribution | — | — | EXT-03 ✓ v1.0.150, SEC-02 ✓ v1.0.174 | SEC-04 *(open)*, SEC-05 *(open)* | F-05 *(open)* |
 | 8. Code Quality | — | — | — | — | — |
-| **Total (open)** | **0** | **0** | **0** | **0** | **1** |
+| **Total (open)** | **0** | **0** | **0** | **2** | **1** |
 
 **Legend:** ✓ = fixed | *(open)* = still open
 
 Prior findings closed since v0.1.39: F-02 (Medium), F-04, F-07, F-NEW-1.
 New findings since v0.1.39: N-01 (Low, fixed v0.1.81), N-02/N-03/N-04 (Informational, fixed v0.1.82).
 External adversarial review 2026-06-12 (v1.0.118 scope): EXT-01 (scraped-string spoofing, Medium, fixed v1.0.149), EXT-02 (Markdown export injection, Medium, fixed v1.0.151), EXT-03 (Sparkle downgrade floor absent, Medium, fixed v1.0.150). AX press re-read (EXT-04, Low) fixed v1.0.152.
-**One finding remains open:** F-05 (Informational) — Release config signing identity. No functional impact.
+Pre-distribution audit 2026-07-02 (v1.0.173 scope): SEC-01 (third-party registry unsanitized, Medium, fixed v1.0.174), SEC-02 (Sparkle tools unpinned, Medium, fixed v1.0.174), SEC-03 (stale audit claims: entitlements + iCloud data flow, Informational, fixed in this document), SEC-04 (no website SHA-256, Low, open), SEC-05 (legacy `SUFeedURL` defaults override, Low, open). The 2026-07-02 pass re-verified all previously fixed findings still in place; none regressed.
+**Three findings remain open:** F-05 (Informational, Release config signing identity), SEC-04 (Low), SEC-05 (Low).
 
 ---
 
@@ -328,6 +351,11 @@ External adversarial review 2026-06-12 (v1.0.118 scope): EXT-01 (scraped-string 
 | EXT-02 | Medium | Markdown export injection — no escaping in `ShortcutExporter`; `keySymbol` returned whole cmdChar | ✅ Fixed v1.0.151 (`md()` + `codeSpan()` in `ShortcutExporter`; `String(scalar)` in `ShortcutFormatter`) |
 | EXT-03 | Medium | Sparkle appcast lacked `minimumAutoupdateVersion` floor — genuine old signed build replayable | ✅ Fixed v1.0.150 (floor added to all non-current items; `release.sh` maintains it going forward) |
 | EXT-04 | Low | `ShortcutActivator` did not re-read `kAXEnabledAttribute` or title at press time | ✅ Fixed v1.0.152 (re-reads both; logs title mismatches; refuses disabled items) |
+| SEC-01 | Medium | `ThirdPartyShortcutRegistry` bypassed `ScrapedStringPolicy` — same-user JSON files injected unsanitized strings into popup + export | ✅ Fixed v1.0.174 (sanitize `title`/`keys`/`group`/`appName`; 500-shortcut cap per file) |
+| SEC-02 | Medium | `setup-sparkle-tools.sh` installed signing-adjacent Sparkle tools from unpinned `releases/latest` with no integrity check | ✅ Fixed v1.0.174 (pinned 2.9.2 + hardcoded SHA-256 verification, fail-closed) |
+| SEC-03 | Informational | AUDIT.md stale: claimed no entitlements file and no data transmission — both outdated by iCloud KVS sync | ✅ Fixed 2026-07-02 (this document: §1 Entitlements, §5 iCloud settings sync) |
+| SEC-04 | Low | No SHA-256 published on website next to DMG/ZIP download links | ⚠️ Open — inject `DMG_SHA256` into download page during `release.sh` deploy |
+| SEC-05 | Low | Sparkle legacy `SUFeedURL` user-defaults override not cleared at startup | ⚠️ Open — call updater's `clearFeedURLFromUserDefaults()` on launch (verify API name for pinned Sparkle) |
 
 ### F-05 — Release config signing identity (Informational, open)
 **File:** `KeyMinder.xcodeproj/project.pbxproj`, UUID `3E3EC5A646DA464EBE9375A9` (Release config)
@@ -349,4 +377,4 @@ Change both `CODE_SIGN_IDENTITY` lines from `"Apple Development"` to `"Developer
 
 ---
 
-*Audited at v0.1.79 (commit `692b006`); all findings resolved by v0.1.83 (commit `3d3e3a9`) except F-05. Re-run the audit when significant new features are added — especially any that introduce network calls, XPC services, or new IPC mechanisms. Update the CGS version cap in `SystemShortcutsProvider.loadViaCGS()` with each new major macOS release.*
+*Audited at v0.1.79 (commit `692b006`); all findings resolved by v0.1.83 (commit `3d3e3a9`) except F-05. Pre-distribution security audit re-run 2026-07-02 at v1.0.173: all prior fixes re-verified in place (none regressed); SEC-01/SEC-02 fixed in v1.0.174; F-05, SEC-04, SEC-05 remain open. Re-run the audit when significant new features are added — especially any that introduce network calls, XPC services, or new IPC mechanisms. Update the CGS version cap in `SystemShortcutsProvider.loadViaCGS()` with each new major macOS release.*

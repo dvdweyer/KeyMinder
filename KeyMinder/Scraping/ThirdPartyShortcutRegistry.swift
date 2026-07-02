@@ -22,7 +22,15 @@ import os
 /// `keys` is a display-format glyph string (⌥Space, ⇧⌘K, etc.) rendered as-is
 /// in the popup key badge. `group` is optional; omit it for ungrouped items.
 /// Malformed or unreadable files are skipped and logged at `.info`.
+///
+/// The Integrations directory is writable by any same-user process, so every
+/// string crossing this boundary goes through `ScrapedStringPolicy.sanitize`
+/// (same policy as AX titles and `NSUserKeyEquivalents`), and the number of
+/// shortcuts read per file is capped.
 enum ThirdPartyShortcutRegistry {
+
+    /// Shortcuts beyond this count in a single registration file are dropped.
+    static let maxShortcutsPerFile = 500
 
     private struct RegistrationFile: Decodable {
         let appName: String
@@ -78,9 +86,12 @@ enum ThirdPartyShortcutRegistry {
         var namedGroups: [(name: String, shortcuts: [Shortcut])] = []
         var namedIndex: [String: Int] = [:]
 
-        for s in file.shortcuts {
-            let shortcut = Shortcut(title: s.title, keys: s.keys)
-            if let groupName = s.group {
+        for s in file.shortcuts.prefix(maxShortcutsPerFile) {
+            let shortcut = Shortcut(
+                title: ScrapedStringPolicy.sanitize(s.title),
+                keys: ScrapedStringPolicy.sanitize(s.keys)
+            )
+            if let groupName = s.group.map(ScrapedStringPolicy.sanitize) {
                 if let idx = namedIndex[groupName] {
                     namedGroups[idx].shortcuts.append(shortcut)
                 } else {
@@ -99,6 +110,6 @@ enum ThirdPartyShortcutRegistry {
         for (name, shortcuts) in namedGroups {
             groups.append(ShortcutGroup(title: name, shortcuts: shortcuts))
         }
-        return MenuSection(title: file.appName, groups: groups)
+        return MenuSection(title: ScrapedStringPolicy.sanitize(file.appName), groups: groups)
     }
 }

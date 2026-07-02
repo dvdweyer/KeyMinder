@@ -249,11 +249,8 @@ fi
 # ── Sparkle appcast ───────────────────────────────────────────────────────────
 echo ""
 echo "--- Updating Sparkle appcast…"
-# generate_appcast must be on PATH. Install from Sparkle's GitHub release tarball:
-#   curl -Lo /tmp/sparkle.tar.xz \
-#     https://github.com/sparkle-project/Sparkle/releases/latest/download/Sparkle-2.x.y.tar.xz
-#   tar -xf /tmp/sparkle.tar.xz -C ~/.sparkle-tools --strip-components=1 bin
-# Then add ~/.sparkle-tools/bin to your PATH (or symlink into /usr/local/bin).
+# generate_appcast must be on PATH. Install via scripts/setup-sparkle-tools.sh,
+# which pins the Sparkle version and verifies the tarball SHA-256 before installing.
 GENERATE_APPCAST=$(command -v generate_appcast 2>/dev/null \
     || echo "$HOME/.sparkle-tools/bin/generate_appcast")
 if [[ ! -x "$GENERATE_APPCAST" ]]; then
