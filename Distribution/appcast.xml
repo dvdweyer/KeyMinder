@@ -7,12 +7,21 @@
         <!-- Items are populated by generate_appcast during the release pipeline. -->
         <item>
             <title>1.0.175</title>
+            <pubDate>Mon, 06 Jul 2026 07:26:09 -0700</pubDate>
+            <sparkle:version>456</sparkle:version>
+            <sparkle:shortVersionString>1.0.175</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://keyminder.app/KeyMinder_1.0.175.zip" length="3580459" type="application/octet-stream" sparkle:edSignature="eMftxhcmzdVqyLi7H26ki4/Wpdt5Hkk57Y0E8xID8uDcOZXJMXtpQteg0wmdO0/7J9mORlc+m2sMfwmoWNmfBA=="/>
+        </item>
+        <item>
+            <title>1.0.175</title>
             <pubDate>Sun, 05 Jul 2026 08:48:08 -0700</pubDate>
             <sparkle:channel>alpha</sparkle:channel>
             <sparkle:version>452</sparkle:version>
             <sparkle:shortVersionString>1.0.175</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
             <enclosure url="https://keyminder.app/KeyMinder_1.0.175.zip" length="3580477" type="application/octet-stream" sparkle:edSignature="E0IPAB4pSNt9qY6iNWUcv93/zwgOORIUXKiaFARKIeJGvR2UeRTLUyvfIp7Xyz7n15bij2ddKqaGNSfDqf45BA=="/>
+                    <sparkle:minimumAutoupdateVersion>456</sparkle:minimumAutoupdateVersion>
         </item>
         <item>
             <title>1.0.175</title>
@@ -22,7 +31,7 @@
             <sparkle:shortVersionString>1.0.175</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
             <enclosure url="https://keyminder.app/KeyMinder_1.0.175.zip" length="3580429" type="application/octet-stream" sparkle:edSignature="uQSHA1fn5PyhmcJvZOlQtMMfstvL4CKrpRt3vTBtuud8RR1UL2gFUARv3ostdEYaT08LZkcoFh4qOarA3Pk+CQ=="/>
-                    <sparkle:minimumAutoupdateVersion>452</sparkle:minimumAutoupdateVersion>
+            <sparkle:minimumAutoupdateVersion>452</sparkle:minimumAutoupdateVersion>
         </item>
         <item>
             <title>1.0.174</title>
