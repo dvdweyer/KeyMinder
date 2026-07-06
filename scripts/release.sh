@@ -321,11 +321,16 @@ if [[ -z "$CHANNEL" ]]; then
     done
 fi
 
-echo "--- Pruning ZIP/DMG files older than 5 days…"
-find "$SITE_DIR" \
-    \( -name "*.zip" -o -name "*.dmg" \) \
-    -mtime +5 \
-    -print -delete
+echo "--- Pruning old ZIP files older than 5 days…"
+find "$SITE_DIR" -name "*.zip" -mtime +5 -print -delete
+
+# Only stable runs recopy the DMG (see the [[ -z "$CHANNEL" ]] gate above), so
+# only prune old DMGs here too — otherwise a beta/alpha-only run can delete the
+# live stable DMG without replacing it, leaving the website's download link 404ing.
+if [[ -z "$CHANNEL" ]]; then
+    echo "--- Pruning old DMG files older than 5 days…"
+    find "$SITE_DIR" -name "*.dmg" -mtime +5 -print -delete
+fi
 
 echo "--- Deploying via rsync…"
 (cd "$(dirname "$DEPLOY_SH")" && bash "$(basename "$DEPLOY_SH")" app.keyminder)
