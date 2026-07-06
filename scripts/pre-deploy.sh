@@ -59,8 +59,8 @@ echo ""
 echo "--- Updating Documentation/Website/keyminder.html…"
 HTML="$REPO_DIR/Documentation/Website/keyminder.html"
 
-PREV_VERSION=$(grep -o 'href="KeyMinder_[0-9.]*\.zip"' "$HTML" | head -1 \
-    | sed 's/href="KeyMinder_//; s/\.zip"//')
+PREV_VERSION=$(grep -o 'href="KeyMinder_[0-9.]*\.dmg"' "$HTML" | head -1 \
+    | sed 's/href="KeyMinder_//; s/\.dmg"//')
 if [[ -z "$PREV_VERSION" ]]; then
     echo "error: could not detect current version in keyminder.html" >&2
     exit 1
@@ -73,7 +73,7 @@ else
     PREV_RE="${PREV_VERSION//./\\.}"
 
     sed -i '' \
-        -e "s|KeyMinder_${PREV_RE}\\.zip|KeyMinder_${VERSION}.zip|g" \
+        -e "s|KeyMinder_${PREV_RE}\\.dmg|KeyMinder_${VERSION}.dmg|g" \
         -e "s|\"softwareVersion\": \"${PREV_RE}\"|\"softwareVersion\": \"${VERSION}\"|" \
         -e "s|\"dateModified\": \"[0-9-]*\"|\"dateModified\": \"${TODAY}\"|" \
         -e "s|↓ Download v${PREV_RE}|↓ Download v${VERSION}|" \
