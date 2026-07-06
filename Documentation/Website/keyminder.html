@@ -526,10 +526,10 @@
   },
   "description": "A macOS menu bar app that instantly shows the keyboard shortcuts of whichever app you're currently using, grouped by menu.",
   "url": "https://keyminder.app/",
-  "downloadUrl": "https://keyminder.app/KeyMinder_1.0.173.dmg",
-  "softwareVersion": "1.0.173",
+  "downloadUrl": "https://keyminder.app/KeyMinder_1.0.175.dmg",
+  "softwareVersion": "1.0.175",
   "datePublished": "2026-05-25",
-  "dateModified": "2026-06-29",
+  "dateModified": "2026-07-06",
   "featureList": "Show keyboard shortcuts for any macOS app, Grouped by menu, Search by command name, Filter by modifier key, Click to run command, Pin favourite shortcuts, Double-tap trigger, System shortcuts, Export shortcuts as Markdown, Free and open source",
   "screenshot": [
     {
@@ -558,8 +558,8 @@
   <h1>KeyMinder</h1>
   <p data-de="Eine macOS-Menüleisten-App, die sofort die Tastenkürzel der aktiven App anzeigt. Kostenlos und Open Source.">A macOS menu bar app that instantly shows the keyboard shortcuts of whichever app you're currently using. Free and open source.</p>
   <div class="button-row">
-    <a href="KeyMinder_1.0.173.dmg" class="btn btn-primary" download data-de="↓ v1.0.173 herunterladen">
-      ↓ Download v1.0.173
+    <a href="KeyMinder_1.0.175.dmg" class="btn btn-primary" download data-de="↓ v1.0.175 herunterladen">
+      ↓ Download v1.0.175
     </a>
     <a href="https://github.com/dvdweyer/KeyMinder" class="btn btn-secondary" target="_blank" rel="noopener">
       View on GitHub
@@ -618,7 +618,7 @@
   <div class="section">
     <h2 data-de="Installation">Install</h2>
     <ol class="steps">
-      <li data-de-html="&lt;code&gt;KeyMinder_1.0.173.dmg&lt;/code&gt; herunterladen und öffnen">Download and open <code>KeyMinder_1.0.173.dmg</code></li>
+      <li data-de-html="&lt;code&gt;KeyMinder_1.0.175.dmg&lt;/code&gt; herunterladen und öffnen">Download and open <code>KeyMinder_1.0.175.dmg</code></li>
       <li data-de-html="&lt;code&gt;KeyMinder.app&lt;/code&gt; in den &lt;code&gt;/Applications&lt;/code&gt;-Ordner ziehen">Drag <code>KeyMinder.app</code> to the <code>Applications</code> folder</li>
       <li data-de="KeyMinder öffnen – ein Einrichtungsassistent führt Sie durch die Konfiguration">Open KeyMinder — a welcome wizard guides you through setup</li>
       <li data-de="Dem Assistenten folgen, Bedienungshilfen-Berechtigung erteilen und Auslöser festlegen">Follow the wizard to grant Accessibility permission and choose your trigger</li>
@@ -653,8 +653,19 @@
 
     <div class="changelog-entry">
       <div class="changelog-version">
+        <strong>v1.0.175</strong>
+        <span>Jul 6, 2026 — current</span>
+      </div>
+      <ul>
+        <li>Security: third-party shortcut registry entries are now sanitised (title, keys, group, app name) and capped at 500 per file, closing a same-user JSON injection channel</li>
+        <li>Security: release tooling now installs a pinned, hash-verified version of the Sparkle signing tools instead of the mutable latest release</li>
+      </ul>
+    </div>
+
+    <div class="changelog-entry">
+      <div class="changelog-version">
         <strong>v1.0.173</strong>
-        <span>Jun 29, 2026 — current</span>
+        <span>Jun 29, 2026</span>
       </div>
       <ul>
         <li>New: <strong>iCloud settings sync</strong> (experimental) — toggle in Settings → General to keep your hotkey, ignored commands, favourites, and other preferences in sync across Macs via iCloud</li>
