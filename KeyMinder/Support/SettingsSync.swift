@@ -71,7 +71,7 @@ final class SettingsSync {
     // MARK: Lifecycle
 
     func start() {
-        Logger.settings.info("SettingsSync.start() snapshot keys=\(self.snapshot.count, privacy: .public) didInit=\(UserDefaults.standard.bool(forKey: Self.didInitKey), privacy: .public)")
+        Logger.settings.log("SettingsSync.start() snapshot keys=\(self.snapshot.count, privacy: .public) didInit=\(UserDefaults.standard.bool(forKey: Self.didInitKey), privacy: .public)")
         snapshot = currentSyncedValues()
         // One-time non-destructive publish: seed KVS keys that don't exist yet from
         // local values. Never overwrites an existing KVS value, so a sparse Mac can't
@@ -134,7 +134,7 @@ final class SettingsSync {
     /// the iCloud copy. Resets didInitSyncV2 so the next start() treats this
     /// Mac as a fresh install and re-seeds KVS from local values via additivePublish.
     func clearICloudData() {
-        Logger.settings.info("SettingsSync.clearICloudData() wiping \(Self.syncedKeys.count, privacy: .public) KVS keys")
+        Logger.settings.log("SettingsSync.clearICloudData() wiping \(Self.syncedKeys.count, privacy: .public) KVS keys")
         stop()
         for key in Self.syncedKeys {
             kvs.removeObject(forKey: key)
@@ -174,14 +174,14 @@ final class SettingsSync {
             let kvsTs = kvs.double(forKey: Self.tsKey(key))
             let remoteVal = kvs.object(forKey: key) as? NSObject
             if now >= kvsTs || remoteVal == nil {
-                Logger.settings.info("SettingsSync.push: pushing '\(key, privacy: .public)' to KVS (local ts=\(now, privacy: .public) >= remote ts=\(kvsTs, privacy: .public) or no remote value)")
+                Logger.settings.log("SettingsSync.push: pushing '\(key, privacy: .public)' to KVS (local ts=\(now, privacy: .public) >= remote ts=\(kvsTs, privacy: .public) or no remote value)")
                 kvs.set(curVal, forKey: key)
                 kvs.set(now, forKey: Self.tsKey(key))
                 lts[key] = now
                 snapshot[key] = curVal
             } else {
                 // Remote is strictly newer — adopt it rather than overwrite with our older edit.
-                Logger.settings.info("SettingsSync.push: adopting remote value for '\(key, privacy: .public)' (remote ts=\(kvsTs, privacy: .public) > local ts=\(now, privacy: .public))")
+                Logger.settings.log("SettingsSync.push: adopting remote value for '\(key, privacy: .public)' (remote ts=\(kvsTs, privacy: .public) > local ts=\(now, privacy: .public))")
                 applyToLocal(remoteVal!, forKey: key)
                 lts[key] = kvsTs
                 snapshot[key] = remoteVal
@@ -219,7 +219,7 @@ final class SettingsSync {
             let kvsTs = kvs.double(forKey: Self.tsKey(key))
             let localTs = lts[key] ?? 0
             guard Self.shouldApplyRemote(kvsTs: kvsTs, localTs: localTs) else { continue }
-            Logger.settings.info("SettingsSync.applyRemoteIfNewer: applying remote '\(key, privacy: .public)' (remote ts=\(kvsTs, privacy: .public) > local ts=\(localTs, privacy: .public))")
+            Logger.settings.log("SettingsSync.applyRemoteIfNewer: applying remote '\(key, privacy: .public)' (remote ts=\(kvsTs, privacy: .public) > local ts=\(localTs, privacy: .public))")
             applyToLocal(remoteVal, forKey: key)
             lts[key] = kvsTs
             snapshot[key] = remoteVal

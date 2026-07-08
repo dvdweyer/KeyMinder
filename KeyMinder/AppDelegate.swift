@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 import AppKit
+import os
 import Sparkle
 import SwiftUI
 
@@ -15,6 +16,13 @@ private final class UpdaterDelegate: NSObject, SPUUpdaterDelegate {
         if UserDefaults.standard.receiveBetaUpdates  { channels.insert("beta") }
         if UserDefaults.standard.receiveAlphaUpdates { channels.insert("alpha") }
         return channels
+    }
+
+    // Forces a synchronous UserDefaults flush right before Sparkle quits this
+    // process to install the update, in case a setting changed moments earlier
+    // is still sitting in cfprefsd's write-behind cache.
+    func updaterWillRelaunchApplication(_ updater: SPUUpdater) {
+        UserDefaults.standard.synchronize()
     }
 }
 
@@ -76,6 +84,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         setupSleepWakeObserver()
         UserDefaults.standard.appIconVariant.apply()
         if UserDefaults.standard.iCloudSyncEnabled { SettingsSync.shared.start() }
+        logSettingsSnapshot()
         showWelcomeIfNeeded()
         betaChannelObserver = NotificationCenter.default.addObserver(
             forName: .receiveBetaUpdatesChanged,
@@ -104,6 +113,28 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 self?.updateMenuBarIcon()
             }
         }
+    }
+
+    /// Forces a synchronous flush of `UserDefaults` to disk before quitting.
+    /// `cfprefsd`'s write-behind cache normally flushes asynchronously; this
+    /// guards against a setting changed just before quit (e.g. right as Sparkle
+    /// relaunches the app) never making it to disk.
+    func applicationWillTerminate(_ notification: Notification) {
+        UserDefaults.standard.synchronize()
+    }
+
+    /// Logs the current value of every settings key we care about at `.notice`
+    /// level (persisted in the log archive, unlike `.info`) so a settings reset
+    /// can be diagnosed after the fact by diffing the last snapshot before an
+    /// update against the first one after.
+    private func logSettingsSnapshot() {
+        let keys = SettingsSync.syncedKeys + ["popupDisplayMode", "menuBarIconStyle"]
+        var values = keys.map { key -> String in
+            let value = UserDefaults.standard.object(forKey: key)
+            return "\(key)=\(value.map { "\($0)" } ?? "<unset>")"
+        }
+        values.append("globalHotkey=\(UserDefaults.standard.globalHotkey?.displayString ?? "<unset>")")
+        Logger.settings.log("Settings snapshot at launch: \(values.joined(separator: ", "), privacy: .public)")
     }
 
     // MARK: - Global hotkey
