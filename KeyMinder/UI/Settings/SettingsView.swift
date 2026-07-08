@@ -34,9 +34,9 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
         // the Ignored tab has a ScrollView so it gets capped at screenH via min()).
         // Add 24 pt buffer to all tabs: sizeThatFits slightly underestimates due to
         // rounding, padding inset overhead, and ScrollView wrapper costs.
-        let genRaw = NSHostingController(rootView: GeneralSettingsView(model: m))
+        let genRaw = NSHostingController(rootView: GeneralSettingsBody(model: m))
             .sizeThatFits(in: CGSize(width: 420, height: CGFloat.greatestFiniteMagnitude)).height + 24
-        let popupRaw = NSHostingController(rootView: PopupSettingsView(model: m))
+        let popupRaw = NSHostingController(rootView: PopupSettingsBody(model: m))
             .sizeThatFits(in: CGSize(width: 420, height: CGFloat.greatestFiniteMagnitude)).height + 24
         let ignoredRaw = NSHostingController(rootView: IgnoredSettingsBody(
                 showAddIgnoredAppSheet: .constant(false),
@@ -44,7 +44,7 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
                 showAddGlobalSheet: .constant(false),
                 showAddAppSheet: .constant(false)
             )).sizeThatFits(in: CGSize(width: 420, height: CGFloat.greatestFiniteMagnitude)).height + 24
-        let developerRaw = NSHostingController(rootView: DeveloperSettingsView(model: m))
+        let developerRaw = NSHostingController(rootView: DeveloperSettingsBody(model: m))
             .sizeThatFits(in: CGSize(width: 420, height: CGFloat.greatestFiniteMagnitude)).height + 24
 
         let tabBarH: CGFloat = 44   // tab picker (≈32 pt) + divider (1 pt) + padding
@@ -418,7 +418,22 @@ struct SettingsView: View {
 
 // MARK: - GeneralSettingsView
 
+/// Scrolls `GeneralSettingsBody` so content taller than the window (e.g. on a
+/// smaller display, where `SettingsWindowController` clamps the tab height to
+/// 85% of the screen) stays reachable instead of being clipped.
 private struct GeneralSettingsView: View {
+    @Bindable var model: SettingsModel
+
+    var body: some View {
+        ScrollView {
+            GeneralSettingsBody(model: model)
+        }
+    }
+}
+
+/// Extracted without `ScrollView` so `SettingsWindowController` can measure its
+/// natural height reliably (matches `IgnoredSettingsBody`'s pattern).
+private struct GeneralSettingsBody: View {
     @Bindable var model: SettingsModel
 
     var body: some View {
@@ -632,7 +647,22 @@ private struct GeneralSettingsView: View {
 
 // MARK: - PopupSettingsView
 
+/// Scrolls `PopupSettingsBody` so content taller than the window (e.g. on a
+/// smaller display, where `SettingsWindowController` clamps the tab height to
+/// 85% of the screen) stays reachable instead of being clipped.
 private struct PopupSettingsView: View {
+    @Bindable var model: SettingsModel
+
+    var body: some View {
+        ScrollView {
+            PopupSettingsBody(model: model)
+        }
+    }
+}
+
+/// Extracted without `ScrollView` so `SettingsWindowController` can measure its
+/// natural height reliably (matches `IgnoredSettingsBody`'s pattern).
+private struct PopupSettingsBody: View {
     @Bindable var model: SettingsModel
 
     var body: some View {
@@ -886,7 +916,22 @@ private struct IgnoredSettingsBody: View {
 
 // MARK: - DeveloperSettingsView
 
+/// Scrolls `DeveloperSettingsBody` so content taller than the window (e.g. on a
+/// smaller display, where `SettingsWindowController` clamps the tab height to
+/// 85% of the screen) stays reachable instead of being clipped.
 private struct DeveloperSettingsView: View {
+    @Bindable var model: SettingsModel
+
+    var body: some View {
+        ScrollView {
+            DeveloperSettingsBody(model: model)
+        }
+    }
+}
+
+/// Extracted without `ScrollView` so `SettingsWindowController` can measure its
+/// natural height reliably (matches `IgnoredSettingsBody`'s pattern).
+private struct DeveloperSettingsBody: View {
     @Bindable var model: SettingsModel
 
     var body: some View {
