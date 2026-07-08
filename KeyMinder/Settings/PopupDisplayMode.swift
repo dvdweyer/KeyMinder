@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 import Foundation
+import SwiftUI
 
 // MARK: - PopupDisplayMode
 
@@ -9,7 +10,7 @@ enum PopupDisplayMode: Int, CaseIterable {
     case mouseCursor     = 1
     case mainDisplay     = 2
 
-    var label: String {
+    var label: LocalizedStringKey {
         switch self {
         case .activeAppWindow: return "Active App's Screen"
         case .mouseCursor:     return "Screen with Mouse Cursor"

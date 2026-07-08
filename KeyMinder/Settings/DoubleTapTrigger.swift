@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 import AppKit
 import os
+import SwiftUI
 
 // MARK: - DoubleTapModifier
 
@@ -18,7 +19,7 @@ enum DoubleTapModifier: String, CaseIterable, Codable {
         }
     }
 
-    var label: String {
+    var label: LocalizedStringKey {
         switch self {
         case .command: "Command"
         case .option:  "Option"

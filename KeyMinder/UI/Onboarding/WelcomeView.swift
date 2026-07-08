@@ -318,7 +318,7 @@ private struct WelcomeTriggerStep: View {
                     if model.doubleTapEnabled {
                         Picker("Modifier", selection: $model.doubleTapModifier) {
                             ForEach(DoubleTapModifier.allCases, id: \.self) { mod in
-                                Text("\(mod.symbol) \(mod.label)").tag(mod)
+                                (Text(mod.symbol + " ") + Text(mod.label)).tag(mod)
                             }
                         }
                         .pickerStyle(.menu)
