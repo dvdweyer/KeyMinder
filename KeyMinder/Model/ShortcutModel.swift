@@ -87,6 +87,10 @@ struct AppShortcuts {
     /// Not displayed, but used to offer chord disambiguation when the user presses
     /// one of these key combos while the popup is open.
     var ignoredMenuShortcuts: [Shortcut] = []
+    /// Process id of the scraped app, used to locate its window's screen for the
+    /// "Active App's Screen" popup display mode. `nil` for synthetic apps (e.g.
+    /// the "System" fallback shown when there is no frontmost app).
+    var pid: pid_t? = nil
 
     var isEmpty: Bool { sections.allSatisfy { $0.shortcuts.allSatisfy(\.isSeparator) } }
 

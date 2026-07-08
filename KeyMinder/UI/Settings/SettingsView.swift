@@ -163,6 +163,10 @@ final class SettingsModel {
         }
     }
 
+    var popupDisplayMode: PopupDisplayMode = UserDefaults.standard.popupDisplayMode {
+        didSet { UserDefaults.standard.popupDisplayMode = popupDisplayMode }
+    }
+
     private(set) var menuBarIconStyle: MenuBarIconStyle = UserDefaults.standard.menuBarIconStyle {
         didSet {
             UserDefaults.standard.menuBarIconStyle = menuBarIconStyle
@@ -524,6 +528,23 @@ private struct GeneralSettingsView: View {
                 get: { ts.followsSystemAccent },
                 set: { if $0 { ts.resetToSystem() } else { ts.enableCustom() } }
             ))
+
+            Divider()
+
+            Text("Popup Display")
+                .font(.headline)
+
+            Text("Which screen the popup appears on.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+
+            Picker("Popup Display", selection: $model.popupDisplayMode) {
+                ForEach(PopupDisplayMode.allCases, id: \.self) { mode in
+                    Text(mode.label).tag(mode)
+                }
+            }
+            .pickerStyle(.menu)
+            .labelsHidden()
 
             Divider()
 

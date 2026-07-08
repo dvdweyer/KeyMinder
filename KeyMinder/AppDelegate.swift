@@ -325,7 +325,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 bundleIdentifier: bundleID,
                 icon: icon,
                 sections: allSections,
-                includesItemsWithoutShortcuts: includeAll
+                includesItemsWithoutShortcuts: includeAll,
+                pid: pid
             )
             shortcuts.ignoredMenuShortcuts = ignoredShortcuts
             popup.show(.shortcuts(shortcuts))

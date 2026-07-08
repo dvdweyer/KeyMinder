@@ -130,14 +130,40 @@ final class PopupController {
         panel.setContentSize(size)
         panel.contentView = hosting
 
-        let screen = Self.activeVisibleFrame
+        let screen = Self.activeVisibleFrame(for: content)
         let origin = CGPoint(x: screen.midX - size.width / 2,
                              y: screen.midY - size.height / 2)
         panel.setFrame(CGRect(origin: origin, size: size), display: true)
     }
 
-    /// The visible frame of the screen the user is most likely working on:
-    /// whichever display contains the mouse cursor, then the main screen, then
+    /// The visible frame of the screen the popup should appear on, per
+    /// `UserDefaults.standard.popupDisplayMode`:
+    /// - `.activeAppWindow` (default): the screen containing the frontmost app's
+    ///   window, falling back to `mouseOrPrimaryFallback()` if that app has no
+    ///   locatable window (e.g. a background-only app).
+    /// - `.mouseCursor`: whichever screen contains the mouse cursor (the
+    ///   previous, only, behaviour), falling back the same way.
+    /// - `.mainDisplay`: always the display containing the menu bar.
+    private static func activeVisibleFrame(for content: PopupContent) -> CGRect {
+        switch UserDefaults.standard.popupDisplayMode {
+        case .activeAppWindow:
+            if case .shortcuts(let app) = content,
+               let pid = app.pid,
+               let screen = WindowScreenLocator.screen(forFrontmostPID: pid) {
+                return screen.visibleFrame
+            }
+            return mouseOrPrimaryFallback()
+        case .mouseCursor:
+            return mouseOrPrimaryFallback()
+        case .mainDisplay:
+            if let screen = NSScreen.screens.first ?? NSScreen.main {
+                return screen.visibleFrame
+            }
+            return sentinel
+        }
+    }
+
+    /// Whichever display contains the mouse cursor, then the main screen, then
     /// the first screen in the list.
     ///
     /// Returns a geometry value rather than `NSScreen` so every fallback level
@@ -146,7 +172,7 @@ final class PopupController {
     /// the previous `NSScreen.screens[0]` subscript would crash in that window.
     /// If all three lookups return nil we fall back to a 1920×1080 sentinel at
     /// the origin, which is always large enough to safely centre the panel.
-    private static var activeVisibleFrame: CGRect {
+    private static func mouseOrPrimaryFallback() -> CGRect {
         let mouse = NSEvent.mouseLocation
         if let screen = NSScreen.screens.first(where: { $0.frame.contains(mouse) })
                      ?? NSScreen.main
@@ -155,8 +181,10 @@ final class PopupController {
         }
         // No screen available during a display-reconfiguration race.
         // Use a conservative sentinel so the panel is positioned rather than crashing.
-        return CGRect(x: 0, y: 0, width: 1920, height: 1080)
+        return sentinel
     }
+
+    private static var sentinel: CGRect { CGRect(x: 0, y: 0, width: 1920, height: 1080) }
 
     /// Fades the panel out over ~0.10 s and orders it out on completion.
     func hide() {
@@ -251,7 +279,7 @@ final class PopupController {
     /// panel is still sized for shortcuts only; no-shortcut items join the
     /// ScrollView when the filter query reaches two characters.
     private func measuredContent(_ content: PopupContent, app: AppShortcuts) -> (NSView, CGSize) {
-        let screen = Self.activeVisibleFrame
+        let screen = Self.activeVisibleFrame(for: content)
         let maxPanelHeight = screen.height * 0.86
 
         // --- Column count + width. ---
