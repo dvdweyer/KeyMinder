@@ -385,10 +385,10 @@ struct SettingsView: View {
     }
 
     fileprivate static let tabs: [TabPickerView.Tab] = [
-        .init(label: "General",   systemImage: "gearshape"),
-        .init(label: "Popup",     systemImage: "list.bullet.rectangle.portrait"),
-        .init(label: "Ignored",   systemImage: "eye.slash"),
-        .init(label: "Developer", systemImage: "hammer"),
+        .init(label: String(localized: "General"),   systemImage: "gearshape"),
+        .init(label: String(localized: "Popup"),     systemImage: "list.bullet.rectangle.portrait"),
+        .init(label: String(localized: "Ignored"),   systemImage: "eye.slash"),
+        .init(label: String(localized: "Developer"), systemImage: "hammer"),
     ]
 
     var body: some View {
