@@ -308,6 +308,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             // If it was a pre-cache for exactly this invocation, keep the result.
             if let previous = self.detachedScrapeTask {
                 let (drained, drainedIgnored) = await previous.value
+                // A cancelled coordinator must not touch shared state: a newer
+                // presentPopup() may already have drained the slot itself and stored a
+                // fresh traversal in it, which this (stale) coordinator would otherwise
+                // wipe out from under it. presentPopup() always cancels the old
+                // coordinator before creating a new one, so the cancelled drainer always
+                // has a live successor to perform the cleanup below — no state is leaked.
+                guard !Task.isCancelled else { return }
                 self.detachedScrapeTask = nil
                 if self.preCacheKey == cacheKey {
                     self.menuCache = MenuCache(key: cacheKey, sections: drained,
@@ -317,7 +324,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             }
 
             // If we were cancelled while draining (another presentPopup fired),
-            // stop here — the newer task will handle the scrape.
+            // stop here — the newer task will handle the scrape. (Stays as a second
+            // guard for the cache-hit path above, where no drain occurred.)
             guard !Task.isCancelled else { return }
 
             // Use the cache if it's fresh and matches this invocation's settings.
@@ -384,9 +392,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                               ignoredTitles: ignoredTitles, ignoredMenuTitles: ignoredMenuTitles,
                               maxSubmenuSize: nil)
 
-        // Evict cache and abandon pre-cache task from a different app.
+        // Evict cache and abandon a stale *pre-cache* task from a different app. A
+        // user-triggered scrape has preCacheKey == nil, so it must never be abandoned
+        // here — `preCacheKey?.pid != pid` would otherwise evaluate `nil != pid` as
+        // true and wipe the slot out from under a still-running user scrape, letting
+        // this pre-cache start a second concurrent AX traversal.
         if menuCache?.key.pid != pid { menuCache = nil }
-        if preCacheKey?.pid != pid {
+        if let pk = preCacheKey, pk.pid != pid {
             // The AX scrape is synchronous C code — it cannot be cancelled — but dropping
             // the reference frees the slot so the new app can start its own pre-cache.
             // presentPopup() drains any in-flight task before starting a new traversal.
@@ -464,6 +476,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         statusItem?.menu = nil
     }
 
+    // Note: unlike presentPopup()/precacheMenus(), this starts a scrape without
+    // draining detachedScrapeTask first, so it can race a concurrent popup/pre-cache
+    // traversal (lower priority than the presentPopup/precacheMenus races fixed
+    // alongside this — Quiz Mode is user-invoked and infrequent).
     @objc private func startQuiz() {
         guard let app = frontmostMonitor.frontmostApp else { return }
         let pid = app.processIdentifier
