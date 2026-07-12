@@ -32,10 +32,14 @@ enum ShortcutActivator {
         }
 
         // Re-read the live title and log if it no longer matches what the popup showed.
+        // shortcut.title was sanitized at the scrape boundary (MenuScraper.titleString),
+        // so the raw live AX string must be sanitized the same way before comparing —
+        // otherwise any title altered by sanitization (over 256 graphemes, bidi marks,
+        // control chars, non-NFC) would log a spurious mismatch on every activation.
         var titleRef: CFTypeRef?
         if AXUIElementCopyAttributeValue(element, kAXTitleAttribute as CFString, &titleRef) == .success,
            let liveTitle = titleRef as? String,
-           liveTitle != shortcut.title {
+           ScrapedStringPolicy.sanitize(liveTitle) != shortcut.title {
             Logger.accessibility.error(
                 "Title mismatch at press: displayed '\(shortcut.title, privacy: .private)' but live element is '\(liveTitle, privacy: .private)'"
             )
