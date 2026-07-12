@@ -163,12 +163,23 @@ final class SettingsSync {
 
         for key in changed {
             guard let curVal = current[key] else {
-                // Key removed locally (e.g. accent reset to system). Clear it from KVS so
-                // no stale value is served; do not propagate as a deletion to other Macs.
-                kvs.removeObject(forKey: key)
-                kvs.removeObject(forKey: Self.tsKey(key))
-                lts.removeValue(forKey: key)
-                snapshot.removeValue(forKey: key)
+                // Key removed locally (e.g. accent reset to system). Only clear it from
+                // KVS when our deletion is at least as new as the remote value — otherwise
+                // a genuinely newer remote edit would be destroyed without ever being
+                // consulted. Never propagate our deletion as a tombstone to other Macs.
+                let kvsTs = kvs.double(forKey: Self.tsKey(key))
+                let localTs = lts[key] ?? 0
+                if localTs >= kvsTs {
+                    kvs.removeObject(forKey: key)
+                    kvs.removeObject(forKey: Self.tsKey(key))
+                    lts.removeValue(forKey: key)
+                    snapshot.removeValue(forKey: key)
+                } else if let remoteVal = kvs.object(forKey: key) as? NSObject {
+                    Logger.settings.log("SettingsSync.push: remote '\(key, privacy: .public)' is newer than local deletion (remote ts=\(kvsTs, privacy: .public) > local ts=\(localTs, privacy: .public)); adopting remote value instead")
+                    applyToLocal(remoteVal, forKey: key)
+                    lts[key] = kvsTs
+                    snapshot[key] = remoteVal
+                }
                 continue
             }
             let kvsTs = kvs.double(forKey: Self.tsKey(key))
