@@ -20,7 +20,18 @@ final class FavouritesStore {
     }
 
     func isFavourite(_ shortcut: Shortcut, appID: String) -> Bool {
-        pinned.contains(key(for: shortcut, appID: appID))
+        let k = key(for: shortcut, appID: appID)
+        if pinned.contains(k) { return true }
+        // Fall back to the pre-v1.0.185 unescaped key format: a field containing a
+        // literal "|" makes the stored string ambiguous to un-split, so old entries
+        // are never parsed/migrated up front — only matched here on lookup and
+        // opportunistically converged to the new format once found.
+        let legacy = legacyKey(for: shortcut, appID: appID)
+        guard pinned.contains(legacy) else { return false }
+        pinned.remove(legacy)
+        pinned.insert(k)
+        UserDefaults.standard.set(Array(pinned), forKey: Self.defaultsKey)
+        return true
     }
 
     func toggle(_ shortcut: Shortcut, appID: String) {
@@ -31,7 +42,8 @@ final class FavouritesStore {
 
     func hasFavourites(for appID: String) -> Bool {
         let prefix = Self.esc(appID) + "|"
-        return pinned.contains { $0.hasPrefix(prefix) }
+        let legacyPrefix = appID + "|"
+        return pinned.contains { $0.hasPrefix(prefix) || $0.hasPrefix(legacyPrefix) }
     }
 
     func reload() {
@@ -43,5 +55,9 @@ final class FavouritesStore {
 
     private func key(for shortcut: Shortcut, appID: String) -> String {
         "\(Self.esc(appID))|\(Self.esc(shortcut.title))|\(Self.esc(shortcut.keys))"
+    }
+
+    private func legacyKey(for shortcut: Shortcut, appID: String) -> String {
+        "\(appID)|\(shortcut.title)|\(shortcut.keys)"
     }
 }
