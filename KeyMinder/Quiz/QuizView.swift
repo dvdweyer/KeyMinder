@@ -76,6 +76,7 @@ final class QuizModel {
     }
 
     func advance() {
+        guard phase != .done else { return }
         currentIndex += 1
         phase = currentIndex >= activeQuestions.count ? .done : .asking
     }

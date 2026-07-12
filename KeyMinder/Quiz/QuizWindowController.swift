@@ -71,6 +71,10 @@ final class QuizWindowController: NSWindowController, NSWindowDelegate {
             let delay: TimeInterval = model.phase == .correct ? 0.8 : 1.5
             advanceTask = Task { @MainActor [weak self, weak model] in
                 try? await Task.sleep(for: .seconds(delay))
+                // Cancelling during Task.sleep only throws CancellationError, which try?
+                // swallows — without this guard a cancelled task still advances, double-
+                // advancing whenever the user skips feedback with a keypress.
+                guard !Task.isCancelled else { return }
                 model?.advance()
                 self?.advanceTask = nil
             }
