@@ -9,75 +9,70 @@ final class SettingsPorterTests: XCTestCase {
     private let keyB = "wrapLongSections"
     private let keyC = "showConflictIndicator"
 
-    // Saved originals, restored in tearDown so tests don't pollute real prefs.
-    private var savedValues: [String: Any?] = [:]
+    // Isolated UserDefaults suite — SettingsPorter.apply() has full-replace semantics
+    // (it removes every known key absent from the import), so it must never run against
+    // .standard: xcodebuild test hosts this bundle inside the real KeyMinder.app process,
+    // meaning .standard IS the user's real ~/Library/Preferences/org.afaik.KeyMinder.plist.
+    private var defaults: UserDefaults!
+    private static let suiteName = "org.afaik.KeyMinder.SettingsPorterTests"
 
     override func setUp() {
         super.setUp()
-        let fixtureKeys = [keyA, keyB, keyC]
-        for key in fixtureKeys {
-            savedValues[key] = UserDefaults.standard.object(forKey: key)
-            UserDefaults.standard.removeObject(forKey: key)
-        }
+        defaults = UserDefaults(suiteName: Self.suiteName)
+        defaults.removePersistentDomain(forName: Self.suiteName)
     }
 
     override func tearDown() {
-        for (key, value) in savedValues {
-            if let value {
-                UserDefaults.standard.set(value, forKey: key)
-            } else {
-                UserDefaults.standard.removeObject(forKey: key)
-            }
-        }
-        savedValues = [:]
+        defaults.removePersistentDomain(forName: Self.suiteName)
+        defaults = nil
         super.tearDown()
     }
 
     // MARK: - Round-trip
 
     func testRoundTrip_writtenValuesAreRestored() throws {
-        UserDefaults.standard.set(true,  forKey: keyA)
-        UserDefaults.standard.set(false, forKey: keyB)
+        defaults.set(true,  forKey: keyA)
+        defaults.set(false, forKey: keyB)
 
-        let data = try SettingsPorter.export()
+        let data = try SettingsPorter.export(defaults: defaults)
 
-        UserDefaults.standard.removeObject(forKey: keyA)
-        UserDefaults.standard.removeObject(forKey: keyB)
+        defaults.removeObject(forKey: keyA)
+        defaults.removeObject(forKey: keyB)
 
-        try SettingsPorter.apply(data)
+        try SettingsPorter.apply(data, defaults: defaults)
 
-        XCTAssertEqual(UserDefaults.standard.bool(forKey: keyA), true)
-        XCTAssertEqual(UserDefaults.standard.bool(forKey: keyB), false)
+        XCTAssertEqual(defaults.bool(forKey: keyA), true)
+        XCTAssertEqual(defaults.bool(forKey: keyB), false)
     }
 
     func testRoundTrip_metadataKeysDoNotLeakIntoDefaults() throws {
-        let data = try SettingsPorter.export()
-        try SettingsPorter.apply(data)
+        let data = try SettingsPorter.export(defaults: defaults)
+        try SettingsPorter.apply(data, defaults: defaults)
 
-        XCTAssertNil(UserDefaults.standard.object(forKey: "__version"))
-        XCTAssertNil(UserDefaults.standard.object(forKey: "__exportedAt"))
-        XCTAssertNil(UserDefaults.standard.object(forKey: "__keyminderVersion"))
+        XCTAssertNil(defaults.object(forKey: "__version"))
+        XCTAssertNil(defaults.object(forKey: "__exportedAt"))
+        XCTAssertNil(defaults.object(forKey: "__keyminderVersion"))
     }
 
     // MARK: - Absent-key removal
 
     func testApply_removesKeyAbsentInExport() throws {
         // Export while keyC is absent — so it won't appear in the export dict.
-        let data = try SettingsPorter.export()
+        let data = try SettingsPorter.export(defaults: defaults)
 
         // Now set keyC, simulating a key that existed before the import.
-        UserDefaults.standard.set(true, forKey: keyC)
+        defaults.set(true, forKey: keyC)
 
-        try SettingsPorter.apply(data)
+        try SettingsPorter.apply(data, defaults: defaults)
 
-        XCTAssertNil(UserDefaults.standard.object(forKey: keyC))
+        XCTAssertNil(defaults.object(forKey: keyC))
     }
 
     // MARK: - Error paths
 
     func testApply_corruptData_throws() {
         // PropertyListSerialization throws .propertyListReadCorrupt (3840) for garbage bytes.
-        XCTAssertThrowsError(try SettingsPorter.apply(Data("not a plist".utf8))) { error in
+        XCTAssertThrowsError(try SettingsPorter.apply(Data("not a plist".utf8), defaults: defaults)) { error in
             XCTAssertNotNil(error as? CocoaError)
         }
     }
@@ -85,7 +80,7 @@ final class SettingsPorterTests: XCTestCase {
     func testApply_validPlistButWrongRootType_throwsCocoaError() throws {
         let arrayData = try PropertyListSerialization.data(
             fromPropertyList: ["a", "b"], format: .xml, options: 0)
-        XCTAssertThrowsError(try SettingsPorter.apply(arrayData)) { error in
+        XCTAssertThrowsError(try SettingsPorter.apply(arrayData, defaults: defaults)) { error in
             XCTAssertEqual((error as? CocoaError)?.code, .fileReadCorruptFile)
         }
     }
@@ -93,7 +88,7 @@ final class SettingsPorterTests: XCTestCase {
     // MARK: - Empty dictionary
 
     func testExport_emptyDefaults_producesValidPlist() throws {
-        let data = try SettingsPorter.export()
+        let data = try SettingsPorter.export(defaults: defaults)
         let dict = try XCTUnwrap(
             try PropertyListSerialization.propertyList(from: data, format: nil) as? [String: Any])
 
@@ -103,23 +98,23 @@ final class SettingsPorterTests: XCTestCase {
     }
 
     func testApply_emptyDict_removesAllKnownKeys() throws {
-        UserDefaults.standard.set(true, forKey: keyA)
-        UserDefaults.standard.set(true, forKey: keyB)
+        defaults.set(true, forKey: keyA)
+        defaults.set(true, forKey: keyB)
 
         let emptyExport = try PropertyListSerialization.data(
             fromPropertyList: ["__version": 1, "__exportedAt": "", "__keyminderVersion": ""],
             format: .xml, options: 0)
 
-        try SettingsPorter.apply(emptyExport)
+        try SettingsPorter.apply(emptyExport, defaults: defaults)
 
-        XCTAssertNil(UserDefaults.standard.object(forKey: keyA))
-        XCTAssertNil(UserDefaults.standard.object(forKey: keyB))
+        XCTAssertNil(defaults.object(forKey: keyA))
+        XCTAssertNil(defaults.object(forKey: keyB))
     }
 
     // MARK: - Smoke test
 
     func testExport_doesNotThrow() throws {
-        let data = try SettingsPorter.export()
+        let data = try SettingsPorter.export(defaults: defaults)
         XCTAssertFalse(data.isEmpty)
     }
 
