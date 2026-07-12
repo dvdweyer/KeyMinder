@@ -30,7 +30,7 @@ final class FavouritesStore {
     }
 
     func hasFavourites(for appID: String) -> Bool {
-        let prefix = appID + "|"
+        let prefix = Self.esc(appID) + "|"
         return pinned.contains { $0.hasPrefix(prefix) }
     }
 
@@ -39,7 +39,9 @@ final class FavouritesStore {
         pinned = Set(stored)
     }
 
+    private static func esc(_ s: String) -> String { s.replacingOccurrences(of: "|", with: "||") }
+
     private func key(for shortcut: Shortcut, appID: String) -> String {
-        "\(appID)|\(shortcut.title)|\(shortcut.keys)"
+        "\(Self.esc(appID))|\(Self.esc(shortcut.title))|\(Self.esc(shortcut.keys))"
     }
 }
