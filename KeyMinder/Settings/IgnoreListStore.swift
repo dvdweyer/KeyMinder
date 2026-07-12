@@ -50,7 +50,13 @@ final class IgnoreListStore {
         }
 
         if !UserDefaults.standard.bool(forKey: Self.didSeedKey) {
-            globalTitles = ["Minimize", "Fill", "Centre", "Move & Resize"]
+            // macOS window-management titles are localized per system language, and
+            // en-US ("Minimize"/"Center") and en-GB ("Minimise"/"Centre") spell these
+            // differently — LIKE[cd] matching doesn't equate the two, so both spellings
+            // are seeded to avoid one dead rule on every English variant. This is
+            // English-only by design; other locales simply get no default
+            // window-management rules (users can add their own).
+            globalTitles = ["Minimize", "Minimise", "Fill", "Center", "Centre", "Move & Resize"]
             UserDefaults.standard.set(true, forKey: Self.didSeedKey)
             save()
         }
