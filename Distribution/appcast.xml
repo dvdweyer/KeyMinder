@@ -6,6 +6,27 @@
         <language>en</language>
         <!-- Items are populated by generate_appcast during the release pipeline. -->
         <item>
+            <title>1.0.192</title>
+            <pubDate>Sun, 12 Jul 2026 10:17:51 -0700</pubDate>
+            <sparkle:channel>alpha</sparkle:channel>
+            <sparkle:version>496</sparkle:version>
+            <sparkle:shortVersionString>1.0.192</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <description><![CDATA[<ul>
+<li><strong>Fixed:</strong> surface settings export write failures with an alert</li>
+<li><strong>Fixed:</strong> seed both en-US and en-GB spellings of window-management titles</li>
+<li><strong>Fixed:</strong> sanitize live AX title before comparing against stored title</li>
+<li><strong>Improved:</strong> move system/third-party shortcut loading off the main actor</li>
+<li><strong>Fixed:</strong> &quot;Keep Local Settings&quot; now also wins for keys unset locally</li>
+<li><strong>Fixed:</strong> close two detachedScrapeTask races that let concurrent AX traversals run</li>
+<li><strong>Fixed:</strong> quiz manual skip no longer double-advances</li>
+<li><strong>Fixed:</strong> regenerate v1.0.185 alpha release notes with full changelog since v1.0.179</li>
+<li><strong>Fixed:</strong> base alpha/beta release notes on the channel&#x27;s last published version</li>
+</ul>
+]]></description>
+            <enclosure url="https://keyminder.app/KeyMinder_1.0.192.zip" length="3612328" type="application/octet-stream" sparkle:edSignature="V7ATCXk83HdV4uCl6Y373RlzRxRJb7Jb3FtEMkcGUJLobZXkiKaBcmJ7uimGBIxvh7HmU0iXwuqB2cpuDq8UBA=="/>
+        </item>
+        <item>
             <title>1.0.185</title>
             <pubDate>Sun, 12 Jul 2026 09:51:58 -0700</pubDate>
             <sparkle:channel>alpha</sparkle:channel>
@@ -22,6 +43,7 @@
 </ul>
 ]]></description>
             <enclosure url="https://keyminder.app/KeyMinder_1.0.185.zip" length="3609687" type="application/octet-stream" sparkle:edSignature="H84O4AkbcjitmbERxGQADHE5jUw0KbmRcwNNRODETyEGrSYvx5yIhEylrK0PkRqRymnl+TQ5WnZHEd7SRJjEBQ=="/>
+                    <sparkle:minimumAutoupdateVersion>496</sparkle:minimumAutoupdateVersion>
         </item>
         <item>
             <title>1.0.180</title>
