@@ -284,6 +284,20 @@ final class ShortcutFormatterTests: XCTestCase {
         XCTAssertEqual(keys(keyCode: 45, flags: [.shift, .command], chars: "n"), "⇧⌘N")
     }
 
+    func testKeysFromEvent_shiftDigit() {
+        // `chars` here is the *unshifted* base character (what
+        // `event.characters(byApplyingModifiers: [])` supplies), not what
+        // `charactersIgnoringModifiers` would return for a real Shift+3 press
+        // (which is "#", since that property still applies Shift). Passing the
+        // unshifted "3" lets the explicit "⇧" prefix below produce "⇧⌘3".
+        XCTAssertEqual(keys(keyCode: 20, flags: [.shift, .command], chars: "3"), "⇧⌘3")
+    }
+
+    func testKeysFromEvent_shiftEquals() {
+        // Same rationale as testKeysFromEvent_shiftDigit — unshifted base char "=", not "+".
+        XCTAssertEqual(keys(keyCode: 24, flags: [.shift, .command], chars: "="), "⇧⌘=")
+    }
+
     func testKeysFromEvent_controlLetter() {
         XCTAssertEqual(keys(keyCode: 8, flags: .control, chars: "c"), "⌃C")
     }

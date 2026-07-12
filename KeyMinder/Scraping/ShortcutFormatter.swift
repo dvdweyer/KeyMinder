@@ -11,7 +11,7 @@ enum ShortcutFormatter {
     static func keys(from event: NSEvent) -> String? {
         keys(keyCode: event.keyCode,
              modifierFlags: event.modifierFlags,
-             charactersIgnoringModifiers: event.charactersIgnoringModifiers)
+             charactersIgnoringModifiers: event.characters(byApplyingModifiers: []))
     }
 
     /// Testable overload: accepts raw values rather than an NSEvent.
