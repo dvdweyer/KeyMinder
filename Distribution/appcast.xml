@@ -7,6 +7,35 @@
         <!-- Items are populated by generate_appcast during the release pipeline. -->
         <item>
             <title>1.0.195</title>
+            <pubDate>Sun, 12 Jul 2026 11:00:42 -0700</pubDate>
+            <sparkle:channel>beta</sparkle:channel>
+            <sparkle:version>504</sparkle:version>
+            <sparkle:shortVersionString>1.0.195</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <description><![CDATA[<ul>
+<li><strong>Fixed:</strong> recover pins orphaned by the v1.0.185 pin-key escaping change</li>
+<li><strong>Fixed:</strong> SettingsSync deletion branch compares against a fresh timestamp, not a stale one</li>
+<li><strong>Fixed:</strong> stop SettingsPorterTests from wiping real production settings</li>
+<li><strong>Fixed:</strong> surface settings export write failures with an alert</li>
+<li><strong>Fixed:</strong> seed both en-US and en-GB spellings of window-management titles</li>
+<li><strong>Fixed:</strong> sanitize live AX title before comparing against stored title</li>
+<li><strong>Improved:</strong> move system/third-party shortcut loading off the main actor</li>
+<li><strong>Fixed:</strong> &quot;Keep Local Settings&quot; now also wins for keys unset locally</li>
+<li><strong>Fixed:</strong> close two detachedScrapeTask races that let concurrent AX traversals run</li>
+<li><strong>Fixed:</strong> quiz manual skip no longer double-advances</li>
+<li><strong>Fixed:</strong> regenerate v1.0.185 alpha release notes with full changelog since v1.0.179</li>
+<li><strong>Fixed:</strong> base alpha/beta release notes on the channel&#x27;s last published version</li>
+<li><strong>Fixed:</strong> escape | delimiter in favourite-shortcut pin keys</li>
+<li><strong>Improved:</strong> fast-path exact-match ignore patterns instead of compiling an NSPredicate</li>
+<li><strong>Fixed:</strong> don&#x27;t let a local settings deletion clobber a newer remote edit</li>
+<li><strong>Fixed:</strong> derive live keypress key string from unshifted base character</li>
+<li><strong>New:</strong> auto-generate Sparkle release notes in release.sh</li>
+</ul>
+]]></description>
+            <enclosure url="https://keyminder.app/KeyMinder_1.0.195.zip" length="3610201" type="application/octet-stream" sparkle:edSignature="3FXZZ79RfVBoS+aTNTblql7oIqcLyRNH7RK4ZrHyGEiUkyUIjGZa4hFe7z7YYyx7v0Qj6B7JRmM7NDUVzwBDBA=="/>
+        </item>
+        <item>
+            <title>1.0.195</title>
             <pubDate>Sun, 12 Jul 2026 10:42:03 -0700</pubDate>
             <sparkle:channel>alpha</sparkle:channel>
             <sparkle:version>503</sparkle:version>
@@ -19,6 +48,7 @@
 </ul>
 ]]></description>
             <enclosure url="https://keyminder.app/KeyMinder_1.0.195.zip" length="3610207" type="application/octet-stream" sparkle:edSignature="lOEaDUhEWu66raTuWvnu3ThO5/SJJoa5f0Mtq8YFI+6HE4DTzua44EFHosInGE+aJaso3P+nhRKzM6M+bFayAg=="/>
+                    <sparkle:minimumAutoupdateVersion>504</sparkle:minimumAutoupdateVersion>
         </item>
         <item>
             <title>1.0.192</title>
@@ -40,7 +70,7 @@
 </ul>
 ]]></description>
             <enclosure url="https://keyminder.app/KeyMinder_1.0.192.zip" length="3612328" type="application/octet-stream" sparkle:edSignature="V7ATCXk83HdV4uCl6Y373RlzRxRJb7Jb3FtEMkcGUJLobZXkiKaBcmJ7uimGBIxvh7HmU0iXwuqB2cpuDq8UBA=="/>
-                    <sparkle:minimumAutoupdateVersion>503</sparkle:minimumAutoupdateVersion>
+            <sparkle:minimumAutoupdateVersion>503</sparkle:minimumAutoupdateVersion>
         </item>
         <item>
             <title>1.0.185</title>
