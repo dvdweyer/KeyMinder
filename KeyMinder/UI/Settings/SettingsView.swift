@@ -587,7 +587,15 @@ private struct GeneralSettingsBody: View {
         panel.allowedContentTypes = [UTType(filenameExtension: "keymindersettings") ?? .data]
         panel.canCreateDirectories = true
         guard panel.runModal() == .OK, let url = panel.url else { return }
-        try? data.write(to: url)
+        do {
+            try data.write(to: url)
+        } catch {
+            let errAlert = NSAlert()
+            errAlert.messageText = String(localized: "Export Failed")
+            errAlert.informativeText = error.localizedDescription
+            errAlert.alertStyle = .warning
+            errAlert.runModal()
+        }
     }
 
     private func importSettings() {
