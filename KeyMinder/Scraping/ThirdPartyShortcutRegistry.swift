@@ -32,6 +32,12 @@ enum ThirdPartyShortcutRegistry {
     /// Shortcuts beyond this count in a single registration file are dropped.
     static let maxShortcutsPerFile = 500
 
+    /// Files larger than this are skipped without being read. `maxShortcutsPerFile`
+    /// only caps decoded entries *after* the whole file is read into memory, so
+    /// without this a pathological multi-hundred-MB `.json` in the user-writable
+    /// Integrations directory would be read fully before being rejected.
+    static let maxFileBytes = 1_048_576  // 1 MB
+
     private struct RegistrationFile: Decodable {
         let appName: String
         let shortcuts: [RegisteredShortcut]
@@ -59,6 +65,10 @@ enum ThirdPartyShortcutRegistry {
         guard !jsonFiles.isEmpty else { return [] }
 
         return jsonFiles.compactMap { url in
+            if let size = try? url.resourceValues(forKeys: [.fileSizeKey]).fileSize, size > maxFileBytes {
+                Logger.scraper.info("ThirdPartyRegistry: skipping oversized \(url.lastPathComponent, privacy: .public)")
+                return nil
+            }
             guard let data = try? Data(contentsOf: url) else {
                 Logger.scraper.info("ThirdPartyRegistry: unreadable \(url.lastPathComponent, privacy: .public)")
                 return nil

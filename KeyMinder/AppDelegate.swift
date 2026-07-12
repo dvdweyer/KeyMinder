@@ -289,6 +289,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let icon = app.icon
         let includeAll = UserDefaults.standard.showAllMenuItems
         let maxSubmenuSize: Int? = (includeAll && UserDefaults.standard.hideLargeSubmenus) ? 5 : nil
+        let showSystem = UserDefaults.standard.showSystemShortcuts
+        let showThirdParty = UserDefaults.standard.showThirdPartyShortcuts
         let ignoreStore = IgnoreListStore.shared
         guard !ignoreStore.isAppIgnored(bundleID) else { return }
         let ignoredTitles: [String] = (ignoreStore.isEnabled && !ignoreStore.showWhenFiltering)
@@ -351,14 +353,25 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
             guard !Task.isCancelled else { return }
 
+            // Loaded off the main actor unconditionally (cache hit or miss) — these read
+            // and parse plists/JSON from disk, which is unnecessary main-thread I/O on
+            // this hot path even though it's normally only a few ms. Both provider enums
+            // are stateless/nonisolated and their UserDefaults reads are thread-safe.
+            let extraSections = await Task.detached(priority: .userInitiated) {
+                var extra: [MenuSection] = []
+                if showSystem, let sys = SystemShortcutsProvider.load() {
+                    extra.append(sys)
+                }
+                if showThirdParty {
+                    extra.append(contentsOf: ThirdPartyShortcutRegistry.load())
+                }
+                return extra
+            }.value
+
+            guard !Task.isCancelled else { return }
+
             var allSections = sections
-            if UserDefaults.standard.showSystemShortcuts,
-               let sys = SystemShortcutsProvider.load() {
-                allSections.append(sys)
-            }
-            if UserDefaults.standard.showThirdPartyShortcuts {
-                allSections.append(contentsOf: ThirdPartyShortcutRegistry.load())
-            }
+            allSections.append(contentsOf: extraSections)
             var shortcuts = AppShortcuts(
                 appName: appName,
                 bundleIdentifier: bundleID,
