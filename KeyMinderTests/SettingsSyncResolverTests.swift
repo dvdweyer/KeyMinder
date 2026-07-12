@@ -32,6 +32,27 @@ final class SettingsSyncResolverTests: XCTestCase {
         XCTAssertTrue(SettingsSync.shouldApplyRemote(kvsTs: now + 100, localTs: now))
     }
 
+    /// push()'s local-deletion branch must compare against a fresh `now` (the deletion is
+    /// happening now), not `lts[key]` (the last time this key was *synced*, which can be
+    /// stale). A remote edit that landed after the key's last sync but before `now` must
+    /// still lose to a deletion happening right now — only an edit *after* `now` should win.
+    func testDeletionAgainstFreshNowBeatsStaleLastSyncedTimestamp() {
+        let now = Date().timeIntervalSince1970
+        let staleLastSynced = now - 200
+        let remoteEditAfterLastSync = now - 100
+
+        // Old (buggy) behavior: comparing against the stale last-synced timestamp, a remote
+        // edit that landed after that sync but before the deletion would incorrectly win.
+        XCTAssertTrue(SettingsSync.shouldApplyRemote(kvsTs: remoteEditAfterLastSync, localTs: staleLastSynced))
+
+        // Fixed behavior: comparing against `now`, the deletion (happening now) correctly
+        // beats any remote edit that landed before it.
+        XCTAssertFalse(SettingsSync.shouldApplyRemote(kvsTs: remoteEditAfterLastSync, localTs: now))
+
+        // A remote edit that lands strictly after `now` still must win.
+        XCTAssertTrue(SettingsSync.shouldApplyRemote(kvsTs: now + 100, localTs: now))
+    }
+
     // MARK: valuesEqual
 
     func testValuesEqual() {

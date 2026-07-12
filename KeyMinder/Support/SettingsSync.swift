@@ -173,15 +173,18 @@ final class SettingsSync {
                 // KVS when our deletion is at least as new as the remote value — otherwise
                 // a genuinely newer remote edit would be destroyed without ever being
                 // consulted. Never propagate our deletion as a tombstone to other Macs.
+                // Compare against a fresh `now` (the deletion is happening now), not
+                // `lts[key]` (the last time this key was *synced*, which can be stale if
+                // a remote edit landed after our last sync but before this deletion) —
+                // mirrors the non-deletion branch's `now >= kvsTs` check below.
                 let kvsTs = kvs.double(forKey: Self.tsKey(key))
-                let localTs = lts[key] ?? 0
-                if localTs >= kvsTs {
+                if now >= kvsTs {
                     kvs.removeObject(forKey: key)
                     kvs.removeObject(forKey: Self.tsKey(key))
                     lts.removeValue(forKey: key)
                     snapshot.removeValue(forKey: key)
                 } else if let remoteVal = kvs.object(forKey: key) as? NSObject {
-                    Logger.settings.log("SettingsSync.push: remote '\(key, privacy: .public)' is newer than local deletion (remote ts=\(kvsTs, privacy: .public) > local ts=\(localTs, privacy: .public)); adopting remote value instead")
+                    Logger.settings.log("SettingsSync.push: remote '\(key, privacy: .public)' is newer than local deletion (remote ts=\(kvsTs, privacy: .public) > local ts=\(now, privacy: .public)); adopting remote value instead")
                     applyToLocal(remoteVal, forKey: key)
                     lts[key] = kvsTs
                     snapshot[key] = remoteVal
