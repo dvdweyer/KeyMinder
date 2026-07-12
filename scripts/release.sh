@@ -325,10 +325,38 @@ PYEOF
     fi
 else
     # Beta/alpha: the website isn't updated for these, so auto-generate notes
-    # from git log since the previous release tag (any channel — tags are
-    # shared across channels when a build is promoted without a new commit).
-    PREV_TAG=$(git -C "$REPO_DIR" tag -l 'v*' --sort=-v:refname \
-        | awk -v cur="v${VERSION}" 'found{print; exit} $0==cur{found=1}')
+    # from git log since the last release already published *to this channel*
+    # (parsed from the existing appcast, same idea as LAST_STABLE above) — not
+    # just the immediately preceding git tag, which would miss every commit
+    # from intervening versions that were never shipped on this channel (e.g.
+    # a run of stable-only version bumps between two alpha releases).
+    LAST_CHANNEL_VERSION=$(python3 - "$APPCAST" "$CHANNEL" <<'PYEOF'
+import re, sys
+
+path, channel = sys.argv[1], sys.argv[2]
+try:
+    with open(path) as f:
+        xml = f.read()
+except FileNotFoundError:
+    sys.exit(0)
+
+for item in re.findall(r'<item>.*?</item>', xml, re.DOTALL):
+    if f'<sparkle:channel>{channel}</sparkle:channel>' in item:
+        m = re.search(r'<sparkle:shortVersionString>([\d.]+)</sparkle:shortVersionString>', item)
+        if m:
+            print(m.group(1))
+            break
+PYEOF
+    )
+
+    if [[ -n "$LAST_CHANNEL_VERSION" ]]; then
+        PREV_TAG="v${LAST_CHANNEL_VERSION}"
+    else
+        # First-ever release on this channel: fall back to the immediately
+        # preceding git tag so notes aren't empty.
+        PREV_TAG=$(git -C "$REPO_DIR" tag -l 'v*' --sort=-v:refname \
+            | awk -v cur="v${VERSION}" 'found{print; exit} $0==cur{found=1}')
+    fi
 
     if [[ -n "$PREV_TAG" ]]; then
         # Written to a file rather than piped via heredoc because python3 needs
