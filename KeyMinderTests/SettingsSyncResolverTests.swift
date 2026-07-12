@@ -19,6 +19,19 @@ final class SettingsSyncResolverTests: XCTestCase {
         XCTAssertFalse(SettingsSync.shouldApplyRemote(kvsTs: 0, localTs: 0))
     }
 
+    /// startWithLocalPriority() ("Keep Local Settings") stamps every synced key with
+    /// `now`, including keys with no local value, precisely so this check rejects any
+    /// remote value already in KVS at enable time — even for a key like accent colour
+    /// that's locally absent (following system default) and would otherwise have
+    /// localTs == 0. A future edit from another Mac, with a timestamp newer than `now`,
+    /// must still be allowed through.
+    func testLocalPriorityStampRejectsExistingRemoteButAllowsFutureRemote() {
+        let now = Date().timeIntervalSince1970
+        XCTAssertFalse(SettingsSync.shouldApplyRemote(kvsTs: now - 100, localTs: now))
+        XCTAssertFalse(SettingsSync.shouldApplyRemote(kvsTs: now, localTs: now))
+        XCTAssertTrue(SettingsSync.shouldApplyRemote(kvsTs: now + 100, localTs: now))
+    }
+
     // MARK: valuesEqual
 
     func testValuesEqual() {

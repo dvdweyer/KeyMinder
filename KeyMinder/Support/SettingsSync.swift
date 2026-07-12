@@ -93,10 +93,16 @@ final class SettingsSync {
         let now = Date().timeIntervalSince1970
         var lts = localTimestamps()
         for key in Self.syncedKeys {
+            // Stamp every synced key with `now`, including keys with no local value —
+            // "locally absent" is a meaningful state here (e.g. accent colour following
+            // system default), and leaving its timestamp at 0 would let the
+            // applyRemoteIfNewer() call below adopt a remote value, partially ignoring
+            // the user's "keep local" choice. Deletions are still never propagated: a
+            // locally-absent key's remote value in KVS is left untouched, not removed.
+            lts[key] = now
             guard let val = UserDefaults.standard.object(forKey: key) as? NSObject else { continue }
             kvs.set(val, forKey: key)
             kvs.set(now, forKey: Self.tsKey(key))
-            lts[key] = now
             snapshot[key] = val
         }
         setLocalTimestamps(lts)
