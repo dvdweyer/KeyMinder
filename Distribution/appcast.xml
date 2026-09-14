@@ -7,6 +7,39 @@
         <!-- Items are populated by generate_appcast during the release pipeline. -->
         <item>
             <title>1.0.195</title>
+            <pubDate>Mon, 14 Sep 2026 10:00:22 +0200</pubDate>
+            <sparkle:version>505</sparkle:version>
+            <sparkle:shortVersionString>1.0.195</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <description><![CDATA[<div class="changelog-entry">
+      <div class="changelog-version">
+        <strong>v1.0.195</strong>
+        <span>Sep 14, 2026 — current</span>
+      </div>
+      <ul>
+        <li>New: popup now defaults to the active app's screen; added a display-mode setting</li>
+        <li>Fixed: pins orphaned by the v1.0.185 pin-key escaping bug are now recovered automatically</li>
+        <li>Fixed: settings sync no longer compares a deletion against a stale timestamp</li>
+        <li>Fixed: "Keep Local Settings" now also wins for keys that are unset locally</li>
+        <li>Fixed: a local settings deletion could clobber a newer remote iCloud edit</li>
+        <li>Fixed: two race conditions that could let concurrent menu scrapes run at once</li>
+        <li>Fixed: live keypress key is now derived correctly from the unshifted base character</li>
+        <li>Fixed: live AX title is sanitized before comparing against the stored title</li>
+        <li>Fixed: window-management shortcut titles now recognized in both US and UK English</li>
+        <li>Fixed: settings export failures now surface an alert instead of failing silently</li>
+        <li>Fixed: Quiz mode manual skip no longer double-advances</li>
+        <li>Fixed: Settings tabs are now scrollable so content can't be clipped</li>
+        <li>Fixed: Popup Display and modifier-key picker labels now localized</li>
+        <li>Fixed: settings are flushed before quit/relaunch; sync logs now persist</li>
+        <li>Fixed: beta/alpha releases no longer prune the live stable DMG</li>
+        <li>Improved: system/third-party shortcut loading moved off the main thread</li>
+        <li>Improved: ignore-list matching is faster for exact-match patterns</li>
+      </ul>
+    </div>]]></description>
+            <enclosure url="https://keyminder.app/KeyMinder_1.0.195.zip" length="3583505" type="application/octet-stream" sparkle:edSignature="PZ7fgl7dLPFNq6FpuAZhw0+n3nw6fm0tvUPFDLw+boZ13zXH5a3GTsfXOaXm0qESqxXJh+duX3Dz2kFthxmGDA=="/>
+        </item>
+        <item>
+            <title>1.0.195</title>
             <pubDate>Sun, 12 Jul 2026 11:00:42 -0700</pubDate>
             <sparkle:channel>beta</sparkle:channel>
             <sparkle:version>504</sparkle:version>
@@ -33,6 +66,7 @@
 </ul>
 ]]></description>
             <enclosure url="https://keyminder.app/KeyMinder_1.0.195.zip" length="3610201" type="application/octet-stream" sparkle:edSignature="3FXZZ79RfVBoS+aTNTblql7oIqcLyRNH7RK4ZrHyGEiUkyUIjGZa4hFe7z7YYyx7v0Qj6B7JRmM7NDUVzwBDBA=="/>
+                    <sparkle:minimumAutoupdateVersion>505</sparkle:minimumAutoupdateVersion>
         </item>
         <item>
             <title>1.0.195</title>
@@ -48,7 +82,7 @@
 </ul>
 ]]></description>
             <enclosure url="https://keyminder.app/KeyMinder_1.0.195.zip" length="3610207" type="application/octet-stream" sparkle:edSignature="lOEaDUhEWu66raTuWvnu3ThO5/SJJoa5f0Mtq8YFI+6HE4DTzua44EFHosInGE+aJaso3P+nhRKzM6M+bFayAg=="/>
-                    <sparkle:minimumAutoupdateVersion>504</sparkle:minimumAutoupdateVersion>
+            <sparkle:minimumAutoupdateVersion>504</sparkle:minimumAutoupdateVersion>
         </item>
         <item>
             <title>1.0.192</title>
