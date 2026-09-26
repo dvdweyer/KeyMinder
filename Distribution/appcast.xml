@@ -6,6 +6,28 @@
         <language>en</language>
         <!-- Items are populated by generate_appcast during the release pipeline. -->
         <item>
+            <title>1.0.206</title>
+            <pubDate>Sat, 26 Sep 2026 15:15:18 +0800</pubDate>
+            <sparkle:channel>alpha</sparkle:channel>
+            <sparkle:version>528</sparkle:version>
+            <sparkle:shortVersionString>1.0.206</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <description><![CDATA[<ul>
+<li><strong>Fixed:</strong> show the unshifted key in the recorded global hotkey label</li>
+<li><strong>Fixed:</strong> match chords and quiz answers on non-Latin keyboard layouts</li>
+<li><strong>Fixed:</strong> &quot;Quiz Again&quot; works for apps without a bundle identifier</li>
+<li><strong>Fixed:</strong> localize remaining hard-coded AppKit and popup strings</li>
+<li><strong>Fixed:</strong> include popupDisplayMode in settings export/import</li>
+<li><strong>Fixed:</strong> reload in-memory stores when SettingsSync.push() adopts a newer remote value</li>
+<li><strong>Fixed:</strong> make the XCTest host inert and stop PopupFilterModelTests leaving keys behind</li>
+<li><strong>Fixed:</strong> a cancelled scrape coordinator no longer clears a newer traversal&#x27;s slot</li>
+<li><strong>Fixed:</strong> bound every AX call with a process-global timeout; locate popup screen once</li>
+<li><strong>Fixed:</strong> stop hotkey recording when leaving the onboarding trigger step or a Settings tab</li>
+</ul>
+]]></description>
+            <enclosure url="https://keyminder.app/KeyMinder_1.0.206.zip" length="3592633" type="application/octet-stream" sparkle:edSignature="z74uOTTx59pwfyom3HRaL15uX9T5xwOcu4uum1Dl32tAyRC7NbAw9bMwBf68D64sz2QLJY5+a1KwQViJ6TsJCA=="/>
+        </item>
+        <item>
             <title>1.0.195</title>
             <pubDate>Mon, 14 Sep 2026 10:00:22 +0200</pubDate>
             <sparkle:version>505</sparkle:version>
@@ -37,6 +59,7 @@
       </ul>
     </div>]]></description>
             <enclosure url="https://keyminder.app/KeyMinder_1.0.195.zip" length="3583505" type="application/octet-stream" sparkle:edSignature="PZ7fgl7dLPFNq6FpuAZhw0+n3nw6fm0tvUPFDLw+boZ13zXH5a3GTsfXOaXm0qESqxXJh+duX3Dz2kFthxmGDA=="/>
+                    <sparkle:minimumAutoupdateVersion>528</sparkle:minimumAutoupdateVersion>
         </item>
         <item>
             <title>1.0.195</title>
@@ -66,7 +89,7 @@
 </ul>
 ]]></description>
             <enclosure url="https://keyminder.app/KeyMinder_1.0.195.zip" length="3610201" type="application/octet-stream" sparkle:edSignature="3FXZZ79RfVBoS+aTNTblql7oIqcLyRNH7RK4ZrHyGEiUkyUIjGZa4hFe7z7YYyx7v0Qj6B7JRmM7NDUVzwBDBA=="/>
-                    <sparkle:minimumAutoupdateVersion>505</sparkle:minimumAutoupdateVersion>
+            <sparkle:minimumAutoupdateVersion>505</sparkle:minimumAutoupdateVersion>
         </item>
         <item>
             <title>1.0.195</title>
