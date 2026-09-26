@@ -157,12 +157,23 @@ enum SystemShortcutsProvider {
 
         let shortcuts = equivs.compactMap { rawTitle, value -> Shortcut? in
             guard let keys = formatUserKeyEquivalent(value) else { return nil }
-            let title = ScrapedStringPolicy.sanitize(rawTitle)
+            let title = displayTitle(forUserKeyEquivalentKey: rawTitle)
             guard !title.isEmpty else { return nil }
             return Shortcut(title: title, keys: keys)
         }.sorted { $0.title.localizedStandardCompare($1.title) == .orderedAscending }
 
         return shortcuts.isEmpty ? nil : ShortcutGroup(title: "All Applications", shortcuts: shortcuts)
+    }
+
+    /// Converts an `NSUserKeyEquivalents` key into a display title. Menu-path keys
+    /// are stored as `"\u{1b}File\u{1b}Save"`; splitting must happen before
+    /// sanitizing, which strips the ESC separators. Returns `"File › Save"`.
+    static func displayTitle(forUserKeyEquivalentKey raw: String) -> String {
+        guard raw.hasPrefix("\u{1b}") else { return ScrapedStringPolicy.sanitize(raw) }
+        return raw.split(separator: "\u{1b}")
+            .map { ScrapedStringPolicy.sanitize(String($0)) }
+            .filter { !$0.isEmpty }
+            .joined(separator: " › ")
     }
 
     /// Converts an `NSUserKeyEquivalents` value string (e.g. `"@$/"`) into a
