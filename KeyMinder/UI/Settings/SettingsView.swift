@@ -959,7 +959,13 @@ private struct DeveloperSettingsBody: View {
             Text("Updates")
                 .font(.headline)
 
-            Toggle("Receive beta releases", isOn: $model.receiveBetaUpdates)
+            // Alpha implies beta (see UpdaterDelegate.allowedChannels), so show beta as on
+            // without overwriting the stored beta choice.
+            Toggle("Receive beta releases", isOn: Binding(
+                get: { model.receiveBetaUpdates || model.receiveAlphaUpdates },
+                set: { model.receiveBetaUpdates = $0 }
+            ))
+            .disabled(model.receiveAlphaUpdates)
 
             Text("Get early access to new features before the public release. Beta builds may be less stable.")
                 .font(.caption)
@@ -971,7 +977,7 @@ private struct DeveloperSettingsBody: View {
                 ExperimentalBadge()
             }
 
-            Text("Experimental builds for active testers. Expect rough edges and occasional instability.")
+            Text("Experimental builds for active testers. Includes beta releases. Expect rough edges and occasional instability.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
