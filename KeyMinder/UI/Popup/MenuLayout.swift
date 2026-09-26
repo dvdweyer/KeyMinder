@@ -58,6 +58,46 @@ enum MenuLayout {
         }
     }
 
+    /// Splits `layout` like `split(_:maxHeight:)` and cuts `full` at the same
+    /// shortcuts, so each layout piece is paired with the full-content piece that
+    /// covers the same stretch of the menu. `layout` must be `full` with rows
+    /// removed (same `Shortcut` instances, same order). A row of `full` that is
+    /// absent from `layout` stays with the preceding layout row (leading ones go
+    /// to the first piece), so no row is dropped or duplicated.
+    static func splitPaired(layout: MenuSection, full: MenuSection,
+                            maxHeight: CGFloat) -> [(layout: MenuSection, full: MenuSection)] {
+        let layoutPieces = split([layout], maxHeight: maxHeight)
+        guard layoutPieces.count > 1 else { return [(layout: layout, full: full)] }
+
+        var pieceOf: [Shortcut.ID: Int] = [:]
+        for (i, piece) in layoutPieces.enumerated() {
+            for shortcut in piece.shortcuts { pieceOf[shortcut.id] = i }
+        }
+
+        var fullGroups = Array(repeating: [ShortcutGroup](), count: layoutPieces.count)
+        var current = 0
+        for group in full.groups {
+            var run: [Shortcut] = []
+            for shortcut in group.shortcuts {
+                if let p = pieceOf[shortcut.id], p != current {
+                    if !run.isEmpty {
+                        fullGroups[current].append(ShortcutGroup(title: group.title, shortcuts: run))
+                    }
+                    run = []
+                    current = p
+                }
+                run.append(shortcut)
+            }
+            if !run.isEmpty {
+                fullGroups[current].append(ShortcutGroup(title: group.title, shortcuts: run))
+            }
+        }
+
+        return layoutPieces.enumerated().map { i, piece in
+            (layout: piece, full: MenuSection(title: full.title, groups: fullGroups[i]))
+        }
+    }
+
     /// Splits one oversized section into pieces, each ≤ `maxHeight`, by greedily
     /// packing whole groups. When a single group exceeds `maxHeight` its shortcuts
     /// are split further, repeating the group title on the continuation piece.

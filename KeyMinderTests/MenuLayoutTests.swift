@@ -401,3 +401,73 @@ final class MenuLayoutSplitTests: XCTestCase {
         XCTAssertGreaterThan(editPieces.count, 1)
     }
 }
+
+// MARK: - MenuLayout.splitPaired tests
+
+final class MenuLayoutSplitPairedTests: XCTestCase {
+
+    /// A full section whose groups alternate keyed and keyless rows, plus the
+    /// shortcuts-only layout section derived from it (same `Shortcut` instances).
+    private func sections(groups: [(String?, Int)]) -> (layout: MenuSection, full: MenuSection) {
+        let fullGroups = groups.map { title, count in
+            ShortcutGroup(title: title, shortcuts: (0..<count).map { i in
+                Shortcut(title: "Item \(i)", keys: i.isMultiple(of: 2) ? "⌘\(i)" : "")
+            })
+        }
+        let layoutGroups = fullGroups.compactMap { group -> ShortcutGroup? in
+            let keyed = group.shortcuts.filter { !$0.keys.isEmpty }
+            return keyed.isEmpty ? nil : ShortcutGroup(title: group.title, shortcuts: keyed)
+        }
+        return (MenuSection(title: "View", groups: layoutGroups),
+                MenuSection(title: "View", groups: fullGroups))
+    }
+
+    func testSplitPaired_layoutFits_fullReturnedWhole() {
+        let (layout, full) = sections(groups: [(nil, 10)])
+        let maxH = MenuLayout.height(of: layout) + 1
+        let result = MenuLayout.splitPaired(layout: layout, full: full, maxHeight: maxH)
+        XCTAssertEqual(result.count, 1)
+        XCTAssertEqual(result[0].full.id, full.id)
+    }
+
+    func testSplitPaired_everyFullRowAppearsExactlyOnce_inOrder() {
+        let (layout, full) = sections(groups: [(nil, 30), ("Sub", 25), (nil, 20)])
+        let result = MenuLayout.splitPaired(layout: layout, full: full, maxHeight: 200)
+        XCTAssertGreaterThan(result.count, 1)
+        XCTAssertEqual(result.flatMap { $0.full.shortcuts.map(\.id) }, full.shortcuts.map(\.id))
+    }
+
+    func testSplitPaired_fullPieceContainsItsLayoutRows() {
+        let (layout, full) = sections(groups: [(nil, 40), ("Sub", 30)])
+        let result = MenuLayout.splitPaired(layout: layout, full: full, maxHeight: 200)
+        for pair in result {
+            let fullIDs = Set(pair.full.shortcuts.map(\.id))
+            XCTAssertTrue(pair.layout.shortcuts.allSatisfy { fullIDs.contains($0.id) })
+        }
+    }
+
+    func testSplitPaired_keylessRowsFollowPrecedingKeyedRow() {
+        let (layout, full) = sections(groups: [(nil, 40)])
+        let result = MenuLayout.splitPaired(layout: layout, full: full, maxHeight: 200)
+        XCTAssertGreaterThan(result.count, 1)
+        for pair in result.dropFirst() {
+            XCTAssertEqual(pair.full.shortcuts.first?.id, pair.layout.shortcuts.first?.id,
+                           "Each continuation piece starts at its first layout row")
+        }
+    }
+
+    func testSplitPaired_splitGroupRepeatsTitle() {
+        let (layout, full) = sections(groups: [("Sub", 60)])
+        let result = MenuLayout.splitPaired(layout: layout, full: full, maxHeight: 200)
+        XCTAssertGreaterThan(result.count, 1)
+        XCTAssertTrue(result.allSatisfy { $0.full.groups.allSatisfy { $0.title == "Sub" } })
+        XCTAssertTrue(result.allSatisfy { $0.full.title == "View" })
+    }
+
+    func testSplitPaired_identicalLayoutAndFull_matchesSplit() {
+        let section = MenuSection.fixture(title: "Edit", count: 40)
+        let result = MenuLayout.splitPaired(layout: section, full: section, maxHeight: 200)
+        let plain = MenuLayout.split([section], maxHeight: 200)
+        XCTAssertEqual(result.map { $0.full.shortcuts.map(\.id) }, plain.map { $0.shortcuts.map(\.id) })
+    }
+}

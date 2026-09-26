@@ -308,22 +308,13 @@ final class PopupController {
         }
 
         // When wrapping is on, split sections that exceed 60 % of the max panel
-        // height into continuation pieces (same title, repeated header). The split
-        // is applied to both layout and full independently so the UUID-keyed lookup
-        // below still resolves correctly: each split piece gets a fresh UUID and
-        // its own entry in the pairs array.
+        // height into continuation pieces (same title, repeated header). The layout
+        // is split and the full section is cut at the same rows, so each piece keeps
+        // exactly the rows between its layout boundaries — none dropped or repeated.
         if UserDefaults.standard.wrapLongSections {
             let maxColumnHeight = maxPanelHeight * 0.60
-            sectionPairs = sectionPairs.flatMap { pair -> [(layout: MenuSection, full: MenuSection)] in
-                let lPieces = MenuLayout.split([pair.layout], maxHeight: maxColumnHeight)
-                let fPieces = MenuLayout.split([pair.full],   maxHeight: maxColumnHeight)
-                // Use layout piece count as authoritative: each layout UUID must appear
-                // exactly once in fullByID to avoid a crash from duplicate keys.
-                // If full splits into more pieces the extra content merges into the
-                // last layout piece's full counterpart (rare in practice).
-                return lPieces.enumerated().map { i, l in
-                    (layout: l, full: fPieces[min(i, fPieces.count - 1)])
-                }
+            sectionPairs = sectionPairs.flatMap { pair in
+                MenuLayout.splitPaired(layout: pair.layout, full: pair.full, maxHeight: maxColumnHeight)
             }
         }
 
