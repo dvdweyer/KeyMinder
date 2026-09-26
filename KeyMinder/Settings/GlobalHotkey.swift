@@ -97,9 +97,10 @@ extension GlobalHotkey {
         case 98:  return "F7";  case 100: return "F8"
         case 101: return "F9";  case 109: return "F10"
         case 103: return "F11"; case 111: return "F12"
-        // Regular keys: use layout-aware character from the event
+        // Regular keys: the unshifted character (the "⇧" prefix already conveys Shift),
+        // same derivation as ShortcutFormatter so ⇧⌘3 shows as "⇧⌘3", not "⇧⌘#".
         default:
-            return event.charactersIgnoringModifiers?.uppercased() ?? "?"
+            return ShortcutFormatter.baseCharacter(of: event)?.uppercased() ?? "?"
         }
     }
 }

@@ -18,7 +18,7 @@ enum ShortcutFormatter {
     /// from the layout's ⌘ layer when that is ASCII. Non-Latin layouts (Russian, Greek,
     /// Hebrew, Arabic, …) map ⌘ to a Latin layer — ⌘+т is ⌘N — which is what menu key
     /// equivalents use; their base layer would yield non-ASCII and never match.
-    private static func baseCharacter(of event: NSEvent) -> String? {
+    static func baseCharacter(of event: NSEvent) -> String? {
         let commandLayer = event.characters(byApplyingModifiers: .command)
         if let scalar = commandLayer?.unicodeScalars.first, (0x21...0x7E).contains(scalar.value) {
             return commandLayer
