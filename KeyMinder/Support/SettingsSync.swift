@@ -126,6 +126,15 @@ final class SettingsSync {
         return false
     }
 
+    /// Pushes a change still waiting out the debounce. Call before the app quits,
+    /// otherwise an edit made in the last second is never pushed.
+    func flush() {
+        guard kvsObserver != nil else { return }
+        debounceTask?.cancel()
+        debounceTask = nil
+        push()
+    }
+
     func stop() {
         debounceTask?.cancel()
         debounceTask = nil

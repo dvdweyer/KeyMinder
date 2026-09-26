@@ -136,6 +136,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     /// relaunches the app) never making it to disk.
     func applicationWillTerminate(_ notification: Notification) {
         guard !isHostingTests else { return }
+        SettingsSync.shared.flush()
         UserDefaults.standard.synchronize()
     }
 
