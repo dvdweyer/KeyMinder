@@ -17,6 +17,9 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
     /// capped at 85 % of the available screen height.
     private var tabHeights: [CGFloat] = [0, 0, 0, 0]
 
+    /// Set by `AppDelegate`, which owns the Sparkle updater.
+    static var onCheckForUpdates: () -> Void = {}
+
     static func show() {
         let isNew = instance == nil
         if isNew { instance = SettingsWindowController() }
@@ -466,7 +469,11 @@ private struct GeneralSettingsBody: View {
 
             Toggle("Launch at Login", isOn: $model.launchAtLogin)
 
-            Toggle("Check for updates automatically", isOn: $model.automaticUpdatesEnabled)
+            HStack {
+                Toggle("Check for updates automatically", isOn: $model.automaticUpdatesEnabled)
+                Spacer()
+                Button("Check for Updates…") { SettingsWindowController.onCheckForUpdates() }
+            }
 
             HStack(alignment: .firstTextBaseline, spacing: 8) {
                 Toggle("Sync settings with iCloud", isOn: $model.iCloudSyncEnabled)

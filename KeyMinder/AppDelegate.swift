@@ -83,6 +83,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             self?.popup.hide()
             SettingsWindowController.show()
         }
+        SettingsWindowController.onCheckForUpdates = { [weak self] in
+            self?.updaterController.checkForUpdates(nil)
+        }
         popup.onPermissionGranted = { [weak self] in
             self?.setupDoubleTap()
             self?.presentPopup()
