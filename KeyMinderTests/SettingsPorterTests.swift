@@ -121,7 +121,7 @@ final class SettingsPorterTests: XCTestCase {
     // MARK: - Keys list invariants
 
     func testKeys_hasExpectedCount() {
-        XCTAssertEqual(SettingsPorter.keys.count, 25)
+        XCTAssertEqual(SettingsPorter.keys.count, 26)
     }
 
     func testKeys_hasNoDuplicates() {
@@ -132,5 +132,6 @@ final class SettingsPorterTests: XCTestCase {
         XCTAssertTrue(SettingsPorter.keys.contains("globalHotkey"))
         XCTAssertTrue(SettingsPorter.keys.contains("debugLoggingEnabled"))
         XCTAssertTrue(SettingsPorter.keys.contains("pinnedShortcuts"))
+        XCTAssertTrue(SettingsPorter.keys.contains("popupDisplayMode"))
     }
 }

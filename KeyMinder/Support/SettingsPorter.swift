@@ -15,6 +15,7 @@ enum SettingsPorter {
         "showSystemShortcuts", "showDeactivatedSystemShortcuts",
         "showThirdPartyShortcuts", "wrapLongSections",
         "alwaysShowFavourites", "showConflictIndicator",
+        "popupDisplayMode",
         // Updates
         "SUEnableAutomaticChecks", "receiveBetaUpdates", "receiveAlphaUpdates",
         // Ignore list
