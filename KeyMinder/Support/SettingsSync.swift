@@ -54,6 +54,7 @@ final class SettingsSync {
 
     private static let localTimestampsKey = "__localSyncTimestamps"
     private static let didInitKey         = "didInitSyncV2"
+    private static let lastSyncedKey      = "__lastSyncedValues"
     nonisolated private static func tsKey(_ key: String) -> String { "__ts_\(key)" }
 
     private var kvs: NSUbiquitousKeyValueStore { .default }
@@ -63,8 +64,11 @@ final class SettingsSync {
 
     /// Last-known synced values, used to detect which keys a local change touched.
     /// Updated on every push and every applied remote change, so writes SettingsSync
-    /// makes itself never register as user edits (no echo push).
-    private var snapshot: [String: NSObject] = [:]
+    /// makes itself never register as user edits (no echo push). Persisted, so edits
+    /// made while sync was off (or lost to a crash) still differ from it at `start()`.
+    private var snapshot: [String: NSObject] = [:] {
+        didSet { UserDefaults.standard.set(snapshot, forKey: Self.lastSyncedKey) }
+    }
 
     private init() {}
 
@@ -72,7 +76,11 @@ final class SettingsSync {
 
     func start() {
         Logger.settings.log("SettingsSync.start() snapshot keys=\(self.snapshot.count, privacy: .public) didInit=\(UserDefaults.standard.bool(forKey: Self.didInitKey), privacy: .public)")
-        snapshot = currentSyncedValues()
+        // Without a persisted snapshot (first start since this was added, or after
+        // clearICloudData) there is no record of what was last synced, so treat the
+        // current values as synced rather than pushing them all as fresh edits.
+        snapshot = (UserDefaults.standard.dictionary(forKey: Self.lastSyncedKey) as? [String: NSObject])
+            ?? currentSyncedValues()
         // One-time non-destructive publish: seed KVS keys that don't exist yet from
         // local values. Never overwrites an existing KVS value, so a sparse Mac can't
         // wipe a richer one. Replaces the old (dangerous) full migration push.
@@ -81,6 +89,7 @@ final class SettingsSync {
             UserDefaults.standard.set(true, forKey: Self.didInitKey)
         }
         applyRemoteIfNewer()   // launch pull
+        push()                 // local edits made while sync was stopped
         startObserving()
     }
 
@@ -159,6 +168,7 @@ final class SettingsSync {
         UserDefaults.standard.removeObject(forKey: Self.localTimestampsKey)
         UserDefaults.standard.removeObject(forKey: Self.didInitKey)
         snapshot = [:]
+        UserDefaults.standard.removeObject(forKey: Self.lastSyncedKey)
     }
 
     // MARK: Push (local → KVS)
