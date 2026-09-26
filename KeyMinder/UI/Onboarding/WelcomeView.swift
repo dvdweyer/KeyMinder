@@ -339,6 +339,9 @@ private struct WelcomeTriggerStep: View {
             guard !Task.isCancelled else { return }
             tried = false
         }
+        // Recording unregisters the hotkey and swallows every keyDown; it must not
+        // outlive this step (the wizard's view tree survives the window closing).
+        .onDisappear { if model.isRecording { model.stopRecording() } }
     }
 
     private var tryItNowBox: some View {
@@ -364,6 +367,7 @@ private struct WelcomeTriggerStep: View {
 
             if !tried {
                 Button("Try") {
+                    if model.isRecording { model.stopRecording() }
                     tried = true
                     onTryItNow()
                 }

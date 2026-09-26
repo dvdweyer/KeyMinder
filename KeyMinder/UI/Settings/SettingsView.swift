@@ -401,8 +401,11 @@ struct SettingsView: View {
             tabContent
         }
         .frame(width: 420)
-        .onChange(of: selectedTab) { _, tab in onTabChange(tab) }
-        .onDisappear { model.stopRecording() }
+        .onChange(of: selectedTab) { _, tab in
+            if model.isRecording { model.stopRecording() }
+            onTabChange(tab)
+        }
+        .onDisappear { if model.isRecording { model.stopRecording() } }
     }
 
     @ViewBuilder
