@@ -511,11 +511,11 @@ private struct FilterableShortcutsView: View {
         let md = ShortcutExporter.markdown(for: model.app)
 
         let alert = NSAlert()
-        alert.messageText = "Export \(model.app.appName) Shortcuts"
-        alert.informativeText = "Save as a Markdown file, or copy to the clipboard."
-        alert.addButton(withTitle: "Save as File…")
-        alert.addButton(withTitle: "Copy to Clipboard")
-        alert.addButton(withTitle: "Cancel")
+        alert.messageText = String(localized: "Export \(model.app.appName) Shortcuts")
+        alert.informativeText = String(localized: "Save as a Markdown file, or copy to the clipboard.")
+        alert.addButton(withTitle: String(localized: "Save as File…"))
+        alert.addButton(withTitle: String(localized: "Copy to Clipboard"))
+        alert.addButton(withTitle: String(localized: "Cancel"))
 
         switch alert.runModal() {
         case .alertFirstButtonReturn:
@@ -529,7 +529,7 @@ private struct FilterableShortcutsView: View {
                 flashCopied()
             } catch {
                 let errAlert = NSAlert()
-                errAlert.messageText = "Save Failed"
+                errAlert.messageText = String(localized: "Save Failed")
                 errAlert.informativeText = error.localizedDescription
                 errAlert.alertStyle = .warning
                 errAlert.runModal()
@@ -1112,7 +1112,7 @@ private struct DisambiguationOverlay: View {
                             onActivateAppShortcut(shortcut)
                         } label: {
                             Label {
-                                Text(verbatim: "\(shortcut.title)  in \(state.appName)")
+                                Text("\(shortcut.title) in \(state.appName)")
                                     .frame(maxWidth: .infinity, alignment: .leading)
                             } icon: {
                                 Image(systemName: "arrow.right.circle")

@@ -123,7 +123,7 @@ enum SystemShortcutsProvider {
         }
 
         guard groups.count > 1 else { return nil }
-        return MenuSection(title: "System", groups: groups)
+        return MenuSection(title: String(localized: "System"), groups: groups)
     }
 
     /// Fallback: all bundled defaults in their default enabled/disabled state, no plist overrides.

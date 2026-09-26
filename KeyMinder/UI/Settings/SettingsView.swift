@@ -611,7 +611,7 @@ private struct GeneralSettingsBody: View {
             try SettingsPorter.apply(data)
         } catch {
             let errAlert = NSAlert()
-            errAlert.messageText = "Import Failed"
+            errAlert.messageText = String(localized: "Import Failed")
             errAlert.informativeText = error.localizedDescription
             errAlert.alertStyle = .warning
             errAlert.runModal()
