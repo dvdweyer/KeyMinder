@@ -81,4 +81,18 @@ final class QuizModelTests: XCTestCase {
         XCTAssertEqual(model.currentIndex, 1)
         XCTAssertEqual(model.phase, .done)
     }
+
+    // MARK: - restart
+
+    func testRestart_withoutBundleID_resetsFromDone() {
+        let model = makeModel(questionCount: 2)   // makeModel passes bundleID: nil
+        model.advance()
+        model.advance()
+        XCTAssertEqual(model.phase, .done)
+        model.restart()
+        XCTAssertEqual(model.phase, .asking)
+        XCTAssertEqual(model.currentIndex, 0)
+        XCTAssertEqual(model.score, 0)
+        XCTAssertEqual(model.total, 2)
+    }
 }

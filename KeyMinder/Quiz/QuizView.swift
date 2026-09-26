@@ -84,9 +84,8 @@ final class QuizModel {
     func restart() { applyFilter() }
 
     private func applyFilter() {
-        guard let bundleID else { return }
         let pool: [QuizQuestion]
-        if favouritesOnly {
+        if favouritesOnly, let bundleID {
             pool = allQuestions.filter { q in
                 FavouritesStore.shared.isFavourite(Shortcut(title: q.title, keys: q.keys), appID: bundleID)
             }
