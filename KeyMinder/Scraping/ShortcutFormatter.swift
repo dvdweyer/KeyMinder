@@ -11,7 +11,19 @@ enum ShortcutFormatter {
     static func keys(from event: NSEvent) -> String? {
         keys(keyCode: event.keyCode,
              modifierFlags: event.modifierFlags,
-             charactersIgnoringModifiers: event.characters(byApplyingModifiers: []))
+             charactersIgnoringModifiers: baseCharacter(of: event))
+    }
+
+    /// The key's character with Shift *not* applied (the "⇧" prefix conveys it), taken
+    /// from the layout's ⌘ layer when that is ASCII. Non-Latin layouts (Russian, Greek,
+    /// Hebrew, Arabic, …) map ⌘ to a Latin layer — ⌘+т is ⌘N — which is what menu key
+    /// equivalents use; their base layer would yield non-ASCII and never match.
+    private static func baseCharacter(of event: NSEvent) -> String? {
+        let commandLayer = event.characters(byApplyingModifiers: .command)
+        if let scalar = commandLayer?.unicodeScalars.first, (0x21...0x7E).contains(scalar.value) {
+            return commandLayer
+        }
+        return event.characters(byApplyingModifiers: [])
     }
 
     /// Testable overload: accepts raw values rather than an NSEvent.
