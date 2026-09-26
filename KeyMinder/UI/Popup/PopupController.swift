@@ -125,12 +125,13 @@ final class PopupController {
             lastFilterBundleID = old.app.bundleIdentifier
         }
         filterModel = nil
-        let (hosting, size) = makeContent(for: content)
+        // Looked up once per show: in .activeAppWindow mode this is AX IPC on the main thread.
+        let screen = Self.activeVisibleFrame(for: content)
+        let (hosting, size) = makeContent(for: content, screen: screen)
         hosting.frame = CGRect(origin: .zero, size: size)
         panel.setContentSize(size)
         panel.contentView = hosting
 
-        let screen = Self.activeVisibleFrame(for: content)
         let origin = CGPoint(x: screen.midX - size.width / 2,
                              y: screen.midY - size.height / 2)
         panel.setFrame(CGRect(origin: origin, size: size), display: true)
@@ -249,7 +250,7 @@ final class PopupController {
     /// Builds the hosting view for `content` and the panel size to present it at.
     /// Non-shortcut states use fixed sizes; the shortcut grid keeps the analytic
     /// column/width math but *measures* its height from the real SwiftUI layout.
-    private func makeContent(for content: PopupContent) -> (NSView, CGSize) {
+    private func makeContent(for content: PopupContent, screen: CGRect) -> (NSView, CGSize) {
         switch content {
         case .needsPermission:
             return fixedContent(content, size: CGSize(width: 420, height: 300))
@@ -259,7 +260,7 @@ final class PopupController {
             guard !app.isEmpty else {
                 return fixedContent(content, size: CGSize(width: 380, height: 200))
             }
-            return measuredContent(content, app: app)
+            return measuredContent(content, app: app, screen: screen)
         }
     }
 
@@ -278,8 +279,8 @@ final class PopupController {
     /// life of the popup — rows dim but never move. In all-entries mode the
     /// panel is still sized for shortcuts only; no-shortcut items join the
     /// ScrollView when the filter query reaches two characters.
-    private func measuredContent(_ content: PopupContent, app: AppShortcuts) -> (NSView, CGSize) {
-        let screen = Self.activeVisibleFrame(for: content)
+    private func measuredContent(_ content: PopupContent, app: AppShortcuts,
+                                 screen: CGRect) -> (NSView, CGSize) {
         let maxPanelHeight = screen.height * 0.86
 
         // --- Column count + width. ---

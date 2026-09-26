@@ -7,12 +7,18 @@ import ApplicationServices
 /// actually working on, rather than wherever the mouse cursor happens to be.
 enum WindowScreenLocator {
 
+    private static let timeout: Float = 0.25
+
     /// Returns the screen containing the focused (or main) window of the app
     /// with the given pid, or `nil` if no window frame could be read — e.g. the
     /// app has no windows, or the AX call failed for any other reason. Callers
     /// should fall back to another screen-selection strategy on `nil`.
     static func screen(forFrontmostPID pid: pid_t) -> NSScreen? {
         let appElement = AXUIElementCreateApplication(pid)
+        // Runs on the main thread: give up quickly on an unresponsive app and let the
+        // caller fall back to the mouse screen. Timeouts are per element, so the
+        // window element needs its own.
+        AXUIElementSetMessagingTimeout(appElement, Self.timeout)
 
         guard let window = window(appElement, kAXFocusedWindowAttribute)
                         ?? window(appElement, kAXMainWindowAttribute),
@@ -37,7 +43,9 @@ enum WindowScreenLocator {
         var ref: CFTypeRef?
         guard AXUIElementCopyAttributeValue(element, attribute as CFString, &ref) == .success,
               let ref, CFGetTypeID(ref) == AXUIElementGetTypeID() else { return nil }
-        return unsafeBitCast(ref, to: AXUIElement.self)
+        let window = unsafeBitCast(ref, to: AXUIElement.self)
+        AXUIElementSetMessagingTimeout(window, timeout)
+        return window
     }
 
     private static func point(_ element: AXUIElement, _ attribute: String) -> CGPoint? {

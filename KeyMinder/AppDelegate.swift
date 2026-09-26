@@ -62,6 +62,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var iconStyleObserver: NSObjectProtocol?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        // Per AXUIElement.h, a timeout set on an app element applies to that element
+        // only; the system-wide element sets it for every AX call this process makes.
+        AXUIElementSetMessagingTimeout(AXUIElementCreateSystemWide(), 1.0)
         NSApp.setActivationPolicy(.accessory)
         popup.onGrant = { [weak self] in
             self?.popup.hide()
