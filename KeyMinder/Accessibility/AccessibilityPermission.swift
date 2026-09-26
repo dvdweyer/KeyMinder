@@ -14,7 +14,9 @@ enum AccessibilityPermission {
     /// state (typically `false` on first call).
     @discardableResult
     static func requestAccess() -> Bool {
-        let key = kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String
+        // The value of kAXTrustedCheckOptionPrompt; the imported global is a mutable
+        // `var`, which strict concurrency checking rejects.
+        let key = "AXTrustedCheckOptionPrompt"
         return AXIsProcessTrustedWithOptions([key: true] as CFDictionary)
     }
 

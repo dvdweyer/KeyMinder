@@ -4,7 +4,8 @@ import Foundation
 
 // MARK: - Private CGS bindings (loaded dynamically; fall back gracefully if removed)
 
-private let _cgsHandle: UnsafeMutableRawPointer? =
+// Written once at load, only read afterwards.
+nonisolated(unsafe) private let _cgsHandle: UnsafeMutableRawPointer? =
     dlopen("/System/Library/Frameworks/CoreGraphics.framework/CoreGraphics",
            RTLD_LAZY | RTLD_NOLOAD)
 

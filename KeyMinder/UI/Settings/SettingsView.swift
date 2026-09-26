@@ -362,6 +362,7 @@ private struct TabPickerView: NSViewRepresentable {
 
     func makeCoordinator() -> Coordinator { Coordinator(self) }
 
+    @MainActor
     final class Coordinator: NSObject {
         var parent: TabPickerView
         init(_ parent: TabPickerView) { self.parent = parent }

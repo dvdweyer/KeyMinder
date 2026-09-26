@@ -5,7 +5,10 @@ import ApplicationServices
 
 /// A single keyboard shortcut: the menu item that triggers it and the
 /// formatted key combination (e.g. "⇧⌘N").
-struct Shortcut: Identifiable, Hashable {
+///
+/// `@unchecked Sendable`: `AXUIElement` is an immutable CF reference whose AX IPC is
+/// thread-safe, and every other stored property is a value type.
+struct Shortcut: Identifiable, Hashable, @unchecked Sendable {
     let id = UUID()
     /// The menu item's title, e.g. "New Conversation".
     let title: String
@@ -54,7 +57,7 @@ extension Shortcut {
 ///
 /// - `title == nil`: top-level items scraped directly from the menu (no submenu header shown).
 /// - `title != nil`: items scraped from a submenu; the title is rendered as a sub-header.
-struct ShortcutGroup: Identifiable, Hashable {
+struct ShortcutGroup: Identifiable, Hashable, Sendable {
     let id = UUID()
     /// Submenu name, e.g. "Move & Resize". `nil` for top-level (non-submenu) items.
     let title: String?
@@ -64,7 +67,7 @@ struct ShortcutGroup: Identifiable, Hashable {
 /// A group of shortcuts that share a top-level menu, e.g. "File" or "Edit".
 /// Internally organised into `ShortcutGroup`s — one unnamed group for top-level
 /// items plus one named group per submenu.
-struct MenuSection: Identifiable, Hashable {
+struct MenuSection: Identifiable, Hashable, Sendable {
     let id = UUID()
     /// The top-level menu title, e.g. "File".
     let title: String

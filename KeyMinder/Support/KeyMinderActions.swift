@@ -6,9 +6,10 @@ import AppKit
 struct KeyMinderAction {
     let title: String
     var note: String? = nil
-    let handler: () -> Void
+    let handler: @MainActor () -> Void
 }
 
+@MainActor
 enum KeyMinderActions {
     /// Returns the KeyMinder-native action for a given key string, if one exists.
     /// Pass closures only for the actions you want to support; a nil closure
