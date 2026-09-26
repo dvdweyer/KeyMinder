@@ -166,6 +166,7 @@ final class SettingsSync {
 
         var lts = localTimestamps()
         let now = Date().timeIntervalSince1970
+        var adoptedRemote = false
 
         for key in changed {
             guard let curVal = current[key] else {
@@ -188,6 +189,7 @@ final class SettingsSync {
                     applyToLocal(remoteVal, forKey: key)
                     lts[key] = kvsTs
                     snapshot[key] = remoteVal
+                    adoptedRemote = true
                 }
                 continue
             }
@@ -205,10 +207,14 @@ final class SettingsSync {
                 applyToLocal(remoteVal!, forKey: key)
                 lts[key] = kvsTs
                 snapshot[key] = remoteVal
+                adoptedRemote = true
             }
         }
 
         setLocalTimestamps(lts)
+        // Same as applyRemoteIfNewer(): the stores cache UserDefaults in memory, and a
+        // stale cache would write the adopted value away on the next local edit.
+        if adoptedRemote { postChangeNotifications() }
         kvs.synchronize()
     }
 
