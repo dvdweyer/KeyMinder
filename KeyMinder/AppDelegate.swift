@@ -14,7 +14,7 @@ private final class UpdaterDelegate: NSObject, SPUUpdaterDelegate {
     func allowedChannels(for updater: SPUUpdater) -> Set<String> {
         var channels: Set<String> = []
         if UserDefaults.standard.receiveBetaUpdates  { channels.insert("beta") }
-        if UserDefaults.standard.receiveAlphaUpdates { channels.insert("alpha") }
+        if UserDefaults.standard.receiveAlphaUpdates { channels.formUnion(["alpha", "beta"]) }
         return channels
     }
 
