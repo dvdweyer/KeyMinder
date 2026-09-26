@@ -61,7 +61,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var alphaChannelObserver: NSObjectProtocol?
     private var iconStyleObserver: NSObjectProtocol?
 
+    /// `xcodebuild test` hosts KeyMinderTests inside this app, with the user's real
+    /// preferences domain and iCloud account. Every launch side effect is skipped then.
+    private let isHostingTests =
+        ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
+
     func applicationDidFinishLaunching(_ notification: Notification) {
+        if isHostingTests {
+            NSApp.setActivationPolicy(.accessory)
+            return
+        }
         // Per AXUIElement.h, a timeout set on an app element applies to that element
         // only; the system-wide element sets it for every AX call this process makes.
         AXUIElementSetMessagingTimeout(AXUIElementCreateSystemWide(), 1.0)
@@ -123,6 +132,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     /// guards against a setting changed just before quit (e.g. right as Sparkle
     /// relaunches the app) never making it to disk.
     func applicationWillTerminate(_ notification: Notification) {
+        guard !isHostingTests else { return }
         UserDefaults.standard.synchronize()
     }
 

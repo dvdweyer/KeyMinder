@@ -330,9 +330,20 @@ final class PopupFilterModelTests: XCTestCase {
     private var savedShowWhenFiltering = false
     private var savedGlobalTitles: [String] = []
     private var savedRequireFilter = false
+    /// Raw UserDefaults values of every key these tests write (directly, or via
+    /// IgnoreListStore's didSet). The test host is the real app with the user's real
+    /// prefs domain, so an originally-absent key must be removed again, not left as an
+    /// explicit `false` (which SettingsSync would treat as a change and push to iCloud).
+    private static let touchedKeys = ["requireFilterForAllMenuItems",
+                                      "ignoreListEnabled", "ignoreListShowWhenFiltering"]
+    private var savedRawDefaults: [String: Any] = [:]
 
     override func setUp() {
         super.setUp()
+        savedRawDefaults = [:]
+        for key in Self.touchedKeys {
+            if let value = UserDefaults.standard.object(forKey: key) { savedRawDefaults[key] = value }
+        }
         savedIgnoreEnabled      = IgnoreListStore.shared.isEnabled
         savedShowWhenFiltering  = IgnoreListStore.shared.showWhenFiltering
         savedGlobalTitles       = IgnoreListStore.shared.globalTitles
@@ -347,6 +358,13 @@ final class PopupFilterModelTests: XCTestCase {
         IgnoreListStore.shared.showWhenFiltering = savedShowWhenFiltering
         IgnoreListStore.shared.globalTitles    = savedGlobalTitles
         UserDefaults.standard.requireFilterForAllMenuItems = savedRequireFilter
+        for key in Self.touchedKeys {
+            if let value = savedRawDefaults[key] {
+                UserDefaults.standard.set(value, forKey: key)
+            } else {
+                UserDefaults.standard.removeObject(forKey: key)
+            }
+        }
         super.tearDown()
     }
 
