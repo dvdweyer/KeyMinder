@@ -255,6 +255,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var detachedScrapeTask: Task<([MenuSection], [Shortcut]), Never>?
     /// Params the current `detachedScrapeTask` was started with (nil for user-triggered scrapes).
     private var preCacheKey: PrecacheKey?
+    /// Cache key of whatever traversal is in `detachedScrapeTask` — user-triggered or
+    /// pre-cache — so a drained result can be cached whichever kind it was.
+    private var inFlightKey: PrecacheKey?
     /// Most-recent completed scrape result; checked before starting a fresh scrape.
     private var menuCache: MenuCache?
 
@@ -321,11 +324,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 // has a live successor to perform the cleanup below — no state is leaked.
                 guard !Task.isCancelled else { return }
                 self.detachedScrapeTask = nil
-                if self.preCacheKey == cacheKey {
+                if self.inFlightKey == cacheKey {
                     self.menuCache = MenuCache(key: cacheKey, sections: drained,
                                               ignoredShortcuts: drainedIgnored, storedAt: Date())
                 }
                 self.preCacheKey = nil
+                self.inFlightKey = nil
             }
 
             // If we were cancelled while draining (another presentPopup fired),
@@ -348,8 +352,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                     return (s, ignored)
                 }
                 self.detachedScrapeTask = work
+                self.inFlightKey = cacheKey
                 (sections, ignoredShortcuts) = await work.value
-                self.detachedScrapeTask = nil
+                // Only release the slot if it is still ours. If this coordinator was
+                // cancelled, a newer one may already have drained `work` and stored its
+                // own traversal here; clearing it would let a third traversal start
+                // concurrently. (Waiters on a Task resume in no guaranteed order.)
+                if self.detachedScrapeTask == work {
+                    self.detachedScrapeTask = nil
+                    self.inFlightKey = nil
+                }
                 self.menuCache = MenuCache(key: cacheKey, sections: sections,
                                           ignoredShortcuts: ignoredShortcuts, storedAt: Date())
             }
@@ -420,6 +432,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             // presentPopup() drains any in-flight task before starting a new traversal.
             detachedScrapeTask = nil
             preCacheKey = nil
+            inFlightKey = nil
         }
 
         // Nothing to do if a fresh cache already exists or a task is already running
@@ -427,6 +440,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         if menuCache?.matches(key) == true || detachedScrapeTask != nil { return }
 
         preCacheKey = key
+        inFlightKey = key
         detachedScrapeTask = Task.detached(priority: .utility) {
             let s = MenuScraper.scrape(pid: pid, ignoredTitles: ignoredTitles, ignoredMenuTitles: ignoredMenuTitles)
             let ignored = MenuScraper.scrapeIgnoredMenus(pid: pid, ignoredMenuTitles: ignoredMenuTitles)
