@@ -145,7 +145,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     /// can be diagnosed after the fact by diffing the last snapshot before an
     /// update against the first one after.
     private func logSettingsSnapshot() {
-        let keys = SettingsSync.syncedKeys + ["popupDisplayMode", "menuBarIconStyle"]
+        let keys = SettingsSync.syncedKeys + [
+            "popupDisplayMode", "menuBarIconStyle",
+            "receiveBetaUpdates", "receiveAlphaUpdates", "debugLoggingEnabled",
+        ]
         var values = keys.map { key -> String in
             let value = UserDefaults.standard.object(forKey: key)
             return "\(key)=\(value.map { "\($0)" } ?? "<unset>")"

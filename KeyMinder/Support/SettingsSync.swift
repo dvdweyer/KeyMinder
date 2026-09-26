@@ -16,7 +16,8 @@ extension UserDefaults {
 
 /// Syncs a curated subset of UserDefaults to iCloud Key-Value Store so settings
 /// are shared across the user's Macs. Mac-specific settings (global hotkey,
-/// double-tap trigger, icon style) are intentionally excluded.
+/// double-tap trigger, icon style, update channels, debug logging) are
+/// intentionally excluded.
 ///
 /// Conflict model: **per-key last-writer-wins by timestamp.** Each synced key `K`
 /// carries a sibling `"__ts_<K>"` timestamp in KVS and a mirror in the local
@@ -39,7 +40,9 @@ final class SettingsSync {
     /// Keys written to and read from NSUbiquitousKeyValueStore.
     /// Excludes Mac-local keys: globalHotkey, didSetDefaultHotkey, doubleTapEnabled,
     /// doubleTapModifier, menuBarIconStyle, appIconVariant, matchAppIconToTrigger,
-    /// and launchAtLogin (SMAppService — not a UserDefaults key at all).
+    /// receiveBetaUpdates, receiveAlphaUpdates (opting one Mac into prereleases must
+    /// not opt the others in), debugLoggingEnabled, and launchAtLogin (SMAppService —
+    /// not a UserDefaults key at all).
     nonisolated static let syncedKeys: [String] = [
         "pinnedShortcuts",
         "ignoreList", "ignoreListEnabled", "ignoreListShowWhenFiltering",
@@ -48,8 +51,7 @@ final class SettingsSync {
         "showSystemShortcuts", "showDeactivatedSystemShortcuts",
         "showThirdPartyShortcuts", "wrapLongSections",
         "alwaysShowFavourites", "showConflictIndicator",
-        "SUEnableAutomaticChecks", "receiveBetaUpdates", "receiveAlphaUpdates",
-        "debugLoggingEnabled",
+        "SUEnableAutomaticChecks",
     ]
 
     private static let localTimestampsKey = "__localSyncTimestamps"
@@ -359,7 +361,5 @@ final class SettingsSync {
         FavouritesStore.shared.reload()
         IgnoreListStore.shared.reload()
         ThemeSettings.shared.reload()
-        NotificationCenter.default.post(name: .receiveBetaUpdatesChanged, object: nil)
-        NotificationCenter.default.post(name: .receiveAlphaUpdatesChanged, object: nil)
     }
 }
