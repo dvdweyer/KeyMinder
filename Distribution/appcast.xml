@@ -6,6 +6,19 @@
         <language>en</language>
         <!-- Items are populated by generate_appcast during the release pipeline. -->
         <item>
+            <title>1.0.214</title>
+            <pubDate>Sun, 27 Sep 2026 08:09:04 +0800</pubDate>
+            <sparkle:channel>alpha</sparkle:channel>
+            <sparkle:version>547</sparkle:version>
+            <sparkle:shortVersionString>1.0.214</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <description><![CDATA[<ul>
+<li><strong>Fixed:</strong> show App Shortcut menu paths as &quot;File › Save&quot;</li>
+</ul>
+]]></description>
+            <enclosure url="https://keyminder.app/KeyMinder_1.0.214.zip" length="3605059" type="application/octet-stream" sparkle:edSignature="EAJrl/Gxoi/Wse/1OwAv1Wsb8dvwAuPDJb9vIdvtQvj0KD3tkyse1nhkn7js9Vu6KP2iGShjXH46W95POOjXDg=="/>
+        </item>
+        <item>
             <title>1.0.213</title>
             <pubDate>Sun, 27 Sep 2026 07:20:29 +0800</pubDate>
             <sparkle:channel>alpha</sparkle:channel>
@@ -22,6 +35,7 @@
 </ul>
 ]]></description>
             <enclosure url="https://keyminder.app/KeyMinder_1.0.213.zip" length="3602946" type="application/octet-stream" sparkle:edSignature="dyNLc/BtM48VJCsMqqWXD+9Ux1N1weOpJx2JG9tYyurF2p9dIGQPjuCgOvF2I/JIqHYukOoF112hxXFU6GpnCA=="/>
+                    <sparkle:minimumAutoupdateVersion>547</sparkle:minimumAutoupdateVersion>
         </item>
         <item>
             <title>1.0.207</title>
@@ -35,7 +49,7 @@
 </ul>
 ]]></description>
             <enclosure url="https://keyminder.app/KeyMinder_1.0.207.zip" length="3593756" type="application/octet-stream" sparkle:edSignature="gE3pFWWWunXKFpX37APD+uVfxR5Ib+bBbpI1AwHNdaAj3IMoJxTqDAK4pHOK+RDsTZt2p4JRnPZQhFjBs54HBQ=="/>
-                    <sparkle:minimumAutoupdateVersion>544</sparkle:minimumAutoupdateVersion>
+            <sparkle:minimumAutoupdateVersion>544</sparkle:minimumAutoupdateVersion>
         </item>
         <item>
             <title>1.0.206</title>
