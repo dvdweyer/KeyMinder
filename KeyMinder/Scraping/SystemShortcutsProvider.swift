@@ -184,11 +184,14 @@ enum SystemShortcutsProvider {
         var remaining = value[...]
 
         // Consume modifier prefix characters; stop at the first non-modifier.
-        while let ch = remaining.first, "^~$@".contains(ch) {
+        // "#" flags "numeric keypad" — it doesn't map to a displayed modifier glyph,
+        // it only affects which key constant macOS reports for the same physical key.
+        while let ch = remaining.first, "^~$@#".contains(ch) {
             switch ch {
             case "^": ctrl  = true
             case "~": opt   = true
             case "$": shift = true
+            case "#": break
             default:  cmd   = true  // "@"
             }
             remaining = remaining.dropFirst()
