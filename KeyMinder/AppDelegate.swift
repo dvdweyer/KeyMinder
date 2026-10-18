@@ -311,7 +311,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // Capture everything the scrape needs from the main actor up front; only
         // value types cross to the background task.
         let pid = app.processIdentifier
-        let appName = app.localizedName ?? "App"
+        let appName = ScrapedStringPolicy.sanitize(app.localizedName ?? "App")
         let bundleID = app.bundleIdentifier
         let icon = app.icon
         let includeAll = UserDefaults.standard.showAllMenuItems
@@ -531,7 +531,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     @objc private func startQuiz() {
         guard let app = frontmostMonitor.frontmostApp else { return }
         let pid = app.processIdentifier
-        let appName = app.localizedName ?? "App"
+        let appName = ScrapedStringPolicy.sanitize(app.localizedName ?? "App")
         let appIcon = app.icon
         let bundleID = app.bundleIdentifier
         Task {
