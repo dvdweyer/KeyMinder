@@ -12,6 +12,21 @@ extension UserDefaults {
     }
 }
 
+// MARK: - KeyValueStoring
+
+/// The slice of `NSUbiquitousKeyValueStore`'s API `SettingsSync` needs, so tests can
+/// inject a fake in place of the real iCloud-backed store.
+protocol KeyValueStoring: AnyObject {
+    func object(forKey key: String) -> Any?
+    func set(_ value: Any?, forKey key: String)
+    func set(_ value: Double, forKey key: String)
+    func double(forKey key: String) -> Double
+    func removeObject(forKey key: String)
+    @discardableResult func synchronize() -> Bool
+}
+
+extension NSUbiquitousKeyValueStore: KeyValueStoring {}
+
 // MARK: - SettingsSync
 
 /// Syncs a curated subset of UserDefaults to iCloud Key-Value Store so settings
@@ -59,7 +74,8 @@ final class SettingsSync {
     private static let lastSyncedKey      = "__lastSyncedValues"
     nonisolated private static func tsKey(_ key: String) -> String { "__ts_\(key)" }
 
-    private var kvs: NSUbiquitousKeyValueStore { .default }
+    private let kvs: KeyValueStoring
+    private let defaults: UserDefaults
     private var kvsObserver: NSObjectProtocol?
     private var defaultsObserver: NSObjectProtocol?
     private var debounceTask: Task<Void, Never>?
@@ -69,26 +85,33 @@ final class SettingsSync {
     /// makes itself never register as user edits (no echo push). Persisted, so edits
     /// made while sync was off (or lost to a crash) still differ from it at `start()`.
     private var snapshot: [String: NSObject] = [:] {
-        didSet { UserDefaults.standard.set(snapshot, forKey: Self.lastSyncedKey) }
+        didSet { defaults.set(snapshot, forKey: Self.lastSyncedKey) }
     }
 
-    private init() {}
+    /// `kvs`/`defaults` are injectable so tests can exercise the full lifecycle
+    /// (push/pull/observe) against a fake store and a private UserDefaults suite
+    /// instead of the real iCloud KVS and `.standard` — the latter is the user's
+    /// actual preferences domain when hosted inside `KeyMinder.app` by `xcodebuild test`.
+    init(kvs: KeyValueStoring = NSUbiquitousKeyValueStore.default, defaults: UserDefaults = .standard) {
+        self.kvs = kvs
+        self.defaults = defaults
+    }
 
     // MARK: Lifecycle
 
     func start() {
-        Logger.settings.log("SettingsSync.start() snapshot keys=\(self.snapshot.count, privacy: .public) didInit=\(UserDefaults.standard.bool(forKey: Self.didInitKey), privacy: .public)")
+        Logger.settings.log("SettingsSync.start() snapshot keys=\(self.snapshot.count, privacy: .public) didInit=\(self.defaults.bool(forKey: Self.didInitKey), privacy: .public)")
         // Without a persisted snapshot (first start since this was added, or after
         // clearICloudData) there is no record of what was last synced, so treat the
         // current values as synced rather than pushing them all as fresh edits.
-        snapshot = (UserDefaults.standard.dictionary(forKey: Self.lastSyncedKey) as? [String: NSObject])
+        snapshot = (defaults.dictionary(forKey: Self.lastSyncedKey) as? [String: NSObject])
             ?? currentSyncedValues()
         // One-time non-destructive publish: seed KVS keys that don't exist yet from
         // local values. Never overwrites an existing KVS value, so a sparse Mac can't
         // wipe a richer one. Replaces the old (dangerous) full migration push.
-        if !UserDefaults.standard.bool(forKey: Self.didInitKey) {
+        if !defaults.bool(forKey: Self.didInitKey) {
             additivePublish()
-            UserDefaults.standard.set(true, forKey: Self.didInitKey)
+            defaults.set(true, forKey: Self.didInitKey)
         }
         applyRemoteIfNewer()   // launch pull
         push()                 // local edits made while sync was stopped
@@ -111,14 +134,14 @@ final class SettingsSync {
             // the user's "keep local" choice. Deletions are still never propagated: a
             // locally-absent key's remote value in KVS is left untouched, not removed.
             lts[key] = now
-            guard let val = UserDefaults.standard.object(forKey: key) as? NSObject else { continue }
+            guard let val = defaults.object(forKey: key) as? NSObject else { continue }
             kvs.set(val, forKey: key)
             kvs.set(now, forKey: Self.tsKey(key))
             snapshot[key] = val
         }
         setLocalTimestamps(lts)
         kvs.synchronize()
-        UserDefaults.standard.set(true, forKey: Self.didInitKey)
+        defaults.set(true, forKey: Self.didInitKey)
         applyRemoteIfNewer()
         startObserving()
     }
@@ -167,10 +190,10 @@ final class SettingsSync {
             kvs.removeObject(forKey: Self.tsKey(key))
         }
         kvs.synchronize()
-        UserDefaults.standard.removeObject(forKey: Self.localTimestampsKey)
-        UserDefaults.standard.removeObject(forKey: Self.didInitKey)
+        defaults.removeObject(forKey: Self.localTimestampsKey)
+        defaults.removeObject(forKey: Self.didInitKey)
         snapshot = [:]
-        UserDefaults.standard.removeObject(forKey: Self.lastSyncedKey)
+        defaults.removeObject(forKey: Self.lastSyncedKey)
     }
 
     // MARK: Push (local → KVS)
@@ -244,7 +267,7 @@ final class SettingsSync {
         let lts = localTimestamps()
         for key in Self.syncedKeys {
             guard kvs.object(forKey: key) == nil,
-                  let val = UserDefaults.standard.object(forKey: key) as? NSObject else { continue }
+                  let val = defaults.object(forKey: key) as? NSObject else { continue }
             kvs.set(val, forKey: key)
             kvs.set(lts[key] ?? 0, forKey: Self.tsKey(key))
         }
@@ -292,7 +315,7 @@ final class SettingsSync {
 
         defaultsObserver = NotificationCenter.default.addObserver(
             forName: UserDefaults.didChangeNotification,
-            object: UserDefaults.standard,
+            object: defaults,
             queue: .main
         ) { [weak self] _ in
             MainActor.assumeIsolated { self?.scheduleDebounce() }
@@ -358,7 +381,7 @@ final class SettingsSync {
     private func currentSyncedValues() -> [String: NSObject] {
         var result: [String: NSObject] = [:]
         for key in Self.syncedKeys {
-            if let val = UserDefaults.standard.object(forKey: key) as? NSObject {
+            if let val = defaults.object(forKey: key) as? NSObject {
                 result[key] = val
             }
         }
@@ -366,15 +389,15 @@ final class SettingsSync {
     }
 
     private func applyToLocal(_ value: NSObject, forKey key: String) {
-        UserDefaults.standard.set(value, forKey: key)
+        defaults.set(value, forKey: key)
     }
 
     private func localTimestamps() -> [String: Double] {
-        (UserDefaults.standard.dictionary(forKey: Self.localTimestampsKey) as? [String: Double]) ?? [:]
+        (defaults.dictionary(forKey: Self.localTimestampsKey) as? [String: Double]) ?? [:]
     }
 
     private func setLocalTimestamps(_ ts: [String: Double]) {
-        UserDefaults.standard.set(ts, forKey: Self.localTimestampsKey)
+        defaults.set(ts, forKey: Self.localTimestampsKey)
     }
 
     private func postChangeNotifications() {
