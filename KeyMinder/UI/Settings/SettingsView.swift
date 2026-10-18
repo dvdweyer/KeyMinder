@@ -275,6 +275,42 @@ final class SettingsModel {
     }
 
     private var eventMonitor: Any?
+    @ObservationIgnored nonisolated(unsafe) private var syncedValuesObserver: NSObjectProtocol?
+
+    init() {
+        syncedValuesObserver = NotificationCenter.default.addObserver(
+            forName: .settingsSyncedValuesChanged,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            MainActor.assumeIsolated {
+                self?.refreshSyncedValues()
+            }
+        }
+    }
+
+    deinit {
+        if let syncedValuesObserver {
+            NotificationCenter.default.removeObserver(syncedValuesObserver)
+        }
+    }
+
+    /// Re-reads every setting SettingsSync can apply from a remote change, so an open
+    /// Settings window doesn't keep showing pre-sync values until it's closed and reopened.
+    /// Each assignment still goes through its public didSet and re-writes UserDefaults, but
+    /// that's harmless: SettingsSync.push() no-ops on a value that already matches `snapshot`.
+    func refreshSyncedValues() {
+        showAllMenuItems = UserDefaults.standard.showAllMenuItems
+        requireFilterForAllMenuItems = UserDefaults.standard.requireFilterForAllMenuItems
+        hideLargeSubmenus = UserDefaults.standard.hideLargeSubmenus
+        showSystemShortcuts = UserDefaults.standard.showSystemShortcuts
+        showDeactivatedSystemShortcuts = UserDefaults.standard.showDeactivatedSystemShortcuts
+        showThirdPartyShortcuts = UserDefaults.standard.showThirdPartyShortcuts
+        wrapLongSections = UserDefaults.standard.wrapLongSections
+        alwaysShowFavourites = UserDefaults.standard.alwaysShowFavourites
+        showConflictIndicator = UserDefaults.standard.showConflictIndicator
+        automaticUpdatesEnabled = UserDefaults.standard.automaticUpdatesEnabled
+    }
 
     // MARK: Actions
 
@@ -1382,6 +1418,7 @@ extension Notification.Name {
     static let receiveBetaUpdatesChanged  = Notification.Name("org.afaik.KeyMinder.receiveBetaUpdatesChanged")
     static let receiveAlphaUpdatesChanged = Notification.Name("org.afaik.KeyMinder.receiveAlphaUpdatesChanged")
     static let menuBarIconStyleChanged    = Notification.Name("org.afaik.KeyMinder.menuBarIconStyleChanged")
+    static let settingsSyncedValuesChanged = Notification.Name("org.afaik.KeyMinder.settingsSyncedValuesChanged")
 }
 
 // MARK: - HotkeyBadge

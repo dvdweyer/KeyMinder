@@ -361,5 +361,6 @@ final class SettingsSync {
         FavouritesStore.shared.reload()
         IgnoreListStore.shared.reload()
         ThemeSettings.shared.reload()
+        NotificationCenter.default.post(name: .settingsSyncedValuesChanged, object: nil)
     }
 }
