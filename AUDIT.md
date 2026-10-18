@@ -82,7 +82,7 @@ None found.
 
 ### `.env` file
 
-`.env` contains `TEAM_ID=R4J8ZNC9HF`. This file has been moved outside the repo tree to `~/Documents/Development/.config/KeyMinder/scripts/.env` and is therefore never in version control. ✓
+`.env` contains `TEAM_ID=R4J8ZNC9HF`. This file has been moved outside the repo tree to `~/Documents/Developer/KeyMinder/.config/scripts/.env` and is therefore never in version control. ✓
 
 **However:** `CLAUDE.md` (line 38) and `Claude/AUDIT_2026-06-01.md` both contain the literal team ID and are checked into the repository. Apple Developer Team IDs are embedded in distributed app bundles and are not a secret — they are publicly visible via `codesign -dv`. This is informational only.
 

@@ -22,18 +22,12 @@ AuthKey_*.p8
 # SPM cache when resolved inside the project dir
 SourcePackages/
 
-# Claude Code workspace data
-Claude/
-
 # Swift Package Manager
 .build/
 .swiftpm/
 .claude/settings.local.json
 
-# Local secrets (.env lives outside the repo at ~/Documents/Development/.config/KeyMinder/scripts/)
-
-# Internal working notes (not for repo)
-internal/
+# Local secrets (.env lives outside the repo at ~/Documents/Developer/KeyMinder/.config/scripts/)
 
 # Claude project instructions (local only)
 **/CLAUDE.md

@@ -40,7 +40,7 @@ LANGUAGES = {
 DRY_RUN = "--dry-run" in sys.argv
 
 
-ENV_FILE = Path.home() / "Documents" / "Development" / ".config" / "KeyMinder" / "scripts" / ".env"
+ENV_FILE = Path.home() / "Documents" / "Developer" / "KeyMinder" / ".config" / "scripts" / ".env"
 
 
 def load_api_key() -> str:

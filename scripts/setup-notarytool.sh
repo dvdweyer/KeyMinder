@@ -8,7 +8,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-ENV_FILE="$HOME/Documents/Development/.config/KeyMinder/scripts/.env"
+ENV_FILE="$HOME/Documents/Developer/KeyMinder/.config/scripts/.env"
 
 if [[ ! -f "$ENV_FILE" ]]; then
     echo "error: $ENV_FILE not found. Copy scripts/.env.example to that path and fill in TEAM_ID." >&2

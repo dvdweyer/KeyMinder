@@ -13,7 +13,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 # Load .env if credentials not already in the environment.
-ENV_FILE="$HOME/Documents/Development/.config/KeyMinder/scripts/.env"
+ENV_FILE="$HOME/Documents/Developer/KeyMinder/.config/scripts/.env"
 if [[ -f "$ENV_FILE" ]]; then
     # shellcheck source=/dev/null
     source "$ENV_FILE"

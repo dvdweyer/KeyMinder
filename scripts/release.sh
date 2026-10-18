@@ -10,7 +10,7 @@
 #   release.sh --beta           — Release build, notarize, rsync (beta channel, ZIP only)
 #
 # Prerequisites (full pipeline):
-#   - Copy scripts/.env.example to ~/Documents/Development/.config/KeyMinder/scripts/.env and fill in TEAM_ID.
+#   - Copy scripts/.env.example to ~/Documents/Developer/KeyMinder/.config/scripts/.env and fill in TEAM_ID.
 #   - Run scripts/setup-notarytool.sh once to store keychain credentials.
 #   - Run scripts/setup-sparkle-tools.sh once and add ~/.sparkle-tools/bin to PATH.
 #   - Xcode must be installed at /Applications/Xcode.app.
@@ -108,7 +108,7 @@ if [[ ! -f "$DEPLOY_SH" ]]; then
 fi
 
 # ── Config ────────────────────────────────────────────────────────────────────
-ENV_FILE="$HOME/Documents/Development/.config/KeyMinder/scripts/.env"
+ENV_FILE="$HOME/Documents/Developer/KeyMinder/.config/scripts/.env"
 if [[ ! -f "$ENV_FILE" ]]; then
     echo "error: $ENV_FILE not found. Copy scripts/.env.example to that path and fill in TEAM_ID." >&2
     exit 1
@@ -484,7 +484,7 @@ fi
 if [[ -z "$CHANNEL" ]]; then
     echo ""
     echo "--- Updating Homebrew cask…"
-    TAP_REPO_DIR="${TAP_REPO_DIR:-$HOME/Documents/Development/.config/KeyMinder/homebrew}" bash "$SCRIPT_DIR/update-tap.sh" "$VERSION" "$DMG_SHA256"
+    TAP_REPO_DIR="${TAP_REPO_DIR:-$HOME/Documents/Developer/KeyMinder/.config/homebrew}" bash "$SCRIPT_DIR/update-tap.sh" "$VERSION" "$DMG_SHA256"
 fi
 
 # ── Commit release artifacts back to repo ────────────────────────────────────
