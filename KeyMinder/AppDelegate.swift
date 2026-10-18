@@ -282,6 +282,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     /// the popup with the result. The panel does not appear until data is ready.
     private func presentPopup() {
         dismissHint()
+        // Cancel any outstanding scrape from a previous invocation before any early
+        // return below, so a stale task can never call popup.show(...) after a newer
+        // invocation has already decided to show something else (or nothing).
+        scrapeTask?.cancel()
         guard AccessibilityPermission.isTrusted else {
             popup.show(.needsPermission)
             return
@@ -324,9 +328,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let cacheKey = PrecacheKey(pid: pid, includeAll: includeAll,
                                    ignoredTitles: ignoredTitles, ignoredMenuTitles: ignoredMenuTitles,
                                    maxSubmenuSize: maxSubmenuSize)
-
-        // Cancel the outer coordinator so a stale result never reaches the UI.
-        scrapeTask?.cancel()
 
         scrapeTask = Task {
             // Drain any in-flight AX traversal before starting a new one.
