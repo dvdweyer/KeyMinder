@@ -286,8 +286,8 @@ final class SettingsSync {
             forName: NSUbiquitousKeyValueStore.didChangeExternallyNotification,
             object: kvs,
             queue: .main
-        ) { [weak self] _ in
-            MainActor.assumeIsolated { self?.applyRemoteIfNewer() }
+        ) { [weak self] note in
+            MainActor.assumeIsolated { self?.handleExternalChange(note) }
         }
 
         defaultsObserver = NotificationCenter.default.addObserver(
@@ -296,6 +296,26 @@ final class SettingsSync {
             queue: .main
         ) { [weak self] _ in
             MainActor.assumeIsolated { self?.scheduleDebounce() }
+        }
+    }
+
+    /// Dispatches on the change reason NSUbiquitousKeyValueStore attaches to its one
+    /// notification (not separate notification names): a quota violation drops the
+    /// offending write silently with no other signal, and an account change (sign-out
+    /// or switch) means the KVS contents the app is seeing just changed out from under
+    /// it, so a fresh start() is needed rather than a plain pull against stale local
+    /// timestamps.
+    private func handleExternalChange(_ note: Notification) {
+        let reason = (note.userInfo?[NSUbiquitousKeyValueStoreChangeReasonKey] as? NSNumber)?.intValue
+        switch reason {
+        case NSUbiquitousKeyValueStoreQuotaViolationChange:
+            Logger.settings.error("SettingsSync: iCloud KVS quota violation — a write was dropped by the system")
+        case NSUbiquitousKeyValueStoreAccountChange:
+            Logger.settings.log("SettingsSync: iCloud account changed; restarting sync against the new account")
+            stop()
+            start()
+        default:
+            applyRemoteIfNewer()
         }
     }
 
