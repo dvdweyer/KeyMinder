@@ -526,8 +526,8 @@
   },
   "description": "A macOS menu bar app that instantly shows the keyboard shortcuts of whichever app you're currently using, grouped by menu.",
   "url": "https://keyminder.app/",
-  "downloadUrl": "https://keyminder.app/KeyMinder_1.0.175.dmg",
-  "softwareVersion": "1.0.175",
+  "downloadUrl": "https://keyminder.app/KeyMinder_1.0.195.dmg",
+  "softwareVersion": "1.0.195",
   "datePublished": "2026-05-25",
   "dateModified": "2026-07-06",
   "featureList": "Show keyboard shortcuts for any macOS app, Grouped by menu, Search by command name, Filter by modifier key, Click to run command, Pin favourite shortcuts, Double-tap trigger, System shortcuts, Export shortcuts as Markdown, Free and open source",
@@ -558,8 +558,8 @@
   <h1>KeyMinder</h1>
   <p data-de="Eine macOS-Menüleisten-App, die sofort die Tastenkürzel der aktiven App anzeigt. Kostenlos und Open Source.">A macOS menu bar app that instantly shows the keyboard shortcuts of whichever app you're currently using. Free and open source.</p>
   <div class="button-row">
-    <a href="KeyMinder_1.0.175.dmg" class="btn btn-primary" download data-de="↓ v1.0.175 herunterladen">
-      ↓ Download v1.0.175
+    <a href="KeyMinder_1.0.195.dmg" class="btn btn-primary" download data-de="↓ v1.0.195 herunterladen">
+      ↓ Download v1.0.195
     </a>
     <a href="https://github.com/dvdweyer/KeyMinder" class="btn btn-secondary" target="_blank" rel="noopener">
       View on GitHub
@@ -618,7 +618,7 @@
   <div class="section">
     <h2 data-de="Installation">Install</h2>
     <ol class="steps">
-      <li data-de-html="&lt;code&gt;KeyMinder_1.0.175.dmg&lt;/code&gt; herunterladen und öffnen">Download and open <code>KeyMinder_1.0.175.dmg</code></li>
+      <li data-de-html="&lt;code&gt;KeyMinder_1.0.195.dmg&lt;/code&gt; herunterladen und öffnen">Download and open <code>KeyMinder_1.0.195.dmg</code></li>
       <li data-de-html="&lt;code&gt;KeyMinder.app&lt;/code&gt; in den &lt;code&gt;/Applications&lt;/code&gt;-Ordner ziehen">Drag <code>KeyMinder.app</code> to the <code>Applications</code> folder</li>
       <li data-de="KeyMinder öffnen – ein Einrichtungsassistent führt Sie durch die Konfiguration">Open KeyMinder — a welcome wizard guides you through setup</li>
       <li data-de="Dem Assistenten folgen, Bedienungshilfen-Berechtigung erteilen und Auslöser festlegen">Follow the wizard to grant Accessibility permission and choose your trigger</li>
@@ -653,8 +653,34 @@
 
     <div class="changelog-entry">
       <div class="changelog-version">
+        <strong>v1.0.195</strong>
+        <span>Sep 14, 2026 — current</span>
+      </div>
+      <ul>
+        <li>New: popup now defaults to the active app's screen; added a display-mode setting</li>
+        <li>Fixed: pins orphaned by the v1.0.185 pin-key escaping bug are now recovered automatically</li>
+        <li>Fixed: settings sync no longer compares a deletion against a stale timestamp</li>
+        <li>Fixed: "Keep Local Settings" now also wins for keys that are unset locally</li>
+        <li>Fixed: a local settings deletion could clobber a newer remote iCloud edit</li>
+        <li>Fixed: two race conditions that could let concurrent menu scrapes run at once</li>
+        <li>Fixed: live keypress key is now derived correctly from the unshifted base character</li>
+        <li>Fixed: live AX title is sanitized before comparing against the stored title</li>
+        <li>Fixed: window-management shortcut titles now recognized in both US and UK English</li>
+        <li>Fixed: settings export failures now surface an alert instead of failing silently</li>
+        <li>Fixed: Quiz mode manual skip no longer double-advances</li>
+        <li>Fixed: Settings tabs are now scrollable so content can't be clipped</li>
+        <li>Fixed: Popup Display and modifier-key picker labels now localized</li>
+        <li>Fixed: settings are flushed before quit/relaunch; sync logs now persist</li>
+        <li>Fixed: beta/alpha releases no longer prune the live stable DMG</li>
+        <li>Improved: system/third-party shortcut loading moved off the main thread</li>
+        <li>Improved: ignore-list matching is faster for exact-match patterns</li>
+      </ul>
+    </div>
+
+    <div class="changelog-entry">
+      <div class="changelog-version">
         <strong>v1.0.175</strong>
-        <span>Jul 6, 2026 — current</span>
+        <span>Jul 6, 2026</span>
       </div>
       <ul>
         <li>Security: third-party shortcut registry entries are now sanitised (title, keys, group, app name) and capped at 500 per file, closing a same-user JSON injection channel</li>
