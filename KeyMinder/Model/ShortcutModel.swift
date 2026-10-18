@@ -160,10 +160,12 @@ extension AppShortcuts {
     }
 
     /// Key strings that are assigned to two or more shortcuts in this app.
-    /// Empty key strings (all-entries mode items with no binding) are excluded.
+    /// Empty key strings (all-entries mode items with no binding) are excluded, as are
+    /// disabled shortcuts (deactivated system shortcuts) — a live shortcut can't
+    /// actually collide with one that can't fire.
     var conflictingKeys: Set<String> {
         var tally: [String: Int] = [:]
-        for shortcut in sections.flatMap(\.shortcuts) where !shortcut.keys.isEmpty {
+        for shortcut in sections.flatMap(\.shortcuts) where !shortcut.keys.isEmpty && !shortcut.isDisabled {
             tally[shortcut.keys, default: 0] += 1
         }
         return Set(tally.filter { $0.value > 1 }.keys)
