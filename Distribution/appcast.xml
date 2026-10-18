@@ -6,6 +6,25 @@
         <language>en</language>
         <!-- Items are populated by generate_appcast during the release pipeline. -->
         <item>
+            <title>1.0.223</title>
+            <pubDate>Sun, 18 Oct 2026 04:14:52 +0200</pubDate>
+            <sparkle:channel>alpha</sparkle:channel>
+            <sparkle:version>556</sparkle:version>
+            <sparkle:shortVersionString>1.0.223</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <description><![CDATA[<ul>
+<li><strong>Fixed:</strong> localize the System shortcuts section</li>
+<li><strong>Fixed:</strong> don&#x27;t drop the key when a user key equivalent has the keypad flag</li>
+<li><strong>Fixed:</strong> exclude disabled shortcuts from the conflict indicator tally</li>
+<li><strong>Fixed:</strong> handle iCloud KVS quota violations and account changes</li>
+<li><strong>Fixed:</strong> refresh open Settings window when a remote iCloud change lands</li>
+<li><strong>Fixed:</strong> sanitize app.localizedName before display in popup and quiz</li>
+<li><strong>Fixed:</strong> cancel stale scrape before every presentPopup() early return</li>
+</ul>
+]]></description>
+            <enclosure url="https://keyminder.app/KeyMinder_1.0.223.zip" length="3611754" type="application/octet-stream" sparkle:edSignature="RP1f4srU9uRAA69UH/m01+leM6bEpo7T0IyXbDVRWWhTFX52tTsO66wk98oSoHLKb7NvpVoPSewm6h+1gYDUCQ=="/>
+        </item>
+        <item>
             <title>1.0.214</title>
             <pubDate>Sun, 27 Sep 2026 08:09:04 +0800</pubDate>
             <sparkle:channel>alpha</sparkle:channel>
@@ -17,6 +36,7 @@
 </ul>
 ]]></description>
             <enclosure url="https://keyminder.app/KeyMinder_1.0.214.zip" length="3605059" type="application/octet-stream" sparkle:edSignature="EAJrl/Gxoi/Wse/1OwAv1Wsb8dvwAuPDJb9vIdvtQvj0KD3tkyse1nhkn7js9Vu6KP2iGShjXH46W95POOjXDg=="/>
+                    <sparkle:minimumAutoupdateVersion>556</sparkle:minimumAutoupdateVersion>
         </item>
         <item>
             <title>1.0.213</title>
@@ -35,7 +55,7 @@
 </ul>
 ]]></description>
             <enclosure url="https://keyminder.app/KeyMinder_1.0.213.zip" length="3602946" type="application/octet-stream" sparkle:edSignature="dyNLc/BtM48VJCsMqqWXD+9Ux1N1weOpJx2JG9tYyurF2p9dIGQPjuCgOvF2I/JIqHYukOoF112hxXFU6GpnCA=="/>
-                    <sparkle:minimumAutoupdateVersion>547</sparkle:minimumAutoupdateVersion>
+            <sparkle:minimumAutoupdateVersion>547</sparkle:minimumAutoupdateVersion>
         </item>
         <item>
             <title>1.0.207</title>
