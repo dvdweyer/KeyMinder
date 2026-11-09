@@ -6,6 +6,43 @@
         <language>en</language>
         <!-- Items are populated by generate_appcast during the release pipeline. -->
         <item>
+            <title>1.0.224</title>
+            <pubDate>Mon, 09 Nov 2026 11:16:06 +0100</pubDate>
+            <sparkle:channel>beta</sparkle:channel>
+            <sparkle:version>560</sparkle:version>
+            <sparkle:shortVersionString>1.0.224</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <description><![CDATA[<ul>
+<li><strong>Fixed:</strong> localize the System shortcuts section</li>
+<li><strong>Fixed:</strong> don&#x27;t drop the key when a user key equivalent has the keypad flag</li>
+<li><strong>Fixed:</strong> exclude disabled shortcuts from the conflict indicator tally</li>
+<li><strong>Fixed:</strong> handle iCloud KVS quota violations and account changes</li>
+<li><strong>Fixed:</strong> refresh open Settings window when a remote iCloud change lands</li>
+<li><strong>Fixed:</strong> sanitize app.localizedName before display in popup and quiz</li>
+<li><strong>Fixed:</strong> cancel stale scrape before every presentPopup() early return</li>
+<li><strong>Fixed:</strong> show App Shortcut menu paths as &quot;File › Save&quot;</li>
+<li><strong>Fixed:</strong> show beta as included when alpha releases are on</li>
+<li><strong>Fixed:</strong> alpha opt-in also receives beta builds</li>
+<li><strong>Fixed:</strong> keep update channels and debug logging per-Mac</li>
+<li><strong>Fixed:</strong> push settings edited while iCloud sync was off</li>
+<li><strong>Fixed:</strong> push a pending iCloud settings change before quitting</li>
+<li><strong>Fixed:</strong> keep every row when wrapping long menus in all-entries mode</li>
+<li><strong>New:</strong> add Check for Updates button to Settings</li>
+<li><strong>Fixed:</strong> show the unshifted key in the recorded global hotkey label</li>
+<li><strong>Fixed:</strong> match chords and quiz answers on non-Latin keyboard layouts</li>
+<li><strong>Fixed:</strong> &quot;Quiz Again&quot; works for apps without a bundle identifier</li>
+<li><strong>Fixed:</strong> localize remaining hard-coded AppKit and popup strings</li>
+<li><strong>Fixed:</strong> include popupDisplayMode in settings export/import</li>
+<li><strong>Fixed:</strong> reload in-memory stores when SettingsSync.push() adopts a newer remote value</li>
+<li><strong>Fixed:</strong> make the XCTest host inert and stop PopupFilterModelTests leaving keys behind</li>
+<li><strong>Fixed:</strong> a cancelled scrape coordinator no longer clears a newer traversal&#x27;s slot</li>
+<li><strong>Fixed:</strong> bound every AX call with a process-global timeout; locate popup screen once</li>
+<li><strong>Fixed:</strong> stop hotkey recording when leaving the onboarding trigger step or a Settings tab</li>
+</ul>
+]]></description>
+            <enclosure url="https://keyminder.app/KeyMinder_1.0.224.zip" length="3612758" type="application/octet-stream" sparkle:edSignature="Gm3aNH8IWC/tVLo9reH4FTeTwb2wWK7AlEAxv2KBNSxtzwE0Xm7hQdTPc+fX6+XItXZpc1ya6zKFKhVkgHR1DQ=="/>
+        </item>
+        <item>
             <title>1.0.223</title>
             <pubDate>Sun, 18 Oct 2026 04:14:52 +0200</pubDate>
             <sparkle:channel>alpha</sparkle:channel>
@@ -23,6 +60,7 @@
 </ul>
 ]]></description>
             <enclosure url="https://keyminder.app/KeyMinder_1.0.223.zip" length="3611754" type="application/octet-stream" sparkle:edSignature="RP1f4srU9uRAA69UH/m01+leM6bEpo7T0IyXbDVRWWhTFX52tTsO66wk98oSoHLKb7NvpVoPSewm6h+1gYDUCQ=="/>
+                    <sparkle:minimumAutoupdateVersion>560</sparkle:minimumAutoupdateVersion>
         </item>
         <item>
             <title>1.0.214</title>
@@ -36,7 +74,7 @@
 </ul>
 ]]></description>
             <enclosure url="https://keyminder.app/KeyMinder_1.0.214.zip" length="3605059" type="application/octet-stream" sparkle:edSignature="EAJrl/Gxoi/Wse/1OwAv1Wsb8dvwAuPDJb9vIdvtQvj0KD3tkyse1nhkn7js9Vu6KP2iGShjXH46W95POOjXDg=="/>
-                    <sparkle:minimumAutoupdateVersion>556</sparkle:minimumAutoupdateVersion>
+            <sparkle:minimumAutoupdateVersion>556</sparkle:minimumAutoupdateVersion>
         </item>
         <item>
             <title>1.0.213</title>
