@@ -332,6 +332,8 @@ struct PopupRootView: View {
     var onGrant: () -> Void = {}
     var onOpenSettings: () -> Void = {}
     var onActivate: (Shortcut) -> Void = { _ in }
+    /// Opens the shortcut in CustomShortcuts. `nil` when CustomShortcuts isn't installed.
+    var onCustomize: ((Shortcut) -> Void)? = nil
 
     var body: some View {
         Group {
@@ -359,7 +361,7 @@ struct PopupRootView: View {
     private func shortcutsView(_ app: AppShortcuts) -> some View {
         if let model, !app.isEmpty {
             FilterableShortcutsView(model: model, scrolls: scrolls, onActivate: onActivate,
-                                    onOpenSettings: onOpenSettings)
+                                    onCustomize: onCustomize, onOpenSettings: onOpenSettings)
         } else {
             VStack(alignment: .leading, spacing: 10) {
                 HStack(spacing: 8) {
@@ -386,6 +388,7 @@ private struct FilterableShortcutsView: View {
     @Bindable var model: PopupFilterModel
     let scrolls: Bool
     let onActivate: (Shortcut) -> Void
+    var onCustomize: ((Shortcut) -> Void)? = nil
     var onOpenSettings: () -> Void = {}
     @FocusState private var searchFocused: Bool
     @State private var copied = false
@@ -465,6 +468,7 @@ private struct FilterableShortcutsView: View {
                                         dimMode: model.fitsWithoutScrolling && !model.hasQuery && !model.hasModifierFilter,
                                         selectedShortcutID: model.selectedShortcut?.id,
                                         onActivate: onActivate,
+                                        onCustomize: onCustomize,
                                         onToggleFavourite: { model.toggleFavourite($0) })
                     }
                 }
@@ -668,6 +672,7 @@ struct MenuSectionView: View {
     var dimMode: Bool = false
     var selectedShortcutID: UUID? = nil
     var onActivate: (Shortcut) -> Void = { _ in }
+    var onCustomize: ((Shortcut) -> Void)? = nil
     var onToggleFavourite: (Shortcut) -> Void = { _ in }
 
     private func passesGate(_ shortcut: Shortcut) -> Bool {
@@ -778,6 +783,7 @@ struct MenuSectionView: View {
                                             dimmed: isDimmed(shortcut),
                                             isConflicted: !shortcut.keys.isEmpty && conflictingKeys.contains(shortcut.keys),
                                             onActivate: onActivate,
+                                            onCustomize: onCustomize,
                                             onToggleFavourite: { onToggleFavourite(shortcut) })
                             }
                         }
@@ -822,9 +828,14 @@ struct ShortcutRow: View {
     /// True when this key binding is shared by two or more commands in the same app.
     var isConflicted: Bool = false
     var onActivate: (Shortcut) -> Void = { _ in }
+    var onCustomize: ((Shortcut) -> Void)? = nil
     var onToggleFavourite: () -> Void = {}
 
     @State private var hovered = false
+
+    private var customizable: Bool {
+        onCustomize != nil && !dimmed && CustomShortcutsBridge.canEdit(shortcut)
+    }
 
     private var clickable: Bool { shortcut.axElement != nil && !dimmed }
     private var isFavourite: Bool {
@@ -873,6 +884,11 @@ struct ShortcutRow: View {
         )
         .onHover { hovered = $0 }
         .onTapGesture { if clickable { onActivate(shortcut) } }
+        .contextMenu {
+            if customizable, let onCustomize {
+                Button("Change Shortcut in CustomShortcuts…") { onCustomize(shortcut) }
+            }
+        }
         // Collapse the two Text children into one VoiceOver element so the
         // screen reader speaks "New Conversation, Shift Command N" rather than
         // announcing the raw glyph string "⇧⌘N" and the title separately.
@@ -885,6 +901,9 @@ struct ShortcutRow: View {
         .accessibilityAddTraits(clickable ? .isButton : [])
         .accessibilityAction(named: Text(isFavourite ? "Remove from favourites" : "Add to favourites")) {
             if !dimmed && !appID.isEmpty { onToggleFavourite() }
+        }
+        .accessibilityAction(named: Text("Change Shortcut in CustomShortcuts…")) {
+            if customizable, let onCustomize { onCustomize(shortcut) }
         }
     }
 }

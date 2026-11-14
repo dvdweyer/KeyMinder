@@ -35,7 +35,7 @@ enum MenuScraper {
             guard !IgnoreListStore.isIgnored(title: title, patterns: ignoredMenuTitles) else { continue }
             // A menu bar item owns its drop-down menu as its single child.
             guard let menu = children(menuBarItem).first else { continue }
-            let groups = collectGroups(in: menu, includeAll: includeItemsWithoutShortcuts, ignoredTitles: ignoredTitles, maxShortcutFreeSubmenuSize: maxShortcutFreeSubmenuSize)
+            let groups = collectGroups(in: menu, path: [title], includeAll: includeItemsWithoutShortcuts, ignoredTitles: ignoredTitles, maxShortcutFreeSubmenuSize: maxShortcutFreeSubmenuSize)
             if !groups.isEmpty {
                 sections.append(MenuSection(title: title, groups: groups))
             }
@@ -61,7 +61,7 @@ enum MenuScraper {
             let title = titleString(menuBarItem)
             guard IgnoreListStore.isIgnored(title: title, patterns: ignoredMenuTitles) else { continue }
             guard let menu = children(menuBarItem).first else { continue }
-            result.append(contentsOf: collectShortcutsFlat(in: menu).shortcuts)
+            result.append(contentsOf: collectShortcutsFlat(in: menu, path: [title]).shortcuts)
         }
         return result
     }
@@ -72,7 +72,7 @@ enum MenuScraper {
     /// their parent's named group.
     /// When `includeAll` is false (default), only items with a key equivalent are
     /// included. When true, leaf items without shortcuts are also included.
-    private static func collectGroups(in menu: AXUIElement, includeAll: Bool,
+    private static func collectGroups(in menu: AXUIElement, path: [String], includeAll: Bool,
                                       ignoredTitles: [String],
                                       maxShortcutFreeSubmenuSize: Int? = nil) -> [ShortcutGroup] {
         var topLevel: [Shortcut] = []
@@ -100,11 +100,11 @@ enum MenuScraper {
             let submenu = children(item).first
 
             if let keys = shortcutKeys {
-                topLevel.append(Shortcut(title: title, keys: keys, axElement: item, isDisabled: false))
+                topLevel.append(Shortcut(title: title, keys: keys, axElement: item, isDisabled: false, parents: path))
             } else if includeAll, submenu == nil {
                 // Leaf item with no shortcut: include with empty keys so the full
                 // menu structure is discoverable.
-                topLevel.append(Shortcut(title: title, keys: "", axElement: item, isDisabled: false))
+                topLevel.append(Shortcut(title: title, keys: "", axElement: item, isDisabled: false, parents: path))
             }
 
             if shortcutKeys == nil, submenu == nil, UserDefaults.standard.debugLoggingEnabled {
@@ -119,7 +119,7 @@ enum MenuScraper {
             // collectShortcutsFlat recurses further but keeps everything in one list,
             // which is the right behaviour for sub-submenus (depth > 2).
             if let submenu {
-                let (submenuItems, rawChildCount) = collectShortcutsFlat(in: submenu, includeAll: includeAll, ignoredTitles: ignoredTitles)
+                let (submenuItems, rawChildCount) = collectShortcutsFlat(in: submenu, path: path + [title], includeAll: includeAll, ignoredTitles: ignoredTitles)
                 if submenuItems.isEmpty {
                     // Log empty submenus so we can quantify how often lazy population
                     // hides shortcuts.  rawChildCount == 0 strongly suggests the submenu
@@ -151,7 +151,7 @@ enum MenuScraper {
     /// Returns the shortcut list and the raw AX child count of `menu` so callers
     /// can log empty-submenu diagnostics without a second AX round-trip.
     private static func collectShortcutsFlat(
-        in menu: AXUIElement, includeAll: Bool = false, depth: Int = 0,
+        in menu: AXUIElement, path: [String], includeAll: Bool = false, depth: Int = 0,
         ignoredTitles: [String] = []
     ) -> (shortcuts: [Shortcut], rawChildCount: Int) {
         guard depth < 10 else { return ([], 0) }
@@ -174,14 +174,14 @@ enum MenuScraper {
             let submenu = children(item).first
 
             if let keys = shortcutKeys {
-                result.append(Shortcut(title: title, keys: keys, axElement: item, isDisabled: false))
+                result.append(Shortcut(title: title, keys: keys, axElement: item, isDisabled: false, parents: path))
             } else if includeAll, submenu == nil {
-                result.append(Shortcut(title: title, keys: "", axElement: item, isDisabled: false))
+                result.append(Shortcut(title: title, keys: "", axElement: item, isDisabled: false, parents: path))
             }
 
             // Flatten sub-submenus.
             if let submenu {
-                let (sub, subChildCount) = collectShortcutsFlat(in: submenu, includeAll: includeAll, depth: depth + 1, ignoredTitles: ignoredTitles)
+                let (sub, subChildCount) = collectShortcutsFlat(in: submenu, path: path + [title], includeAll: includeAll, depth: depth + 1, ignoredTitles: ignoredTitles)
                 if sub.isEmpty {
                     let hint = subChildCount == 0 ? "; likely lazy-populated" : ""
                     Logger.scraper.info("Nested submenu '\(title, privacy: .private)' yielded 0 items (\(subChildCount, privacy: .public) child items\(hint, privacy: .private))")

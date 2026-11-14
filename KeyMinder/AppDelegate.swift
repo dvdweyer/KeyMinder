@@ -83,6 +83,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             self?.popup.hide()
             SettingsWindowController.show()
         }
+        popup.onCustomShortcutRequested = { [weak self] in
+            self?.menuCache = nil
+        }
         SettingsWindowController.onCheckForUpdates = { [weak self] in
             self?.updaterController.checkForUpdates(nil)
         }

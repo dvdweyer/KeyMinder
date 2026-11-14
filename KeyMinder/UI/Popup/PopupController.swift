@@ -11,6 +11,8 @@ final class PopupController {
     var onGrant: () -> Void = {}
     /// Called when the onboarding "Open Settings" button is pressed.
     var onOpenSettings: () -> Void = {}
+    /// Called after a CustomShortcuts edit request was sent, so cached menus can be dropped.
+    var onCustomShortcutRequested: () -> Void = {}
     /// Called the moment `AXIsProcessTrusted()` becomes true while the
     /// onboarding screen is visible. AppDelegate should re-run its scrape/show
     /// path here so the popup refreshes with real shortcut content.
@@ -395,7 +397,8 @@ final class PopupController {
             scrolls: scrolls,
             onGrant: { [weak self] in self?.onGrant() },
             onOpenSettings: { [weak self] in self?.onOpenSettings() },
-            onActivate: { [weak self] shortcut in self?.activate(shortcut) }
+            onActivate: { [weak self] shortcut in self?.activate(shortcut) },
+            onCustomize: customizeHandler(for: model)
         )
     }
 
@@ -577,6 +580,20 @@ final class PopupController {
             $0.keys == keysStr && $0.axElement != nil
         }
         return candidates.count == 1 ? candidates[0] : nil
+    }
+
+    /// Returns the "Change Shortcut in CustomShortcuts…" handler, or `nil` when
+    /// CustomShortcuts isn't installed or the app has no bundle identifier.
+    private func customizeHandler(for model: PopupFilterModel?) -> ((Shortcut) -> Void)? {
+        guard let app = model?.app, let bundleID = app.bundleIdentifier, !bundleID.isEmpty,
+              CustomShortcutsBridge.isInstalled else { return nil }
+        let appName = app.appName
+        return { [weak self] shortcut in
+            self?.hide()
+            if CustomShortcutsBridge.send(shortcut, appName: appName, bundleID: bundleID) {
+                self?.onCustomShortcutRequested()
+            }
+        }
     }
 
     /// Dismisses the popup and fires the AX press action for `shortcut`.

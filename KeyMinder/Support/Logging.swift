@@ -7,6 +7,7 @@ extension Logger {
     static let hotkey        = Logger(subsystem: "org.afaik.KeyMinder", category: "hotkey")
     static let settings      = Logger(subsystem: "org.afaik.KeyMinder", category: "settings")
     static let accessibility = Logger(subsystem: "org.afaik.KeyMinder", category: "accessibility")
+    static let integration   = Logger(subsystem: "org.afaik.KeyMinder", category: "integration")
 }
 
 // MARK: - UserDefaults

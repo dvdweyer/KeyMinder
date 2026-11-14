@@ -22,6 +22,10 @@ struct Shortcut: Identifiable, Hashable, @unchecked Sendable {
     let isDisabled: Bool
     /// True when this item represents an NSMenu separator rule (no title, no key).
     var isSeparator: Bool = false
+    /// Menu path from the top-level menu down to this item's parent, e.g.
+    /// `["Format", "Font"]` for Format › Font › Bigger. Empty for synthetic shortcuts
+    /// (system, third-party registry, user key equivalents) that aren't menu items.
+    var parents: [String] = []
 
     // AXUIElement is a CFTypeRef (opaque class) and can't participate in
     // automatic Hashable synthesis. Identity is fully determined by the UUID.
