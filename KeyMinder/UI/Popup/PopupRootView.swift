@@ -852,7 +852,7 @@ struct ShortcutRow: View {
                         .foregroundStyle(Theme.conflictAccent)
                         .help("This shortcut is assigned to multiple commands")
                 }
-                Text(shortcut.keys)
+                keysText(shortcut.keys)
                     .font(.system(size: 12, weight: .medium, design: .rounded))
                     .foregroundStyle(dimmed ? Theme.fadedText : ThemeSettings.shared.keyAccent)
             }
@@ -960,13 +960,23 @@ private struct FavouritesToggle: View {
     }
 }
 
+// MARK: - Key-string rendering
+
+/// Renders a key string with the Fn/Globe marker drawn as the `globe` SF Symbol.
+func keysText(_ keys: String) -> Text {
+    let parts = keys.components(separatedBy: ShortcutFormatter.globe)
+    return parts.dropFirst().reduce(Text(verbatim: parts[0])) { text, part in
+        text + Text(Image(systemName: "globe")) + Text(verbatim: part)
+    }
+}
+
 // MARK: - VoiceOver key-string helper
 
 /// Converts a visual shortcut key string (e.g. "⇧⌘N") into a naturally spoken
 /// phrase (e.g. "Shift Command N") for use in VoiceOver accessibility labels.
 ///
 /// Mapping rules:
-/// - Modifier glyphs: ⌘→Command  ⇧→Shift  ⌥→Option  ⌃→Control
+/// - Modifier glyphs: ⌘→Command  ⇧→Shift  ⌥→Option  ⌃→Control  🌐→Globe
 /// - Special keys:    ↩→Return   ⎋→Escape  ⌫→Delete  ⇥→Tab
 ///                    ↑→Up Arrow ↓→Down Arrow ←→Left Arrow →→Right Arrow
 ///                    "Space" (word token) → Space
@@ -975,7 +985,7 @@ private struct FavouritesToggle: View {
 func spokenKeys(_ keys: String) -> String {
     let map: [Character: String] = [
         // Modifiers
-        "⌘": "Command", "⇧": "Shift", "⌥": "Option", "⌃": "Control",
+        "⌘": "Command", "⇧": "Shift", "⌥": "Option", "⌃": "Control", "🌐": "Globe",
         // Special keys
         "↩": "Return",    "⎋": "Escape", "⌫": "Delete",     "⇥": "Tab",
         "↑": "Up Arrow",  "↓": "Down Arrow",

@@ -209,7 +209,7 @@ private struct QuizQuestionView: View {
                 .foregroundStyle(.tertiary)
         case .correct:
             if let q = model.current {
-                Label(q.keys, systemImage: "checkmark.circle.fill")
+                Label { keysText(q.keys) } icon: { Image(systemName: "checkmark.circle.fill") }
                     .font(.title3.weight(.semibold))
                     .foregroundStyle(.green)
             }
@@ -220,7 +220,7 @@ private struct QuizQuestionView: View {
                         Image(systemName: "xmark.circle.fill").foregroundStyle(.red)
                         Text("You pressed \(pressed)").foregroundStyle(.red)
                     }
-                    Text("Correct: \(q.keys)").foregroundStyle(.secondary)
+                    Text("Correct: \(keysText(q.keys))").foregroundStyle(.secondary)
                 }
                 .font(.body.weight(.medium))
             }

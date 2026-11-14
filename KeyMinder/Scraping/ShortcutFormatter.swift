@@ -6,6 +6,10 @@ import Foundation
 /// into a human-readable shortcut string such as "⇧⌘N" or "⌃→".
 enum ShortcutFormatter {
 
+    /// Fn/Globe modifier marker in key strings. Views draw it as the `globe` SF Symbol
+    /// via `keysText(_:)`, since the character itself renders as a colour emoji.
+    static let globe = "🌐"
+
     /// Builds a shortcut string from an NSEvent — used to match a key press
     /// against the `Shortcut.keys` strings in the visible shortcuts list.
     static func keys(from event: NSEvent) -> String? {
@@ -61,10 +65,12 @@ enum ShortcutFormatter {
     /// Decodes the `AXMenuItemCmdModifiers` mask.
     ///
     /// Command is implied unless the "no command" bit (8) is set; the remaining
-    /// bits are shift (1), option (2) and control (4). Symbols are emitted in the
-    /// conventional macOS order: ⌃⌥⇧⌘.
+    /// bits are shift (1), option (2), control (4) and the undocumented Fn/Globe
+    /// bit (16, e.g. Edit → Emoji & Symbols reports 24 = fn + no-command).
+    /// Symbols are emitted in the macOS menu order: 🌐⌃⌥⇧⌘.
     private static func modifierString(_ modifiers: Int) -> String {
         var result = ""
+        if modifiers & 16 != 0 { result += globe }
         if modifiers & 4 != 0 { result += "⌃" }
         if modifiers & 2 != 0 { result += "⌥" }
         if modifiers & 1 != 0 { result += "⇧" }

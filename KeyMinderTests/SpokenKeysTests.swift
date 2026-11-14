@@ -16,6 +16,10 @@ final class SpokenKeysTests: XCTestCase {
         XCTAssertEqual(spokenKeys("⌘"), "Command")
     }
 
+    func testGlobeModifier() {
+        XCTAssertEqual(spokenKeys("🌐⌃F"), "Globe Control F")
+    }
+
     func testShift() {
         XCTAssertEqual(spokenKeys("⇧"), "Shift")
     }

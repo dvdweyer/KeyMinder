@@ -46,6 +46,16 @@ final class ShortcutFormatterTests: XCTestCase {
         XCTAssertEqual(format(cmdChar: "n", modifiers: 9), "⇧N")
     }
 
+    func testModifiers_fnNoCommand() {
+        // fn(16) + no-command(8) = 24 — Edit → Emoji & Symbols
+        XCTAssertEqual(format(cmdChar: "e", modifiers: 24), "🌐E")
+    }
+
+    func testModifiers_fnControlNoCommand() {
+        // fn(16) + control(4) + no-command(8) = 28 — Window → Fill
+        XCTAssertEqual(format(cmdChar: "f", modifiers: 28), "🌐⌃F")
+    }
+
     // MARK: - cmdChar: printable ASCII
 
     func testCmdChar_lowercase_isUppercased() {
