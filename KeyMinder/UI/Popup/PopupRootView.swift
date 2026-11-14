@@ -962,11 +962,14 @@ private struct FavouritesToggle: View {
 
 // MARK: - Key-string rendering
 
-/// Renders a key string with the Fn/Globe marker drawn as the `globe` SF Symbol.
+/// Renders a key string with the Globe and microphone markers drawn as SF Symbols.
 func keysText(_ keys: String) -> Text {
-    let parts = keys.components(separatedBy: ShortcutFormatter.globe)
-    return parts.dropFirst().reduce(Text(verbatim: parts[0])) { text, part in
-        text + Text(Image(systemName: "globe")) + Text(verbatim: part)
+    let symbols = [ShortcutFormatter.globe: "globe", ShortcutFormatter.microphone: "mic"]
+    return keys.reduce(Text(verbatim: "")) { text, ch in
+        if let name = symbols[String(ch)] {
+            return text + Text(Image(systemName: name))
+        }
+        return text + Text(verbatim: String(ch))
     }
 }
 
@@ -986,6 +989,7 @@ func spokenKeys(_ keys: String) -> String {
     let map: [Character: String] = [
         // Modifiers
         "⌘": "Command", "⇧": "Shift", "⌥": "Option", "⌃": "Control", "🌐": "Globe",
+        "🎤": "Dictation",
         // Special keys
         "↩": "Return",    "⎋": "Escape", "⌫": "Delete",     "⇥": "Tab",
         "↑": "Up Arrow",  "↓": "Down Arrow",

@@ -10,6 +10,9 @@ enum ShortcutFormatter {
     /// via `keysText(_:)`, since the character itself renders as a colour emoji.
     static let globe = "🌐"
 
+    /// Dictation (microphone) key marker, drawn as the `mic` SF Symbol like `globe`.
+    static let microphone = "🎤"
+
     /// Builds a shortcut string from an NSEvent — used to match a key press
     /// against the `Shortcut.keys` strings in the visible shortcuts list.
     static func keys(from event: NSEvent) -> String? {
@@ -120,6 +123,7 @@ enum ShortcutFormatter {
         0x17: "⌫", 0x1B: "⎋", 0x1C: "⌧",
         0x62: "⇞", 0x63: "⇪", 0x64: "←", 0x65: "→",
         0x66: "↖", 0x68: "↑", 0x69: "↘", 0x6A: "↓", 0x6B: "⇟",
+        0x96: microphone,   // Start Dictation (undocumented; char "🎤", vkey 128)
     ]
 
     /// Hardware key codes (`AXMenuItemCmdVirtualKey`) for keys without a char.

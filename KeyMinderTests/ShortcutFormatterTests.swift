@@ -51,6 +51,11 @@ final class ShortcutFormatterTests: XCTestCase {
         XCTAssertEqual(format(cmdChar: "e", modifiers: 24), "🌐E")
     }
 
+    func testGlyph_microphone() {
+        // Start Dictation: char "🎤", glyph 150, vkey 128, no-command(8)
+        XCTAssertEqual(ShortcutFormatter.format(cmdChar: "🎤", virtualKey: 128, glyph: 150, modifiers: 8), "🎤")
+    }
+
     func testModifiers_fnControlNoCommand() {
         // fn(16) + control(4) + no-command(8) = 28 — Window → Fill
         XCTAssertEqual(format(cmdChar: "f", modifiers: 28), "🌐⌃F")
