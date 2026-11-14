@@ -18,8 +18,11 @@ SCRIPT_DIR = Path(__file__).parent
 REPO_DIR = SCRIPT_DIR.parent
 XCSTRINGS_PATH = REPO_DIR / "KeyMinder" / "Localizable.xcstrings"
 
-LANGUAGES = {
+# Display names for the prompt only. The languages to translate into come from the
+# catalog itself (see target_languages), so a newly added language is never skipped.
+LANGUAGE_NAMES = {
     "ar": "Arabic",
+    "bn": "Bengali",
     "da": "Danish",
     "de": "German",
     "es": "Spanish",
@@ -27,12 +30,19 @@ LANGUAGES = {
     "fr": "French",
     "he": "Hebrew",
     "hi": "Hindi",
+    "id": "Indonesian",
     "it": "Italian",
     "ja": "Japanese",
+    "ko": "Korean",
     "nb": "Norwegian Bokmål",
     "nl": "Dutch",
+    "pl": "Polish",
     "pt": "Portuguese (Brazilian)",
+    "ru": "Russian",
     "sv": "Swedish",
+    "th": "Thai",
+    "tr": "Turkish",
+    "vi": "Vietnamese",
     "zh-Hans": "Chinese (Simplified)",
     "zh-Hant": "Chinese (Traditional)",
 }
@@ -56,7 +66,16 @@ def load_api_key() -> str:
     return key
 
 
-def find_missing(strings: dict) -> dict[str, list[str]]:
+def target_languages(data: dict) -> list[str]:
+    """Every language the catalog has a translation in, except the source language."""
+    codes: set[str] = set()
+    for val in data["strings"].values():
+        codes.update(val.get("localizations", {}))
+    codes.discard(data.get("sourceLanguage", "en"))
+    return sorted(codes)
+
+
+def find_missing(strings: dict, languages: list[str]) -> dict[str, list[str]]:
     """Returns {source_key: [lang_code, ...]} for all untranslated entries.
 
     Entries that use the 'variations' structure (plural rules) are considered
@@ -66,7 +85,7 @@ def find_missing(strings: dict) -> dict[str, list[str]]:
     missing: dict[str, list[str]] = {}
     for key, val in strings.items():
         locs = val.get("localizations", {})
-        for lang in LANGUAGES:
+        for lang in languages:
             if lang not in locs:
                 missing.setdefault(key, []).append(lang)
             else:
@@ -108,7 +127,7 @@ def main() -> None:
     data = json.loads(XCSTRINGS_PATH.read_text(encoding="utf-8"))
     strings = data["strings"]
 
-    missing = find_missing(strings)
+    missing = find_missing(strings, target_languages(data))
     if not missing:
         print("    All strings are translated — nothing to do.")
         return
@@ -133,7 +152,7 @@ def main() -> None:
             lang_to_keys.setdefault(lang, []).append(key)
 
     for lang_code, keys in sorted(lang_to_keys.items()):
-        lang_name = LANGUAGES[lang_code]
+        lang_name = LANGUAGE_NAMES.get(lang_code, lang_code)
         print(f"    Translating {len(keys)} string(s) → {lang_name}…")
         translations = translate_batch(client, keys, lang_code, lang_name)
         for key, translation in zip(keys, translations):
