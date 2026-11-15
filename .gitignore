@@ -31,3 +31,7 @@ SourcePackages/
 
 # Claude project instructions (local only)
 **/CLAUDE.md
+
+# Release artifacts (built outside the repo; never committed)
+*.dmg
+*.zip
