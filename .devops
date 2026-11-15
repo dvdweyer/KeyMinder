@@ -35,6 +35,8 @@ BUILD_SOURCE=commitcount
 
 LANGUAGES="en ar bn da de es fi fr he hi id it ja ko nb nl pl pt ru sv th tr vi zh-Hans zh-Hant"
 STRINGS_SYNC=translate-missing
+# dev reset --deep resets these grants (Input Monitoring covers the double-tap trigger).
+TCC_SERVICES="Accessibility ListenEvent"
 
 WEB_SRC=Documentation/Website
 WEB_SITE=app.keyminder

@@ -1,0 +1,19 @@
+# First-run keys for `dev reset --shallow` (one per line). User settings such as double-tap,
+# appearance, popup toggles and favourites are kept.
+# Onboarding wizard
+didShowOnboardingWizard
+onboardingResumeStep
+# Popup tips (PopupFilterModel.tipIndex)
+popupTipIndex
+# Growth nudges
+popupOpenCount
+didPromptGitHubStar
+# Hotkey: back to the factory default (⌥⌘K) on the next launch
+didSetDefaultHotkey
+globalHotkey
+# Ignore list: defaults (disabled, not seeded) applied fresh
+ignoreListEnabled
+ignoreListShowWhenFiltering
+ignoreList
+didSeedIgnoreList
+didSeedIgnoredMenus
