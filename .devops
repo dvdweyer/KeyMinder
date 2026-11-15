@@ -1,0 +1,32 @@
+# Profile for dev (~/Developer/_DevOps). Data only: never sourced. Public repo: no secrets here.
+NAME=KeyMinder
+BUNDLE_ID=org.afaik.KeyMinder
+PROJECT=KeyMinder.xcodeproj
+SCHEME_MACOS=KeyMinder
+PLATFORMS=macos
+DISTRIBUTION=direct
+UPDATES=sparkle
+PACKAGES="zip dmg cask"
+CDN=cloudflare
+REPO_VISIBILITY=public
+NOTARY_PROFILE=KeyMinder
+CHANNEL_BUILD_SETTING=KM_RELEASE_CHANNEL
+ENV_FILE=.config/scripts/.env
+
+# Only host-app tests exist; they launch the app.
+TEST_CMD=
+HOST_TESTS=yes
+HOST_TEST_CMD='xcodebuild test -project KeyMinder.xcodeproj -scheme KeyMinder -destination platform=macOS -derivedDataPath "${TMPDIR%/}/KeyMinder-tests.noindex"'
+
+# The build number is the commit count, set by a build phase; the version is bumped by hand.
+VERSION_FILES=KeyMinder.xcodeproj/project.pbxproj
+CODE_PATHS="KeyMinder KeyMinder.xcodeproj"
+TAG_STYLE=vX.Y.Z
+BUILD_SOURCE=commitcount
+
+LANGUAGES="en ar bn da de es fi fr he hi id it ja ko nb nl pl pt ru sv th tr vi zh-Hans zh-Hant"
+STRINGS_SYNC=translate-missing
+
+WEB_SRC=Documentation/Website
+WEB_SITE=app.keyminder
+WEB_URL=https://keyminder.app/
