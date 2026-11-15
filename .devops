@@ -10,6 +10,14 @@ PACKAGES="zip dmg cask"
 CDN=cloudflare
 REPO_VISIBILITY=public
 NOTARY_PROFILE=KeyMinder
+# Until its sections move into dev (Phase 9 step B), dev alpha|beta|release run preflight, ask,
+# then scripts/release.sh --alpha|--beta|--remote-only.
+RELEASE_SCRIPT=scripts/release.sh
+APPCAST=Distribution/appcast.xml
+CASK_FILE=Distribution/Casks/keyminder.rb
+# Sparkle tools (dev setup sparkle), the same version as Package.resolved.
+SPARKLE_VERSION=2.9.2
+SPARKLE_SHA256=1cb340cbbef04c6c0d162078610c25e2221031d794a3449d89f2f56f4df77c95
 CHANNEL_BUILD_SETTING=KM_RELEASE_CHANNEL
 ENV_FILE=.config/scripts/.env
 PROVISIONING_UPDATES=1
