@@ -2,6 +2,8 @@
 
 All notable changes to KeyMinder are listed here. Grouped by significant milestone; individual patch releases are tagged `vX.Y.Z` in git.
 
+## [Unreleased]
+
 ## v1.0.154–v1.0.157 — Alpha channel, compatibility (2026-06-18)
 
 - **Alpha release channel**: opt into alpha builds via Settings → Developer; independent of the existing beta toggle

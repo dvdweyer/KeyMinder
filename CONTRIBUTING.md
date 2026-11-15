@@ -33,7 +33,13 @@ git tag --sort=-v:refname | head -1
 
 1. Fork the repository and create a branch from `main`.
 2. Make your changes with a version bump if applicable.
-3. Open a pull request against `main`. The CI workflow builds and runs unit tests automatically -- that has not yet been tested well enough, be prepared for some errors there.
+3. Build and run the tests yourself before you open the pull request; there is no CI. The tests are a host-app target, so running them launches KeyMinder:
+
+   ```bash
+   xcodebuild test -project KeyMinder.xcodeproj -scheme KeyMinder -destination platform=macOS
+   ```
+
+4. Open a pull request against `main`.
 
 ## Filing issues
 
