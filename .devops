@@ -31,3 +31,7 @@ STRINGS_SYNC=translate-missing
 WEB_SRC=Documentation/Website
 WEB_SITE=app.keyminder
 WEB_URL=https://keyminder.app/
+# keyminder.html is published as index.html; appcast.xml in the Sites copy belongs to release.sh
+# (the zips and DMGs there are untracked, so publish leaves them alone anyway).
+WEB_INDEX=keyminder.html
+WEB_KEEP=appcast.xml

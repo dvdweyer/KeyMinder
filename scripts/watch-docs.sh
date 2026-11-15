@@ -1,19 +1,12 @@
 #!/bin/bash
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Watches Documentation/Website/ and auto-deploys on every save.
-# Run this in a terminal while editing keyminder.html.
+# Watches Documentation/Website/ while you edit: dev web watch serves a local preview of the page,
+# rebuilds and re-checks it on every save. Nothing is deployed; publish with scripts/deploy-docs.sh.
 set -euo pipefail
+cd "$(dirname "$0")/.."
 
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-DOC_DIR="$(cd "$SCRIPT_DIR/../Documentation" && pwd)"
-
-echo "Watching $DOC_DIR — deploying on every change. Ctrl-C to stop."
-echo ""
-
-fswatch -o \
-    --exclude '\.DS_Store' \
-    --exclude '.*\.swp$' \
-    "$DOC_DIR" | while read -r _; do
-    echo "[$(date '+%H:%M:%S')] Change detected — deploying…"
-    bash "$SCRIPT_DIR/deploy-docs.sh"
-done
+if ! command -v dev >/dev/null; then
+    echo "error: dev isn't on PATH; it runs the preview now." >&2
+    exit 1
+fi
+exec dev web watch
