@@ -59,37 +59,15 @@ fi
 
 # ── Local-only fast path ───────────────────────────────────────────────────────
 if [[ "$MODE" == "local-only" ]]; then
-    echo "==> KeyMinder — local Debug install"
-    echo ""
-    _BUILD_DIR="/tmp/KeyMinder-debug-$$"
-    mkdir -p "$_BUILD_DIR"
-
-    echo "--- Building (Debug)…"
-    xcodebuild build \
-        -project "$REPO_DIR/KeyMinder.xcodeproj" \
-        -scheme KeyMinder \
-        -configuration Debug \
-        -derivedDataPath "$_BUILD_DIR" \
-        -allowProvisioningUpdates
-
-    echo ""
-    echo "--- Installing to /Applications…"
-    pkill -x KeyMinder 2>/dev/null || true
-    _kw=0
-    while pgrep -x KeyMinder > /dev/null 2>&1; do
-        sleep 0.1; _kw=$(( _kw + 1 ))
-        if (( _kw >= 50 )); then
-            echo "warning: KeyMinder still running after 5 s; continuing anyway." >&2; break
-        fi
-    done
-    rm -rf /Applications/KeyMinder.app
-    cp -R "$_BUILD_DIR/Build/Products/Debug/KeyMinder.app" /Applications/
-    xattr -cr /Applications/KeyMinder.app
-    rm -rf "$_BUILD_DIR"
-
-    echo ""
-    echo "==> Done — KeyMinder (Debug) installed to /Applications."
-    exit 0
+    # The local install is done by dev (`dev help`, configured by .devops): Debug build, then it
+    # asks before quitting a running KeyMinder, checks the signature of a staged copy before
+    # swapping, puts the old copy back if the swap fails, and keeps a zip of the replaced copy
+    # (`dev install --rollback` restores it).
+    if ! command -v dev >/dev/null; then
+        echo "error: dev isn't on PATH; it does the local install now." >&2
+        exit 1
+    fi
+    exec dev -C "$REPO_DIR" install --debug
 fi
 
 # CHANNEL is non-empty ("beta" or "alpha") for prerelease modes; empty for stable.

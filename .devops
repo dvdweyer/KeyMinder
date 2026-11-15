@@ -12,6 +12,7 @@ REPO_VISIBILITY=public
 NOTARY_PROFILE=KeyMinder
 CHANNEL_BUILD_SETTING=KM_RELEASE_CHANNEL
 ENV_FILE=.config/scripts/.env
+PROVISIONING_UPDATES=1
 
 # Only host-app tests exist; they launch the app.
 TEST_CMD=
