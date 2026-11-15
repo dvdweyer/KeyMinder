@@ -12,5 +12,8 @@ cask "keyminder" do
 
   app "KeyMinder.app"
 
-  zap trash: "~/Library/Preferences/org.afaik.KeyMinder.plist"
+  zap trash: [
+    "~/Library/Preferences/org.afaik.KeyMinder.plist",
+    "~/Library/SyncedPreferences/org.afaik.KeyMinder*.plist",
+  ]
 end
