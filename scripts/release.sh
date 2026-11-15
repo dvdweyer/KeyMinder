@@ -225,187 +225,23 @@ if [[ -z "$CHANNEL" ]]; then
 fi
 
 # ── Sparkle appcast ───────────────────────────────────────────────────────────
+# dev sparkle appcast writes the release notes next to the zip (stable: the CHANGELOG.md
+# sections since the last stable item, so a multi-version jump gets all of them; beta/alpha:
+# feat/fix/perf/security commits since the channel's last item), runs generate_appcast
+# (3 items per channel, 10 stable; the pinned tools from `dev setup sparkle`) and sets the
+# sparkle:minimumAutoupdateVersion floor on every older item (replay protection).
 echo ""
-echo "--- Updating Sparkle appcast…"
-# generate_appcast must be on PATH. Install via scripts/setup-sparkle-tools.sh,
-# which pins the Sparkle version and verifies the tarball SHA-256 before installing.
-GENERATE_APPCAST=$(command -v generate_appcast 2>/dev/null \
-    || echo "$HOME/.sparkle-tools/bin/generate_appcast")
-if [[ ! -x "$GENERATE_APPCAST" ]]; then
-    echo "error: generate_appcast not found in PATH or ~/.sparkle-tools/bin." >&2
-    echo "       Run scripts/setup-sparkle-tools.sh to install it." >&2
+echo "--- Updating Sparkle appcast (dev sparkle appcast)…"
+if ! command -v dev >/dev/null; then
+    echo "error: dev isn't on PATH; it builds the appcast now." >&2
     exit 1
 fi
 APPCAST="$REPO_DIR/Distribution/appcast.xml"
 APPCAST_ASSETS="$BUILD_DIR/appcast_assets"
 mkdir -p "$APPCAST_ASSETS"
 cp "$ZIP" "$APPCAST_ASSETS/"
-
-# ── Release notes ─────────────────────────────────────────────────────────────
-# generate_appcast auto-embeds a .html/.md/.txt file that shares the enclosure's
-# basename (KeyMinder_<version>.html here) as CDATA release notes — no extra flag
-# needed as long as the file has no DOCTYPE/body tags.
-NOTES_FILE="$APPCAST_ASSETS/KeyMinder_${VERSION}.html"
-if [[ -z "$CHANNEL" ]]; then
-    # Stable: pull the "What's new" blocks from the website changelog for every
-    # version newer than the last stable release already in the appcast, so a
-    # multi-version jump still gets a full overview, not just the newest entry.
-    LAST_STABLE=$(python3 - "$APPCAST" <<'PYEOF'
-import re, sys
-
-try:
-    with open(sys.argv[1]) as f:
-        xml = f.read()
-except FileNotFoundError:
-    sys.exit(0)
-
-for item in re.findall(r'<item>.*?</item>', xml, re.DOTALL):
-    if '<sparkle:channel>' not in item:
-        m = re.search(r'<sparkle:shortVersionString>([\d.]+)</sparkle:shortVersionString>', item)
-        if m:
-            print(m.group(1))
-            break
-PYEOF
-    )
-
-    python3 - "$REPO_DIR/Documentation/Website/keyminder.html" "$LAST_STABLE" "$VERSION" "$NOTES_FILE" <<'PYEOF'
-import re, sys
-
-html_path, last_stable, version, out_path = sys.argv[1:5]
-
-def vtuple(v):
-    return tuple(int(x) for x in v.split('.'))
-
-last_t = vtuple(last_stable) if last_stable else (0, 0, 0)
-cur_t = vtuple(version)
-
-with open(html_path) as f:
-    page = f.read()
-
-blocks = re.findall(r'<div class="changelog-entry">.*?</ul>\s*</div>', page, re.DOTALL)
-
-selected = []
-for block in blocks:
-    m = re.search(r'<strong>v([\d.]+)(?:.v([\d.]+))?</strong>', block)
-    if not m:
-        continue
-    v = m.group(2) or m.group(1)
-    if last_t < vtuple(v) <= cur_t:
-        selected.append(block)
-
-if selected:
-    with open(out_path, 'w') as f:
-        f.write('\n'.join(selected))
-PYEOF
-
-    if [[ ! -f "$NOTES_FILE" ]]; then
-        echo "warning: no changelog entry found in keyminder.html for v${VERSION}; release notes will be empty." >&2
-    fi
-else
-    # Beta/alpha: the website isn't updated for these, so auto-generate notes
-    # from git log since the last release already published *to this channel*
-    # (parsed from the existing appcast, same idea as LAST_STABLE above) — not
-    # just the immediately preceding git tag, which would miss every commit
-    # from intervening versions that were never shipped on this channel (e.g.
-    # a run of stable-only version bumps between two alpha releases).
-    LAST_CHANNEL_VERSION=$(python3 - "$APPCAST" "$CHANNEL" <<'PYEOF'
-import re, sys
-
-path, channel = sys.argv[1], sys.argv[2]
-try:
-    with open(path) as f:
-        xml = f.read()
-except FileNotFoundError:
-    sys.exit(0)
-
-for item in re.findall(r'<item>.*?</item>', xml, re.DOTALL):
-    if f'<sparkle:channel>{channel}</sparkle:channel>' in item:
-        m = re.search(r'<sparkle:shortVersionString>([\d.]+)</sparkle:shortVersionString>', item)
-        if m:
-            print(m.group(1))
-            break
-PYEOF
-    )
-
-    if [[ -n "$LAST_CHANNEL_VERSION" ]]; then
-        PREV_TAG="v${LAST_CHANNEL_VERSION}"
-    else
-        # First-ever release on this channel: fall back to the immediately
-        # preceding git tag so notes aren't empty.
-        PREV_TAG=$(git -C "$REPO_DIR" tag -l 'v*' --sort=-v:refname \
-            | awk -v cur="v${VERSION}" 'found{print; exit} $0==cur{found=1}')
-    fi
-
-    if [[ -n "$PREV_TAG" ]]; then
-        # Written to a file rather than piped via heredoc because python3 needs
-        # stdin free to receive the git log output below.
-        BETA_NOTES_SCRIPT="$BUILD_DIR/gen_beta_notes.py"
-        cat > "$BETA_NOTES_SCRIPT" <<'PYEOF'
-import html, re, sys
-
-out_path = sys.argv[1]
-labels = {"feat": "New", "fix": "Fixed", "perf": "Improved", "security": "Security", "sec": "Security"}
-
-items = []
-for line in sys.stdin:
-    line = line.strip()
-    m = re.match(r'(?i)^(feat|fix|perf|security|sec):\s*(.+)$', line)
-    if not m:
-        continue
-    prefix, desc = m.group(1).lower(), m.group(2)
-    desc = re.sub(r'\s*\(v[\d.]+\)\s*$', '', desc)
-    items.append(f'<li><strong>{labels[prefix]}:</strong> {html.escape(desc)}</li>')
-
-if items:
-    with open(out_path, 'w') as f:
-        f.write('<ul>\n' + '\n'.join(items) + '\n</ul>\n')
-PYEOF
-        git -C "$REPO_DIR" log "${PREV_TAG}..v${VERSION}" --no-merges --pretty=format:'%s' \
-            | python3 "$BETA_NOTES_SCRIPT" "$NOTES_FILE"
-    fi
-fi
-
-if [[ -n "$CHANNEL" ]]; then
-    "$GENERATE_APPCAST" "$APPCAST_ASSETS" \
-        --download-url-prefix "https://keyminder.app/" \
-        --maximum-versions 3 \
-        --channel "$CHANNEL" \
-        -o "$APPCAST"
-else
-    "$GENERATE_APPCAST" "$APPCAST_ASSETS" \
-        --download-url-prefix "https://keyminder.app/" \
-        --maximum-versions 10 \
-        -o "$APPCAST"
-fi
-
-# Inject sparkle:minimumAutoupdateVersion into every item that is NOT the newest.
-# This creates a version floor: Sparkle will refuse to install any old enclosure
-# automatically unless the installed bundle version already meets the floor,
-# defending against MITM replay of genuine old signed builds.
-# The newest item itself gets no floor (it IS the target).
-NEW_BUILD=$(grep -m1 '<sparkle:version>' "$APPCAST" | sed 's/.*<sparkle:version>//; s/<\/sparkle:version>//')
-python3 - "$APPCAST" "$NEW_BUILD" <<'PYEOF'
-import sys, re
-
-path, new_build = sys.argv[1], sys.argv[2]
-with open(path) as f:
-    xml = f.read()
-
-items = list(re.finditer(r'<item>.*?</item>', xml, re.DOTALL))
-if len(items) <= 1:
-    sys.exit(0)
-
-floor_tag = f'            <sparkle:minimumAutoupdateVersion>{new_build}</sparkle:minimumAutoupdateVersion>\n        '
-# Process from end to preserve string positions; skip the first (newest) item.
-for item in reversed(items[1:]):
-    block = item.group(0)
-    if 'minimumAutoupdateVersion' not in block:
-        new_block = block.replace('</item>', floor_tag + '</item>')
-        xml = xml[:item.start()] + new_block + xml[item.end():]
-
-with open(path, 'w') as f:
-    f.write(xml)
-PYEOF
+dev -C "$REPO_DIR" sparkle appcast --assets "$APPCAST_ASSETS" --version "$VERSION" \
+    ${CHANNEL:+--channel "$CHANNEL"}
 
 # ── Deploy ────────────────────────────────────────────────────────────────────
 echo ""
