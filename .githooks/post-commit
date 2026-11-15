@@ -1,0 +1,11 @@
+#!/bin/sh
+# dev-hook-shim v1: written by `dev hooks install`. The logic is in dev (`dev help`); this only
+# finds it. Without dev the post-commit hook is skipped with a warning (no version bump, tag or tests).
+dev=$(command -v dev 2>/dev/null) || dev=
+fallback=${DEVOPS_DEV_FALLBACK:-/usr/local/bin/dev}
+[ -n "$dev" ] || [ ! -x "$fallback" ] || dev=$fallback
+if [ -z "$dev" ]; then
+  echo "warning: dev not found; post-commit hook skipped" >&2
+  exit 0
+fi
+exec "$dev" hook post-commit "$@"
