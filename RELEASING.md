@@ -22,8 +22,8 @@ Profile: macos, direct, public repo. `dev doctor --matrix` shows the same with t
 | dev docs check: required documents, links, private details, store texts | `dev docs check --release X.Y.Z` | ready |
 | Release checks (privacy manifest, icons, entitlements, ...) | `dev preflight` | ready |
 | Developer ID export, notarize, staple | `dev release --channel direct` | ready |
-| Sparkle appcast with EdDSA signature | `dev release (Sparkle)` | not built yet (Phase 9) |
-| Homebrew cask and tap | `dev release (Homebrew)` | not built yet (Phase 9) |
+| Sparkle appcast with EdDSA signature | `dev release (Sparkle)` | ready |
+| Homebrew cask and tap | `dev release (Homebrew)` | ready |
 
 <!-- dev:releasing:end -->
 
