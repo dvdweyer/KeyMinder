@@ -38,4 +38,4 @@ scripts/release.sh --remote-only    # stable: zip, DMG, appcast, website, cask
 scripts/release.sh --full-deploy    # stable, and install it locally
 ```
 
-Before a stable release, the version references in `Documentation/Website/keyminder.html` must match the project (`release.sh` refuses otherwise), and the page's "What's new" section needs an entry for the version. Website-only changes: `scripts/deploy-docs.sh` (`dev web publish`).
+Before a stable release, the version references in `Website/index.html` must match the project (`release.sh` refuses otherwise), and the page's "What's new" section needs an entry for the version. Website-only changes: `scripts/deploy-docs.sh` (`dev web publish`).

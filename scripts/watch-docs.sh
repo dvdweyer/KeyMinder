@@ -1,6 +1,6 @@
 #!/bin/bash
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Watches Documentation/Website/ while you edit: dev web watch serves a local preview of the page,
+# Watches Website/ while you edit: dev web watch serves a local preview of the page,
 # rebuilds and re-checks it on every save. Nothing is deployed; publish with scripts/deploy-docs.sh.
 set -euo pipefail
 cd "$(dirname "$0")/.."

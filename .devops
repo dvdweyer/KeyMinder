@@ -38,10 +38,9 @@ STRINGS_SYNC=translate-missing
 # dev reset --deep resets these grants (Input Monitoring covers the double-tap trigger).
 TCC_SERVICES="Accessibility ListenEvent"
 
-WEB_SRC=Documentation/Website
+WEB_SRC=Website
 WEB_SITE=app.keyminder
 WEB_URL=https://keyminder.app/
-# keyminder.html is published as index.html; appcast.xml in the Sites copy belongs to release.sh
+# appcast.xml in the Sites copy belongs to release.sh
 # (the zips and DMGs there are untracked, so publish leaves them alone anyway).
-WEB_INDEX=keyminder.html
 WEB_KEEP=appcast.xml

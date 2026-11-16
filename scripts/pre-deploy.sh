@@ -5,7 +5,7 @@
 # Run this BEFORE scripts/release.sh. It:
 #   1. Translates any missing strings in Localizable.xcstrings via the Claude API
 #      (requires ANTHROPIC_API_KEY in the environment or in the external .env file)
-#   2. Updates version references in Documentation/Website/keyminder.html
+#   2. Updates version references in Website/index.html
 #   3. Updates the version string in Distribution/Casks/keyminder.rb
 #   4. Commits any modified files
 #   5. Verifies git tag vX.Y.Z exists (offers to create it if missing)
@@ -54,15 +54,15 @@ else
     python3 "$SCRIPT_DIR/translate-missing.py"
 fi
 
-# ── 2. Documentation — keyminder.html ────────────────────────────────────────
+# ── 2. Website — index.html ──────────────────────────────────────────────
 echo ""
-echo "--- Updating Documentation/Website/keyminder.html…"
-HTML="$REPO_DIR/Documentation/Website/keyminder.html"
+echo "--- Updating Website/index.html…"
+HTML="$REPO_DIR/Website/index.html"
 
 PREV_VERSION=$(grep -o 'href="KeyMinder_[0-9.]*\.dmg"' "$HTML" | head -1 \
     | sed 's/href="KeyMinder_//; s/\.dmg"//')
 if [[ -z "$PREV_VERSION" ]]; then
-    echo "error: could not detect current version in keyminder.html" >&2
+    echo "error: could not detect current version in index.html" >&2
     exit 1
 fi
 
@@ -85,7 +85,7 @@ else
     # Warn if there is no changelog entry for the new version yet.
     if ! grep -qF "<strong>v${VERSION}</strong>" "$HTML"; then
         echo ""
-        echo "    WARNING: no changelog entry found for v${VERSION} in keyminder.html."
+        echo "    WARNING: no changelog entry found for v${VERSION} in index.html."
         echo "             Add one under the 'What's new' section before deploying."
     fi
 fi
@@ -109,7 +109,7 @@ echo ""
 echo "--- Staging pre-deploy changes…"
 git -C "$REPO_DIR" add \
     KeyMinder/Localizable.xcstrings \
-    Documentation/Website/keyminder.html \
+    Website/index.html \
     Distribution/Casks/keyminder.rb
 
 if git -C "$REPO_DIR" diff --cached --quiet; then

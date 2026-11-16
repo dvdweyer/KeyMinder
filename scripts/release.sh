@@ -117,12 +117,12 @@ fi
 
 # ── QC: webpage must reference the same version (stable only) ─────────────────
 if [[ -z "$CHANNEL" ]]; then
-    HTML="$REPO_DIR/Documentation/Website/keyminder.html"
+    HTML="$REPO_DIR/Website/index.html"
     HTML_VERSION=$(grep -o 'href="KeyMinder_[0-9.]*\.dmg"' "$HTML" | head -1 \
         | sed 's/href="KeyMinder_//; s/\.dmg"//')
     if [[ "$HTML_VERSION" != "$VERSION" ]]; then
-        echo "error: keyminder.html download link points to v${HTML_VERSION} but project is v${VERSION}" >&2
-        echo "       Update the DMG href, button text, install step, and changelog in Documentation/Website/keyminder.html" >&2
+        echo "error: index.html download link points to v${HTML_VERSION} but project is v${VERSION}" >&2
+        echo "       Update the DMG href, button text, install step, and changelog in Website/index.html" >&2
         exit 1
     fi
 fi
@@ -251,12 +251,12 @@ cp "$ZIP" "$SITE_DIR/"
 cp "$APPCAST" "$SITE_DIR/"
 if [[ -z "$CHANNEL" ]]; then
     cp "$DMG" "$SITE_DIR/"
-    cp "$REPO_DIR/Documentation/Website/keyminder.html" "$SITE_DIR/index.html"
-    for f in "$REPO_DIR/Documentation/Website/"*.png "$REPO_DIR/Documentation/Website/"*.ico; do
+    cp "$REPO_DIR/Website/index.html" "$SITE_DIR/"
+    for f in "$REPO_DIR/Website/"*.png "$REPO_DIR/Website/"*.ico; do
         [[ -e "$f" ]] && cp "$f" "$SITE_DIR/"
     done
     for f in sitemap.xml robots.txt .htaccess; do
-        [[ -e "$REPO_DIR/Documentation/Website/$f" ]] && cp "$REPO_DIR/Documentation/Website/$f" "$SITE_DIR/"
+        [[ -e "$REPO_DIR/Website/$f" ]] && cp "$REPO_DIR/Website/$f" "$SITE_DIR/"
     done
 fi
 
