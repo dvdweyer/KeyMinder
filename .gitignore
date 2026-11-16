@@ -35,3 +35,8 @@ SourcePackages/
 # Release artifacts (built outside the repo; never committed)
 *.dmg
 *.zip
+
+# Build output and secrets (dev doctor)
+.env
+.env.*
+!.env.example
