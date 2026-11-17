@@ -9,7 +9,7 @@ UPDATES=sparkle
 PACKAGES="zip dmg cask"
 CDN=cloudflare
 REPO_VISIBILITY=public
-NOTARY_PROFILE=KeyMinder
+NOTARY_PROFILE=dev-asc
 # dev alpha|beta|release build, notarize and publish (appcast, site, CDN, cask); every outward
 # step asks. scripts/release.sh is a shim for them.
 APPCAST=Distribution/appcast.xml

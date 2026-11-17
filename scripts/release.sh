@@ -18,8 +18,8 @@
 # A no at the second question leaves the notarized files in the private Releases folder and
 # changes nothing else.
 #
-# Prerequisites: a notarytool Keychain profile (NOTARY_PROFILE in .devops;
-# scripts/setup-notarytool.sh), the Sparkle tools (dev setup sparkle), Xcode in
+# Prerequisites: the notarytool Keychain profile NOTARY_PROFILE in .devops (created once with
+# dev setup notary), the Sparkle tools (dev setup sparkle), Xcode in
 # /Applications, and for the CDN purge and the Homebrew tap the values in the private .env
 # (scripts/.env.example).
 set -euo pipefail
