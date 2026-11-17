@@ -16,26 +16,42 @@ Profile: macos, direct, public repo. `dev doctor --matrix` shows the same with t
 | Restore a previously installed version | `dev install --rollback` | ready |
 | pre-commit: bump version (and build) on app-code commits; dev version bump/set | `dev version set X.Y.Z` | ready |
 | dev changelog: draft Unreleased entries from git history | `dev changelog --write` | ready |
+| Fill version, links and changelog into the page | `dev web render` | ready |
 | Links, language pairs, versions, required pages | `dev web check` | ready |
 | Mirror into Sites and deploy (asks) | `dev web publish` | ready |
 | Fetch the live pages and downloads | `dev web verify` | ready |
 | dev docs check: required documents, links, private details, store texts | `dev docs check --release X.Y.Z` | ready |
 | Release checks (privacy manifest, icons, entitlements, ...) | `dev preflight` | ready |
 | Developer ID export, notarize, staple | `dev release --channel direct` | ready |
-| Sparkle appcast with EdDSA signature | `dev release (Sparkle)` | ready |
-| Homebrew cask and tap | `dev release (Homebrew)` | ready |
+| Sparkle appcast with EdDSA signature | `dev sparkle appcast` | ready |
+| dev alpha and dev beta: channel builds through the appcast | `dev alpha, dev beta` | ready |
+| Publish a direct release: Sites copy, deploy, live check (asks) | `dev release` | ready |
+| Homebrew cask and tap | `dev cask update` | ready |
+| Purge changed URLs on the CDN | `dev cdn purge` | ready |
+| Fill missing translations (Anthropic API) | `dev localize --fill` | ready |
+| dev strings check: catalogs complete, format arguments, knownRegions | `dev strings check` | ready |
 
 <!-- dev:releasing:end -->
 
 ## Manual steps (only you)
 
-KeyMinder is distributed directly (Developer ID, notarized), with Sparkle updates and a Homebrew cask; the Mac App Store is not possible for it (it needs the Accessibility API outside the sandbox). Until the `dev` release steps exist (Phase 9), `scripts/release.sh` makes the releases:
+KeyMinder is distributed directly (Developer ID, notarized), with Sparkle updates and a Homebrew cask; the Mac App Store is not possible for it (it needs the Accessibility API outside the sandbox). `dev` makes the releases; `scripts/release.sh` is a wrapper with the old mode names.
 
 ```bash
-scripts/release.sh --alpha          # alpha channel: notarized zip, appcast item
-scripts/release.sh --beta           # beta channel: the same
-scripts/release.sh --remote-only    # stable: zip, DMG, appcast, website, cask
-scripts/release.sh --full-deploy    # stable, and install it locally
+dev alpha -n     # the plan; nothing is built
+dev alpha        # alpha channel: notarized zip, appcast item
+dev beta         # beta channel: the same
+dev release      # stable: zip, DMG, appcast, website, cask
+dev install --released   # the notarized build into /Applications
 ```
 
-Before a stable release, the version references in `Website/index.html` must match the project (`release.sh` refuses otherwise), and the page's "What's new" section needs an entry for the version. Website-only changes: `scripts/deploy-docs.sh` (`dev web publish`).
+Each of them asks twice: before the build goes to Apple's notary service, and again before anything is public (appcast, website copy, deploy, CDN purge). The Homebrew tap, the commit of the appcast and cask, and the push ask separately. Answering no at the second question keeps the notarized files and changes nothing else.
+
+Before a stable release:
+
+1. `CHANGELOG.md` needs an entry for the version: turn `## [Unreleased]` into a heading such as `## v1.0.196–v1.0.230 — Title (2026-12-01)` and leave a new empty Unreleased above it. The release notes users see in the update window come from every section since the last stable release (`dev sparkle notes` shows them; `dev changelog --write` drafts entries from the commits).
+2. `dev web render` moves the download links, the button and the structured data in `Website/index.html` to the project version; the page's "What's new" section is written by hand. Commit both.
+3. `dev strings check` must pass (`dev localize --fill` fills missing translations after asking).
+4. Push with `git push --follow-tags`.
+
+`dev release` refuses while one of these is missing. Website-only changes: `dev web publish`.
