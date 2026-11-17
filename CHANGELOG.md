@@ -4,6 +4,60 @@ All notable changes to KeyMinder are listed here. Grouped by significant milesto
 
 ## [Unreleased]
 
+Changes since v1.0.195, in the alpha and beta channels up to v1.0.227.
+
+- **Change a shortcut from the popup**: with CustomShortcuts installed, a menu command's shortcut can be changed there straight from KeyMinder's popup
+- **Check for Updates** button in Settings
+- The Fn/Globe modifier is shown in menu shortcuts, and the Start Dictation shortcut is listed
+- App Shortcut menu paths read "File › Save"
+- The System shortcuts section is localized
+- Chords and quiz answers match on non-Latin keyboard layouts; the recorded global hotkey label shows the unshifted key
+- Long menus keep every row when wrapped in all-entries mode
+- A user key equivalent with the keypad flag no longer loses its key
+- Disabled shortcuts no longer count in the conflict indicator
+- iCloud settings sync (experimental): a pending change is pushed before quitting, settings edited while sync was off are pushed when it is turned on, a remote change refreshes an open Settings window, quota violations and account changes are handled, and update channels and debug logging stay per Mac
+- The display-mode setting is part of settings export and import
+- Opting into alpha builds also delivers beta builds, and Settings shows that
+- "Quiz Again" works for apps without a bundle identifier
+- Hotkey recording stops when you leave the onboarding trigger step or the Settings tab
+- Every Accessibility call has a timeout, so an unresponsive app can no longer stall the popup; a cancelled menu scan can't interfere with a newer one
+- App names are sanitised before they are shown in the popup and the quiz
+- Remaining hard-coded strings are localized
+- Internal: all strict-concurrency diagnostics cleared ahead of Swift 6
+
+## v1.0.176–v1.0.195 — Popup display, sync and reliability fixes (2026-09-14)
+
+- **Popup display**: the popup opens on the active app's screen by default; a display-mode setting chooses otherwise
+- Fixed: favourites orphaned by the v1.0.185 pin-key change are recovered automatically; a `|` in a favourite's key is escaped
+- Fixed: iCloud settings sync no longer compares a deletion against a stale timestamp, a local deletion can't overwrite a newer remote edit, and "Keep Local Settings" also wins for keys that are unset locally
+- Fixed: two race conditions that could let concurrent menu scans run at once
+- Fixed: the live keypress key is derived from the unshifted base character
+- Fixed: the live menu title is sanitised before it is compared with the stored title
+- Fixed: window-management shortcut titles are recognised in both US and UK English
+- Fixed: a failed settings export shows an alert instead of failing silently
+- Fixed: Quiz mode manual skip no longer double-advances
+- Fixed: Settings tabs scroll, so content can't be clipped
+- Fixed: Popup Display and modifier-key picker labels and the settings-tab tooltips are localized
+- Fixed: settings are flushed before quit and relaunch; sync logs persist
+- Improved: system and third-party shortcuts load off the main thread
+- Improved: ignore-list matching is faster for exact-match patterns
+
+## v1.0.174–v1.0.175 — Security hardening (2026-07-06)
+
+- Third-party shortcut registry entries are sanitised (title, keys, group, app name) and capped at 500 per file, closing a same-user JSON injection channel
+- The release tooling installs a pinned, hash-verified version of the Sparkle signing tools instead of the latest release
+- Diagnostic logging for settings sync
+
+## v1.0.158–v1.0.173 — iCloud settings sync, export and import (2026-06-29)
+
+- **iCloud settings sync (experimental)**: a toggle in Settings → General keeps the hotkey, ignored commands, favourites and other preferences in step across Macs
+- When sync is turned on and iCloud already holds settings from another Mac, a prompt asks whether to keep the local settings or take those
+- **Clear iCloud Settings** in Settings → Developer removes all KeyMinder data from iCloud and turns sync off
+- **Export and import settings**: save all preferences to a JSON file and restore them on any Mac, in Settings → General
+- Favourites stay visible while a modifier filter or a text search is active
+- Fixed: the menu bar icon and the Dock icon are applied correctly on launch and after an import
+- All new strings translated into the 24 supported languages
+
 ## v1.0.154–v1.0.157 — Alpha channel, compatibility (2026-06-18)
 
 - **Alpha release channel**: opt into alpha builds via Settings → Developer; independent of the existing beta toggle
