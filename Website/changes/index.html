@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What's New — KeyMinder</title>
+<meta name="description" content="What's new in each version of KeyMinder, the macOS menu bar app that shows the keyboard shortcuts of the app you're using.">
+<link rel="canonical" href="https://keyminder.app/changes/">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #f5f5f0;
+    color: #1a1a1a;
+    line-height: 1.7;
+  }
+
+  header {
+    background: #fff;
+    border-bottom: 0.5px solid #e0e0d8;
+    padding: 1.25rem 1rem;
+    text-align: center;
+  }
+
+  header a { color: inherit; text-decoration: none; font-size: 1.2rem; font-weight: 500; letter-spacing: -0.01em; }
+
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 2rem 1rem 1rem;
+  }
+
+  h1 { font-size: 1.6rem; font-weight: 500; letter-spacing: -0.02em; margin-bottom: 0.25rem; }
+
+  .lead { color: #555; margin-bottom: 1.25rem; }
+
+  .lead a, footer a { color: inherit; }
+
+  code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.9em;
+    background: #ebebE4;
+    padding: 1px 5px;
+    border-radius: 4px;
+  }
+
+  .dev-release {
+    background: #fff;
+    border: 0.5px solid #e0e0d8;
+    border-radius: 12px;
+    padding: 1.1rem 1.25rem;
+    margin-bottom: 1rem;
+  }
+
+  .dev-release h3 { font-size: 15px; font-weight: 600; margin-bottom: 0.5rem; }
+  .dev-release .dev-title { font-weight: 400; color: #444; margin-left: 6px; }
+  .dev-release .dev-date  { display: block; font-size: 12px; font-weight: 400; color: #aaa; }
+
+  .dev-release ul { list-style: none; padding: 0; }
+
+  .dev-release ul li {
+    font-size: 14px;
+    color: #444;
+    padding: 2px 0 2px 1.1em;
+    position: relative;
+  }
+
+  .dev-release ul li::before { content: "·"; position: absolute; left: 0; color: #bbb; }
+
+  footer { text-align: center; padding: 2rem 1rem 2.5rem; font-size: 13px; color: #888; }
+
+  @media (prefers-color-scheme: dark) {
+    body { background: #1a1a18; color: #e8e8e3; }
+    header { background: #222220; border-bottom-color: #2e2e2b; }
+    .lead { color: #999; }
+    code { background: #262624; color: #bbb; }
+    .dev-release { background: #222220; border-color: #2e2e2b; }
+    .dev-release .dev-title { color: #aaa; }
+    .dev-release .dev-date  { color: #555; }
+    .dev-release ul li { color: #888; }
+    .dev-release ul li::before { color: #444; }
+    footer { color: #555; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="../">KeyMinder</a>
+</header>
+
+<main>
+  <h1 data-de="Neuigkeiten">What's new</h1>
+  <p class="lead" data-de-html="Die Änderungen jeder Version, die neueste zuerst. &lt;a href=&quot;../&quot;&gt;KeyMinder herunterladen&lt;/a&gt;">The changes in each version, newest first. <a href="../">Download KeyMinder</a></p>
+  <!-- dev:changelog -->
+<section class="dev-release"><h3>1.0.228 <span class="dev-title">Change shortcuts from the popup, update checks and reliability fixes</span> <span class="dev-date">2026-11-18</span></h3>
+<ul>
+<li><strong>Change a shortcut from the popup</strong>: with CustomShortcuts installed, a menu command's shortcut can be changed there straight from KeyMinder's popup</li>
+<li><strong>Check for Updates</strong> button in Settings</li>
+<li>The Fn/Globe modifier is shown in menu shortcuts, and the Start Dictation shortcut is listed</li>
+<li>App Shortcut menu paths read "File › Save"</li>
+<li>The System shortcuts section is localized</li>
+<li>Chords and quiz answers match on non-Latin keyboard layouts; the recorded global hotkey label shows the unshifted key</li>
+<li>Long menus keep every row when wrapped in all-entries mode</li>
+<li>A user key equivalent with the keypad flag no longer loses its key</li>
+<li>Disabled shortcuts no longer count in the conflict indicator</li>
+<li>iCloud settings sync (experimental): a pending change is pushed before quitting, settings edited while sync was off are pushed when it is turned on, a remote change refreshes an open Settings window, quota violations and account changes are handled, and update channels and debug logging stay per Mac</li>
+<li>The display-mode setting is part of settings export and import</li>
+<li>Opting into alpha builds also delivers beta builds, and Settings shows that</li>
+<li>"Quiz Again" works for apps without a bundle identifier</li>
+<li>Hotkey recording stops when you leave the onboarding trigger step or the Settings tab</li>
+<li>Every Accessibility call has a timeout, so an unresponsive app can no longer stall the popup; a cancelled menu scan can't interfere with a newer one</li>
+<li>App names are sanitised before they are shown in the popup and the quiz</li>
+<li>Remaining hard-coded strings are localized</li>
+<li>Internal: all strict-concurrency diagnostics cleared ahead of Swift 6</li>
+<li>Translations for all new strings in every supported language</li>
+</ul>
+</section>
+<section class="dev-release"><h3>1.0.195 <span class="dev-title">Popup display, sync and reliability fixes</span> <span class="dev-date">2026-09-14</span></h3>
+<ul>
+<li><strong>Popup display</strong>: the popup opens on the active app's screen by default; a display-mode setting chooses otherwise</li>
+<li>Fixed: favourites orphaned by the v1.0.185 pin-key change are recovered automatically; a <code>|</code> in a favourite's key is escaped</li>
+<li>Fixed: iCloud settings sync no longer compares a deletion against a stale timestamp, a local deletion can't overwrite a newer remote edit, and "Keep Local Settings" also wins for keys that are unset locally</li>
+<li>Fixed: two race conditions that could let concurrent menu scans run at once</li>
+<li>Fixed: the live keypress key is derived from the unshifted base character</li>
+<li>Fixed: the live menu title is sanitised before it is compared with the stored title</li>
+<li>Fixed: window-management shortcut titles are recognised in both US and UK English</li>
+<li>Fixed: a failed settings export shows an alert instead of failing silently</li>
+<li>Fixed: Quiz mode manual skip no longer double-advances</li>
+<li>Fixed: Settings tabs scroll, so content can't be clipped</li>
+<li>Fixed: Popup Display and modifier-key picker labels and the settings-tab tooltips are localized</li>
+<li>Fixed: settings are flushed before quit and relaunch; sync logs persist</li>
+<li>Improved: system and third-party shortcuts load off the main thread</li>
+<li>Improved: ignore-list matching is faster for exact-match patterns</li>
+</ul>
+</section>
+<section class="dev-release"><h3>1.0.175 <span class="dev-title">Security hardening</span> <span class="dev-date">2026-07-06</span></h3>
+<ul>
+<li>Third-party shortcut registry entries are sanitised (title, keys, group, app name) and capped at 500 per file, closing a same-user JSON injection channel</li>
+<li>The release tooling installs a pinned, hash-verified version of the Sparkle signing tools instead of the latest release</li>
+<li>Diagnostic logging for settings sync</li>
+</ul>
+</section>
+<section class="dev-release"><h3>1.0.173 <span class="dev-title">iCloud settings sync, export and import</span> <span class="dev-date">2026-06-29</span></h3>
+<ul>
+<li><strong>iCloud settings sync (experimental)</strong>: a toggle in Settings → General keeps the hotkey, ignored commands, favourites and other preferences in step across Macs</li>
+<li>When sync is turned on and iCloud already holds settings from another Mac, a prompt asks whether to keep the local settings or take those</li>
+<li><strong>Clear iCloud Settings</strong> in Settings → Developer removes all KeyMinder data from iCloud and turns sync off</li>
+<li><strong>Export and import settings</strong>: save all preferences to a JSON file and restore them on any Mac, in Settings → General</li>
+<li>Favourites stay visible while a modifier filter or a text search is active</li>
+<li>Fixed: the menu bar icon and the Dock icon are applied correctly on launch and after an import</li>
+<li>All new strings translated into the 24 supported languages</li>
+</ul>
+</section>
+<section class="dev-release"><h3>1.0.157 <span class="dev-title">Alpha channel, compatibility</span> <span class="dev-date">2026-06-18</span></h3>
+<ul>
+<li><strong>Alpha release channel</strong>: opt into alpha builds via Settings → Developer; independent of the existing beta toggle</li>
+<li>Quiz mode: score percentage now formatted with locale-correct number style</li>
+<li>Fixed: explicit type annotation in <code>consolidateTrailing</code> for Xcode 16.4 compatibility</li>
+<li>Resolved Swift Sendable warnings in <code>QuizWindowController</code> and <code>NSWindow</code> event handling</li>
+</ul>
+</section>
+<section class="dev-release"><h3>1.0.153 <span class="dev-title">Security hardening</span> <span class="dev-date">2026-06-16</span></h3>
+<ul>
+<li>Scraped menu-item titles and <code>NSUserKeyEquivalents</code> keys sanitised at the AX trust boundary (bidi overrides, C0/C1 controls, strings longer than 256 characters stripped)</li>
+<li>Markdown export escapes special characters; double-backtick fencing for shortcut keys containing a backtick</li>
+<li>Shortcut activation re-reads the live enabled state and title of the target menu item at press time; disabled items are skipped, title mismatches logged</li>
+<li>Sparkle appcast now carries a <code>minimumAutoupdateVersion</code> floor, blocking silent rollback to a prior release</li>
+<li>Carbon hotkey handler verifies event signature before acting</li>
+</ul>
+</section>
+<section class="dev-release"><h3>1.0.148 <span class="dev-title">Quiz mode, alternate icons, performance</span> <span class="dev-date">2026-06-13</span></h3>
+<ul>
+<li><strong>Quiz mode</strong>: test yourself on keyboard shortcuts for the frontmost app; favourites-only toggle; keyboard-driven with auto-advance</li>
+<li><strong>Alternate menu bar icons</strong>: choose ⌘, ⌥, or ⌃ icon variants in Settings</li>
+<li><strong>Disambiguation overlay</strong>: clicking a shortcut on an ignored-menu item shows an overlay explaining why it is suppressed</li>
+<li>Dock icon shown while Settings or About window is open</li>
+<li>Pre-cache: menus are scraped in the background the moment an app becomes frontmost, eliminating popup latency on subsequent trigger</li>
+<li>Filter: dim mode correctly stays off while a query is active (regression fix from v1.0.130)</li>
+<li>Extensive performance pass: reduced allocations in PopupFilterModel, SettingsModel, and the AX traversal path</li>
+<li>Beta release channel: Settings toggle opts into beta builds via Sparkle</li>
+</ul>
+</section>
+<section class="dev-release"><h3>1.0.119 <span class="dev-title">Homebrew, separators, widescreen layout</span> <span class="dev-date">2026-06-10</span></h3>
+<ul>
+<li>Homebrew tap (<code>dvdweyer/keyminder</code>) with copy-button install instructions on website</li>
+<li>Menu separators rendered as horizontal rules in the popup</li>
+<li>Popup widens to maximise columns when screen space allows</li>
+<li>"Show All Menu Entries" setting to list items without shortcuts</li>
+</ul>
+</section>
+<section class="dev-release"><h3>0.1.106 <span class="dev-title">Auto-updater, system shortcuts, ignored lists</span> <span class="dev-date">2026-06-07</span></h3>
+<ul>
+<li><strong>Sparkle auto-updater</strong>: background update checks with user notification</li>
+<li><strong>System shortcuts</strong>: queries Window Server live for enabled/disabled state; toggle to hide deactivated entries</li>
+<li><strong>Ignored Commands</strong> and <strong>Ignored Apps</strong>: suppress noisy entries globally or per-app</li>
+<li><strong>Favourites</strong>: pin shortcuts with a star button; ⌘D toggles favourite for the keyboard-selected row; ★ header button filters to pinned items</li>
+<li><strong>Export cheat sheet</strong>: copy or save shortcuts as Markdown</li>
+<li>Click a shortcut row to invoke it in the target app (<code>AXPress</code>)</li>
+<li>Settings tabs; user-selectable key-badge accent colour</li>
+<li>Localisation: 17 languages (Arabic, Danish, Dutch, Finnish, French, German, Hebrew, Hindi, Italian, Japanese, Norwegian, Portuguese, Simplified Chinese, Spanish, Swedish, Traditional Chinese, English)</li>
+</ul>
+</section>
+<section class="dev-release"><h3>0.1.83 <span class="dev-title">Modifier filter, dim mode, VoiceOver</span> <span class="dev-date">2026-06-02</span></h3>
+<ul>
+<li><strong>Modifier key filter</strong>: hold or toggle ⌃ ⌥ ⇧ ⌘ in the popup to filter by exact modifier combination</li>
+<li><strong>Dim mode</strong>: when all shortcuts fit without scrolling, non-matching rows dim in place instead of collapsing — keeps layout stable</li>
+<li><strong>Double-tap trigger</strong>: double-tap a modifier key to show/hide the popup</li>
+<li>VoiceOver labels and accessibility states on all interactive elements</li>
+<li>Type-to-filter with match highlighting</li>
+</ul>
+</section>
+<section class="dev-release"><h3>0.1.57 <span class="dev-title">Initial release and foundations</span> <span class="dev-date">2026-05-23</span></h3>
+<ul>
+<li>Initial menu-bar app: scrapes the frontmost app's menus via the Accessibility API and shows all keyboard shortcuts grouped by menu</li>
+<li>Global hotkey (⌥⌘K default, user-configurable)</li>
+<li>Multi-column layout sized to content; multi-display centering</li>
+<li>Launch at Login (SMAppService)</li>
+<li>Unit test suite (DoubleTapTrigger state machine, PopupFilterModel, MenuLayout, shortcut formatting)</li>
+<li>Deployment target: macOS 14 (Sonoma)</li>
+</ul>
+</section>
+<!-- /dev:changelog -->
+</main>
+
+<footer>
+  <p><a href="../">keyminder.app</a> &nbsp;·&nbsp; <a href="https://github.com/dvdweyer/KeyMinder/blob/main/CHANGELOG.md" target="_blank" rel="noopener">CHANGELOG.md on GitHub</a> &nbsp;·&nbsp; <a href="mailto:info@keyminder.app">Send feedback</a></p>
+</footer>
+
+<script>
+  (function () {
+    var langs = navigator.languages && navigator.languages.length
+      ? navigator.languages : [navigator.language || ''];
+    if (!langs.some(function (l) { return l.startsWith('de'); })) return;
+    document.documentElement.lang = 'de';
+    document.querySelectorAll('[data-de]').forEach(function (el) {
+      el.textContent = el.getAttribute('data-de');
+    });
+    document.querySelectorAll('[data-de-html]').forEach(function (el) {
+      el.innerHTML = el.getAttribute('data-de-html');
+    });
+  })();
+</script>
+
+</body>
+</html>
