@@ -4,7 +4,7 @@ All notable changes to KeyMinder are listed here. Grouped by significant milesto
 
 ## [Unreleased]
 
-Changes since v1.0.195, in the alpha and beta channels up to v1.0.227.
+## v1.0.196–v1.0.228 — Change shortcuts from the popup, update checks and reliability fixes (2026-11-18)
 
 - **Change a shortcut from the popup**: with CustomShortcuts installed, a menu command's shortcut can be changed there straight from KeyMinder's popup
 - **Check for Updates** button in Settings
@@ -24,6 +24,7 @@ Changes since v1.0.195, in the alpha and beta channels up to v1.0.227.
 - App names are sanitised before they are shown in the popup and the quiz
 - Remaining hard-coded strings are localized
 - Internal: all strict-concurrency diagnostics cleared ahead of Swift 6
+- Translations for all new strings in every supported language
 
 ## v1.0.176–v1.0.195 — Popup display, sync and reliability fixes (2026-09-14)
 
