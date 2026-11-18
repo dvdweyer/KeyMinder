@@ -173,6 +173,12 @@
 
   .section p:last-child { margin-bottom: 0; }
 
+  .section.notice {
+    background: #fff8e6;
+    border-color: #e8c96a;
+  }
+  .section.notice h2 { color: #8a6500; }
+
   .screenshot {
     margin-top: 1.25rem;
     text-align: center;
@@ -464,6 +470,9 @@
     .section p  { color: #aaa; }
     .section a  { color: #6ba3d6; }
 
+    .section.notice { background: #2a2414; border-color: #6b5420; }
+    .section.notice h2 { color: #d9b44a; }
+
     .screenshot img {
       box-shadow: 0 4px 24px rgba(0,0,0,0.4), 0 0 0 0.5px rgba(255,255,255,0.06);
     }
@@ -581,6 +590,12 @@
 </header>
 
 <main>
+
+  <div class="section notice" role="note">
+    <h2 data-de="Hinweis zu macOS 27.3">Note on macOS 27.3</h2>
+    <p data-de="Das kommende macOS 27.3 ändert, wie Apps die Berechtigung erhalten, andere Apps auszulesen. Dadurch lässt sich die Ersteinrichtung von KeyMinder unter macOS 27.3 nicht abschließen. An einer Lösung wird gearbeitet.">The upcoming macOS 27.3 changes how apps get permission to read other apps. As a result, KeyMinder's first-run setup can't be completed on macOS 27.3. A fix is being worked on.</p>
+    <p data-de="Wenn KeyMinder bereits installiert ist und die Berechtigung hat, funktioniert es nach dem Update auf macOS 27.3 weiter wie bisher.">If you already have KeyMinder installed and its permission granted, it keeps working as before after you update to macOS 27.3.</p>
+  </div>
 
   <div class="section">
     <h2 data-de="Was es kann">What it does</h2>
