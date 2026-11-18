@@ -310,7 +310,9 @@ final class SettingsSync {
             object: kvs,
             queue: .main
         ) { [weak self] note in
-            MainActor.assumeIsolated { self?.handleExternalChange(note) }
+            // Notification isn't Sendable: read the reason here and hand only the Int over.
+            let reason = (note.userInfo?[NSUbiquitousKeyValueStoreChangeReasonKey] as? NSNumber)?.intValue
+            MainActor.assumeIsolated { self?.handleExternalChange(reason: reason) }
         }
 
         defaultsObserver = NotificationCenter.default.addObserver(
@@ -328,8 +330,7 @@ final class SettingsSync {
     /// or switch) means the KVS contents the app is seeing just changed out from under
     /// it, so a fresh start() is needed rather than a plain pull against stale local
     /// timestamps.
-    private func handleExternalChange(_ note: Notification) {
-        let reason = (note.userInfo?[NSUbiquitousKeyValueStoreChangeReasonKey] as? NSNumber)?.intValue
+    private func handleExternalChange(reason: Int?) {
         switch reason {
         case NSUbiquitousKeyValueStoreQuotaViolationChange:
             Logger.settings.error("SettingsSync: iCloud KVS quota violation — a write was dropped by the system")
