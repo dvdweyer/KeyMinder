@@ -7,6 +7,37 @@
         <!-- Items are populated by generate_appcast during the release pipeline. -->
         <item>
             <title>1.0.228</title>
+            <pubDate>Wed, 18 Nov 2026 13:17:54 +0100</pubDate>
+            <sparkle:version>599</sparkle:version>
+            <sparkle:shortVersionString>1.0.228</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <description><![CDATA[<h3>v1.0.196–v1.0.228 — Change shortcuts from the popup, update checks and reliability fixes (2026-11-18)</h3>
+<ul>
+<li><strong>Change a shortcut from the popup</strong>: with CustomShortcuts installed, a menu command&#x27;s shortcut can be changed there straight from KeyMinder&#x27;s popup</li>
+<li><strong>Check for Updates</strong> button in Settings</li>
+<li>The Fn/Globe modifier is shown in menu shortcuts, and the Start Dictation shortcut is listed</li>
+<li>App Shortcut menu paths read &quot;File › Save&quot;</li>
+<li>The System shortcuts section is localized</li>
+<li>Chords and quiz answers match on non-Latin keyboard layouts; the recorded global hotkey label shows the unshifted key</li>
+<li>Long menus keep every row when wrapped in all-entries mode</li>
+<li>A user key equivalent with the keypad flag no longer loses its key</li>
+<li>Disabled shortcuts no longer count in the conflict indicator</li>
+<li>iCloud settings sync (experimental): a pending change is pushed before quitting, settings edited while sync was off are pushed when it is turned on, a remote change refreshes an open Settings window, quota violations and account changes are handled, and update channels and debug logging stay per Mac</li>
+<li>The display-mode setting is part of settings export and import</li>
+<li>Opting into alpha builds also delivers beta builds, and Settings shows that</li>
+<li>&quot;Quiz Again&quot; works for apps without a bundle identifier</li>
+<li>Hotkey recording stops when you leave the onboarding trigger step or the Settings tab</li>
+<li>Every Accessibility call has a timeout, so an unresponsive app can no longer stall the popup; a cancelled menu scan can&#x27;t interfere with a newer one</li>
+<li>App names are sanitised before they are shown in the popup and the quiz</li>
+<li>Remaining hard-coded strings are localized</li>
+<li>Internal: all strict-concurrency diagnostics cleared ahead of Swift 6</li>
+<li>Translations for all new strings in every supported language</li>
+</ul>
+]]></description>
+            <enclosure url="https://keyminder.app/KeyMinder_1.0.228.zip" length="3649157" type="application/octet-stream" sparkle:edSignature="AwSSCS7cZ4iOD6kXRrhR7a8a7jO2JkYSvRyWdtB5TICPE+zz/CLCZV+HKSFBrx7fUuDN9G4K9yIbG3y5TUI5AQ=="/>
+        </item>
+        <item>
+            <title>1.0.228</title>
             <pubDate>Wed, 18 Nov 2026 12:04:31 +0100</pubDate>
             <sparkle:channel>beta</sparkle:channel>
             <sparkle:version>594</sparkle:version>
@@ -17,6 +48,7 @@
 </ul>
 ]]></description>
             <enclosure url="https://keyminder.app/KeyMinder_1.0.228.zip" length="3649111" type="application/octet-stream" sparkle:edSignature="iGXKm47ViVZk3LMtZNKhCFEwD0fLVghGk/INi9NPin1yue+nWCaDjJ2bHfMoht8WFbjt6NaqRXWiZi2R90pLAw=="/>
+            <sparkle:minimumAutoupdateVersion>599</sparkle:minimumAutoupdateVersion>
         </item>
         <item>
             <title>1.0.228</title>
