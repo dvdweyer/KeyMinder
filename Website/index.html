@@ -117,6 +117,10 @@
   .brew-copy:hover { background: rgba(0,0,0,0.06); }
   .brew-copy.copied { color: #1a7f40; border-color: #1a7f40; }
 
+  .section .brew-block { margin-bottom: 0.75rem; }
+  .brew-multi { align-items: flex-start; }
+  .brew-multi code { white-space: pre; line-height: 1.6; }
+
   .btn {
     display: inline-flex;
     align-items: center;
@@ -405,6 +409,9 @@
     header h1 { font-size: 1.7rem; }
     .brew-block { flex-direction: column; gap: 8px; text-align: center; }
     .brew-block code { white-space: normal; word-break: break-all; }
+    .brew-multi { align-items: stretch; text-align: left; }
+    .brew-multi code { white-space: pre; word-break: normal; overflow-x: auto; }
+    .brew-multi .brew-copy { align-self: center; }
   }
 
   @media (prefers-color-scheme: dark) {
@@ -561,7 +568,6 @@
       <button class="brew-copy" aria-label="Copy install command">Copy</button>
     </div>
   </div>
-  <p class="download-note">Installed from the old tap <code>dvdweyer/keyminder</code>? It has moved to <code>dvdweyer/tap</code>. Run <code>brew tap dvdweyer/tap</code>, <code>brew trust dvdweyer/tap/keyminder</code> and <code>brew reinstall keyminder</code> once. KeyMinder keeps updating itself in the meantime.</p>
 </header>
 
 <main>
@@ -613,6 +619,22 @@
       <li data-de="KeyMinder öffnen – ein Einrichtungsassistent führt Sie durch die Konfiguration">Open KeyMinder — a welcome wizard guides you through setup</li>
       <li data-de="Dem Assistenten folgen, Bedienungshilfen-Berechtigung erteilen und Auslöser festlegen">Follow the wizard to grant Accessibility permission and choose your trigger</li>
     </ol>
+  </div>
+
+  <div class="section">
+    <h2 data-de="Mit Homebrew installieren">Install with Homebrew</h2>
+    <div class="brew-block">
+      <code>brew install --cask dvdweyer/tap/keyminder</code>
+      <button class="brew-copy" aria-label="Copy install command">Copy</button>
+    </div>
+    <p data-de-html="Bereits über &lt;code&gt;dvdweyer/keyminder&lt;/code&gt; installiert? Dieser Tap heißt jetzt &lt;code&gt;dvdweyer/tap&lt;/code&gt;. &lt;code&gt;brew update&lt;/code&gt; führt KeyMinder deshalb als gelöscht auf. Führen Sie einmalig diese Befehle aus:">Installed from <code>dvdweyer/keyminder</code>? That tap has moved to <code>dvdweyer/tap</code>, so <code>brew update</code> lists KeyMinder as deleted. Run these commands once:</p>
+    <div class="brew-block brew-multi">
+      <code>brew tap dvdweyer/tap
+brew trust dvdweyer/tap/keyminder
+brew reinstall keyminder</code>
+      <button class="brew-copy" aria-label="Copy migration commands">Copy</button>
+    </div>
+    <p data-de="KeyMinder aktualisiert sich bis dahin weiterhin selbst.">KeyMinder keeps updating itself in the meantime.</p>
   </div>
 
   <div class="section">
