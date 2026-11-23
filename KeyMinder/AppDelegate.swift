@@ -503,6 +503,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             let grant = menu.addItem(withTitle: grantTitle,
                                      action: #selector(grantAccess), keyEquivalent: "")
             grant.target = self
+        }
+        if AccessibilityPermission.usesAppProtectionOverride {
+            let guide = menu.addItem(withTitle: String(localized: "How to Give Access…", table: "PermissionGuide"),
+                                     action: #selector(showPermissionGuide), keyEquivalent: "")
+            guide.target = self
+        }
+        if !AccessibilityPermission.isTrusted || AccessibilityPermission.usesAppProtectionOverride {
             menu.addItem(.separator())
         }
         // Discoverable hotkey row — shows the current shortcut (or "(unset)") so
@@ -625,6 +632,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @objc private func grantAccess() { AccessibilityPermission.requestAccess() }
+    @objc private func showPermissionGuide() { PermissionGuideWindowController.show() }
     @objc private func openSettings() { SettingsWindowController.show() }
     @objc private func quit() { NSApp.terminate(nil) }
 

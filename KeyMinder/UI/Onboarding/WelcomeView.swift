@@ -124,14 +124,20 @@ struct WelcomeView: View {
                 .buttonStyle(.borderedProminent)
                 .keyboardShortcut(.defaultAction)
         case .permission:
-            // Never a dead end: if macOS changes the permission flow again, the user
-            // can still finish setup and grant access later.
-            if permissionGranted {
+            // Next stays disabled until macOS reports access (AXIsProcessTrusted). On 27.3+
+            // that is true once KeyMinder has full access or at least one chosen app.
+            HStack(spacing: 10) {
+                if AccessibilityPermission.usesAppProtectionOverride {
+                    Button {
+                        PermissionGuideWindowController.show()
+                    } label: {
+                        Text("Show me how", tableName: "PermissionGuide")
+                    }
+                }
                 Button("Next", action: advance)
                     .buttonStyle(.borderedProminent)
                     .keyboardShortcut(.defaultAction)
-            } else {
-                Button("Skip for Now", action: advance)
+                    .disabled(!permissionGranted)
             }
         case .trigger:
             Button("Next", action: advance)
@@ -271,12 +277,6 @@ private struct WelcomePermissionStep: View {
                         .multilineTextAlignment(.center)
                         .fixedSize(horizontal: false, vertical: true)
                 }
-
-                Text("You can also grant access later from the KeyMinder icon in the menu bar.")
-                    .font(.caption)
-                    .foregroundStyle(.tertiary)
-                    .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: true)
             }
         }
         .task {

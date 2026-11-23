@@ -1,0 +1,414 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Access granted" : {
+      "comment" : "Permission guide for macOS 27.3+. Screenshots stay English; German only so far, other languages fall back to English.",
+      "shouldTranslate" : false,
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zugriff erteilt"
+          }
+        }
+      }
+    },
+    "All Apps (recommended)" : {
+      "comment" : "Permission guide for macOS 27.3+. Screenshots stay English; German only so far, other languages fall back to English.",
+      "shouldTranslate" : false,
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle Apps (empfohlen)"
+          }
+        }
+      }
+    },
+    "Apps start as Ask First: the first time KeyMinder reads one, macOS asks you, and the permission lasts until the next day. Choose At Any Time for an app so macOS stops asking." : {
+      "comment" : "Permission guide for macOS 27.3+. Screenshots stay English; German only so far, other languages fall back to English.",
+      "shouldTranslate" : false,
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apps starten mit „Ask First“: Wenn KeyMinder eine App zum ersten Mal liest, fragt macOS nach, und die Erlaubnis gilt bis zum nächsten Tag. Wählen Sie für eine App „At Any Time“, damit macOS nicht mehr fragt."
+          }
+        }
+      }
+    },
+    "Back" : {
+      "comment" : "Permission guide for macOS 27.3+. Screenshots stay English; German only so far, other languages fall back to English.",
+      "shouldTranslate" : false,
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zurück"
+          }
+        }
+      }
+    },
+    "Click + in System & App Protection Override" : {
+      "comment" : "Permission guide for macOS 27.3+. Screenshots stay English; German only so far, other languages fall back to English.",
+      "shouldTranslate" : false,
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klicken Sie in „System & App Protection Override“ auf +"
+          }
+        }
+      }
+    },
+    "Click + to add apps" : {
+      "comment" : "Permission guide for macOS 27.3+. Screenshots stay English; German only so far, other languages fall back to English.",
+      "shouldTranslate" : false,
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klicken Sie auf +, um Apps hinzuzufügen"
+          }
+        }
+      }
+    },
+    "Click Allow System & App Protection Override" : {
+      "comment" : "Permission guide for macOS 27.3+. Screenshots stay English; German only so far, other languages fall back to English.",
+      "shouldTranslate" : false,
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klicken Sie auf „Allow System & App Protection Override“"
+          }
+        }
+      }
+    },
+    "Click Choose Apps" : {
+      "comment" : "Permission guide for macOS 27.3+. Screenshots stay English; German only so far, other languages fall back to English.",
+      "shouldTranslate" : false,
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klicken Sie auf „Apps“ (Choose Apps)"
+          }
+        }
+      }
+    },
+    "Click OK next to each item" : {
+      "comment" : "Permission guide for macOS 27.3+. Screenshots stay English; German only so far, other languages fall back to English.",
+      "shouldTranslate" : false,
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klicken Sie bei jedem Punkt auf „OK“"
+          }
+        }
+      }
+    },
+    "Click Open System Settings… below. It opens Privacy & Security → System & App Protection Override." : {
+      "comment" : "Permission guide for macOS 27.3+. Screenshots stay English; German only so far, other languages fall back to English.",
+      "shouldTranslate" : false,
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klicken Sie unten auf „Systemeinstellungen öffnen …“. Damit öffnen Sie Datenschutz & Sicherheit → System & App Protection Override."
+          }
+        }
+      }
+    },
+    "Click Override System Protections" : {
+      "comment" : "Permission guide for macOS 27.3+. Screenshots stay English; German only so far, other languages fall back to English.",
+      "shouldTranslate" : false,
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klicken Sie auf „Override System Protections“"
+          }
+        }
+      }
+    },
+    "Done" : {
+      "comment" : "Permission guide for macOS 27.3+. Screenshots stay English; German only so far, other languages fall back to English.",
+      "shouldTranslate" : false,
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fertig"
+          }
+        }
+      }
+    },
+    "Give KeyMinder Access" : {
+      "comment" : "Permission guide for macOS 27.3+. Screenshots stay English; German only so far, other languages fall back to English.",
+      "shouldTranslate" : false,
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder Zugriff geben"
+          }
+        }
+      }
+    },
+    "Hold ⌘ and click each app you want. To add every app in the folder, press ⌘A. Then click Add and enter your Mac password." : {
+      "comment" : "Permission guide for macOS 27.3+. Screenshots stay English; German only so far, other languages fall back to English.",
+      "shouldTranslate" : false,
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Halten Sie ⌘ gedrückt und klicken Sie auf jede gewünschte App. Mit ⌘A wählen Sie alle Apps im Ordner aus. Klicken Sie dann auf „Hinzufügen“ (Add) und geben Sie Ihr Mac-Passwort ein."
+          }
+        }
+      }
+    },
+    "How to Give Access…" : {
+      "comment" : "Permission guide for macOS 27.3+. Screenshots stay English; German only so far, other languages fall back to English.",
+      "shouldTranslate" : false,
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "So geben Sie Zugriff …"
+          }
+        }
+      }
+    },
+    "How to give KeyMinder access" : {
+      "comment" : "Permission guide for macOS 27.3+. Screenshots stay English; German only so far, other languages fall back to English.",
+      "shouldTranslate" : false,
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "So geben Sie KeyMinder Zugriff"
+          }
+        }
+      }
+    },
+    "KeyMinder is in the Applications folder." : {
+      "comment" : "Permission guide for macOS 27.3+. Screenshots stay English; German only so far, other languages fall back to English.",
+      "shouldTranslate" : false,
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder finden Sie im Ordner „Programme“."
+          }
+        }
+      }
+    },
+    "KeyMinder is now listed with “Control your entire Mac and all apps”. Its popup works in every app." : {
+      "comment" : "Permission guide for macOS 27.3+. Screenshots stay English; German only so far, other languages fall back to English.",
+      "shouldTranslate" : false,
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder steht jetzt mit „Control your entire Mac and all apps“ in der Liste. Das Popup funktioniert in jeder App."
+          }
+        }
+      }
+    },
+    "KeyMinder will then only work in the apps you add to its list." : {
+      "comment" : "Permission guide for macOS 27.3+. Screenshots stay English; German only so far, other languages fall back to English.",
+      "shouldTranslate" : false,
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder funktioniert dann nur in den Apps, die Sie zu seiner Liste hinzufügen."
+          }
+        }
+      }
+    },
+    "macOS asks for your password each time you change an app to At Any Time. To skip this for every app, use All Apps instead." : {
+      "comment" : "Permission guide for macOS 27.3+. Screenshots stay English; German only so far, other languages fall back to English.",
+      "shouldTranslate" : false,
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS fragt bei jeder App, die Sie auf „At Any Time“ stellen, nach Ihrem Passwort. Wenn Sie das nicht für jede App wollen, wählen Sie stattdessen „Alle Apps“."
+          }
+        }
+      }
+    },
+    "macOS lets you choose: KeyMinder can read all your apps, or only the apps you pick. Your data never leaves your Mac." : {
+      "comment" : "Permission guide for macOS 27.3+. Screenshots stay English; German only so far, other languages fall back to English.",
+      "shouldTranslate" : false,
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sie haben die Wahl: KeyMinder darf alle Apps lesen oder nur die Apps, die Sie auswählen. Ihre Daten verlassen niemals Ihren Mac."
+          }
+        }
+      }
+    },
+    "macOS lists everything an app with this access could do. KeyMinder only reads the menus of the active app and runs a menu command when you click it." : {
+      "comment" : "Permission guide for macOS 27.3+. Screenshots stay English; German only so far, other languages fall back to English.",
+      "shouldTranslate" : false,
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS listet alles auf, was eine App mit diesem Zugriff tun könnte. KeyMinder liest nur die Menüs der aktiven App und führt einen Menübefehl aus, wenn Sie darauf klicken."
+          }
+        }
+      }
+    },
+    "Next Step" : {
+      "comment" : "Permission guide for macOS 27.3+. Screenshots stay English; German only so far, other languages fall back to English.",
+      "shouldTranslate" : false,
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weiter"
+          }
+        }
+      }
+    },
+    "Open System Settings…" : {
+      "comment" : "Permission guide for macOS 27.3+. Screenshots stay English; German only so far, other languages fall back to English.",
+      "shouldTranslate" : false,
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Systemeinstellungen öffnen …"
+          }
+        }
+      }
+    },
+    "Optional: choose At Any Time" : {
+      "comment" : "Permission guide for macOS 27.3+. Screenshots stay English; German only so far, other languages fall back to English.",
+      "shouldTranslate" : false,
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Optional: „At Any Time“ wählen"
+          }
+        }
+      }
+    },
+    "Scroll down: the last item is below the first four." : {
+      "comment" : "Permission guide for macOS 27.3+. Screenshots stay English; German only so far, other languages fall back to English.",
+      "shouldTranslate" : false,
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scrollen Sie nach unten: Der letzte Punkt steht unter den ersten vier."
+          }
+        }
+      }
+    },
+    "Select KeyMinder and click Add" : {
+      "comment" : "Permission guide for macOS 27.3+. Screenshots stay English; German only so far, other languages fall back to English.",
+      "shouldTranslate" : false,
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder auswählen und auf „Hinzufügen“ klicken"
+          }
+        }
+      }
+    },
+    "Select several apps at once, then click Add" : {
+      "comment" : "Permission guide for macOS 27.3+. Screenshots stay English; German only so far, other languages fall back to English.",
+      "shouldTranslate" : false,
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mehrere Apps auf einmal auswählen, dann auf „Hinzufügen“ klicken"
+          }
+        }
+      }
+    },
+    "Selected Apps" : {
+      "comment" : "Permission guide for macOS 27.3+. Screenshots stay English; German only so far, other languages fall back to English.",
+      "shouldTranslate" : false,
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ausgewählte Apps"
+          }
+        }
+      }
+    },
+    "Show me how" : {
+      "comment" : "Permission guide for macOS 27.3+. Screenshots stay English; German only so far, other languages fall back to English.",
+      "shouldTranslate" : false,
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeig mir, wie"
+          }
+        }
+      }
+    },
+    "The file picker opens in the Applications folder." : {
+      "comment" : "Permission guide for macOS 27.3+. Screenshots stay English; German only so far, other languages fall back to English.",
+      "shouldTranslate" : false,
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Auswahlfenster öffnet sich im Ordner „Programme“."
+          }
+        }
+      }
+    },
+    "Then enter your Mac password." : {
+      "comment" : "Permission guide for macOS 27.3+. Screenshots stay English; German only so far, other languages fall back to English.",
+      "shouldTranslate" : false,
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geben Sie dann Ihr Mac-Passwort ein."
+          }
+        }
+      }
+    },
+    "This lets KeyMinder read the menus of every app, now and in the future." : {
+      "comment" : "Permission guide for macOS 27.3+. Screenshots stay English; German only so far, other languages fall back to English.",
+      "shouldTranslate" : false,
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Damit kann KeyMinder die Menüs aller Apps lesen, jetzt und in Zukunft."
+          }
+        }
+      }
+    },
+    "You can add more apps later the same way: click the ⓘ next to KeyMinder in System & App Protection Override." : {
+      "comment" : "Permission guide for macOS 27.3+. Screenshots stay English; German only so far, other languages fall back to English.",
+      "shouldTranslate" : false,
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weitere Apps können Sie später genauso hinzufügen: Klicken Sie in „System & App Protection Override“ auf das ⓘ neben KeyMinder."
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.1"
+}
