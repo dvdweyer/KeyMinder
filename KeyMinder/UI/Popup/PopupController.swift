@@ -59,10 +59,10 @@ final class PopupController {
     func show(_ content: PopupContent) {
         // Manage the permission-poll timer: run it only while the onboarding
         // screen is visible, and stop it the moment any other content is shown.
-        if case .needsPermission = content {
-            startPermissionPoll()
-        } else {
-            stopPermissionPoll()
+        switch content {
+        case .needsPermission: startPermissionPoll(for: nil)
+        case .noAccess(_, let pid): startPermissionPoll(for: pid)
+        default: stopPermissionPoll()
         }
 
         if case .shortcuts(let app) = content {
@@ -254,7 +254,7 @@ final class PopupController {
     /// column/width math but *measures* its height from the real SwiftUI layout.
     private func makeContent(for content: PopupContent, screen: CGRect) -> (NSView, CGSize) {
         switch content {
-        case .needsPermission:
+        case .needsPermission, .noAccess:
             return fixedContent(content, size: CGSize(width: 420, height: 300))
         case .noApp:
             return fixedContent(content, size: CGSize(width: 360, height: 200))
@@ -404,21 +404,40 @@ final class PopupController {
 
     // MARK: - Permission polling helpers
 
-    /// Begins the 0.5 s poll for `AXIsProcessTrusted()`. No-op if already running.
-    private func startPermissionPoll() {
-        guard permissionPollTimer == nil else { return }
-        permissionPollTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { [weak self] _ in
+    /// Begins the 0.5 s poll for `AXIsProcessTrusted()`, or with `blockedPID` for read
+    /// access to that app (27.3+ per-app access). Replaces any running poll.
+    private func startPermissionPoll(for blockedPID: pid_t?) {
+        stopPermissionPoll()
+        permissionPollTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { [weak self] timer in
             // The timer fires on the main run loop; use assumeIsolated so the
             // compiler accepts main-actor property access inside the closure.
             MainActor.assumeIsolated {
                 guard let self else { return }
-                if AccessibilityPermission.isTrusted {
+                guard let blockedPID else {
+                    if AccessibilityPermission.isTrusted {
+                        self.stopPermissionPoll()
+                        self.onPermissionGranted()
+                    }
+                    return
+                }
+                // The probe is blocking AX IPC, so it runs off the main thread; one at a time.
+                guard !self.isProbingAccess else { return }
+                self.isProbingAccess = true
+                Task {
+                    let access = await Task.detached(priority: .userInitiated) {
+                        AccessibilityPermission.access(to: blockedPID)
+                    }.value
+                    self.isProbingAccess = false
+                    guard self.permissionPollTimer === timer, access == .granted else { return }
                     self.stopPermissionPoll()
                     self.onPermissionGranted()
                 }
             }
         }
     }
+
+    /// True while a per-app access probe from the permission poll is in flight.
+    private var isProbingAccess = false
 
     /// Stops and discards the permission-poll timer.
     private func stopPermissionPoll() {

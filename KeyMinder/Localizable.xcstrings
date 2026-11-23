@@ -149,6 +149,155 @@
         }
       }
     },
+    "Allow KeyMinder to control %@ when macOS asks, or give KeyMinder full access in Privacy & Security → System & App Protection Override. The popup will update automatically." : {
+      "comment" : "Popup message when macOS refuses access to one app. %@ is the app name. 'Privacy & Security' and 'System & App Protection Override' are macOS settings names.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اسمح لـ KeyMinder بالتحكم في %@ عندما يسأل macOS، أو امنح KeyMinder وصولاً كاملاً في الخصوصية والأمن ← System & App Protection Override. ستتحدّث النافذة المنبثقة تلقائيًا."
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS জিজ্ঞাসা করলে KeyMinder-কে %@ নিয়ন্ত্রণ করার অনুমতি দিন, অথবা Privacy & Security → System & App Protection Override-এ KeyMinder-কে সম্পূর্ণ অ্যাক্সেস দিন। পপআপটি স্বয়ংক্রিয়ভাবে আপডেট হবে।"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tillad KeyMinder at styre %@, når macOS spørger, eller giv KeyMinder fuld adgang i Anonymitet & sikkerhed → System & App Protection Override. Pop op-vinduet opdateres automatisk."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erlauben Sie KeyMinder, %@ zu steuern, wenn macOS fragt, oder geben Sie KeyMinder vollen Zugriff unter Datenschutz & Sicherheit → System & App Protection Override. Das Popup aktualisiert sich automatisch."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permite que KeyMinder controle %@ cuando macOS lo pregunte, o dale a KeyMinder acceso completo en Privacidad y seguridad → System & App Protection Override. La ventana emergente se actualizará automáticamente."
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salli KeyMinderin hallita appia %@, kun macOS kysyy, tai anna KeyMinderille täysi pääsy kohdassa Tietosuoja ja suojaus → System & App Protection Override. Ponnahdusikkuna päivittyy automaattisesti."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autorisez KeyMinder à contrôler %@ lorsque macOS le demande, ou accordez à KeyMinder un accès complet dans Confidentialité et sécurité → System & App Protection Override. Le popup se mettra à jour automatiquement."
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "אפשר ל‑KeyMinder לשלוט ב‑%@ כאשר macOS שואל, או תן ל‑KeyMinder גישה מלאה ב’פרטיות ואבטחה’ ← System & App Protection Override. החלון הקופץ יתעדכן אוטומטית."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "जब macOS पूछे, तो KeyMinder को %@ नियंत्रित करने दें, या गोपनीयता और सुरक्षा → System & App Protection Override में KeyMinder को पूरी ऐक्सेस दें। पॉपअप अपने आप अपडेट हो जाएगा।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Izinkan KeyMinder mengontrol %@ saat macOS bertanya, atau berikan KeyMinder akses penuh di Privasi & Keamanan → System & App Protection Override. Popup akan diperbarui secara otomatis."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Consenti a KeyMinder di controllare %@ quando macOS lo chiede, oppure concedi a KeyMinder l'accesso completo in Privacy e sicurezza → System & App Protection Override. Il popup si aggiornerà automaticamente."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOSに確認されたらKeyMinderによる%@の制御を許可するか、「プライバシーとセキュリティ」→「System & App Protection Override」でKeyMinderにフルアクセスを与えてください。ポップアップは自動的に更新されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS가 물어보면 KeyMinder가 %@을(를) 제어하도록 허용하거나, 개인정보 보호 및 보안 → System & App Protection Override에서 KeyMinder에 전체 접근 권한을 부여하세요. 팝업이 자동으로 업데이트됩니다."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tillat KeyMinder å styre %@ når macOS spør, eller gi KeyMinder full tilgang i Personvern og sikkerhet → System & App Protection Override. Popup-vinduet oppdateres automatisk."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sta KeyMinder toe %@ te bedienen wanneer macOS erom vraagt, of geef KeyMinder volledige toegang via Privacy en beveiliging → System & App Protection Override. Het pop-upvenster wordt automatisch bijgewerkt."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pozwól KeyMinder sterować aplikacją %@, gdy macOS zapyta, albo przyznaj KeyMinder pełny dostęp w sekcji Prywatność i ochrona → System & App Protection Override. Okno podręczne zaktualizuje się automatycznie."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permita que o KeyMinder controle %@ quando o macOS perguntar, ou dê ao KeyMinder acesso total em Privacidade e segurança → System & App Protection Override. O popup será atualizado automaticamente."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Разрешите KeyMinder управлять %@, когда macOS спросит, или предоставьте KeyMinder полный доступ в разделе «Конфиденциальность и безопасность» → System & App Protection Override. Всплывающее окно обновится автоматически."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tillåt KeyMinder att styra %@ när macOS frågar, eller ge KeyMinder full åtkomst i Integritet och säkerhet → System & App Protection Override. Popupfönstret uppdateras automatiskt."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "อนุญาตให้ KeyMinder ควบคุม %@ เมื่อ macOS ถาม หรือให้สิทธิ์เข้าถึงทั้งหมดแก่ KeyMinder ใน ความเป็นส่วนตัวและความปลอดภัย → System & App Protection Override ป๊อปอัปจะอัปเดตโดยอัตโนมัติ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS sorduğunda KeyMinder'ın %@ uygulamasını denetlemesine izin verin veya Gizlilik ve Güvenlik → System & App Protection Override bölümünde KeyMinder'a tam erişim verin. Açılır pencere otomatik olarak güncellenir."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cho phép KeyMinder điều khiển %@ khi macOS hỏi, hoặc cấp cho KeyMinder toàn quyền truy cập trong Quyền riêng tư & Bảo mật → System & App Protection Override. Cửa sổ bật lên sẽ tự động cập nhật."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 macOS 询问时允许 KeyMinder 控制“%@”，或在“隐私与安全”→“System & App Protection Override”中为 KeyMinder 授予完全访问权限。弹出窗口将自动更新。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 macOS 詢問時允許 KeyMinder 控制「%@」，或在「隱私權與安全性」→「System & App Protection Override」中給予 KeyMinder 完整取用權限。彈出視窗將會自動更新。"
+          }
+        }
+      }
+    },
     "Application Windows" : {
       "localizations" : {
         "ar" : {
@@ -593,6 +742,155 @@
         }
       }
     },
+    "If you choose specific apps instead, KeyMinder only works in those apps." : {
+      "comment" : "Onboarding note: macOS can also give KeyMinder access to chosen apps only.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إذا اخترت تطبيقات محددة بدلاً من ذلك، فلن يعمل KeyMinder إلا في تلك التطبيقات."
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "এর পরিবর্তে নির্দিষ্ট অ্যাপ বেছে নিলে KeyMinder শুধু সেই অ্যাপগুলিতেই কাজ করবে।"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hvis du i stedet vælger bestemte apps, virker KeyMinder kun i de apps."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wenn Sie stattdessen bestimmte Apps auswählen, funktioniert KeyMinder nur in diesen Apps."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Si eliges apps concretas, KeyMinder solo funcionará en esas apps."
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jos valitset sen sijaan tietyt apit, KeyMinder toimii vain niissä."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Si vous choisissez plutôt des apps précises, KeyMinder ne fonctionnera que dans ces apps."
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "אם תבחר במקום זאת יישומים מסוימים, KeyMinder יעבוד רק ביישומים אלה."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "अगर आप इसके बजाय कुछ खास ऐप्स चुनते हैं, तो KeyMinder केवल उन्हीं ऐप्स में काम करेगा।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jika Anda memilih app tertentu, KeyMinder hanya berfungsi di app tersebut."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se invece scegli app specifiche, KeyMinder funzionerà solo in quelle app."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "代わりに特定のアプリを選択した場合、KeyMinderはそれらのアプリでのみ機能します。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "대신 특정 앱을 선택하면 KeyMinder는 해당 앱에서만 작동합니다."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hvis du heller velger bestemte apper, fungerer KeyMinder bare i disse appene."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Als je in plaats daarvan specifieke apps kiest, werkt KeyMinder alleen in die apps."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jeśli zamiast tego wybierzesz konkretne aplikacje, KeyMinder będzie działać tylko w nich."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se escolher apenas apps específicas, o KeyMinder só funcionará nessas apps."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Если вместо этого выбрать отдельные приложения, KeyMinder будет работать только в них."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Om du i stället väljer vissa appar fungerar KeyMinder bara i dem."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "หากคุณเลือกเฉพาะบางแอปแทน KeyMinder จะทำงานได้เฉพาะในแอปเหล่านั้น"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bunun yerine belirli uygulamaları seçerseniz KeyMinder yalnızca o uygulamalarda çalışır."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nếu bạn chọn từng ứng dụng cụ thể, KeyMinder chỉ hoạt động trong các ứng dụng đó."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "如果改为选择特定应用，KeyMinder 将仅在这些应用中工作。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "如果改為選擇特定 App，KeyMinder 只會在這些 App 中運作。"
+          }
+        }
+      }
+    },
     "Input Sources" : {
       "localizations" : {
         "ar" : {
@@ -885,6 +1183,751 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "鍵盤導覽"
+          }
+        }
+      }
+    },
+    "KeyMinder can’t read %@" : {
+      "comment" : "Popup title when macOS refuses to let KeyMinder read the active app. %@ is the app name.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا يمكن لـ KeyMinder قراءة %@"
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder %@ পড়তে পারছে না"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder kan ikke læse %@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder kann %@ nicht lesen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder no puede leer %@"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder ei voi lukea appia %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder ne peut pas lire %@"
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder לא יכול לקרוא את %@"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder %@ को नहीं पढ़ सकता"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder tidak dapat membaca %@"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder non può leggere %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinderは%@を読み取れません"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder가 %@을(를) 읽을 수 없음"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder kan ikke lese %@"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder kan %@ niet lezen"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder nie może odczytać aplikacji %@"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O KeyMinder não consegue ler %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder не может прочитать %@"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder kan inte läsa %@"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder ไม่สามารถอ่าน %@ ได้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder %@ uygulamasını okuyamıyor"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder không thể đọc %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder 无法读取“%@”"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder 無法讀取「%@」"
+          }
+        }
+      }
+    },
+    "KeyMinder needs access to your apps" : {
+      "comment" : "Popup title on macOS 27.3+ when KeyMinder has no access to other apps.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يحتاج KeyMinder إلى الوصول إلى تطبيقاتك"
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder-এর আপনার অ্যাপগুলিতে অ্যাক্সেস প্রয়োজন"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder skal have adgang til dine apps"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder benötigt Zugriff auf Ihre Apps"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder necesita acceso a tus apps"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder tarvitsee pääsyn appeihisi"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder a besoin d'accéder à vos apps"
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder זקוק לגישה ליישומים שלך"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder को आपकी ऐप्स की ऐक्सेस चाहिए"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder memerlukan akses ke app Anda"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder ha bisogno di accedere alle tue app"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinderにはアプリへのアクセスが必要です"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder에 앱 접근 권한이 필요합니다"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder trenger tilgang til appene dine"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder heeft toegang tot je apps nodig"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder potrzebuje dostępu do Twoich aplikacji"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O KeyMinder precisa de acesso às suas apps"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder нужен доступ к вашим приложениям"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder behöver åtkomst till dina appar"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder ต้องการสิทธิ์เข้าถึงแอปของคุณ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder'ın uygulamalarınıza erişmesi gerekiyor"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder cần quyền truy cập vào các ứng dụng của bạn"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder 需要访问您的应用"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder 需要取用你的 App"
+          }
+        }
+      }
+    },
+    "KeyMinder reads the active app's menus to show its keyboard shortcuts. Grant access in Privacy & Security — the popup will update automatically." : {
+      "comment" : "Popup message before macOS 27.3 when Accessibility access is missing.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يقرأ KeyMinder قوائم التطبيق النشط لعرض اختصارات لوحة المفاتيح الخاصة به. امنح الوصول في الخصوصية والأمن — ستتحدّث النافذة المنبثقة تلقائيًا."
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder সক্রিয় অ্যাপের মেনু পড়ে তার কীবোর্ড শর্টকাট দেখায়। Privacy & Security-এ অ্যাক্সেস দিন — পপআপটি স্বয়ংক্রিয়ভাবে আপডেট হবে।"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder læser den aktive apps menuer for at vise dens tastaturgenveje. Giv adgang i Anonymitet & sikkerhed — pop op-vinduet opdateres automatisk."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder liest die Menüs der aktiven App, um ihre Tastaturkurzbefehle anzuzeigen. Erteilen Sie den Zugriff unter Datenschutz & Sicherheit – das Popup aktualisiert sich automatisch."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder lee los menús de la app activa para mostrar sus atajos de teclado. Concede el acceso en Privacidad y seguridad: la ventana emergente se actualizará automáticamente."
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder lukee aktiivisen apin valikot näyttääkseen sen näppäinoikotiet. Myönnä pääsy kohdassa Tietosuoja ja suojaus – ponnahdusikkuna päivittyy automaattisesti."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder lit les menus de l'app active pour afficher ses raccourcis clavier. Accordez l'accès dans Confidentialité et sécurité — le popup se mettra à jour automatiquement."
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder קורא את התפריטים של היישום הפעיל כדי להציג את קיצורי המקלדת שלו. הענק גישה ב’פרטיות ואבטחה’ — החלון הקופץ יתעדכן אוטומטית."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder सक्रिय ऐप के मेनू पढ़कर उसके कीबोर्ड शॉर्टकट दिखाता है। गोपनीयता और सुरक्षा में ऐक्सेस दें — पॉपअप अपने आप अपडेट हो जाएगा।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder membaca menu app yang aktif untuk menampilkan pintasan papan ketiknya. Berikan akses di Privasi & Keamanan — popup akan diperbarui secara otomatis."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder legge i menu dell'app attiva per mostrarne le abbreviazioni da tastiera. Concedi l'accesso in Privacy e sicurezza: il popup si aggiornerà automaticamente."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinderはアクティブなアプリのメニューを読み取り、キーボードショートカットを表示します。「プライバシーとセキュリティ」でアクセスを許可してください — ポップアップは自動的に更新されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder는 활성 앱의 메뉴를 읽어 키보드 단축키를 표시합니다. 개인정보 보호 및 보안에서 접근 권한을 부여하세요 — 팝업이 자동으로 업데이트됩니다."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder leser menyene til den aktive appen for å vise hurtigtastene. Gi tilgang i Personvern og sikkerhet – popup-vinduet oppdateres automatisk."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder leest de menu's van de actieve app om de toetscombinaties te tonen. Geef toegang via Privacy en beveiliging — het pop-upvenster wordt automatisch bijgewerkt."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder odczytuje menu aktywnej aplikacji, aby pokazać jej skróty klawiszowe. Przyznaj dostęp w sekcji Prywatność i ochrona — okno podręczne zaktualizuje się automatycznie."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O KeyMinder lê os menus da app ativa para mostrar os respetivos atalhos de teclado. Conceda acesso em Privacidade e segurança — o popup será atualizado automaticamente."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder считывает меню активного приложения, чтобы показать его сочетания клавиш. Предоставьте доступ в разделе «Конфиденциальность и безопасность» — всплывающее окно обновится автоматически."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder läser den aktiva appens menyer för att visa dess kortkommandon. Ge åtkomst i Integritet och säkerhet – popupfönstret uppdateras automatiskt."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder อ่านเมนูของแอปที่ใช้งานอยู่เพื่อแสดงปุ่มลัดแป้นพิมพ์ ให้สิทธิ์เข้าถึงใน ความเป็นส่วนตัวและความปลอดภัย — ป๊อปอัปจะอัปเดตโดยอัตโนมัติ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder, klavye kestirmelerini göstermek için etkin uygulamanın menülerini okur. Gizlilik ve Güvenlik bölümünden erişim verin — açılır pencere otomatik olarak güncellenir."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder đọc menu của ứng dụng đang hoạt động để hiển thị các phím tắt. Hãy cấp quyền truy cập trong Quyền riêng tư & Bảo mật — cửa sổ bật lên sẽ tự động cập nhật."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder 读取当前应用的菜单以显示其键盘快捷键。请在“隐私与安全”中授予访问权限 — 弹出窗口将自动更新。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder 會讀取目前 App 的選單來顯示其鍵盤快速鍵。請在「隱私權與安全性」中授與取用權限 — 彈出視窗將會自動更新。"
+          }
+        }
+      }
+    },
+    "KeyMinder reads the active app’s menus to show its keyboard shortcuts. In Privacy & Security → System & App Protection Override, add KeyMinder with + and choose Override System Protections. The popup will update automatically." : {
+      "comment" : "Popup message on macOS 27.3+. 'System & App Protection Override' and 'Override System Protections' are macOS labels (English in macOS 27.3 beta).",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يقرأ KeyMinder قوائم التطبيق النشط لعرض اختصارات لوحة المفاتيح الخاصة به. في الخصوصية والأمن ← System & App Protection Override، أضف KeyMinder باستخدام + واختر Override System Protections. ستتحدّث النافذة المنبثقة تلقائيًا."
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder সক্রিয় অ্যাপের মেনু পড়ে তার কীবোর্ড শর্টকাট দেখায়। Privacy & Security → System & App Protection Override-এ + দিয়ে KeyMinder যোগ করুন এবং Override System Protections বেছে নিন। পপআপটি স্বয়ংক্রিয়ভাবে আপডেট হবে।"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder læser den aktive apps menuer for at vise dens tastaturgenveje. I Anonymitet & sikkerhed → System & App Protection Override skal du tilføje KeyMinder med + og vælge Override System Protections. Pop op-vinduet opdateres automatisk."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder liest die Menüs der aktiven App, um ihre Tastaturkurzbefehle anzuzeigen. Fügen Sie KeyMinder unter Datenschutz & Sicherheit → System & App Protection Override mit + hinzu und wählen Sie Override System Protections. Das Popup aktualisiert sich automatisch."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder lee los menús de la app activa para mostrar sus atajos de teclado. En Privacidad y seguridad → System & App Protection Override, añade KeyMinder con + y elige Override System Protections. La ventana emergente se actualizará automáticamente."
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder lukee aktiivisen apin valikot näyttääkseen sen näppäinoikotiet. Lisää KeyMinder kohdassa Tietosuoja ja suojaus → System & App Protection Override painikkeella + ja valitse Override System Protections. Ponnahdusikkuna päivittyy automaattisesti."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder lit les menus de l'app active pour afficher ses raccourcis clavier. Dans Confidentialité et sécurité → System & App Protection Override, ajoutez KeyMinder avec + et choisissez Override System Protections. Le popup se mettra à jour automatiquement."
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder קורא את התפריטים של היישום הפעיל כדי להציג את קיצורי המקלדת שלו. ב’פרטיות ואבטחה’ ← System & App Protection Override, הוסף את KeyMinder עם + ובחר Override System Protections. החלון הקופץ יתעדכן אוטומטית."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder सक्रिय ऐप के मेनू पढ़कर उसके कीबोर्ड शॉर्टकट दिखाता है। गोपनीयता और सुरक्षा → System & App Protection Override में + से KeyMinder जोड़ें और Override System Protections चुनें। पॉपअप अपने आप अपडेट हो जाएगा।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder membaca menu app yang aktif untuk menampilkan pintasan papan ketiknya. Di Privasi & Keamanan → System & App Protection Override, tambahkan KeyMinder dengan + dan pilih Override System Protections. Popup akan diperbarui secara otomatis."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder legge i menu dell'app attiva per mostrarne le abbreviazioni da tastiera. In Privacy e sicurezza → System & App Protection Override, aggiungi KeyMinder con + e scegli Override System Protections. Il popup si aggiornerà automaticamente."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinderはアクティブなアプリのメニューを読み取り、キーボードショートカットを表示します。「プライバシーとセキュリティ」→「System & App Protection Override」で＋をクリックしてKeyMinderを追加し、「Override System Protections」を選択してください。ポップアップは自動的に更新されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder는 활성 앱의 메뉴를 읽어 키보드 단축키를 표시합니다. 개인정보 보호 및 보안 → System & App Protection Override에서 +로 KeyMinder를 추가하고 Override System Protections을(를) 선택하세요. 팝업이 자동으로 업데이트됩니다."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder leser menyene til den aktive appen for å vise hurtigtastene. I Personvern og sikkerhet → System & App Protection Override legger du til KeyMinder med + og velger Override System Protections. Popup-vinduet oppdateres automatisk."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder leest de menu's van de actieve app om de toetscombinaties te tonen. Voeg KeyMinder in Privacy en beveiliging → System & App Protection Override toe met + en kies Override System Protections. Het pop-upvenster wordt automatisch bijgewerkt."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder odczytuje menu aktywnej aplikacji, aby pokazać jej skróty klawiszowe. W sekcji Prywatność i ochrona → System & App Protection Override dodaj KeyMinder przyciskiem + i wybierz Override System Protections. Okno podręczne zaktualizuje się automatycznie."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O KeyMinder lê os menus da app ativa para mostrar os respetivos atalhos de teclado. Em Privacidade e segurança → System & App Protection Override, adicione o KeyMinder com + e escolha Override System Protections. O popup será atualizado automaticamente."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder считывает меню активного приложения, чтобы показать его сочетания клавиш. В разделе «Конфиденциальность и безопасность» → System & App Protection Override добавьте KeyMinder кнопкой + и выберите Override System Protections. Всплывающее окно обновится автоматически."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder läser den aktiva appens menyer för att visa dess kortkommandon. I Integritet och säkerhet → System & App Protection Override lägger du till KeyMinder med + och väljer Override System Protections. Popupfönstret uppdateras automatiskt."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder อ่านเมนูของแอปที่ใช้งานอยู่เพื่อแสดงปุ่มลัดแป้นพิมพ์ ใน ความเป็นส่วนตัวและความปลอดภัย → System & App Protection Override ให้เพิ่ม KeyMinder ด้วยปุ่ม + แล้วเลือก Override System Protections ป๊อปอัปจะอัปเดตโดยอัตโนมัติ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder, klavye kestirmelerini göstermek için etkin uygulamanın menülerini okur. Gizlilik ve Güvenlik → System & App Protection Override bölümünde + ile KeyMinder'ı ekleyin ve Override System Protections seçeneğini belirleyin. Açılır pencere otomatik olarak güncellenir."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder đọc menu của ứng dụng đang hoạt động để hiển thị các phím tắt. Trong Quyền riêng tư & Bảo mật → System & App Protection Override, hãy thêm KeyMinder bằng nút + và chọn Override System Protections. Cửa sổ bật lên sẽ tự động cập nhật."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder 读取当前应用的菜单以显示其键盘快捷键。在“隐私与安全”→“System & App Protection Override”中点按 + 添加 KeyMinder，然后选择“Override System Protections”。弹出窗口将自动更新。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder 會讀取目前 App 的選單來顯示其鍵盤快速鍵。在「隱私權與安全性」→「System & App Protection Override」中按一下 + 加入 KeyMinder，然後選擇「Override System Protections」。彈出視窗將會自動更新。"
+          }
+        }
+      }
+    },
+    "KeyMinder reads the menus of other apps. In System & App Protection Override, click +, add KeyMinder and choose Override System Protections. Your data never leaves your Mac." : {
+      "comment" : "Onboarding permission step on macOS 27.3+. 'System & App Protection Override' and 'Override System Protections' are macOS labels (English in macOS 27.3 beta).",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يقرأ KeyMinder قوائم التطبيقات الأخرى. في System & App Protection Override، انقر على +، وأضف KeyMinder واختر Override System Protections. لا تغادر بياناتك جهاز Mac أبدًا."
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder অন্যান্য অ্যাপের মেনু পড়ে। System & App Protection Override-এ + ক্লিক করুন, KeyMinder যোগ করুন এবং Override System Protections বেছে নিন। আপনার ডেটা কখনও আপনার Mac ছেড়ে যায় না।"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder læser andre apps' menuer. I System & App Protection Override skal du klikke på +, tilføje KeyMinder og vælge Override System Protections. Dine data forlader aldrig din Mac."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder liest die Menüs anderer Apps. Klicken Sie unter System & App Protection Override auf +, fügen Sie KeyMinder hinzu und wählen Sie Override System Protections. Ihre Daten verlassen niemals Ihren Mac."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder lee los menús de otras apps. En System & App Protection Override, haz clic en +, añade KeyMinder y elige Override System Protections. Tus datos nunca salen de tu Mac."
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder lukee muiden appien valikoita. Klikkaa kohdassa System & App Protection Override +, lisää KeyMinder ja valitse Override System Protections. Tietosi eivät koskaan poistu Macistasi."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder lit les menus des autres apps. Dans System & App Protection Override, cliquez sur +, ajoutez KeyMinder et choisissez Override System Protections. Vos données ne quittent jamais votre Mac."
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder קורא את התפריטים של יישומים אחרים. ב‑System & App Protection Override, לחץ על +, הוסף את KeyMinder ובחר Override System Protections. הנתונים שלך אף פעם לא עוזבים את ה‑Mac שלך."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder दूसरी ऐप्स के मेनू पढ़ता है। System & App Protection Override में + पर क्लिक करें, KeyMinder जोड़ें और Override System Protections चुनें। आपका डेटा कभी आपके Mac से बाहर नहीं जाता।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder membaca menu app lain. Di System & App Protection Override, klik +, tambahkan KeyMinder, lalu pilih Override System Protections. Data Anda tidak pernah meninggalkan Mac Anda."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder legge i menu delle altre app. In System & App Protection Override, fai clic su +, aggiungi KeyMinder e scegli Override System Protections. I tuoi dati non lasciano mai il tuo Mac."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinderはほかのアプリのメニューを読み取ります。「System & App Protection Override」で＋をクリックしてKeyMinderを追加し、「Override System Protections」を選択してください。データがMacの外に出ることはありません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder는 다른 앱의 메뉴를 읽습니다. System & App Protection Override에서 +를 클릭하여 KeyMinder를 추가하고 Override System Protections을(를) 선택하세요. 데이터는 절대 Mac을 벗어나지 않습니다."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder leser menyene til andre apper. I System & App Protection Override klikker du på +, legger til KeyMinder og velger Override System Protections. Dataene dine forlater aldri Macen."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder leest de menu's van andere apps. Klik in System & App Protection Override op +, voeg KeyMinder toe en kies Override System Protections. Jouw gegevens verlaten nooit je Mac."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder odczytuje menu innych aplikacji. W sekcji System & App Protection Override kliknij +, dodaj KeyMinder i wybierz Override System Protections. Twoje dane nigdy nie opuszczają Twojego Maca."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O KeyMinder lê os menus de outras apps. Em System & App Protection Override, clique em +, adicione o KeyMinder e escolha Override System Protections. Os seus dados nunca saem do seu Mac."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder считывает меню других приложений. В разделе System & App Protection Override нажмите +, добавьте KeyMinder и выберите Override System Protections. Ваши данные никогда не покидают ваш Mac."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder läser andra appars menyer. I System & App Protection Override klickar du på +, lägger till KeyMinder och väljer Override System Protections. Dina data lämnar aldrig din Mac."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder อ่านเมนูของแอปอื่นๆ ใน System & App Protection Override ให้คลิก + เพิ่ม KeyMinder แล้วเลือก Override System Protections ข้อมูลของคุณจะไม่ออกจาก Mac ของคุณ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder diğer uygulamaların menülerini okur. System & App Protection Override bölümünde + düğmesine tıklayın, KeyMinder'ı ekleyin ve Override System Protections seçeneğini belirleyin. Verileriniz hiçbir zaman Mac'inizden çıkmaz."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder đọc menu của các ứng dụng khác. Trong System & App Protection Override, bấm +, thêm KeyMinder và chọn Override System Protections. Dữ liệu của bạn không bao giờ rời khỏi máy Mac."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder 会读取其他应用的菜单。在“System & App Protection Override”中点按 +，添加 KeyMinder，然后选择“Override System Protections”。您的数据永远不会离开您的 Mac。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KeyMinder 會讀取其他 App 的選單。在「System & App Protection Override」中按一下 +，加入 KeyMinder，然後選擇「Override System Protections」。你的資料絕不會離開你的 Mac。"
           }
         }
       }
@@ -2069,6 +3112,155 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "將焦點移至視窗工具列"
+          }
+        }
+      }
+    },
+    "Open System Settings…" : {
+      "comment" : "Button that opens macOS System Settings at the app-access pane.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "فتح إعدادات النظام…"
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "System Settings খুলুন…"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Åbn Systemindstillinger…"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Systemeinstellungen öffnen …"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir Ajustes del Sistema…"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avaa Järjestelmäasetukset…"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir Réglages Système…"
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "פתח את הגדרות המערכת…"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "सिस्टम सेटिंग खोलें…"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buka Pengaturan Sistem…"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apri Impostazioni di Sistema…"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "システム設定を開く…"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "시스템 설정 열기…"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Åpne Systeminnstillinger…"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Systeeminstellingen…"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otwórz Ustawienia systemowe…"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir Definições…"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Открыть Системные настройки…"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öppna Systeminställningar…"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เปิดการตั้งค่าระบบ…"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sistem Ayarları'nı Aç…"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mở Cài đặt hệ thống…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开系统设置…"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打開系統設定…"
           }
         }
       }
@@ -3401,6 +4593,155 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "顯示 Spotlight 搜尋"
+          }
+        }
+      }
+    },
+    "Skip for Now" : {
+      "comment" : "Onboarding button to continue without granting access.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تخطٍّ الآن"
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "এখন এড়িয়ে যান"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spring over nu"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorerst überspringen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Omitir por ahora"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ohita toistaiseksi"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ignorer pour l'instant"
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "דלג לעת עתה"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "अभी छोड़ें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lewati untuk Sekarang"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salta per ora"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今はスキップ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "지금은 건너뛰기"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hopp over nå"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nu overslaan"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Na razie pomiń"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ignorar por agora"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пропустить"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hoppa över nu"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ข้ามไปก่อน"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Şimdilik Atla"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bỏ qua lúc này"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "暂时跳过"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "暫時略過"
           }
         }
       }
@@ -8181,6 +9522,155 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "儲存為 Markdown 檔案，或拷貝到剪貼板。"
+          }
+        }
+      }
+    },
+    "You can also grant access later from the KeyMinder icon in the menu bar." : {
+      "comment" : "Onboarding note under the grant button.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يمكنك أيضًا منح الوصول لاحقًا من أيقونة KeyMinder في شريط القائمة."
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "আপনি পরে মেনু বারের KeyMinder আইকন থেকেও অ্যাক্সেস দিতে পারেন।"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du kan også give adgang senere via KeyMinder-ikonet på menulinjen."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sie können den Zugriff auch später über das KeyMinder-Symbol in der Menüleiste erteilen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "También puedes conceder el acceso más tarde desde el icono de KeyMinder en la barra de menús."
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voit myöntää pääsyn myöhemmin myös valikkorivin KeyMinder-kuvakkeesta."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vous pouvez aussi accorder l'accès plus tard depuis l'icône KeyMinder dans la barre des menus."
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ניתן גם להעניק גישה מאוחר יותר דרך הצלמית של KeyMinder בשורת התפריטים."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आप बाद में मेनू बार में KeyMinder आइकन से भी ऐक्सेस दे सकते हैं।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anda juga dapat memberikan akses nanti dari ikon KeyMinder di bar menu."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Puoi concedere l'accesso anche più tardi dall'icona di KeyMinder nella barra dei menu."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "メニューバーのKeyMinderアイコンから後でアクセスを許可することもできます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "나중에 메뉴 막대의 KeyMinder 아이콘에서 접근 권한을 부여할 수도 있습니다."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du kan også gi tilgang senere fra KeyMinder-symbolet i menylinjen."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Je kunt later ook toegang geven via het KeyMinder-symbool in de menubalk."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dostęp możesz przyznać także później, klikając ikonę KeyMinder na pasku menu."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Também pode conceder acesso mais tarde através do ícone do KeyMinder na barra de menus."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Доступ можно предоставить и позже через значок KeyMinder в строке меню."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du kan också ge åtkomst senare via KeyMinder-symbolen i menyraden."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "คุณยังสามารถให้สิทธิ์ภายหลังได้จากไอคอน KeyMinder ในแถบเมนู"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erişimi daha sonra menü çubuğundaki KeyMinder simgesinden de verebilirsiniz."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bạn cũng có thể cấp quyền sau từ biểu tượng KeyMinder trên thanh menu."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "您也可以稍后通过菜单栏中的 KeyMinder 图标授予访问权限。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你也可以稍後從選單列中的 KeyMinder 圖像授與取用權限。"
           }
         }
       }

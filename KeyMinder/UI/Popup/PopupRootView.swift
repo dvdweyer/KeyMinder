@@ -342,6 +342,9 @@ struct PopupRootView: View {
                 shortcutsView(app)
             case .needsPermission:
                 PopupOnboardingView(onGrant: onGrant, onOpenSettings: onOpenSettings)
+            case .noAccess(let appName, _):
+                PopupOnboardingView(blockedAppName: appName, onGrant: onGrant,
+                                    onOpenSettings: onOpenSettings)
             case .noApp:
                 PopupMessageView(text: "No active application", systemImage: "app.dashed")
             }

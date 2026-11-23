@@ -280,6 +280,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var inFlightKey: PrecacheKey?
     /// Most-recent completed scrape result; checked before starting a fresh scrape.
     private var menuCache: MenuCache?
+    /// Apps this session has been allowed to read. On macOS 27.3+ pre-caching is limited
+    /// to these: with per-app access, reading any other app on a mere app switch either
+    /// fails or makes macOS ask "Allow KeyMinder to temporarily control …?".
+    private var readablePIDs: Set<pid_t> = []
 
     /// Scrapes the frontmost app's menus off the main thread, then presents
     /// the popup with the result. The panel does not appear until data is ready.
@@ -365,6 +369,21 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 sections = hit.sections
                 ignoredShortcuts = hit.ignoredShortcuts
             } else {
+                // 27.3+ per-app access: KeyMinder can be trusted yet barred from this app.
+                // The probe also lets macOS show its "Ask First" prompt for the app.
+                if AccessibilityPermission.usesAppProtectionOverride {
+                    let access = await Task.detached(priority: .userInitiated) {
+                        AccessibilityPermission.access(to: pid)
+                    }.value
+                    guard !Task.isCancelled else { return }
+                    if access == .denied {
+                        self.readablePIDs.remove(pid)
+                        Logger.accessibility.notice("No access to pid \(pid, privacy: .public); showing the per-app access screen")
+                        popup.show(.noAccess(appName: appName, pid: pid))
+                        return
+                    }
+                    if access == .granted { self.readablePIDs.insert(pid) }
+                }
                 let work = Task.detached(priority: .userInitiated) {
                     let s = MenuScraper.scrape(pid: pid, includeItemsWithoutShortcuts: includeAll,
                                                ignoredTitles: ignoredTitles, ignoredMenuTitles: ignoredMenuTitles,
@@ -456,6 +475,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             inFlightKey = nil
         }
 
+        if AccessibilityPermission.usesAppProtectionOverride, !readablePIDs.contains(pid) { return }
+
         // Nothing to do if a fresh cache already exists or a task is already running
         // for this exact app.
         if menuCache?.matches(key) == true || detachedScrapeTask != nil { return }
@@ -476,7 +497,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         popup.hide()
         let menu = NSMenu()
         if !AccessibilityPermission.isTrusted {
-            let grant = menu.addItem(withTitle: String(localized: "Grant Accessibility Access…"),
+            let grantTitle = AccessibilityPermission.usesAppProtectionOverride
+                ? String(localized: "Grant Access…")
+                : String(localized: "Grant Accessibility Access…")
+            let grant = menu.addItem(withTitle: grantTitle,
                                      action: #selector(grantAccess), keyEquivalent: "")
             grant.target = self
             menu.addItem(.separator())
@@ -624,7 +648,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 // monitors; this is the first opportunity to install them properly.
                 self?.setupDoubleTap()
                 self?.showMenuBarHint()
-                if AXIsProcessTrusted() { self?.presentPopup() }
+                if AccessibilityPermission.isTrusted { self?.presentPopup() }
             }
         }
         // Defer one run-loop pass so the status-bar item is rendered before

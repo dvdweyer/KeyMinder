@@ -26,7 +26,7 @@ struct WelcomeView: View {
         self.onTryItNow = onTryItNow
         self.onComplete = onComplete
         self.onQuit     = onQuit
-        let trusted = AXIsProcessTrusted()
+        let trusted = AccessibilityPermission.isTrusted
         let saved   = UserDefaults.standard.onboardingResumeStep
             .flatMap { WelcomeStep(rawValue: $0) } ?? .intro
         _permissionGranted = State(initialValue: trusted)
@@ -124,10 +124,15 @@ struct WelcomeView: View {
                 .buttonStyle(.borderedProminent)
                 .keyboardShortcut(.defaultAction)
         case .permission:
-            Button("Next", action: advance)
-                .buttonStyle(.borderedProminent)
-                .keyboardShortcut(.defaultAction)
-                .disabled(!permissionGranted)
+            // Never a dead end: if macOS changes the permission flow again, the user
+            // can still finish setup and grant access later.
+            if permissionGranted {
+                Button("Next", action: advance)
+                    .buttonStyle(.borderedProminent)
+                    .keyboardShortcut(.defaultAction)
+            } else {
+                Button("Skip for Now", action: advance)
+            }
         case .trigger:
             Button("Next", action: advance)
                 .buttonStyle(.borderedProminent)
@@ -226,7 +231,9 @@ private struct WelcomePermissionStep: View {
                 Text("Allow access to your apps")
                     .font(.title2).fontWeight(.semibold)
 
-                Text("KeyMinder reads menus via the macOS Accessibility API — the same permission used by screen readers and assistive tools. Your data never leaves your Mac.")
+                Text(AccessibilityPermission.usesAppProtectionOverride
+                     ? "KeyMinder reads the menus of other apps. In System & App Protection Override, click +, add KeyMinder and choose Override System Protections. Your data never leaves your Mac."
+                     : "KeyMinder reads menus via the macOS Accessibility API — the same permission used by screen readers and assistive tools. Your data never leaves your Mac.")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
@@ -251,15 +258,30 @@ private struct WelcomePermissionStep: View {
             .animation(.easeInOut(duration: 0.2), value: granted)
 
             if !granted {
-                Button("Grant Access…") {
+                Button(AccessibilityPermission.usesAppProtectionOverride
+                       ? "Open System Settings…" : "Grant Access…") {
                     AccessibilityPermission.requestAccess()
                 }
                 .buttonStyle(.bordered)
+
+                if AccessibilityPermission.usesAppProtectionOverride {
+                    Text("If you choose specific apps instead, KeyMinder only works in those apps.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+
+                Text("You can also grant access later from the KeyMinder icon in the menu bar.")
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
             }
         }
         .task {
             while !Task.isCancelled {
-                if AXIsProcessTrusted() {
+                if AccessibilityPermission.isTrusted {
                     granted = true
                     break
                 }

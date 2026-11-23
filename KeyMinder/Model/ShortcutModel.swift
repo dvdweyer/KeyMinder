@@ -108,6 +108,8 @@ struct AppShortcuts {
 enum PopupContent {
     case shortcuts(AppShortcuts)
     case needsPermission
+    /// KeyMinder is trusted but macOS refused to let it read this app (27.3+ per-app access).
+    case noAccess(appName: String, pid: pid_t)
     case noApp
 }
 

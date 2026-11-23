@@ -25,7 +25,9 @@ enum MenuScraper {
         AXUIElementSetMessagingTimeout(app, 1.0)
 
         guard let menuBar = element(app, kAXMenuBarAttribute) else {
-            Logger.scraper.error("Could not read menu bar (pid \(pid, privacy: .public))")
+            var unused: CFTypeRef?
+            let menuBarError = AXUIElementCopyAttributeValue(app, kAXMenuBarAttribute as CFString, &unused)
+            Logger.scraper.error("Could not read menu bar (pid \(pid, privacy: .public), AXError \(menuBarError.rawValue, privacy: .public), trusted \(AXIsProcessTrusted(), privacy: .public))")
             return []
         }
 
