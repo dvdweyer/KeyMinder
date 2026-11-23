@@ -4,6 +4,8 @@ All notable changes to KeyMinder are listed here. Grouped by significant milesto
 
 ## [Unreleased]
 
+- **Homebrew tap moved** to `dvdweyer/tap`: install with `brew install --cask dvdweyer/tap/keyminder`. If you installed from `dvdweyer/keyminder`, `brew update` now lists KeyMinder as deleted; run `brew tap dvdweyer/tap`, `brew trust dvdweyer/tap/keyminder` and `brew reinstall keyminder` once to move it. The app keeps updating itself either way
+
 ## v1.0.196–v1.0.228 — Change shortcuts from the popup, update checks and reliability fixes (2026-11-18)
 
 - **Change a shortcut from the popup**: with CustomShortcuts installed, a menu command's shortcut can be changed there straight from KeyMinder's popup
