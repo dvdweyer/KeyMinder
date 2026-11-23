@@ -408,7 +408,9 @@ final class PopupController {
     /// access to that app (27.3+ per-app access). Replaces any running poll.
     private func startPermissionPoll(for blockedPID: pid_t?) {
         stopPermissionPoll()
-        permissionPollTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { [weak self] timer in
+        pollGeneration += 1
+        let generation = pollGeneration
+        permissionPollTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { [weak self] _ in
             // The timer fires on the main run loop; use assumeIsolated so the
             // compiler accepts main-actor property access inside the closure.
             MainActor.assumeIsolated {
@@ -428,7 +430,8 @@ final class PopupController {
                         AccessibilityPermission.access(to: blockedPID)
                     }.value
                     self.isProbingAccess = false
-                    guard self.permissionPollTimer === timer, access == .granted else { return }
+                    guard self.pollGeneration == generation, self.permissionPollTimer != nil,
+                          access == .granted else { return }
                     self.stopPermissionPoll()
                     self.onPermissionGranted()
                 }
@@ -438,6 +441,8 @@ final class PopupController {
 
     /// True while a per-app access probe from the permission poll is in flight.
     private var isProbingAccess = false
+    /// Bumped per poll, so a probe that outlives its poll can't act on a newer one.
+    private var pollGeneration = 0
 
     /// Stops and discards the permission-poll timer.
     private func stopPermissionPoll() {
