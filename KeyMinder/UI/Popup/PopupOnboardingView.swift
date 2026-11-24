@@ -8,6 +8,7 @@ struct PopupOnboardingView: View {
     var blockedAppName: String? = nil
     var onGrant: () -> Void
     var onOpenSettings: () -> Void
+    var onShowGuide: () -> Void = {}
 
     var body: some View {
         VStack(spacing: 14) {
@@ -27,6 +28,9 @@ struct PopupOnboardingView: View {
 
             HStack(spacing: 10) {
                 if AccessibilityPermission.usesAppProtectionOverride {
+                    Button(action: onShowGuide) {
+                        Text("Show me how", tableName: "PermissionGuide")
+                    }
                     Button("Open System Settings…", action: onGrant)
                         .buttonStyle(.borderedProminent)
                 } else {

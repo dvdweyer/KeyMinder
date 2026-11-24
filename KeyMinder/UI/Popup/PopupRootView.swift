@@ -331,6 +331,7 @@ struct PopupRootView: View {
     var scrolls: Bool = true
     var onGrant: () -> Void = {}
     var onOpenSettings: () -> Void = {}
+    var onShowGuide: () -> Void = {}
     var onActivate: (Shortcut) -> Void = { _ in }
     /// Opens the shortcut in CustomShortcuts. `nil` when CustomShortcuts isn't installed.
     var onCustomize: ((Shortcut) -> Void)? = nil
@@ -341,10 +342,11 @@ struct PopupRootView: View {
             case .shortcuts(let app):
                 shortcutsView(app)
             case .needsPermission:
-                PopupOnboardingView(onGrant: onGrant, onOpenSettings: onOpenSettings)
+                PopupOnboardingView(onGrant: onGrant, onOpenSettings: onOpenSettings,
+                                    onShowGuide: onShowGuide)
             case .noAccess(let appName, _):
                 PopupOnboardingView(blockedAppName: appName, onGrant: onGrant,
-                                    onOpenSettings: onOpenSettings)
+                                    onOpenSettings: onOpenSettings, onShowGuide: onShowGuide)
             case .noApp:
                 PopupMessageView(text: "No active application", systemImage: "app.dashed")
             }

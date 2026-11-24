@@ -11,6 +11,8 @@ final class PopupController {
     var onGrant: () -> Void = {}
     /// Called when the onboarding "Open Settings" button is pressed.
     var onOpenSettings: () -> Void = {}
+    /// Called when the onboarding "Show me how" button (macOS 27.3+) is pressed.
+    var onShowGuide: () -> Void = {}
     /// Called after a CustomShortcuts edit request was sent, so cached menus can be dropped.
     var onCustomShortcutRequested: () -> Void = {}
     /// Called the moment `AXIsProcessTrusted()` becomes true while the
@@ -397,6 +399,7 @@ final class PopupController {
             scrolls: scrolls,
             onGrant: { [weak self] in self?.onGrant() },
             onOpenSettings: { [weak self] in self?.onOpenSettings() },
+            onShowGuide: { [weak self] in self?.onShowGuide() },
             onActivate: { [weak self] shortcut in self?.activate(shortcut) },
             onCustomize: customizeHandler(for: model)
         )

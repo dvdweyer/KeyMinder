@@ -169,18 +169,6 @@
         }
       }
     },
-    "How to Give Access…" : {
-      "comment" : "Permission guide for macOS 27.3+. Screenshots stay English; German only so far, other languages fall back to English.",
-      "shouldTranslate" : false,
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "So geben Sie Zugriff …"
-          }
-        }
-      }
-    },
     "How to give KeyMinder access" : {
       "comment" : "Permission guide for macOS 27.3+. Screenshots stay English; German only so far, other languages fall back to English.",
       "shouldTranslate" : false,
@@ -345,6 +333,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ausgewählte Apps"
+          }
+        }
+      }
+    },
+    "Show Me How to Give Access…" : {
+      "comment" : "Permission guide for macOS 27.3+. Screenshots stay English; German only so far, other languages fall back to English.",
+      "shouldTranslate" : false,
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeig mir, wie ich Zugriff gebe …"
           }
         }
       }

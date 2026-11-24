@@ -83,6 +83,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             self?.popup.hide()
             SettingsWindowController.show()
         }
+        popup.onShowGuide = { [weak self] in
+            self?.popup.hide()
+            PermissionGuideWindowController.show()
+        }
         popup.onCustomShortcutRequested = { [weak self] in
             self?.menuCache = nil
         }
@@ -505,7 +509,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             grant.target = self
         }
         if AccessibilityPermission.usesAppProtectionOverride {
-            let guide = menu.addItem(withTitle: String(localized: "How to Give Access…", table: "PermissionGuide"),
+            let guide = menu.addItem(withTitle: String(localized: "Show Me How to Give Access…", table: "PermissionGuide"),
                                      action: #selector(showPermissionGuide), keyEquivalent: "")
             guide.target = self
         }
