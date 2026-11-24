@@ -13,7 +13,7 @@ KeyMinder checks for updates automatically and notifies you when a new version i
 ## Requirements
 
 - macOS 14 (Sonoma) or later
-- Accessibility permission (required to read other apps' menus)
+- Accessibility permission (required to read other apps' menus); on macOS 27.3 or later this is System & App Protection Override, and the setup assistant shows how to grant it
 
 ## Languages
 

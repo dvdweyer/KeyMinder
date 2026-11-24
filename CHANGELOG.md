@@ -4,6 +4,7 @@ All notable changes to KeyMinder are listed here. Grouped by significant milesto
 
 ## [Unreleased]
 
+- **macOS 27.3 onboarding** (alpha 1.0.231): the setup assistant follows macOS 27.3's new System & App Protection Override flow. "Show me how" opens a step-by-step guide with screenshots for giving access to all apps or only selected ones (several at once), also available from the menu-bar icon's right-click menu ("How to Give Access…"); Next stays disabled until access is granted; the popup says when KeyMinder can't read the current app
 - **Homebrew tap moved** to `dvdweyer/tap`: install with `brew install --cask dvdweyer/tap/keyminder`. If you installed from `dvdweyer/keyminder`, `brew update` now lists KeyMinder as deleted; run `brew tap dvdweyer/tap`, `brew trust dvdweyer/tap/keyminder` and `brew reinstall keyminder` once to move it. The app keeps updating itself either way
 
 ## v1.0.196–v1.0.228 — Change shortcuts from the popup, update checks and reliability fixes (2026-11-18)
