@@ -29,7 +29,7 @@ HOST_TEST_CMD='xcodebuild test -project KeyMinder.xcodeproj -scheme KeyMinder -d
 # The build number is the commit count, set by a build phase; the version is bumped by hand.
 VERSION_FILES=KeyMinder.xcodeproj/project.pbxproj
 CODE_PATHS="KeyMinder KeyMinder.xcodeproj"
-TAG_STYLE=vX.Y.Z
+TAG_STYLE=vX.Y.Z-BUILD
 BUILD_SOURCE=commitcount
 
 LANGUAGES="en ar bn da de es fi fr he hi id it ja ko nb nl pl pt ru sv th tr vi zh-Hans zh-Hant"
