@@ -7,6 +7,22 @@
         <!-- Items are populated by generate_appcast during the release pipeline. -->
         <item>
             <title>1.0.232</title>
+            <pubDate>Sat, 28 Nov 2026 19:05:30 +0900</pubDate>
+            <sparkle:channel>beta</sparkle:channel>
+            <sparkle:version>614</sparkle:version>
+            <sparkle:shortVersionString>1.0.232</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <description><![CDATA[<ul>
+<li><strong>New:</strong> Show me how in the popup&#x27;s access screens and the menu</li>
+<li><strong>Fixed:</strong> avoid sending the poll timer across isolation</li>
+<li><strong>New:</strong> permission guide with screenshots for macOS 27.3</li>
+<li><strong>Fixed:</strong> onboarding and per-app access on macOS 27.3</li>
+</ul>
+]]></description>
+            <enclosure url="https://keyminder.app/KeyMinder_1.0.232.zip" length="4543989" type="application/octet-stream" sparkle:edSignature="fVd9roAC0hjGS8/ZFokv29RugRnP+FqtAV3tukC23dHwwg9xdh6EmQ7IhoN1otiuJNMqyK3s6aInFGahqG76Cg=="/>
+        </item>
+        <item>
+            <title>1.0.232</title>
             <pubDate>Wed, 25 Nov 2026 08:03:22 +0800</pubDate>
             <sparkle:channel>alpha</sparkle:channel>
             <sparkle:version>611</sparkle:version>
@@ -17,6 +33,7 @@
 </ul>
 ]]></description>
             <enclosure url="https://keyminder.app/KeyMinder_1.0.232.zip" length="4544047" type="application/octet-stream" sparkle:edSignature="4yd05ZXOIVhxbJWPpy+LTkv5VBuciYr6R8zgprSyy12HxWxaLSsT2Qm+2fozny0AHzgujBHOzHoIRHgWmqEwDw=="/>
+            <sparkle:minimumAutoupdateVersion>614</sparkle:minimumAutoupdateVersion>
         </item>
         <item>
             <title>1.0.231</title>
